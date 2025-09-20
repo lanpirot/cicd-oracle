@@ -3,13 +3,14 @@ package ch.unibe.cs.mergeci.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 public class Project implements Cloneable {
-    private String projectName;
+    private Path projectName;
     private List<ProjectClass> classes;
 
 

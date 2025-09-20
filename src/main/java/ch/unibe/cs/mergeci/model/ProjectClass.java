@@ -3,13 +3,14 @@ package ch.unibe.cs.mergeci.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 public class ProjectClass{
-    private String projectName;
+    private Path projectName;
     private List<IMergeBlock> mergeBlocks;
 
     @Override
@@ -24,5 +25,14 @@ public class ProjectClass{
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        for (IMergeBlock block : mergeBlocks) {
+            result.append(block.getLines());
+        }
+        return result.toString();
     }
 }

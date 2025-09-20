@@ -114,7 +114,7 @@ public class GitUtils {
                 objectOutputStream.write(objectStream.readAllBytes());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
