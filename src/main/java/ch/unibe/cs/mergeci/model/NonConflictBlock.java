@@ -27,7 +27,7 @@ public class NonConflictBlock implements IMergeBlock {
         int seqIndex = chunk.getSequenceIndex();
         RawText rawText = mergeResult.getSequences().get(seqIndex);
         for (int i = chunk.getBegin(); i < chunk.getEnd(); i++) {
-            list.add(rawText.getString(i)+"\n");
+            list.add(rawText.getString(i));
         }
         return list;
     }

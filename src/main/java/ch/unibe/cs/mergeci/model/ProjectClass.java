@@ -29,10 +29,10 @@ public class ProjectClass{
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        List<String> lines = new ArrayList<>();
         for (IMergeBlock block : mergeBlocks) {
-            result.append(block.getLines());
+            lines.addAll(block.getLines());
         }
-        return result.toString();
+        return String.join("\n", lines);
     }
 }

@@ -40,8 +40,8 @@ public class ProjectBuilderUtils {
         for (Project project : projects) {
 
             for (ProjectClass projectClass : project.getClasses()) {
-                String filepath = TEMP_PATH + File.separator + projectClass.getProjectName().getParent() + "_"
-                        + index + projectClass.getProjectName().getFileName();
+                String filepath = Paths.get(TEMP_PATH, Paths.get(gitRootPath).getFileName() + "_" + index,
+                        projectClass.getProjectName().getParent().toString(), projectClass.getProjectName().getFileName().toString()).toString();
                 File file = new File(filepath);
                 if (file.getParentFile() != null) file.getParentFile().mkdirs();
                 try (OutputStream out = new FileOutputStream(file)) {
@@ -109,7 +109,7 @@ public class ProjectBuilderUtils {
 
     public static void resolveConflicts(List<IMergeBlock> original, List<IMergeBlock> previous, List<List<IMergeBlock>> general, List<IPattern> patterns, int counter) {
 
-        if (counter == original.size() - 1) {
+        if (counter == original.size()) {
             general.add(previous);
             return;
         }
