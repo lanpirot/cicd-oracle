@@ -7,25 +7,24 @@ import ch.unibe.cs.mergeci.model.Project;
 import ch.unibe.cs.mergeci.model.ProjectClass;
 import ch.unibe.cs.mergeci.model.patterns.IPattern;
 import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.diff.Sequence;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
+import org.eclipse.jgit.merge.ResolveMerger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ProjectBuilderUtils {
     private String gitRootPath;
@@ -35,12 +34,18 @@ public class ProjectBuilderUtils {
         this.gitRootPath = gitRootPath;
     }
 
-    public void saveProjects(List<Project> projects) {
+    public void saveProjects(List<Project> projects, Map<String, ObjectId> nonConflictObjects) throws IOException {
         int index = 0;
-        for (Project project : projects) {
 
+
+        for (Project project : projects) {
             for (ProjectClass projectClass : project.getClasses()) {
-                String filepath = Paths.get(TEMP_PATH, Paths.get(gitRootPath).getFileName() + "_" + index,
+                String projectNewRootPath = TEMP_PATH + File.separator + Paths.get(gitRootPath).getFileName() + "_" + index;
+
+                Git git = GitUtils.getGit(gitRootPath);
+                FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
+
+                String filepath = Paths.get(projectNewRootPath,
                         projectClass.getProjectName().getParent().toString(), projectClass.getProjectName().getFileName().toString()).toString();
                 File file = new File(filepath);
                 if (file.getParentFile() != null) file.getParentFile().mkdirs();

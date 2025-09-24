@@ -1,19 +1,25 @@
 package ch.unibe.cs.mergeci.util;
 
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectStream;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FileUtils {
-    private static void saveFilesFromObjectId(String projectRoot, Map<String, ObjectId> files){
-        
+    public static void saveFilesFromObjectId(String projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
+        for (Map.Entry<String, ObjectId> entry : files.entrySet()) {
+            ObjectStream objectStream = getFileFromObject(entry.getValue(), git);
+            saveFile(projectRoot+File.separator+entry.getKey(), objectStream);
+        }
     }
 
-    public void saveFile(String path, ObjectStream objectStream) throws IOException {
+    public static void saveFile(String path, ObjectStream objectStream) throws IOException {
         File file = new File(path);
         if (file.getParentFile() != null) file.getParentFile().mkdirs();
         file.createNewFile();
@@ -25,4 +31,50 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
+
+    public static ObjectStream getFileFromObject(ObjectId objectId, Git git) throws IOException {
+        ObjectLoader objectLoader = git.getRepository().open(objectId);
+        return objectLoader.openStream();
+    }
+
+    public static Map<String, String> objectIdToStringMap(Map<String, ObjectId> map, Git git) throws IOException {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, ObjectId> entry : map.entrySet()) {
+            String key = entry.getKey();
+            ObjectId objectId = entry.getValue();
+
+            try ( ObjectStream objectStream = getFileFromObject(objectId, git)) {
+                while (objectStream.available() > 0) {
+                    result.put(key,objectStream.readAllBytes().toString());
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result;
+    }
+
+    // function to delete subdirectories and files
+    public static void deleteDirectory(File file)
+    {
+        // store all the paths of files and folders present
+        // inside directory
+        if(!file.exists())return;
+        for (File subfile : file.listFiles()) {
+
+            // if it is a subfolder,e.g Rohan and Ritik,
+            //  recursively call function to empty subfolder
+            if (subfile.isDirectory()) {
+                deleteDirectory(subfile);
+            }
+
+            // delete files and empty subfolders
+            subfile.delete();
+        }
+
+        file.delete();
+    }
+
 }
