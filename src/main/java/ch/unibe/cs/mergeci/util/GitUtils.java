@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.util;
 
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.Status;
@@ -13,16 +14,19 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
+import org.eclipse.jgit.merge.RecursiveMerger;
 import org.eclipse.jgit.merge.ResolveMerger;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +43,14 @@ public class GitUtils {
 
     public ResolveMerger makeMerge(String source, String target) throws GitAPIException, IOException {
         Repository repo = git.getRepository();
-        git.checkout().setName("master").call();
+//        git.checkout().setName("master").call();
 
-        ObjectId feature = repo.resolve("feature");
-        ObjectId head = repo.resolve("master");
+        ObjectId feature = repo.resolve(source);
+        ObjectId head = repo.resolve(target);
 
-        System.out.println(MergeStrategy.RESOLVE.newMerger(repo, true));
+//        ObjectId feature = repo.resolve("feature");
+//        ObjectId head = repo.resolve("master");
+
         ResolveMerger merger = (ResolveMerger) MergeStrategy.RESOLVE.newMerger(repo, true);
 //        merger.setWorkingTreeIterator(new FileTreeIterator(repo));
 
@@ -122,21 +128,12 @@ public class GitUtils {
         pb.directory(git.getRepository().getDirectory());
         Process pr = pb.start();
         pr.waitFor();
-        printErrorMessage(pr);
+        FileUtils.printErrorMessage(pr);
 
         pb = new ProcessBuilder("git", "merge", "--abort");
         pb.directory(workTree); // тоже рабочая директория
         pr = pb.start();
         pr.waitFor();
-    }
-
-    public static void printErrorMessage(Process pr) {
-        try (InputStream errorStream = pr.getErrorStream(); InputStream messageStream = pr.getInputStream()) {
-            System.out.println(new String(errorStream.readAllBytes()));
-            System.out.println(new String(messageStream.readAllBytes()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static Map<String, ObjectId> getNonConflictObjects2(ResolveMerger merger, ObjectId commit1, ObjectId commit2
@@ -207,5 +204,63 @@ public class GitUtils {
 
     public static Git getGit(String projectPath) throws IOException {
         return Git.open(new File(projectPath));
+    }
+
+    public boolean isConflict(String source, String target) {
+        ResolveMerger resolveMerger;
+        try {
+            resolveMerger = makeMerge(source, target);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Map<String, MergeResult<? extends Sequence>> conflicts = resolveMerger.getMergeResults();
+        return !conflicts.isEmpty();
+    }
+
+    public List<Pair<String, String>> getConflictCommits(int maxConflictingMergeCount) {
+
+        int conflictingMergeCount = 0;
+        List<RevCommit> history = getAllMergeCommits();
+
+        List<Pair<String, String>> result = new ArrayList<>();
+
+
+        for (RevCommit revCommit : history) {
+            if(conflictingMergeCount > maxConflictingMergeCount)return result;
+            if (revCommit.getParentCount() == 2) {
+                String objectId1 = revCommit.getParent(0).getName();
+                String objectId2 = revCommit.getParent(1).getName();
+
+                // check defined sampling limit
+                if (isConflict(objectId1, objectId2)) {
+                    result.add(Pair.of(objectId1, objectId2));
+                    conflictingMergeCount++;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    protected List<RevCommit> getAllMergeCommits() {
+
+        List<RevCommit> mergeCommits = new ArrayList<>();
+        Iterable<RevCommit> logs = new ArrayList<>();
+
+        try {
+            logs = git.log().setRevFilter(RevFilter.ONLY_MERGES).call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int count = 0;
+
+        for (RevCommit rev : logs) {
+            //System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+            count++;
+            mergeCommits.add(rev);
+        }
+
+        return mergeCommits;
     }
 }

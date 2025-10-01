@@ -6,8 +6,14 @@ import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectStream;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +21,7 @@ public class FileUtils {
     public static void saveFilesFromObjectId(String projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
         for (Map.Entry<String, ObjectId> entry : files.entrySet()) {
             ObjectStream objectStream = getFileFromObject(entry.getValue(), git);
-            saveFile(projectRoot+File.separator+entry.getKey(), objectStream);
+            saveFile(projectRoot + File.separator + entry.getKey(), objectStream);
         }
     }
 
@@ -44,9 +50,9 @@ public class FileUtils {
             String key = entry.getKey();
             ObjectId objectId = entry.getValue();
 
-            try ( ObjectStream objectStream = getFileFromObject(objectId, git)) {
+            try (ObjectStream objectStream = getFileFromObject(objectId, git)) {
                 while (objectStream.available() > 0) {
-                    result.put(key,objectStream.readAllBytes().toString());
+                    result.put(key, objectStream.readAllBytes().toString());
                 }
 
             } catch (IOException e) {
@@ -57,11 +63,10 @@ public class FileUtils {
     }
 
     // function to delete subdirectories and files
-    public static void deleteDirectory(File file)
-    {
+    public static void deleteDirectory(File file) {
         // store all the paths of files and folders present
         // inside directory
-        if(!file.exists())return;
+        if (!file.exists()) return;
         for (File subfile : file.listFiles()) {
 
             // if it is a subfolder,e.g Rohan and Ritik,
@@ -77,4 +82,43 @@ public class FileUtils {
         file.delete();
     }
 
+    public static void printErrorMessage(Process pr) {
+        try (InputStream errorStream = pr.getErrorStream(); InputStream messageStream = pr.getInputStream()) {
+            System.out.println(new String(errorStream.readAllBytes()));
+            System.out.println(new String(messageStream.readAllBytes()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void copyDirectory(File sourceDirectory, File destinationDirectory) throws IOException {
+        if (!destinationDirectory.exists()) {
+            destinationDirectory.mkdir();
+        }
+        for (String f : sourceDirectory.list()) {
+            copyDirectoryCompatibityMode(new File(sourceDirectory, f), new File(destinationDirectory, f));
+        }
+    }
+
+    public static void copyDirectoryCompatibityMode(File source, File destination) throws IOException {
+        if (source.isDirectory()) {
+            copyDirectory(source, destination);
+        } else {
+            copyFile(source, destination);
+        }
+    }
+
+    private static void copyFile(File sourceFile, File destinationFile)
+            throws IOException {
+        try (InputStream in = new FileInputStream(sourceFile);
+             OutputStream out = new FileOutputStream(destinationFile)) {
+            byte[] buf = new byte[1024];
+            int length;
+            while ((length = in.read(buf)) > 0) {
+                out.write(buf, 0, length);
+            }
+        }catch (IOException e) {
+            System.out.println(sourceFile.getAbsoluteFile());
+        }
+    }
 }

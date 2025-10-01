@@ -53,9 +53,12 @@ class ProjectBuilderUtilsTest {
     @Test
     void saveProjects() throws GitAPIException, IOException {
          FileUtils.deleteDirectory(new File("temp"));
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
-        ResolveMerger merger = gitUtils.makeMerge("","");
+        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/ripme"));
+        ResolveMerger merger = gitUtils.makeMerge("dc2c100d9d282e1419","2055cb0d9d9449e323e29");
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = gitUtils.getConflictChunks(merger);
+
+        System.out.println("conflicts :");
+        mergeResultMap.keySet().forEach(System.out::println);
 
         Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
@@ -65,12 +68,12 @@ class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/myTest");
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/ripme");
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
         Git git = gitUtils.getGit();
-        ObjectId branch1 = git.getRepository().resolve("master");
-        ObjectId branch2 = git.getRepository().resolve("feature");
+        ObjectId branch1 = git.getRepository().resolve("dc2c100d9d282e1419");
+        ObjectId branch2 = git.getRepository().resolve("2055cb0d9d9449e323e29");
         Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects2(merger, branch1, branch2, gitUtils.getGit());
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
     }
