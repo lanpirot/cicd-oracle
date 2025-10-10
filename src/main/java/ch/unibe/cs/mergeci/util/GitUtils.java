@@ -9,6 +9,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheIterator;
+import org.eclipse.jgit.errors.NoMergeBaseException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -206,13 +207,11 @@ public class GitUtils {
         return Git.open(new File(projectPath));
     }
 
-    public boolean isConflict(String source, String target) {
+    public boolean isConflict(String source, String target) throws GitAPIException, IOException {
         ResolveMerger resolveMerger;
-        try {
-            resolveMerger = makeMerge(source, target);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+        resolveMerger = makeMerge(source, target);
+
 
         Map<String, MergeResult<? extends Sequence>> conflicts = resolveMerger.getMergeResults();
         return !conflicts.isEmpty();
@@ -227,15 +226,19 @@ public class GitUtils {
 
 
         for (RevCommit revCommit : history) {
-            if(conflictingMergeCount > maxConflictingMergeCount)return result;
+            if (conflictingMergeCount > maxConflictingMergeCount) return result;
             if (revCommit.getParentCount() == 2) {
                 String objectId1 = revCommit.getParent(0).getName();
                 String objectId2 = revCommit.getParent(1).getName();
 
-                // check defined sampling limit
-                if (isConflict(objectId1, objectId2)) {
-                    result.add(Pair.of(objectId1, objectId2));
-                    conflictingMergeCount++;
+                try {
+                    // check defined sampling limit
+                    if (isConflict(objectId1, objectId2)) {
+                        result.add(Pair.of(objectId1, objectId2));
+                        conflictingMergeCount++;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         }

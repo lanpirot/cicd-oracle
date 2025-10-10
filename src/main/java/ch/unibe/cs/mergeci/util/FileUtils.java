@@ -15,7 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileUtils {
     public static void saveFilesFromObjectId(String projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
@@ -110,6 +113,8 @@ public class FileUtils {
 
     private static void copyFile(File sourceFile, File destinationFile)
             throws IOException {
+        if (destinationFile.getParentFile() != null) destinationFile.getParentFile().mkdirs();
+
         try (InputStream in = new FileInputStream(sourceFile);
              OutputStream out = new FileOutputStream(destinationFile)) {
             byte[] buf = new byte[1024];
@@ -118,7 +123,16 @@ public class FileUtils {
                 out.write(buf, 0, length);
             }
         }catch (IOException e) {
+            e.printStackTrace();
             System.out.println(sourceFile.getAbsoluteFile());
+        }
+    }
+
+    public static List<Path> listFilesUsingFileWalk(String dir) throws IOException {
+        try (Stream<Path> stream = Files.walk(Paths.get(dir), 100)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .collect(Collectors.toList());
         }
     }
 }

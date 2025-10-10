@@ -30,7 +30,7 @@ class MavenRunnerTest {
     @Test
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(Set.of(),"temp\\myTest_0", "temp\\myTest_1");
+        mavenRunner.run(Set.of(),"temp\\airlift_0", "temp\\airlift_1");
     }
 
     @Test
@@ -58,6 +58,19 @@ class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(mergeResultMap.keySet(),"temp\\myTest_0", "temp\\myTest_1");
+        mavenRunner.run(mergeResultMap.keySet(),"temp\\airlift_0", "temp\\airlift_1");
+    }
+
+    @Test
+    void injectCacheArtifact() throws IOException {
+        MavenRunner mavenRunner = new MavenRunner();
+        mavenRunner.injectCacheArtifact("temp\\ripme_0");
+    }
+
+    @Test
+    void copyTarget() {
+        MavenRunner mavenRunner = new MavenRunner();
+//        mavenRunner.copyTarget("temp\\Activiti_0", "temp\\Activiti_1");
+        mavenRunner.copyTarget("temp\\Activiti_target", "temp\\Activiti_0");
     }
 }

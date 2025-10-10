@@ -46,7 +46,7 @@ public class ProjectBuilderUtils {
                 FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
 
                 String filepath = Paths.get(projectNewRootPath,
-                        projectClass.getProjectName().getParent().toString(), projectClass.getProjectName().getFileName().toString()).toString();
+                        projectClass.getProjectName().toString()).toString();
                 File file = new File(filepath);
                 if (file.getParentFile() != null) file.getParentFile().mkdirs();
                 try (OutputStream out = new FileOutputStream(file)) {
@@ -79,7 +79,6 @@ public class ProjectBuilderUtils {
         String key = keys.get(index);
 
         List<ProjectClass> projectClasses = projectClassMap.get(key);
-
 
         for (ProjectClass projectClass : projectClasses) {
             List<ProjectClass> projects = new ArrayList<>(projectsPrevious);

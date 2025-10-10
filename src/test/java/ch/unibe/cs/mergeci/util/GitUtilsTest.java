@@ -53,7 +53,7 @@ class GitUtilsTest {
 
     @Test
     void getConflictCommits() throws IOException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/ripme"));
+        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/airlift"));
 
         ObjectId head = gitUtils.getGit().getRepository().resolve("HEAD");
 
