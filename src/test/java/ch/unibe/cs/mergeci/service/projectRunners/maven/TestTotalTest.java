@@ -11,8 +11,8 @@ class TestTotalTest {
 
     @Test
     void outputResult() throws IOException {
-//        TestTotal testTotal = new TestTotal(new File("src\\test\\resources\\test-merge-projects\\acs-aem-commons"));
-        TestTotal testTotal = new TestTotal(new File("temp\\airlift_1"));
+        TestTotal testTotal = new TestTotal(new File("src\\test\\resources\\test-merge-projects\\dozer"));
+//        TestTotal testTotal = new TestTotal(new File("temp\\airlift_1"));
         testTotal.outputResult();
     }
 }

@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -53,17 +54,17 @@ class GitUtilsTest {
 
     @Test
     void getConflictCommits() throws IOException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/airlift"));
+        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/ApiManager"));
 
         ObjectId head = gitUtils.getGit().getRepository().resolve("HEAD");
 
         RevWalk walk = new RevWalk(gitUtils.getGit().getRepository());
 
 
-        List<Pair<String, String>> list  = gitUtils.getConflictCommits(10);
+        List<MergeInfo> list  = gitUtils.getConflictCommits(100);
 
-        for(Pair<String, String> pair : list){
-            System.out.println(pair.getLeft()+" "+pair.getRight());
+        for(MergeInfo mergeInfo: list){
+            System.out.println(mergeInfo);
         }
     }
 }

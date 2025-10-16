@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.api.Git;
@@ -13,6 +14,7 @@ import org.eclipse.jgit.errors.NoMergeBaseException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.merge.RecursiveMerger;
@@ -217,33 +219,60 @@ public class GitUtils {
         return !conflicts.isEmpty();
     }
 
-    public List<Pair<String, String>> getConflictCommits(int maxConflictingMergeCount) {
+    public Map<String, Integer> countConflictChunks(String source, String target) throws GitAPIException, IOException {
+        ResolveMerger resolveMerger;
+        resolveMerger = makeMerge(source, target);
+
+        Map<String, Integer> conflictingFiles = new HashMap<>();
+
+
+        int counter = 0;
+        Map<String, MergeResult<? extends Sequence>> conflicts = resolveMerger.getMergeResults();
+        for (Map.Entry<String, MergeResult<? extends Sequence>> mergeResult : conflicts.entrySet()) {
+            for (MergeChunk mergeChunk : mergeResult.getValue()) {
+                if (mergeChunk.getConflictState() != MergeChunk.ConflictState.NO_CONFLICT) {
+                    counter++;
+                }
+            }
+
+            conflictingFiles.put(mergeResult.getKey(), counter / 3);
+            counter = 0;
+        }
+
+
+        return conflictingFiles;
+    }
+
+    public List<MergeInfo> getConflictCommits(int maxConflictingMergeCount) {
 
         int conflictingMergeCount = 0;
         List<RevCommit> history = getAllMergeCommits();
 
         List<Pair<String, String>> result = new ArrayList<>();
-
+        List<MergeInfo> mergeInfos = new ArrayList<>();
 
         for (RevCommit revCommit : history) {
-            if (conflictingMergeCount > maxConflictingMergeCount) return result;
+            if (conflictingMergeCount > maxConflictingMergeCount) return mergeInfos;
             if (revCommit.getParentCount() == 2) {
                 String objectId1 = revCommit.getParent(0).getName();
                 String objectId2 = revCommit.getParent(1).getName();
 
                 try {
+                    Map<String, Integer> conflictFiles = countConflictChunks(objectId1, objectId2);
+
                     // check defined sampling limit
-                    if (isConflict(objectId1, objectId2)) {
-                        result.add(Pair.of(objectId1, objectId2));
+                    if (!conflictFiles.isEmpty()) {
+                        MergeInfo mergeInfo = new MergeInfo(objectId1, objectId2, conflictFiles);
+                        mergeInfos.add(mergeInfo);
                         conflictingMergeCount++;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        return result;
+        return mergeInfos;
     }
 
     protected List<RevCommit> getAllMergeCommits() {
