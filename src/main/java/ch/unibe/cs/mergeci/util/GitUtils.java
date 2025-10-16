@@ -67,76 +67,75 @@ public class GitUtils {
     }
 
 
-    public static Map<String, ObjectId> getNonConflictObjects(Git git, ObjectId commit1, ObjectId commit2) throws IOException, GitAPIException, InterruptedException {
-        Status status = git.status().call();
-        Set<String> conflictList = status.getConflicting();
-        System.out.println(conflictList.size());
-
-        Repository repo = git.getRepository();
+    public static Map<String, ObjectId> getNonConflictObjects(Git git, ObjectId commit1, ObjectId commit2) throws IOException, InterruptedException {
         Map<String, ObjectId> nonConflictObjects = new HashMap<>();
-        System.out.println(repo.getRepositoryState());
-        // check out "master"
-        try (RevWalk walk = new RevWalk(repo);) {
+        Repository repo = git.getRepository();
+        String tempBranch = "temp_merge_branch";
+
+        try (RevWalk walk = new RevWalk(repo)) {
             RevCommit head = walk.parseCommit(commit1);
-            Ref checkout = git.checkout().setAllPaths(true).setStartPoint(head).call();
-            System.out.println("Result of checking out master: " + checkout);
 
-            // retrieve the objectId of the latest commit on branch
-            ObjectId mergeBase = commit2;
+            // Checkout commit1 in a temp branch
 
-            // perform the actual merge, here we disable FastForward to see the
-            // actual merge-commit even though the merge is trivial
-            org.eclipse.jgit.api.MergeResult mergeResult = git.merge().
-                    include(mergeBase).
-                    setCommit(false).
-                    setFastForward(MergeCommand.FastForwardMode.NO_FF).
-                    //setSquash(false).
-                            setMessage("Merged changes").
-                    call();
+            Ref checkout = git.checkout()
+                    .setName(tempBranch)
+                    .setCreateBranch(true)
+                    .setStartPoint(head)
+                    .call();
+            System.out.println("Checked out temp branch: " + checkout);
 
+            // Perform the merge
+            org.eclipse.jgit.api.MergeResult mergeResult = git.merge()
+                    .include(commit2)
+                    .setCommit(false)
+                    .setFastForward(MergeCommand.FastForwardMode.NO_FF)
+                    .setMessage("Temporary merge")
+                    .call();
 
-            Arrays.stream(mergeResult.getMergedCommits()).forEach(x -> System.out.println(x.getName()));
+            // Conflicting files
+            Set<String> conflictPaths = mergeResult.getConflicts() != null ?
+                    mergeResult.getConflicts().keySet() : Collections.emptySet();
+            System.out.println("Conflicts: " + conflictPaths);
 
+            // Iterate over DirCache to find automatically merged files
             DirCache dirCache = repo.readDirCache();
-//        dirCache.getCacheTree(true).
-
-            try (TreeWalk treeWalk = new TreeWalk(repo);) {
+            try (TreeWalk treeWalk = new TreeWalk(repo)) {
                 treeWalk.setRecursive(true);
                 treeWalk.addTree(new DirCacheIterator(dirCache));
 
-                Set<String> conflictPaths = mergeResult.getConflicts().keySet();
                 while (treeWalk.next()) {
-                    System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
-
-                    if (conflictPaths.stream().noneMatch(x -> x.equals(treeWalk.getPathString())))
-                        nonConflictObjects.put(treeWalk.getPathString(), treeWalk.getObjectId(0));
+                    String path = treeWalk.getPathString();
+                    if (!conflictPaths.contains(path)) {
+                        nonConflictObjects.put(path, treeWalk.getObjectId(0));
+                        System.out.println("Auto-merged: " + path + "\t" + treeWalk.getObjectId(0).getName());
+                    }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            // Abort merge and delete temp branch
+            runGitCommand(repo.getWorkTree(), "git", "status");
+            runGitCommand(repo.getWorkTree(), "git", "merge", "--abort");
+            runGitCommand(repo.getWorkTree(), "git", "checkout", "-"); // return to previous branch
+            runGitCommand(repo.getWorkTree(), "git", "branch", "-D", tempBranch);
         }
-        mergeAbort(git);
 
         return nonConflictObjects;
     }
 
-    public static void mergeAbort(Git git) throws IOException, InterruptedException {
-
-        File workTree = git.getRepository().getWorkTree();
-        System.out.println(workTree.getAbsolutePath());
-
-        ProcessBuilder pb = new ProcessBuilder("git", "status");
-        pb.directory(git.getRepository().getDirectory());
-        Process pr = pb.start();
-        pr.waitFor();
-        FileUtils.printErrorMessage(pr);
-
-        pb = new ProcessBuilder("git", "merge", "--abort");
-        pb.directory(workTree); // тоже рабочая директория
-        pr = pb.start();
-        pr.waitFor();
+    /**
+     * Helper function for calling git console commands
+     */
+    private static void runGitCommand(File directory, String... command) throws IOException, InterruptedException {
+        System.out.println("Executing: " + Arrays.toString(command));
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(directory);
+        pb.redirectErrorStream(true);
+        pb.inheritIO();
+        Process process = pb.start();
+        process.waitFor();
     }
 
     public static Map<String, ObjectId> getNonConflictObjects2(ResolveMerger merger, ObjectId commit1, ObjectId commit2
@@ -145,6 +144,7 @@ public class GitUtils {
         Repository repo = git.getRepository();
         Map<String, MergeResult<? extends Sequence>> mergeResult = merger.getMergeResults();
         DirCache dirCache = merger.getRepository().readDirCache();
+        merger.getResultTreeId();
         Map<String, ObjectId> nonConflictObjects = new HashMap<>();
 
 //        dirCache.getCacheTree(true).
@@ -154,6 +154,7 @@ public class GitUtils {
             treeWalk.addTree(new DirCacheIterator(dirCache));
 
             List<String> conflictPaths = merger.getUnmergedPaths();
+            System.out.println("Non Conflict Paths:");
             while (treeWalk.next()) {
                 System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
 

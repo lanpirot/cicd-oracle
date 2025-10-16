@@ -31,7 +31,7 @@ public class TestResult {
         TestResult testResult = null;
 
         String string = Files.readAllLines(testResultFile.toPath()).getLast();
-        Pattern p = Pattern.compile("Tests run: (\\d+), Failures: (\\d+), Errors: (\\d+), Skipped: (\\d+), Time elapsed: (\\d+.\\d+).*");
+        Pattern p = Pattern.compile("Tests run: (\\d+), Failures: (\\d+), Errors: (\\d+), Skipped: (\\d+), Time elapsed: (\\d+(.\\d+)?).*");
         Matcher m = p.matcher(string);
 
         if (m.find()) {

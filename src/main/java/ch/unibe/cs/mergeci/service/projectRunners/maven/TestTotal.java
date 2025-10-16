@@ -34,13 +34,15 @@ public class TestTotal {
 
     public void outputResult() throws IOException {
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
-                "**/target/surefire-reports/*Test.txt");
+                "**/target/surefire-reports/*.txt");
 
         List<Path> paths = FileUtils.listFilesUsingFileWalk(projectDir.getPath());
         for (Path file : paths) {
             if (pathMatcher.matches(file)) {
                 TestResult testResult = TestResult.createTestResultFromFile(file.toFile());
-                if (testResult == null) {continue;}
+                if (testResult == null) {
+
+                    continue;}
                 runNum += testResult.getRunNum();
                 failuresNum += testResult.getFailuresNum();
                 errorsNum += testResult.getErrorsNum();

@@ -14,6 +14,7 @@ class TestResultTest {
     @Test
     void createTestResultFromFile() throws IOException {
         TestResult testResult = TestResult.createTestResultFromFile(new File(
-                "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\commons-lang\\target\\surefire-reports\\org.apache.commons.lang3.ArrayUtilsAddTest.txt"));
+                "temp\\jitwatch_0\\core\\target\\surefire-reports\\org.adoptopenjdk.jitwatch.test.TestIntrinsicFinder.txt"));
+
     }
 }

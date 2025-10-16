@@ -30,7 +30,7 @@ class MavenRunnerTest {
     @Test
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(Set.of(),"temp\\airlift_0", "temp\\airlift_1");
+        mavenRunner.run(Set.of(),"temp\\jitwatch_0", "temp\\jitwatch_1");
     }
 
     @Test
