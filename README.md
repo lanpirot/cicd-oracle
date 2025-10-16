@@ -1,7 +1,37 @@
 # CI/CD-Enhanced Conflict Resolution – Team Discussion Notes
 
+# 10/09/2025
 
+---
+## Does Not Work: Discard
 
+- No Maven
+- No tests
+- Too hard to get to run (e.g., missing database, requires Java 6, or other configuration issues)
+- No merge conflicts
+
+## Does Not Work: Our Approach Won’t Work
+
+- Tests don’t cover the conflict region
+
+## Does Not Work: Our Approach Won’t Work Completely
+
+- Tests don’t cover the conflict region → maybe compilation can still help with ranking?
+
+## Does Not Work Out of the Box
+
+- Too many conflicts → can we deal with that?
+
+---
+
+### Suggestion of a Minor Refinement
+
+In the first place, what you would observe is just that there are **no differences in the test results** across the different conflict resolution variants that you generated.
+
+- “Tests don’t cover conflict region” is already one possible explanation for not seeing differences.
+- But there might be others — for example, even if a test touches the conflict region, **test results across variants might still be the same**.
+
+---
 # 24/09/2025
 
 ---
