@@ -28,8 +28,6 @@ public class CiCdMergeResolverApplication {
     public static void main(String[] args) throws IOException, GitAPIException {
         SpringApplication.run(CiCdMergeResolverApplication.class, args);
         File project = new File("src/test/resources/test-merge-projects/myTest");
-        GitUtils gitUtils = new GitUtils(project);
-
 
     }
 

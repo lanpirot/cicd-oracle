@@ -1,72 +1,91 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
 import ch.unibe.cs.mergeci.util.FileUtils;
-import org.apache.maven.cli.MavenCli;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
 public class MavenRunner implements IRunner {
-    public void run(Set<String> conflictList, String... path) {
+    private final Path tempDir;
+    private final static String LOG_PATH = "log";
+    private final Path logDir;
+
+    public MavenRunner(Path tempDir) {
+        this.tempDir = tempDir;
+        this.logDir = tempDir.resolve(LOG_PATH);
+        this.logDir.toFile().mkdirs();
+    }
+
+    public MavenRunner() {
+        this(Paths.get("temp"));
+    }
+
+    public void run(String... path) {
         final String mavenCommand = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows") ? "mvn.cmd" : "mvn";
-//        ProcessBuilder compileProcess = new ProcessBuilder(mavenCommand, "compile");
-//        compileProcess.directory(new File(path[0]));
-//        compileProcess.inheritIO();
-        ProcessBuilder testProcess = new ProcessBuilder(mavenCommand, "test", "-fae");
-        testProcess.inheritIO();
-        testProcess.directory(new File(path[0]));
 
         System.out.println(new File(path[0]).getAbsolutePath());
         Process pr = null;
-
         injectCacheArtifact(path[0]);
-
-        try {
-            /*pr = compileProcess.start();
-            FileUtils.printErrorMessage(pr);
-            pr.waitFor();*/
-            pr = testProcess.start();
-            FileUtils.printErrorMessage(pr);
-            pr.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        Path projectName = Paths.get(path[0]).getFileName();
+        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
+        runCommand(new File(path[0]), mavenCommand, "test", "-fae");
 
 
         for (int i = 1; i < path.length; i++) {
 
-//            compileProcess.directory(new File(path[i]));
-            testProcess.directory(new File(path[i]));
             try {
                 injectCacheArtifact(path[i]);
-
                 copyTarget(path[0], path[i]);
-                FileUtils.copyDirectoryCompatibityMode(new File(path[0],".cache"), new File(path[i],".cache"));
-//                pr = compileProcess.start();
-                FileUtils.printErrorMessage(pr);
-                pr.waitFor();
-                pr = testProcess.start();
-                FileUtils.printErrorMessage(pr);
+                FileUtils.copyDirectoryCompatibityMode(new File(path[0], ".cache"), new File(path[i], ".cache"));
+                projectName = Paths.get(path[i]).getFileName();
+                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
+                runCommand(new File(path[i]),mavenCommand, "test", "-fae");
 
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Helper function for calling git console commands
+     */
+    private static void runCommand(File directory, File outputDirectory, String... command) {
+        System.out.println("Executing: " + Arrays.toString(command));
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(directory);
+        pb.redirectErrorStream(true);
+        if (outputDirectory != null) {
+            pb.redirectOutput(outputDirectory);
+        } else {
+            pb.inheritIO();
+        }
+
+        Process process = null;
+        try {
+            process = pb.start();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void runCommand(File directory, String... command) {
+        runCommand(directory, null, command);
     }
 
     private void updateStatusMavenFile(String fileInputPath,
@@ -135,7 +154,7 @@ public class MavenRunner implements IRunner {
             FileUtils.copyDirectoryCompatibityMode(
                     new File("src/main/resources/cache-artifacts/maven-build-cache-config.xml"),
                     new File(projectDir + File.separator + ".mvn" + File.separator + "maven-build-cache-config.xml"));
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -27,12 +27,10 @@ public class TestTotal {
 
     private List<TestResult> testResults;
 
-    public TestTotal(File projectDir){
+    public TestTotal(File projectDir) throws IOException {
 
         this.projectDir = projectDir;
-    }
 
-    public void outputResult() throws IOException {
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
                 "**/target/surefire-reports/*.txt");
 
@@ -50,7 +48,5 @@ public class TestTotal {
                 elapsedTime += testResult.getElapsedTime();
             }
         }
-
-        System.out.println(toString());
     }
 }

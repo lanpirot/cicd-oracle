@@ -30,15 +30,16 @@ class MavenRunnerTest {
     @Test
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(Set.of(),"temp\\jitwatch_0", "temp\\jitwatch_1");
+//        mavenRunner.run(Set.of(),"temp\\jackson-databind_0", "temp\\jackson-databind_1");
+        mavenRunner.run("temp\\jackson-databind_0", "temp\\jackson-databind_1","temp\\jackson-databind_2","temp\\jackson-databind_3");
     }
 
     @Test
     void run() throws IOException, GitAPIException {
         FileUtils.deleteDirectory(new File("temp"));
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
-        ResolveMerger merger = gitUtils.makeMerge("","");
-        Map<String, MergeResult<? extends Sequence>> mergeResultMap = gitUtils.getConflictChunks(merger);
+        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        ResolveMerger merger = GitUtils.makeMerge("","", git);
+        Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
         Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
@@ -48,17 +49,16 @@ class MavenRunnerTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/myTest");
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/myTest","temp");
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
-        Git git = gitUtils.getGit();
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
-        Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects2(merger, branch1, branch2, gitUtils.getGit());
+        Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(mergeResultMap.keySet(),"temp\\airlift_0", "temp\\airlift_1");
+        mavenRunner.run("temp\\airlift_0", "temp\\airlift_1");
     }
 
     @Test

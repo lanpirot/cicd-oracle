@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.Sequence;
@@ -38,31 +39,29 @@ import java.util.stream.Collectors;
 
 @Getter
 public class GitUtils {
-    private Git git;
 
-    public GitUtils(File file) throws IOException {
-        git = Git.open(file);
+    public Git GitUtils(File file) throws IOException {
+        return Git.open(file);
     }
 
-    public ResolveMerger makeMerge(String source, String target) throws GitAPIException, IOException {
+    public Git GitUtils(String file) throws IOException {
+        return Git.open(new File(file));
+    }
+
+    public static ResolveMerger makeMerge(String source, String target, Git git) throws GitAPIException, IOException {
         Repository repo = git.getRepository();
-//        git.checkout().setName("master").call();
 
         ObjectId feature = repo.resolve(source);
         ObjectId head = repo.resolve(target);
 
-//        ObjectId feature = repo.resolve("feature");
-//        ObjectId head = repo.resolve("master");
-
         ResolveMerger merger = (ResolveMerger) MergeStrategy.RESOLVE.newMerger(repo, true);
-//        merger.setWorkingTreeIterator(new FileTreeIterator(repo));
 
         boolean isMergedWithoutConflicts = merger.merge(head, feature);
 
         return merger;
     }
 
-    public Map<String, MergeResult<? extends Sequence>> getConflictChunks(ResolveMerger merger) throws IOException, GitAPIException {
+    public static Map<String, MergeResult<? extends Sequence>> getConflictChunks(ResolveMerger merger) throws IOException, GitAPIException {
         return merger.getMergeResults();
     }
 
@@ -71,6 +70,7 @@ public class GitUtils {
         Map<String, ObjectId> nonConflictObjects = new HashMap<>();
         Repository repo = git.getRepository();
         String tempBranch = "temp_merge_branch";
+        Ref originalBranch = repo.findRef(repo.getBranch());
 
         try (RevWalk walk = new RevWalk(repo)) {
             RevCommit head = walk.parseCommit(commit1);
@@ -116,27 +116,19 @@ public class GitUtils {
             e.printStackTrace();
         } finally {
             // Abort merge and delete temp branch
-            runGitCommand(repo.getWorkTree(), "git", "status");
-            runGitCommand(repo.getWorkTree(), "git", "merge", "--abort");
-            runGitCommand(repo.getWorkTree(), "git", "checkout", "-"); // return to previous branch
-            runGitCommand(repo.getWorkTree(), "git", "branch", "-D", tempBranch);
+            try {
+                git.reset().setMode(ResetCommand.ResetType.HARD).call();
+                git.checkout().setName(originalBranch.getName()).call();
+                git.branchDelete().setBranchNames(tempBranch).setForce(true).call();
+            } catch (GitAPIException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return nonConflictObjects;
     }
 
-    /**
-     * Helper function for calling git console commands
-     */
-    private static void runGitCommand(File directory, String... command) throws IOException, InterruptedException {
-        System.out.println("Executing: " + Arrays.toString(command));
-        ProcessBuilder pb = new ProcessBuilder(command);
-        pb.directory(directory);
-        pb.redirectErrorStream(true);
-        pb.inheritIO();
-        Process process = pb.start();
-        process.waitFor();
-    }
+
 
     public static Map<String, ObjectId> getNonConflictObjects2(ResolveMerger merger, ObjectId commit1, ObjectId commit2
             , Git git) throws GitAPIException, IOException {
@@ -165,9 +157,7 @@ public class GitUtils {
             e.printStackTrace();
         }
 
-
         return nonConflictObjects;
-
     }
 
     public static Map<String, ObjectId> getNonConflictObjects(ResolveMerger merger, ObjectId commit1, ObjectId commit2
@@ -210,19 +200,23 @@ public class GitUtils {
         return Git.open(new File(projectPath));
     }
 
-    public boolean isConflict(String source, String target) throws GitAPIException, IOException {
+    public static Git getGit(File projectPath) throws IOException {
+        return Git.open(projectPath);
+    }
+
+    public static boolean isConflict(String source, String target, Git git) throws GitAPIException, IOException {
         ResolveMerger resolveMerger;
 
-        resolveMerger = makeMerge(source, target);
+        resolveMerger = makeMerge(source, target, git);
 
 
         Map<String, MergeResult<? extends Sequence>> conflicts = resolveMerger.getMergeResults();
         return !conflicts.isEmpty();
     }
 
-    public Map<String, Integer> countConflictChunks(String source, String target) throws GitAPIException, IOException {
+    public static Map<String, Integer> countConflictChunks(String source, String target, Git git) throws GitAPIException, IOException {
         ResolveMerger resolveMerger;
-        resolveMerger = makeMerge(source, target);
+        resolveMerger = makeMerge(source, target, git);
 
         Map<String, Integer> conflictingFiles = new HashMap<>();
 
@@ -244,10 +238,10 @@ public class GitUtils {
         return conflictingFiles;
     }
 
-    public List<MergeInfo> getConflictCommits(int maxConflictingMergeCount) {
+    public static List<MergeInfo> getConflictCommits(int maxConflictingMergeCount, Git git) throws GitAPIException, IOException {
 
         int conflictingMergeCount = 0;
-        List<RevCommit> history = getAllMergeCommits();
+        List<RevCommit> history = getAllMergeCommits(git);
 
         List<Pair<String, String>> result = new ArrayList<>();
         List<MergeInfo> mergeInfos = new ArrayList<>();
@@ -255,15 +249,15 @@ public class GitUtils {
         for (RevCommit revCommit : history) {
             if (conflictingMergeCount > maxConflictingMergeCount) return mergeInfos;
             if (revCommit.getParentCount() == 2) {
-                String objectId1 = revCommit.getParent(0).getName();
-                String objectId2 = revCommit.getParent(1).getName();
+                RevCommit objectId1 = revCommit.getParent(0);
+                RevCommit objectId2 = revCommit.getParent(1);
 
                 try {
-                    Map<String, Integer> conflictFiles = countConflictChunks(objectId1, objectId2);
+                    Map<String, Integer> conflictFiles = countConflictChunks(objectId1.getName(), objectId2.getName(), git);
 
                     // check defined sampling limit
                     if (!conflictFiles.isEmpty()) {
-                        MergeInfo mergeInfo = new MergeInfo(objectId1, objectId2, conflictFiles);
+                        MergeInfo mergeInfo = new MergeInfo(revCommit,objectId1, objectId2, conflictFiles);
                         mergeInfos.add(mergeInfo);
                         conflictingMergeCount++;
                     }
@@ -276,7 +270,7 @@ public class GitUtils {
         return mergeInfos;
     }
 
-    protected List<RevCommit> getAllMergeCommits() {
+    protected static List<RevCommit> getAllMergeCommits(Git git) {
 
         List<RevCommit> mergeCommits = new ArrayList<>();
         Iterable<RevCommit> logs = new ArrayList<>();
@@ -295,5 +289,27 @@ public class GitUtils {
         }
 
         return mergeCommits;
+    }
+
+    public static Map<String, ObjectId> getObjectsFromCommit(String commitHash, Git git) throws IOException, GitAPIException {
+        Repository repo = git.getRepository();
+        RevWalk walk = new RevWalk(repo);
+        ObjectId objectId = repo.resolve(commitHash);
+        RevCommit commit = walk.parseCommit(objectId);
+        RevTree revTree = commit.getTree();
+        TreeWalk treeWalk = new TreeWalk(repo);
+        treeWalk.addTree(revTree);
+
+        treeWalk.setRecursive(true);
+
+        Map<String, ObjectId> map = new HashMap<>();
+        while (treeWalk.next()) {
+            System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
+            String path = treeWalk.getPathString();
+
+            map.put(path, treeWalk.getObjectId(0));
+        }
+
+        return map;
     }
 }

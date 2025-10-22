@@ -31,20 +31,19 @@ class GitUtilsTest {
 
     @Test
     void getNonConflictObjects() throws IOException, GitAPIException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
 
-        Git git = gitUtils.getGit();
+
+        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
-        ResolveMerger merger = gitUtils.makeMerge("master","feature");
-        Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, gitUtils.getGit());
+        ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
+        Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
     }
 
     @Test
     void getNonConflictObjectsFromRealMerge() throws IOException, GitAPIException, InterruptedException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
 
-        Git git = gitUtils.getGit();
+        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
         ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
         ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
         Map<String, ObjectId> map = GitUtils.getNonConflictObjects(git, branch1, branch2);
@@ -52,9 +51,8 @@ class GitUtilsTest {
 
     @Test
     void testGetNonConflictObjects() throws IOException, GitAPIException, InterruptedException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
 
-        Git git = gitUtils.getGit();
+        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
 
@@ -65,20 +63,20 @@ class GitUtilsTest {
 
     @Test
     void isConflict() throws IOException, GitAPIException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/ripme"));
-        gitUtils.isConflict("e0b104f55b153","3241ae0a84046a21");
+        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/ripme");
+        GitUtils.isConflict("e0b104f55b153","3241ae0a84046a21", git);
     }
 
     @Test
-    void getConflictCommits() throws IOException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/jitwatch"));
+    void getConflictCommits() throws IOException, GitAPIException {
+        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/jackson-databind");
 
-        ObjectId head = gitUtils.getGit().getRepository().resolve("HEAD");
+        ObjectId head = git.getRepository().resolve("HEAD");
 
-        RevWalk walk = new RevWalk(gitUtils.getGit().getRepository());
+        RevWalk walk = new RevWalk(git.getRepository());
 
 
-        List<MergeInfo> list  = gitUtils.getConflictCommits(100);
+        List<MergeInfo> list  = GitUtils.getConflictCommits(100, git);
 
         for(MergeInfo mergeInfo: list){
             System.out.println(mergeInfo);
@@ -87,10 +85,7 @@ class GitUtilsTest {
 
     @Test
     void getNonConflictObjects2() throws IOException, GitAPIException {
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
-//        ResolveMerger merger = gitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
-
-        Git git = gitUtils.getGit();
+        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
         ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
         ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
 

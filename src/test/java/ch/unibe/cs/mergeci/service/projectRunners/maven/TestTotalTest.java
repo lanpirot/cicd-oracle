@@ -12,7 +12,7 @@ class TestTotalTest {
     @Test
     void outputResult() throws IOException {
 //        TestTotal testTotal = new TestTotal(new File("src\\test\\resources\\test-merge-projects\\jitwatch_1"));
-        TestTotal testTotal = new TestTotal(new File("temp\\jitwatch_0"));
-        testTotal.outputResult();
+        TestTotal testTotal = new TestTotal(new File("temp\\jackson-databind_3"));
+        System.out.println(testTotal);
     }
 }

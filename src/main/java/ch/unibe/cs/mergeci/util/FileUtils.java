@@ -135,4 +135,8 @@ public class FileUtils {
                     .collect(Collectors.toList());
         }
     }
+
+    private static String getFileName(String path) {
+        return new File(path).getName();
+    }
 }

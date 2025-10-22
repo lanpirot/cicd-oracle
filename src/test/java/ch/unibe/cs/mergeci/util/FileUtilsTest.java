@@ -17,14 +17,13 @@ class FileUtilsTest {
     @Test
     void saveFilesFromObjectId() throws GitAPIException, IOException {
         FileUtils.deleteDirectory(new File("mytempt\\subfolder"));
-        GitUtils gitUtils = new GitUtils(new File("src/test/resources/test-merge-projects/myTest"));
 
-        Git git = gitUtils.getGit();
+        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
-        ResolveMerger merger = gitUtils.makeMerge("","");
-        Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, gitUtils.getGit());
+        ResolveMerger merger = GitUtils.makeMerge("","", git);
+        Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
 
-        FileUtils.saveFilesFromObjectId("mytempt\\subfolder", map, gitUtils.getGit());
+        FileUtils.saveFilesFromObjectId("mytempt\\subfolder", map, git);
     }
 }

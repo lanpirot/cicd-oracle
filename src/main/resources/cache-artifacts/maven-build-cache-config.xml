@@ -92,6 +92,7 @@
     <executionControl>
         <runAlways>
             <plugins>
+                <plugin artifactId="maven-surefire-plugin"/>
                 <plugin artifactId="maven-failsafe-plugin"/>
             </plugins>
             <executions>

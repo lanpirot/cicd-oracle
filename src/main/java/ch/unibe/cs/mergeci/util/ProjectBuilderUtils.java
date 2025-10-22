@@ -28,10 +28,11 @@ import java.util.Map;
 
 public class ProjectBuilderUtils {
     private String gitRootPath;
-    private String TEMP_PATH = "temp";
+    private String temp_path;
 
-    public ProjectBuilderUtils(String gitRootPath) {
+    public ProjectBuilderUtils(String gitRootPath, String temp_path) {
         this.gitRootPath = gitRootPath;
+        this.temp_path = temp_path;
     }
 
     public void saveProjects(List<Project> projects, Map<String, ObjectId> nonConflictObjects) throws IOException {
@@ -39,11 +40,11 @@ public class ProjectBuilderUtils {
 
 
         for (Project project : projects) {
-            for (ProjectClass projectClass : project.getClasses()) {
-                String projectNewRootPath = TEMP_PATH + File.separator + Paths.get(gitRootPath).getFileName() + "_" + index;
+            String projectNewRootPath = temp_path + File.separator + Paths.get(gitRootPath).getFileName() + "_" + index;
 
-                Git git = GitUtils.getGit(gitRootPath);
-                FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
+            Git git = GitUtils.getGit(gitRootPath);
+            FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
+            for (ProjectClass projectClass : project.getClasses()) {
 
                 String filepath = Paths.get(projectNewRootPath,
                         projectClass.getProjectName().toString()).toString();
