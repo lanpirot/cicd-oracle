@@ -1,6 +1,44 @@
 # CI/CD-Enhanced Conflict Resolution – Team Discussion Notes
 
-# 10/09/2025
+# 24/09/2025
+
+---
+## Current Problems
+
+- Surefire reports folder is not deleted during recompilation. (Done via maven-hook plugin)
+
+- Heuristic approach is a possible solution to the problem of the explosion of variants.
+
+- Resolved file that ends up empty after resolution is still being saved in the project. 
+(Not a problem for finding optimal solution)
+
+## Possible Heuristic approach workflow:
+1. At the beginning, build the project using only the dependencies from our branch.
+
+2. Iterate through every conflict chunk in sequence.
+
+3. For each chunk:
+   -  Replace the conflict with the "theirs" version.
+   -  Check whether the change leads to any improvement (e.g., successful build or more passing tests).
+   -  If the change improves the result &rarr; accept it and move on to the next chunk.
+   -  If not → keep the previous state and continue to the next chunk.
+
+## Pros & Cons of Heuristic approach
+\+ Efficient search for optimal merge `O(logN)`
+
+\+ Incremental improvement
+
+\+ Adaptive decision making
+
+\- Linear conflict processing
+
+\- Limited parallelism
+
+\- Possible local optimum trap (Linear traversal through conflicts may get stuck in a locally optimal solution 
+without finding the globally best one.)
+
+---
+# 10/10/2025
 
 ---
 ## Does Not Work: Discard
@@ -20,7 +58,7 @@
 
 ## Does Not Work Out of the Box
 
-- Too many conflicts → can we deal with that?
+- Too many conflicts &rarr; can we deal with that?
 
 ---
 
