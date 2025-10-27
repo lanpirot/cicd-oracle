@@ -92,18 +92,19 @@ public class MergeAnalyzer {
         mavenRunner.run(args.toArray(new String[0]));
     }
 
-    public Map<String, CompilationResult> collectCompilationResults(){
+    public Map<String, CompilationResult> collectCompilationResults() throws IOException {
         Map<String, CompilationResult> statistics = new HashMap<>();
         int numProjects = countProjects();
-        TestTotal testTotal =
-        statistics.put(projectName, testTotal);
+        CompilationResult compResult = new CompilationResult(mavenRunner.getLogDir().resolve(projectName+"_compilation").toFile());
+        statistics.put(projectName, compResult);
         for (int i = 0; i < numProjects-1; i++) {
-            Path path = projectTempDir.resolve(projectName + "_" + i);
-            testTotal = new TestTotal(path.toFile());
-            statistics.put(projectName + "_" + i, testTotal);
+            Path path = mavenRunner.getLogDir().resolve(projectName + "_" + i+"_compilation");
+            compResult = new CompilationResult(path.toFile());
+            statistics.put(projectName + "_" + i, compResult);
         }
         return statistics;
     }
+
     public Map<String, TestTotal> collectTestResults() throws IOException {
         Map<String, TestTotal> statistics = new HashMap<>();
         int numProjects = countProjects();

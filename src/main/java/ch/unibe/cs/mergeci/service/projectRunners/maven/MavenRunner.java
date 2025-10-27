@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
 import ch.unibe.cs.mergeci.util.FileUtils;
+import lombok.Getter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,6 +19,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
+@Getter
 public class MavenRunner implements IRunner {
     private final Path tempDir;
     private final static String LOG_PATH = "log";
@@ -40,8 +42,9 @@ public class MavenRunner implements IRunner {
         Process pr = null;
         injectCacheArtifact(path[0]);
         Path projectName = Paths.get(path[0]).getFileName();
-        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
-        runCommand(new File(path[0]), mavenCommand, "test", "-fae");
+//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
+//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
+        runCommand(new File(path[0]), logDir.resolve(projectName+"_compilation").toFile(),mavenCommand, "test", "-fae");
 
 
         for (int i = 1; i < path.length; i++) {
@@ -51,8 +54,9 @@ public class MavenRunner implements IRunner {
                 copyTarget(path[0], path[i]);
                 FileUtils.copyDirectoryCompatibityMode(new File(path[0], ".cache"), new File(path[i], ".cache"));
                 projectName = Paths.get(path[i]).getFileName();
-                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
-                runCommand(new File(path[i]),mavenCommand, "test", "-fae");
+//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
+//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
+                runCommand(new File(path[i]),logDir.resolve(projectName+"_compilation").toFile(),mavenCommand, "test", "-fae");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -178,9 +182,11 @@ public class MavenRunner implements IRunner {
                         Path relative = src.toPath().relativize(dir);
                         File destDir = dst.toPath().resolve(relative).toFile();
 
+
                         System.out.println("Copying target folder: " + targetDir + "->" + destDir);
                         try {
                             FileUtils.copyDirectoryCompatibityMode(dir.toFile(), destDir);
+                            FileUtils.deleteDirectory(destDir.toPath().resolve("surefire-reports").toFile());
                         } catch (IOException e) {
                             e.printStackTrace();
                             System.err.println("Failed to copy " + targetDir + ": " + e.getMessage());

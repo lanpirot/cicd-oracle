@@ -33,6 +33,11 @@
             <location>.cache</location>
             <maxBuildsCached>3</maxBuildsCached>
         </local>
+        <attachedOutputs>
+            <dirNames>
+                <dirName glob="*" />
+            </dirNames>
+        </attachedOutputs>
         <projectVersioning adjustMetaInf="true"/>
     </configuration>
 
@@ -92,7 +97,7 @@
     <executionControl>
         <runAlways>
             <plugins>
-                <plugin artifactId="maven-surefire-plugin"/>
+<!--                <plugin artifactId="maven-surefire-plugin"/>-->
                 <plugin artifactId="maven-failsafe-plugin"/>
             </plugins>
             <executions>

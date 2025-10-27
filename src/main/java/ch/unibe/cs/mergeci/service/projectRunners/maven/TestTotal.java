@@ -15,7 +15,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 public class TestTotal {
     private int runNum;
     private int failuresNum;
@@ -48,5 +47,16 @@ public class TestTotal {
                 elapsedTime += testResult.getElapsedTime();
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "TestTotal{" +
+                "runNum=" + runNum +
+                ", failuresNum=" + failuresNum +
+                ", errorsNum=" + errorsNum +
+                ", skippedNum=" + skippedNum +
+                ", elapsedTime=" + elapsedTime +
+                '}';
     }
 }

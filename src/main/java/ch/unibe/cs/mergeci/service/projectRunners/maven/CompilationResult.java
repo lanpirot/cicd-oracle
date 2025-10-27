@@ -15,17 +15,17 @@ import java.util.regex.Pattern;
 
 @Getter
 public class CompilationResult {
-/*    private final List<ModuleResult> moduleResults;
+    private final List<ModuleResult> moduleResults;
     private final Status buildStatus;
     private final float totalTime;
-    private final static String MODULE_REGEX = "\\[INFO\\]\\s(\\S+)\\s\\.+\\s(SUCCESS|FAILURE)\\s\\[\\s{2}(\\d+(.\\d+)?)\\ss\\]";
-    private final static String BUILD_STATUS_REGEX = "\\[INFO\\] BUILD (SUCCESS|FAILURE)";
-    private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:  (\\d+(.\\d+)?)";
+    private final static String MODULE_REGEX = "\\[INFO\\]\\s(\\S+)\\s\\.+\\s(SUCCESS|FAILURE)\\s\\[\\s{2}(\\d+(\\.\\d+)?)\\]";
+    private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE)";
+    private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:  (\\d+(.\\d+)?) (min|s|ms)";
 
     public CompilationResult(File testResultFile) throws IOException {
         moduleResults = new ArrayList<>();
 
-        String string = Files.readAllLines(testResultFile.toPath()).getLast();
+        String string = new String(Files.readAllBytes(testResultFile.toPath()));
         Pattern p = Pattern.compile(MODULE_REGEX);
         Matcher m = p.matcher(string);
 
@@ -51,7 +51,7 @@ public class CompilationResult {
         Pattern totalTimePAttern = Pattern.compile(TOTAL_TIME_REGEX);
         Matcher totalTimeMatcher = totalTimePAttern.matcher(string);
         totalTimeMatcher.find();
-        this.totalTime = Float.parseFloat(totalTimeMatcher.group(1));
+        this.totalTime = parseTime(totalTimeMatcher.group(1),totalTimeMatcher.group(3));
     }
 
     private int getNumberOfModules() {
@@ -59,7 +59,7 @@ public class CompilationResult {
     }
 
     private int getNumberOfSuccessfulModules() {
-        return (int)moduleResults.stream().filter(x->x.status == Status.SUCCESS).count();
+        return (int) moduleResults.stream().filter(x -> x.status == Status.SUCCESS).count();
     }
 
     @AllArgsConstructor
@@ -74,5 +74,32 @@ public class CompilationResult {
     public enum Status {
         SUCCESS,
         FAILURE
-    }*/
+    }
+
+    private float parseTime(String timeString, String timeUnit) {
+        return switch (timeUnit) {
+            case "min" -> {
+                int minutes = Integer.parseInt(timeString.split(":")[0]);
+                int seconds = Integer.parseInt(timeString.split(":")[1]);
+
+                yield minutes*60+seconds;
+            }
+            case "s" -> Float.parseFloat(timeString);
+            case "ms" -> Float.parseFloat(timeString) / 1000;
+            default -> throw new IllegalArgumentException("Invalid time unit: " + timeUnit);
+        };
+    }
+
+    private float parseTime(String timeString) {
+        return parseTime(timeString,"s");
+    }
+
+    @Override
+    public String toString() {
+        return "CompilationResult{" +
+                "moduleResults=" + moduleResults +
+                ", buildStatus=" + buildStatus +
+                ", totalTime=" + totalTime +
+                '}';
+    }
 }
