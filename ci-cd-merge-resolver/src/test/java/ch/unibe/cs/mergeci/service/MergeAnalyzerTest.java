@@ -12,8 +12,8 @@ class MergeAnalyzerTest {
 
     @Test
     void buildProjects() throws Exception {
-        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer("src/test/resources/test-merge-projects/jackson-databind", "temp");
-//        mergeAnalyzer.buildProjects("bf08f05406f90cd6a3e76e76687dfe45b22105d5", "a36a049147c023becffbea2793042caef3ca3285", "7613683b4ab806924cfb44438eed416b1e302438");
+        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer("src/test/resources/test-merge-projects/Discovery", "temp");
+//        mergeAnalyzer.buildProjects("a5a645b7496ddd0c4647abc6b1d8334d561f1eb4", "eeef4711d6e2f12a03b2956bda837b06311feea1", "b71b398b74eea4b8684bfdb091c43e58b627403d");
 //        mergeAnalyzer.runTests();
 
         System.out.println("Compilation result:");

@@ -12,15 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Getter
 public class CompilationResult {
     private final List<ModuleResult> moduleResults;
     private final Status buildStatus;
     private final float totalTime;
-    private final static String MODULE_REGEX = "\\[INFO\\]\\s(\\S+)\\s\\.+\\s(SUCCESS|FAILURE)\\s\\[\\s{2}(\\d+(\\.\\d+)?)\\]";
+    private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+)\\s\\.+\\s(SUCCESS|FAILURE)\\s\\[  ([\\d.:]+) (min|s|ms)\\]";
     private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE)";
-    private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:  (\\d+(.\\d+)?) (min|s|ms)";
+    private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:  ([\\d.:]+) (min|s|ms)";
 
     public CompilationResult(File testResultFile) throws IOException {
         moduleResults = new ArrayList<>();
@@ -32,7 +33,7 @@ public class CompilationResult {
         while (m.find()) {
             String moduleName = m.group(1);
             Status status = Status.valueOf(m.group(2));
-            float timeElapsed = Float.parseFloat(m.group(3));
+            float timeElapsed = parseTime(m.group(3),m.group(4));
 
             ModuleResult moduleResult = ModuleResult.builder()
                     .moduleName(moduleName)
@@ -51,7 +52,7 @@ public class CompilationResult {
         Pattern totalTimePAttern = Pattern.compile(TOTAL_TIME_REGEX);
         Matcher totalTimeMatcher = totalTimePAttern.matcher(string);
         totalTimeMatcher.find();
-        this.totalTime = parseTime(totalTimeMatcher.group(1),totalTimeMatcher.group(3));
+        this.totalTime = parseTime(totalTimeMatcher.group(1),totalTimeMatcher.group(2));
     }
 
     private int getNumberOfModules() {
@@ -63,12 +64,17 @@ public class CompilationResult {
     }
 
     @AllArgsConstructor
-    @ToString
     @Builder
     public static class ModuleResult {
         private final String moduleName;
         private final Status status;
         private final float timeElapsed;
+
+        @Override
+        public String toString() {
+            return String.format("ModuleResult{%1$-65s| %2$-20s| %3$-20s}",
+                    "moduleName="+moduleName,  "status= "+status,  "timeElapsed= "+timeElapsed);
+        }
     }
 
     public enum Status {
@@ -96,10 +102,17 @@ public class CompilationResult {
 
     @Override
     public String toString() {
+        String modulesStr = moduleResults.stream()
+                .map(x -> "\t" + x)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.joining("\n"),
+                        joined -> joined.isEmpty() ? "[]" : "\n" + joined+"\n"
+                ));
+
         return "CompilationResult{" +
-                "moduleResults=" + moduleResults +
+                "moduleResults=" + modulesStr +
                 ", buildStatus=" + buildStatus +
                 ", totalTime=" + totalTime +
-                '}';
+                "}\n";
     }
 }

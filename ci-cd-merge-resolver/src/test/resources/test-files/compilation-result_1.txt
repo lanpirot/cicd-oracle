@@ -1,0 +1,78 @@
+[INFO] --- surefire:3.2.5:test (default-test) @ discovery-springcloud-example-gateway ---
+[INFO] No tests to run.
+[INFO] Saved Build to local file: .cache\v1.1\com.nepxion\discovery-springcloud-example-gateway\0dc9ac25b13d14925492f58fcb19b865224f417601ae8b63753c1763f6fe9a46\local\buildinfo.xml
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Nepxion Discovery 6.11.0-SNAPSHOT:
+[INFO]
+[INFO] Nepxion Discovery .................................. SUCCESS [  0.139 s]
+[INFO] Nepxion Discovery Commons .......................... SUCCESS [  0.001 s]
+[INFO] Nepxion Discovery Common ........................... SUCCESS [  7.913 s]
+[INFO] Nepxion Discovery Common Apollo .................... SUCCESS [  3.365 s]
+[INFO] Nepxion Discovery Common Nacos ..................... SUCCESS [  6.016 s]
+
+
+[INFO] Nepxion Discovery Common Redis ..................... SUCCESS [  4.699 s]
+[INFO] Nepxion Discovery Common Zookeeper ................. SUCCESS [  1.033 s]
+[INFO] Nepxion Discovery Common Consul .................... SUCCESS [  0.198 s]
+[INFO] Nepxion Discovery Common Etcd ...................... SUCCESS [  3.604 s]
+[INFO] Nepxion Discovery Plugin Framework ................. SUCCESS [  0.001 s]
+[INFO] Nepxion Discovery Plugin Framework Starter Parser .. SUCCESS [  0.749 s]
+[INFO] Nepxion Discovery Plugin Framework Starter ......... SUCCESS [  5.460 s]
+[INFO] Nepxion Discovery Plugin Config Center ............. SUCCESS [  0.001 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter ..... SUCCESS [  0.346 s]
+[INFO] Nepxion Discovery plugin Register Center ........... SUCCESS [  0.000 s]
+[INFO] Nepxion Discovery Plugin Register Center Starter ... SUCCESS [  0.069 s]
+[INFO] Nepxion Discovery Plugin Register Center Starter Eureka SUCCESS [  5.068 s]
+[INFO] Nepxion Discovery Plugin Register Center Starter Consul SUCCESS [  3.180 s]
+[INFO] Nepxion Discovery Plugin Register Center Starter Zookeeper SUCCESS [  0.595 s]
+[INFO] Nepxion Discovery Plugin Register Center Starter Nacos SUCCESS [  6.529 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter Apollo SUCCESS [  0.449 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter Nacos SUCCESS [  0.395 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter Redis SUCCESS [  0.343 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter Zookeeper SUCCESS [  0.379 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter Consul SUCCESS [  0.381 s]
+[INFO] Nepxion Discovery Plugin Config Center Starter Etcd  SUCCESS [  0.393 s]
+[INFO] Nepxion Discovery Plugin Strategy .................. SUCCESS [  0.000 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter .......... SUCCESS [  2.827 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Gateway .. SUCCESS [  4.781 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Zuul ..... SUCCESS [  3.709 s]
+[INFO] Nepxion Discovery Plugin Admin Center .............. SUCCESS [  0.001 s]
+[INFO] Nepxion Discovery Plugin Admin Center Starter ...... SUCCESS [  6.838 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Service .. SUCCESS [  0.637 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Service Sentinel SUCCESS [  3.060 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Hystrix .. SUCCESS [  0.716 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter OpenTelemetry SUCCESS [  1.316 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter OpenTracing SUCCESS [  0.393 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter SkyWalking SUCCESS [  1.951 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel . SUCCESS [  0.405 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel Local SUCCESS [  0.308 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel Apollo SUCCESS [  1.094 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel Nacos SUCCESS [  1.506 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel Monitor SUCCESS [  0.388 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel OpenTelemetry SUCCESS [  0.294 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel OpenTracing SUCCESS [  0.301 s]
+[INFO] Nepxion Discovery Plugin Strategy Starter Sentinel SkyWalking SUCCESS [  0.285 s]
+[INFO] Nepxion Discovery Plugin Test ...................... SUCCESS [  0.000 s]
+[INFO] Nepxion Discovery Plugin Test Starter Automation ... SUCCESS [  2.308 s]
+[INFO] Nepxion Discovery Console .......................... SUCCESS [  0.002 s]
+[INFO] Nepxion Discovery Console Starter .................. SUCCESS [  1.088 s]
+[INFO] Nepxion Discovery Console Starter Apollo ........... SUCCESS [  1.828 s]
+[INFO] Nepxion Discovery Console Starter Nacos ............ SUCCESS [  0.459 s]
+[INFO] Nepxion Discovery Console Starter Redis ............ SUCCESS [  0.447 s]
+[INFO] Nepxion Discovery Console Starter Zookeeper ........ SUCCESS [  0.396 s]
+[INFO] Nepxion Discovery Console Starter Consul ........... SUCCESS [  0.346 s]
+[INFO] Nepxion Discovery Console Starter Etcd ............. SUCCESS [  0.379 s]
+[INFO] Nepxion Discovery Spring Cloud Examples ............ SUCCESS [  0.000 s]
+[INFO] Nepxion Discovery Spring Cloud Example Admin ....... SUCCESS [  1.403 s]
+[INFO] Nepxion Discovery Spring Cloud Example Console ..... SUCCESS [  1.030 s]
+[INFO] Nepxion Discovery Spring Cloud Example Eureka ...... SUCCESS [  2.815 s]
+[INFO] Nepxion Discovery Spring Cloud Example Service ..... SUCCESS [  6.560 s]
+[INFO] Nepxion Discovery Spring Cloud Example Zuul ........ SUCCESS [  0.502 s]
+[INFO] Nepxion Discovery Spring Cloud Example Gateway ..... SUCCESS [  0.528 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:46 min
+[INFO] Finished at: 2025-10-27T21:30:20+01:00
+[INFO] ------------------------------------------------------------------------
+[INFO] [MAVEN HOOK] 2025-10-27 21:30:20,151 [main] MavenHook - Extension closed!

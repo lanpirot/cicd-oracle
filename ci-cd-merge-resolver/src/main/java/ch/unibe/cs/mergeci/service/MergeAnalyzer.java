@@ -6,7 +6,6 @@ import ch.unibe.cs.mergeci.model.patterns.IPattern;
 import ch.unibe.cs.mergeci.model.patterns.OursPattern;
 import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner;
-import ch.unibe.cs.mergeci.service.projectRunners.maven.MyClass;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
@@ -19,17 +18,14 @@ import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.ResolveMerger;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.TreeMap;
 
 public class MergeAnalyzer {
     private final Path repositoryPath;
@@ -93,7 +89,7 @@ public class MergeAnalyzer {
     }
 
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {
-        Map<String, CompilationResult> statistics = new HashMap<>();
+        Map<String, CompilationResult> statistics = new TreeMap<>();
         int numProjects = countProjects();
         CompilationResult compResult = new CompilationResult(mavenRunner.getLogDir().resolve(projectName+"_compilation").toFile());
         statistics.put(projectName, compResult);
@@ -106,7 +102,7 @@ public class MergeAnalyzer {
     }
 
     public Map<String, TestTotal> collectTestResults() throws IOException {
-        Map<String, TestTotal> statistics = new HashMap<>();
+        Map<String, TestTotal> statistics = new TreeMap<>();
         int numProjects = countProjects();
         TestTotal testTotal = new TestTotal(projectTempDir.resolve(projectName).toFile());
         statistics.put(projectName, testTotal);

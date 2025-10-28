@@ -16,6 +16,8 @@ class CompilationResultTest {
         CompilationResult compilationResult = new CompilationResult(file);
 
         System.out.println(compilationResult);
+
+
     }
 
 

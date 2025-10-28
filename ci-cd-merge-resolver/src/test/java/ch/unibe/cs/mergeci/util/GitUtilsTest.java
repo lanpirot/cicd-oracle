@@ -69,7 +69,7 @@ class GitUtilsTest {
 
     @Test
     void getConflictCommits() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/jackson-databind");
+        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/Discovery");
 
         ObjectId head = git.getRepository().resolve("HEAD");
 
