@@ -71,8 +71,10 @@ class CiCdMergeResolverApplicationTests {
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
-        ObjectId feature = repo.resolve("feature");
-        ObjectId head = repo.resolve("master");
+//        ObjectId feature = repo.resolve("feature");
+//        ObjectId head = repo.resolve("master");
+        ObjectId feature = repo.resolve("ed4809f");
+        ObjectId head = repo.resolve("26fcd8a");
 
         System.out.println(MergeStrategy.RECURSIVE.newMerger(repo, true));
         RecursiveMerger merger = (RecursiveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);
@@ -91,7 +93,11 @@ class CiCdMergeResolverApplicationTests {
                 if (result == null) continue;
 
                 System.out.println("\nFile: " + path);
-
+//                for (Sequence rawText : result.getSequences()) {
+//                    for (int i = 0; i < rawText.size(); i++) {
+//                        System.out.println(((RawText) rawText).getString(i));
+//                    }
+//                }
                 for (MergeChunk chunk : result) {
                     System.out.println("  State: " + chunk.getConflictState());
 

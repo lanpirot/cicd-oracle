@@ -1,0 +1,20 @@
+[INFO] [MAVEN HOOK] 2025-12-04 16:19:03,249 [main] MavenHook - Extension initialized!
+[INFO] Loading cache configuration from C:\Users\vova\Documents\BernUni\Semester3\Thesis\ci-cd-merge-resolver\ci-cd-merge-resolver\dataset_temp\jackson-databind_3d8eb437\.mvn\maven-build-cache-config.xml
+[INFO] Using SHA-256 hash algorithm for cache
+Open Maven session
+[INFO] Scanning for projects...
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[FATAL] Non-resolvable parent POM for tools.jackson.core:jackson-databind:3.0.0-rc8-SNAPSHOT: The following artifacts could not be resolved: tools.jackson:jackson-base:pom:3.0.0-rc8-SNAPSHOT (absent): tools.jackson:jackson-base:pom:3.0.0-rc8-SNAPSHOT was not found in https://central.sonatype.com/repository/maven-snapshots during a previous attempt. This failure was cached in the local repository and resolution is not reattempted until the update interval of central-snapshots has elapsed or updates are forced and 'parent.relativePath' points at wrong local POM @ line 9, column 11
+ @
+[INFO] [MAVEN HOOK] 2025-12-04 16:19:04,197 [main] MavenHook - Extension closed!
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]
+[ERROR]   The project tools.jackson.core:jackson-databind:3.0.0-rc8-SNAPSHOT (C:\Users\vova\Documents\BernUni\Semester3\Thesis\ci-cd-merge-resolver\ci-cd-merge-resolver\dataset_temp\jackson-databind_3d8eb437\pom.xml) has 1 error
+[ERROR]     Non-resolvable parent POM for tools.jackson.core:jackson-databind:3.0.0-rc8-SNAPSHOT: The following artifacts could not be resolved: tools.jackson:jackson-base:pom:3.0.0-rc8-SNAPSHOT (absent): tools.jackson:jackson-base:pom:3.0.0-rc8-SNAPSHOT was not found in https://central.sonatype.com/repository/maven-snapshots during a previous attempt. This failure was cached in the local repository and resolution is not reattempted until the update interval of central-snapshots has elapsed or updates are forced and 'parent.relativePath' points at wrong local POM @ line 9, column 11 -> [Help 2]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException

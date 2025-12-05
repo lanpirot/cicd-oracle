@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 @Getter
@@ -44,7 +48,7 @@ public class MavenRunner implements IRunner {
         Path projectName = Paths.get(path[0]).getFileName();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(new File(path[0]), logDir.resolve(projectName+"_compilation").toFile(),mavenCommand, "test", "-fae");
+        runCommand(new File(path[0]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
 
 
         for (int i = 1; i < path.length; i++) {
@@ -56,11 +60,66 @@ public class MavenRunner implements IRunner {
                 projectName = Paths.get(path[i]).getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                runCommand(new File(path[i]),logDir.resolve(projectName+"_compilation").toFile(),mavenCommand, "test", "-fae");
+                runCommand(new File(path[i]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void runWithCacheMultithread(String... path) {
+        final String mavenCommand = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows") ? "mvn.cmd" : "mvn";
+
+        System.out.println(new File(path[0]).getAbsolutePath());
+        Process pr = null;
+        injectCacheArtifact(path[0]);
+        AtomicReference<Path> projectName = new AtomicReference<>(Paths.get(path[0]).getFileName());
+//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
+//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
+        runCommand(new File(path[0]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+
+
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        for (int i = 1; i < path.length; i++) {
+            int finalI = i;
+            executorService.submit(() -> {
+                        try {
+                            injectCacheArtifact(path[finalI]);
+                            copyTarget(path[0], path[finalI]);
+                            FileUtils.copyDirectoryCompatibityMode(new File(path[0], ".cache"), new File(path[finalI], ".cache"));
+                            projectName.set(Paths.get(path[finalI]).getFileName());
+//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
+//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
+                            runCommand(new File(path[finalI]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+        }
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void runWithoutCache(String... path) {
+        final String mavenCommand = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows") ? "mvn.cmd" : "mvn";
+
+
+        for (int i = 0; i < path.length; i++) {
+
+            Path projectName = Paths.get(path[i]).getFileName();
+//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
+//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
+            runCommand(new File(path[i]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+
         }
     }
 

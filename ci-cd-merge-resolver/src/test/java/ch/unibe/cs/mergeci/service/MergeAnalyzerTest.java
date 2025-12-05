@@ -12,9 +12,9 @@ class MergeAnalyzerTest {
 
     @Test
     void buildProjects() throws Exception {
-        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer("src/test/resources/test-merge-projects/Discovery", "temp");
-//        mergeAnalyzer.buildProjects("a5a645b7496ddd0c4647abc6b1d8334d561f1eb4", "eeef4711d6e2f12a03b2956bda837b06311feea1", "b71b398b74eea4b8684bfdb091c43e58b627403d");
-//        mergeAnalyzer.runTests();
+        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer("src/test/resources/test-merge-projects/zemberek-nlp", "temp");
+        mergeAnalyzer.buildProjects("c10e035c4b36e0b4cd50e009fb94b67e8fc51a45", "356fa0178ca851a1ccee41c7a1846a1a19abbd6b", "4b39a3ee35ffcf61f66a783dde2af1d9fbd9c12a");
+        mergeAnalyzer.runTests();
 
         System.out.println("Compilation result:");
         Map<String, CompilationResult> compilationResultMap = mergeAnalyzer.collectCompilationResults();

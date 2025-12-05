@@ -69,7 +69,7 @@ class GitUtilsTest {
 
     @Test
     void getConflictCommits() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/Discovery");
+        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/jackson-databind");
 
         ObjectId head = git.getRepository().resolve("HEAD");
 
@@ -78,6 +78,7 @@ class GitUtilsTest {
 
         List<MergeInfo> list  = GitUtils.getConflictCommits(100, git);
 
+        System.out.printf("Total number of conflicts: %d", list.size());
         for(MergeInfo mergeInfo: list){
             System.out.println(mergeInfo);
         }

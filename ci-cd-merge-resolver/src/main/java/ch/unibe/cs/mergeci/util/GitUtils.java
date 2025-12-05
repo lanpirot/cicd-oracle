@@ -247,7 +247,7 @@ public class GitUtils {
         List<MergeInfo> mergeInfos = new ArrayList<>();
 
         for (RevCommit revCommit : history) {
-            if (conflictingMergeCount > maxConflictingMergeCount) return mergeInfos;
+            if (conflictingMergeCount >= maxConflictingMergeCount) return mergeInfos;
             if (revCommit.getParentCount() == 2) {
                 RevCommit objectId1 = revCommit.getParent(0);
                 RevCommit objectId2 = revCommit.getParent(1);
@@ -304,7 +304,7 @@ public class GitUtils {
 
         Map<String, ObjectId> map = new HashMap<>();
         while (treeWalk.next()) {
-            System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
+//            System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
             String path = treeWalk.getPathString();
 
             map.put(path, treeWalk.getObjectId(0));

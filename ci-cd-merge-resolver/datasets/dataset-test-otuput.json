@@ -1,0 +1,89 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "965a90cba8767e8bb6a4a6b9bb3d88c70eeedbad",
+    "parent1" : "d23ebbe08de7b2dd18f6f0da0fcd51fedc5e29b3",
+    "parent2" : "f8f9a133d235e58df2be79ebaf2adec6b8bf4dd9",
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 40.652
+    },
+    "testResults" : {
+      "runNum" : 4609,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 1,
+      "elapsedTime" : 14.415006,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind",
+      "testResults" : null
+    },
+    "numJavaConflicts" : 2,
+    "numConflictChunks" : 2,
+    "variantsExecutionTime" : 129,
+    "modulesResults" : [ {
+      "variantName" : "jackson-databind_0",
+      "compilationResult" : {
+        "moduleResults" : [ ],
+        "buildStatus" : "FAILURE",
+        "totalTime" : 33.907
+      },
+      "testResults" : {
+        "runNum" : 0,
+        "failuresNum" : 0,
+        "errorsNum" : 0,
+        "skippedNum" : 0,
+        "elapsedTime" : 0.0,
+        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_0",
+        "testResults" : null
+      }
+    }, {
+      "variantName" : "jackson-databind_1",
+      "compilationResult" : {
+        "moduleResults" : [ ],
+        "buildStatus" : "FAILURE",
+        "totalTime" : 33.876
+      },
+      "testResults" : {
+        "runNum" : 0,
+        "failuresNum" : 0,
+        "errorsNum" : 0,
+        "skippedNum" : 0,
+        "elapsedTime" : 0.0,
+        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_1",
+        "testResults" : null
+      }
+    }, {
+      "variantName" : "jackson-databind_2",
+      "compilationResult" : {
+        "moduleResults" : [ ],
+        "buildStatus" : "SUCCESS",
+        "totalTime" : 66.0
+      },
+      "testResults" : {
+        "runNum" : 4609,
+        "failuresNum" : 0,
+        "errorsNum" : 0,
+        "skippedNum" : 1,
+        "elapsedTime" : 18.731985,
+        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_2",
+        "testResults" : null
+      }
+    }, {
+      "variantName" : "jackson-databind_3",
+      "compilationResult" : {
+        "moduleResults" : [ ],
+        "buildStatus" : "SUCCESS",
+        "totalTime" : 65.0
+      },
+      "testResults" : {
+        "runNum" : 4609,
+        "failuresNum" : 0,
+        "errorsNum" : 0,
+        "skippedNum" : 1,
+        "elapsedTime" : 18.72599,
+        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_3",
+        "testResults" : null
+      }
+    } ]
+  } ]
+}

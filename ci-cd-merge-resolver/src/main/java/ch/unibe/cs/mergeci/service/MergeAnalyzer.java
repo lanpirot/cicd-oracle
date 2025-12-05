@@ -11,6 +11,7 @@ import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.ProjectBuilderUtils;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
+import lombok.Getter;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.lib.ObjectId;
@@ -27,12 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Getter
 public class MergeAnalyzer {
     private final Path repositoryPath;
     private final Path tempDir;
     private final Path projectTempDir;
     private final MavenRunner mavenRunner;
-    private String projectName;
+    private final String projectName;
 
     public MergeAnalyzer(String repoPath, String tempDir) {
         this.repositoryPath = Paths.get(repoPath);
@@ -85,7 +87,7 @@ public class MergeAnalyzer {
         for (int i = 0; i < numProjects-1; i++) {
             args.add(projectTempDir.resolve(projectName + "_" + i).toString());
         }
-        mavenRunner.run(args.toArray(new String[0]));
+        mavenRunner.runWithCacheMultithread(args.toArray(new String[0]));
     }
 
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {

@@ -22,23 +22,30 @@ public class TestTotal {
     private int skippedNum;
     private float elapsedTime;
 
-    private final File projectDir;
+    private File projectDir;
 
     private List<TestResult> testResults;
 
-    public TestTotal(File projectDir) throws IOException {
+    public TestTotal() {
+    }
+
+    public TestTotal(File projectDir) {
 
         this.projectDir = projectDir;
 
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
                 "**/target/surefire-reports/*.txt");
 
-        List<Path> paths = FileUtils.listFilesUsingFileWalk(projectDir.getPath());
+        List<Path> paths = null;
+        try {
+            paths = FileUtils.listFilesUsingFileWalk(projectDir.getPath());
+
+
         for (Path file : paths) {
             if (pathMatcher.matches(file)) {
                 TestResult testResult = TestResult.createTestResultFromFile(file.toFile());
+//                System.out.println(file.toString()+": "+testResult.getRunNum());
                 if (testResult == null) {
-
                     continue;}
                 runNum += testResult.getRunNum();
                 failuresNum += testResult.getFailuresNum();
@@ -46,6 +53,9 @@ public class TestTotal {
                 skippedNum += testResult.getSkippedNum();
                 elapsedTime += testResult.getElapsedTime();
             }
+        }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
