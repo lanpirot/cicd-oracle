@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatasetCollector {
-    private final Git git;
     private final String projectPath;
     private final String tempPath;
     private final Path tempDir;
@@ -34,7 +33,6 @@ public class DatasetCollector {
     private final int maxConflictMerges;
 
     public DatasetCollector(String projectPath, String tempPath, int maxConflictMerges) throws IOException {
-        this.git = GitUtils.getGit(projectPath);
         this.projectPath = projectPath;
         this.tempPath = tempPath;
         this.tempDir = Paths.get(tempPath);
@@ -42,9 +40,15 @@ public class DatasetCollector {
         this.maxConflictMerges = maxConflictMerges;
     }
 
-    public void collectDataset(String excelOut) throws Exception {
+    public void collectDataset(File excelOutFile) throws Exception {
+        List<MergeInfo> merges = Collections.emptyList();
 
-        List<MergeInfo> merges = GitUtils.getConflictCommits(maxConflictMerges, git);
+        try (Git git = GitUtils.getGit(projectPath)) {
+            merges = GitUtils.getConflictCommits(maxConflictMerges, git);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         List<ExcelWriter.DatasetRow> rows = Collections.synchronizedList(new ArrayList<>());
         AtomicInteger counter = new AtomicInteger(0);
 
@@ -62,9 +66,12 @@ public class DatasetCollector {
                 continue;
             }
 
+            List<MergeInfo> finalMerges = merges;
+
             pool.submit(() -> {
+                int taskID =  counter.incrementAndGet();
                 try {
-                    System.out.printf("Processing merge: %s \t %d/%d \n", merge.getResultedMergeCommit(), counter.incrementAndGet(), merges.size());
+                    System.out.printf("Processing merge: %s \t %d/%d \n", merge.getResultedMergeCommit(), taskID, finalMerges.size());
                     processMerge(merge, rows);
                 } catch (GitAPIException e) {
                     e.printStackTrace();
@@ -75,11 +82,31 @@ public class DatasetCollector {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                System.out.printf("Processing merge: %s \t %d/%d FINISH\n", merge.getResultedMergeCommit(), taskID, finalMerges.size());
             });
         }
         pool.shutdown();
-        pool.awaitTermination(1, TimeUnit.HOURS);
-        ExcelWriter.writeExcel(excelOut, rows);
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
+                pool.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+            // (Re-)Cancel if current thread also interrupted
+            pool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+
+        if (rows.isEmpty()) {
+            System.out.printf("Project %s has no successful merges! \n No need to save!!!\n", projectName);
+            return;
+        }
+        ExcelWriter.writeExcel(excelOutFile, rows);
     }
 
     private void processMerge(MergeInfo merge, List<ExcelWriter.DatasetRow> rows) throws GitAPIException, IOException {
@@ -87,13 +114,15 @@ public class DatasetCollector {
         String p1 = merge.getCommit1().getName();
         String p2 = merge.getCommit2().getName();
 
-
-        Map<String, ObjectId> objects = GitUtils.getObjectsFromCommit(mergeCommit, git);
-
         String newProjectName = projectName + "_" + mergeCommit.substring(0, 8);
-        String newProjectPath = tempDir.resolve(newProjectName).toString();
+        Path newProjectPath = tempDir.resolve(newProjectName);
 
-        FileUtils.saveFilesFromObjectId(newProjectPath, objects, git);
+        try (Git git = GitUtils.getGit(projectPath)) {
+            Map<String, ObjectId> objects = GitUtils.getObjectsFromCommit(mergeCommit, git);
+            FileUtils.saveFilesFromObjectId(newProjectPath.toString(), objects, git);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         int javaFiles = merge.getConflictingFiles().size();
 
@@ -104,10 +133,11 @@ public class DatasetCollector {
         CompilationResult compilationResult = new CompilationResult(maven.getLogDir().resolve(newProjectName + "_compilation").toFile());
         boolean compilationSuccess = compilationResult.getBuildStatus() == CompilationResult.Status.SUCCESS;
 
-        TestTotal testTotal = new TestTotal(new File(newProjectPath));
+        TestTotal testTotal = new TestTotal(newProjectPath.toFile());
         int runTests = testTotal.getRunNum();
         float time = testTotal.getElapsedTime();
 
+        if (runTests == 0) return;
         boolean testSuccess = runTests > 0;
 
         ExcelWriter.DatasetRow row = new ExcelWriter.DatasetRow(
@@ -122,6 +152,20 @@ public class DatasetCollector {
                 time,
                 !compilationResult.getModuleResults().isEmpty()
         );
+
+        ExcelWriter.DatasetRow row2 = ExcelWriter.DatasetRow.builder()
+                .mergeCommit(mergeCommit)
+                .parent1(p1)
+                .parent2(p2)
+                .numTests(runTests)
+                .numConflictingFiles(merge.getConflictingFiles().size())
+                .numJavaFiles((int) merge.getConflictingFiles().keySet().stream()
+                        .filter(f -> f.endsWith(".java")).count())
+                .compilationSuccess(compilationSuccess)
+                .testSuccess(testSuccess)
+                .elapsedTestTime(time)
+                .isMultiModule(!compilationResult.getModuleResults().isEmpty())
+                .build();
 
         rows.add(row);
     }

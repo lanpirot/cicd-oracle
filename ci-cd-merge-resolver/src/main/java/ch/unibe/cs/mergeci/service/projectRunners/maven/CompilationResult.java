@@ -22,7 +22,7 @@ public class CompilationResult {
     private final float totalTime;
     private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+)\\s\\.+\\s(SUCCESS|FAILURE|SKIPPED)\\s(\\[\\s*([\\d.:]+) (min|s|ms)\\])?";
     private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE)";
-    private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:  ([\\d.:]+) (min|s|ms)";
+    private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:\\s+([\\d.:]+) (min|s|ms)";
 
     public CompilationResult(File testResultFile) throws IOException {
         moduleResults = new ArrayList<>();

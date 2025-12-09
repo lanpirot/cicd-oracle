@@ -39,28 +39,28 @@ public class MavenRunner implements IRunner {
         this(Paths.get("temp"));
     }
 
-    public void run(String... path) {
-        final String mavenCommand = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows") ? "mvn.cmd" : "mvn";
+    public void run(Path... path) {
+        String mavenCommand = resolveMavenCommand(path[0]);
 
-        System.out.println(new File(path[0]).getAbsolutePath());
+        System.out.println(path[0].toAbsolutePath().toString());
         Process pr = null;
         injectCacheArtifact(path[0]);
-        Path projectName = Paths.get(path[0]).getFileName();
+        Path projectName = path[0].getFileName();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(new File(path[0]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+        runCommand(path[0].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
 
 
         for (int i = 1; i < path.length; i++) {
-
+            mavenCommand = resolveMavenCommand(path[i]);
             try {
                 injectCacheArtifact(path[i]);
-                copyTarget(path[0], path[i]);
-                FileUtils.copyDirectoryCompatibityMode(new File(path[0], ".cache"), new File(path[i], ".cache"));
-                projectName = Paths.get(path[i]).getFileName();
+                copyTarget(path[0].toFile(), path[i].toFile());
+                FileUtils.copyDirectoryCompatibityMode(path[0].resolve( ".cache").toFile(), path[i].resolve(".cache").toFile());
+                projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                runCommand(new File(path[i]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+                runCommand(path[i].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -68,31 +68,34 @@ public class MavenRunner implements IRunner {
         }
     }
 
-    public void runWithCacheMultithread(String... path) {
-        final String mavenCommand = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows") ? "mvn.cmd" : "mvn";
+    public void runWithCacheMultithread(Path... path) {
+        String mavenCommand = resolveMavenCommand(path[0]);
 
-        System.out.println(new File(path[0]).getAbsolutePath());
+        System.out.println(path[0].toAbsolutePath().toString());
         Process pr = null;
         injectCacheArtifact(path[0]);
-        AtomicReference<Path> projectName = new AtomicReference<>(Paths.get(path[0]).getFileName());
+        AtomicReference<Path> projectName = new AtomicReference<>(path[0].getFileName());
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(new File(path[0]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+        runCommand(path[0].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
 
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         for (int i = 1; i < path.length; i++) {
             int finalI = i;
+            mavenCommand = resolveMavenCommand(path[i]);
+            String finalMavenCommand = mavenCommand;
+
             executorService.submit(() -> {
                         try {
                             injectCacheArtifact(path[finalI]);
-                            copyTarget(path[0], path[finalI]);
-                            FileUtils.copyDirectoryCompatibityMode(new File(path[0], ".cache"), new File(path[finalI], ".cache"));
-                            projectName.set(Paths.get(path[finalI]).getFileName());
+                            copyTarget(path[0].toFile(), path[finalI].toFile());
+                            FileUtils.copyDirectoryCompatibityMode(path[0].resolve( ".cache").toFile(), path[finalI].resolve(".cache").toFile());
+                            projectName.set(path[finalI].getFileName());
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                            runCommand(new File(path[finalI]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + "_compilation").toFile(), finalMavenCommand, "test", "-fae");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -109,16 +112,14 @@ public class MavenRunner implements IRunner {
     }
 
 
-    public void runWithoutCache(String... path) {
-        final String mavenCommand = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows") ? "mvn.cmd" : "mvn";
-
-
+    public void runWithoutCache(Path... path) {
         for (int i = 0; i < path.length; i++) {
+            final String mavenCommand = resolveMavenCommand(path[i]);
 
-            Path projectName = Paths.get(path[i]).getFileName();
+            Path projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-            runCommand(new File(path[i]), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+            runCommand(path[i].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
 
         }
     }
@@ -209,23 +210,20 @@ public class MavenRunner implements IRunner {
         }
     }
 
-    public void injectCacheArtifact(String projectDir) {
+    public void injectCacheArtifact(Path projectDir) {
         try {
             FileUtils.copyDirectoryCompatibityMode(
                     new File("src/main/resources/cache-artifacts/extensions.xml"),
-                    new File(projectDir + File.separator + ".mvn" + File.separator + File.separator + "extensions.xml"));
+                    projectDir.resolve(".mvn").resolve("extensions.xml").toFile());
             FileUtils.copyDirectoryCompatibityMode(
                     new File("src/main/resources/cache-artifacts/maven-build-cache-config.xml"),
-                    new File(projectDir + File.separator + ".mvn" + File.separator + "maven-build-cache-config.xml"));
+                    projectDir.resolve(".mvn").resolve("maven-build-cache-config.xml").toFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean copyTarget(String sourceDir, String targetDir) {
-        File src = new File(sourceDir);
-        File dst = new File(targetDir);
-
+    public boolean copyTarget(File src, File dst) {
         if (!src.exists() || !src.isDirectory()) {
             System.err.println("Source project not found: ");
             return false;
@@ -242,13 +240,13 @@ public class MavenRunner implements IRunner {
                         File destDir = dst.toPath().resolve(relative).toFile();
 
 
-                        System.out.println("Copying target folder: " + targetDir + "->" + destDir);
+                        System.out.println("Copying target folder: " + dst + "->" + destDir);
                         try {
                             FileUtils.copyDirectoryCompatibityMode(dir.toFile(), destDir);
                             FileUtils.deleteDirectory(destDir.toPath().resolve("surefire-reports").toFile());
                         } catch (IOException e) {
                             e.printStackTrace();
-                            System.err.println("Failed to copy " + targetDir + ": " + e.getMessage());
+                            System.err.println("Failed to copy " + dst + ": " + e.getMessage());
                         }
                     });
         } catch (IOException e) {
@@ -258,4 +256,25 @@ public class MavenRunner implements IRunner {
         return true;
     }
 
+    private String resolveMavenCommand(Path projectPath) {
+        boolean isWindows = System.getProperty("os.name")
+                .toLowerCase(Locale.ENGLISH)
+                .contains("windows");
+
+        File mvnwCmd = projectPath.resolve("mvnw.cmd").toFile();
+        File mvnw = projectPath.resolve("mvnw").toFile();
+
+        if (isWindows) {
+            if (mvnwCmd.exists()) {
+                return "mvnw.cmd";
+            }
+            return "mvn.cmd";
+        } else {
+            if (mvnw.exists()) {
+                mvnw.setExecutable(true);
+                return "mvnw";
+            }
+            return "mvn";
+        }
+    }
 }

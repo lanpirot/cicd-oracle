@@ -48,7 +48,7 @@ public class GitUtils {
         return Git.open(new File(file));
     }
 
-    public static ResolveMerger makeMerge(String source, String target, Git git) throws GitAPIException, IOException {
+    public static ResolveMerger makeMerge(String source, String target, Git git) throws IOException {
         Repository repo = git.getRepository();
 
         ObjectId feature = repo.resolve(source);
@@ -214,7 +214,7 @@ public class GitUtils {
         return !conflicts.isEmpty();
     }
 
-    public static Map<String, Integer> countConflictChunks(String source, String target, Git git) throws GitAPIException, IOException {
+    public static Map<String, Integer> countConflictChunks(String source, String target, Git git) throws IOException {
         ResolveMerger resolveMerger;
         resolveMerger = makeMerge(source, target, git);
 
@@ -238,12 +238,11 @@ public class GitUtils {
         return conflictingFiles;
     }
 
-    public static List<MergeInfo> getConflictCommits(int maxConflictingMergeCount, Git git) throws GitAPIException, IOException {
+    public static List<MergeInfo> getConflictCommits(int maxConflictingMergeCount, Git git) {
 
         int conflictingMergeCount = 0;
         List<RevCommit> history = getAllMergeCommits(git);
 
-        List<Pair<String, String>> result = new ArrayList<>();
         List<MergeInfo> mergeInfos = new ArrayList<>();
 
         for (RevCommit revCommit : history) {

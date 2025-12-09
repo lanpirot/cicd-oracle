@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,10 @@ class MavenRunnerTest {
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.run(Set.of(),"temp\\jackson-databind_0", "temp\\jackson-databind_1");
-        mavenRunner.run("temp\\jackson-databind_0", "temp\\jackson-databind_1","temp\\jackson-databind_2","temp\\jackson-databind_3");
+        mavenRunner.run(Paths.get("temp\\jackson-databind_0"),
+                Paths.get("temp\\jackson-databind_1"),
+                Paths.get("temp\\jackson-databind_2"),
+                Paths.get("temp\\jackson-databind_3"));
     }
 
     @Test
@@ -58,19 +62,19 @@ class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run("temp\\airlift_0", "temp\\airlift_1");
+        mavenRunner.run(Paths.get("temp\\airlift_0"), Paths.get("temp\\airlift_1"));
     }
 
     @Test
     void injectCacheArtifact() throws IOException {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.injectCacheArtifact("temp\\ripme_0");
+        mavenRunner.injectCacheArtifact(Paths.get("temp\\ripme_0"));
     }
 
     @Test
     void copyTarget() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.copyTarget("temp\\Activiti_0", "temp\\Activiti_1");
-        mavenRunner.copyTarget("temp\\Activiti_target", "temp\\Activiti_0");
+        mavenRunner.copyTarget(new File("temp\\Activiti_target"), new File("temp\\Activiti_0"));
     }
 }

@@ -7,8 +7,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.internal.storage.file.WindowCache;
+import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.storage.file.WindowCacheConfig;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,19 +20,28 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RepoCollector {
+    private static int HEADER_LINE = 1;
     private final Path cloneDir;
     private final Path tempDir;
+    private final Path datasetDir;
     private final int start;
     private final int end;
+    private final Path repoCollector = Path.of("repoCollector");
 
     public RepoCollector(String cloneDir, String tempDir, int start, int end) {
-        this.cloneDir = Path.of(cloneDir);
-        this.tempDir = Path.of(tempDir);
+        this.cloneDir = repoCollector.resolve(cloneDir);
+        this.tempDir = repoCollector.resolve(tempDir);
+        this.datasetDir = repoCollector.resolve("datasets");
         this.start = start;
         this.end = end;
     }
 
+    int headerLine = 1;
+
     public void processExcel(File excelFile) throws Exception {
+        FileUtils.deleteDirectory(cloneDir.toFile());
+        FileUtils.deleteDirectory(tempDir.toFile());
+
         Set<String> seen = new HashSet<>();
 
         try (FileInputStream fis = new FileInputStream(excelFile);
@@ -41,8 +52,13 @@ public class RepoCollector {
             int count = 0;
 
             for (Row row : sheet) {
+                count++;
+                if (count < start) continue;
+                if (count >= end) break;
 
-                String repoName = row.getCell(0).getStringCellValue().trim();
+                if (row.getRowNum() < headerLine) continue;
+
+                String repoName = receiveRepoName(row.getCell(0).getStringCellValue().trim());
                 String repoUrl = row.getCell(1).getStringCellValue().trim();
 
                 if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
@@ -65,14 +81,18 @@ public class RepoCollector {
                 }
 
                 System.out.println("Valid Maven repository!");
-
                 DatasetCollector collector = new DatasetCollector(
-                        repoFolder.getAbsolutePath(),
+                        repoFolder.getPath(),
                         tempDir.resolve(repoName).toString(),
                         200
                 );
 
-                count++;
+                collector.collectDataset(datasetDir.resolve(repoName + ".xlsx").toFile());
+                System.out.printf("Deleting repository %s%n", repoFolder);
+                RepositoryCache.clear();
+                WindowCache.reconfigure(new WindowCacheConfig());
+                FileUtils.deleteDirectory(repoFolder);
+                FileUtils.deleteDirectory(tempDir.toFile());
             }
         }
     }
@@ -89,18 +109,21 @@ public class RepoCollector {
                 .call()) {
             // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
             System.out.println("Having repository: " + result.getRepository().getDirectory());
-        } catch (InvalidRemoteException e) {
-            throw new RuntimeException(e);
-        } catch (TransportException e) {
-            throw new RuntimeException(e);
+
         } catch (GitAPIException e) {
             throw new RuntimeException(e);
         }
+        RepositoryCache.clear();
+        WindowCache.reconfigure(new WindowCacheConfig());
 
         return target.toFile();
     }
 
     private boolean isMavenProject(File repo) {
         return Files.exists(repo.toPath().resolve("pom.xml"));
+    }
+
+    private String receiveRepoName(String repoUrl) {
+        return repoUrl.substring(repoUrl.lastIndexOf("/") + 1);
     }
 }

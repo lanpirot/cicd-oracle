@@ -1,16 +1,20 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
+import ch.unibe.cs.mergeci.util.FileUtils;
+import lombok.Builder;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 public class ExcelWriter {
-    public static void writeExcel(String outputFile, List<DatasetRow> rows) throws IOException {
+    public static void writeExcel(File outputFile, List<DatasetRow> rows) throws IOException {
 
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("dataset");
@@ -41,12 +45,14 @@ public class ExcelWriter {
             row.createCell(9).setCellValue(r.isMultiModule());
         }
 
+        if (outputFile.getParentFile() != null) outputFile.getParentFile().mkdirs();
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             wb.write(fos);
         }
         wb.close();
     }
 
+    @Builder
     public record DatasetRow(
             String mergeCommit,
             String parent1,

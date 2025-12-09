@@ -82,12 +82,12 @@ public class MergeAnalyzer {
         MavenRunner mavenRunner = new MavenRunner(tempDir);
 
         int numProjects = countProjects();
-        List<String> args = new ArrayList<>(countProjects());
-        args.add(projectTempDir.resolve(projectName).toString());
+        List<Path> args = new ArrayList<>(countProjects());
+        args.add(projectTempDir.resolve(projectName));
         for (int i = 0; i < numProjects-1; i++) {
-            args.add(projectTempDir.resolve(projectName + "_" + i).toString());
+            args.add(projectTempDir.resolve(projectName + "_" + i));
         }
-        mavenRunner.runWithCacheMultithread(args.toArray(new String[0]));
+        mavenRunner.runWithCacheMultithread(args.toArray(new Path[0]));
     }
 
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {

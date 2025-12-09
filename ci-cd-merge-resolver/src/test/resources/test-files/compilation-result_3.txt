@@ -1,0 +1,84 @@
+[INFO] This project has been banned from the build due to previous failures.
+[INFO] ------------------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO]
+[INFO] dubbo-parent ....................................... SUCCESS [  8.062 s]
+[INFO] dubbo-common ....................................... FAILURE [02:57 min]
+[INFO] dubbo-metrics ...................................... SUCCESS [  0.015 s]
+[INFO] dubbo-metrics-api .................................. FAILURE [  3.255 s]
+[INFO] dubbo-container .................................... SUCCESS [  0.042 s]
+[INFO] dubbo-container-api ................................ SKIPPED
+[INFO] dubbo-serialization ................................ SUCCESS [  0.014 s]
+[INFO] dubbo-serialization-api ............................ SKIPPED
+[INFO] dubbo-serialization-hessian2 ....................... SKIPPED
+[INFO] dubbo-remoting ..................................... SUCCESS [  0.016 s]
+[INFO] dubbo-remoting-api ................................. SKIPPED
+[INFO] dubbo-rpc .......................................... SUCCESS [  0.031 s]
+[INFO] dubbo-rpc-api ...................................... SKIPPED
+[INFO] dubbo-remoting-zookeeper ........................... SKIPPED
+[INFO] dubbo-config ....................................... SUCCESS [  0.022 s]
+[INFO] dubbo-config-dynamic ............................... SKIPPED
+[INFO] dubbo-cluster ...................................... SKIPPED
+[INFO] dubbo-registry ..................................... SUCCESS [  0.026 s]
+[INFO] dubbo-registry-api ................................. SKIPPED
+[INFO] dubbo-monitor ...................................... SUCCESS [  0.032 s]
+[INFO] dubbo-monitor-api .................................. SKIPPED
+[INFO] dubbo-rpc-injvm .................................... SKIPPED
+[INFO] dubbo-filter ....................................... SUCCESS [  0.017 s]
+[INFO] dubbo-filter-validation ............................ SKIPPED
+[INFO] dubbo-filter-cache ................................. SKIPPED
+[INFO] dubbo-remoting-netty4 .............................. SKIPPED
+[INFO] dubbo-rpc-dubbo .................................... SKIPPED
+[INFO] dubbo-registry-default ............................. SKIPPED
+[INFO] dubbo-monitor-default .............................. SKIPPED
+[INFO] dubbo-rpc-rmi ...................................... SKIPPED
+[INFO] dubbo-registry-multicast ........................... SKIPPED
+[INFO] dubbo-serialization-jdk ............................ SKIPPED
+[INFO] dubbo-config-api ................................... SKIPPED
+[INFO] dubbo-bootstrap .................................... SKIPPED
+[INFO] dubbo-config-spring ................................ SKIPPED
+[INFO] dubbo-container-spring ............................. SKIPPED
+[INFO] dubbo-container-log4j .............................. SKIPPED
+[INFO] dubbo-container-logback ............................ SKIPPED
+[INFO] dubbo-remoting-netty ............................... SKIPPED
+[INFO] dubbo-remoting-mina ................................ SKIPPED
+[INFO] dubbo-remoting-grizzly ............................. SKIPPED
+[INFO] dubbo-remoting-p2p ................................. SKIPPED
+[INFO] dubbo-remoting-http ................................ SKIPPED
+[INFO] dubbo-rpc-hessian .................................. SKIPPED
+[INFO] dubbo-rpc-http ..................................... SKIPPED
+[INFO] dubbo-rpc-webservice ............................... SKIPPED
+[INFO] dubbo-rpc-thrift ................................... SKIPPED
+[INFO] dubbo-rpc-memcached ................................ SKIPPED
+[INFO] dubbo-rpc-redis .................................... SKIPPED
+[INFO] dubbo-rpc-rest ..................................... SKIPPED
+[INFO] dubbo-registry-zookeeper ........................... SKIPPED
+[INFO] dubbo-registry-redis ............................... SKIPPED
+[INFO] dubbo-demo ......................................... SUCCESS [  0.028 s]
+[INFO] dubbo-demo-api ..................................... SUCCESS [  0.916 s]
+[INFO] dubbo-demo-provider ................................ SKIPPED
+[INFO] dubbo-demo-consumer ................................ SKIPPED
+[INFO] dubbo-plugin ....................................... SUCCESS [  0.028 s]
+[INFO] dubbo-qos .......................................... SKIPPED
+[INFO] dubbo-serialization-fastjson ....................... SKIPPED
+[INFO] dubbo-serialization-kryo ........................... SKIPPED
+[INFO] dubbo-serialization-fst ............................ SKIPPED
+[INFO] dubbo-compatible ................................... SKIPPED
+[INFO] dubbo-dependencies-bom ............................. SUCCESS [  0.009 s]
+[INFO] dubbo-bom .......................................... SUCCESS [  0.023 s]
+[INFO] dubbo-all .......................................... SKIPPED
+[INFO] dubbo-distribution ................................. SKIPPED
+[INFO] dubbo-test ......................................... SKIPPED
+[INFO] dubbo-test-compatibility ........................... SKIPPED
+[INFO] dubbo-test-spring3 ................................. SKIPPED
+[INFO] dubbo-test-integration ............................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 03:12 min
+[INFO] Finished at: 2025-12-08T18:22:50+01:00
+[INFO] Final Memory: 34M/148M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.19.1:test (default-test) on project dubbo-common: Execution default-test of goal org.apache.maven.plugins:maven-surefire-plugin:2.19.1:test failed: The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+[ERROR] Command was cmd.exe /X /C ""C:\Program Files\Java\jdk-23\bin\java" -server -Xms256m -Xmx512m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -javaagent:C:\\Users\\vova\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.1\\org.jacoco.agent-0.8.1-runtime.jar=destfile=C:\\Users\\vova\\Documents\\BernUni\\S
