@@ -24,8 +24,6 @@ public class TestTotal {
 
     private File projectDir;
 
-    private List<TestResult> testResults;
-
     public TestTotal() {
     }
 

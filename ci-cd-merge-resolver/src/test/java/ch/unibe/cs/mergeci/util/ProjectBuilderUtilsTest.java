@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ class ProjectBuilderUtilsTest {
     @Test
     void getProjects() throws IOException, GitAPIException {
         Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
-        ResolveMerger merger = GitUtils.makeMerge("","", git);
+        ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
         Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
@@ -46,15 +47,15 @@ class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/myTest","temp");
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get("src/test/resources/test-merge-projects/myTest"),Paths.get("temp"));
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
     }
 
     @Test
     void saveProjects() throws GitAPIException, IOException, InterruptedException {
         FileUtils.deleteDirectory(new File("temp"));
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/jackson-databind");
-        ResolveMerger merger = GitUtils.makeMerge("bf08f05406f90cd6a3e76e76687dfe45b22105d5","a36a049147c023becffbea2793042caef3ca3285", git);
+        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
         System.out.println("conflicts :");
@@ -69,12 +70,12 @@ class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/jackson-databind","temp");
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get("src/test/resources/test-merge-projects/myTest"),Paths.get("temp"));
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
 
-        ObjectId branch1 = git.getRepository().resolve("bf08f05406f90cd6a3e76e76687dfe45b22105d5");
-        ObjectId branch2 = git.getRepository().resolve("a36a049147c023becffbea2793042caef3ca3285");
+        ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
+        ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
         Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects(git, branch1, branch2);
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
     }

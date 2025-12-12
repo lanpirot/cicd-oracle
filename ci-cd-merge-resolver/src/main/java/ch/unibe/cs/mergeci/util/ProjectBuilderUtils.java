@@ -13,12 +13,12 @@ import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
-import org.eclipse.jgit.merge.ResolveMerger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ProjectBuilderUtils {
-    private String gitRootPath;
-    private String temp_path;
+    private Path gitRootPath;
+    private Path temp_path;
 
-    public ProjectBuilderUtils(String gitRootPath, String temp_path) {
+    public ProjectBuilderUtils(Path gitRootPath, Path temp_path) {
         this.gitRootPath = gitRootPath;
         this.temp_path = temp_path;
     }
@@ -40,17 +40,16 @@ public class ProjectBuilderUtils {
 
 
         for (Project project : projects) {
-            String projectNewRootPath = temp_path + File.separator + Paths.get(gitRootPath).getFileName() + "_" + index;
+            Path projectNewRootPath = temp_path.resolve(gitRootPath.getFileName().getFileName() + "_" + index);
 
-            Git git = GitUtils.getGit(gitRootPath);
+            Git git = GitUtils.getGit(gitRootPath.toFile());
             FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
             for (ProjectClass projectClass : project.getClasses()) {
 
-                String filepath = Paths.get(projectNewRootPath,
-                        projectClass.getProjectName().toString()).toString();
-                File file = new File(filepath);
-                if (file.getParentFile() != null) file.getParentFile().mkdirs();
-                try (OutputStream out = new FileOutputStream(file)) {
+                File filepath = projectNewRootPath.resolve(projectClass.getClassPath().toString()).toFile();
+
+                if (filepath.getParentFile() != null) filepath.getParentFile().mkdirs();
+                try (OutputStream out = new FileOutputStream(filepath)) {
                     out.write(projectClass.toString().getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -67,12 +66,13 @@ public class ProjectBuilderUtils {
         return projectList;
     }
 
-    public void getProjectsRecursive(Map<String, List<ProjectClass>> projectClassMap, List<String> keys, List<ProjectClass> projectsPrevious, List<Project> result, int index) {
+    public void getProjectsRecursive(Map<String, List<ProjectClass>> projectClassMap, List<String> keys,
+                                     List<ProjectClass> projectsPrevious, List<Project> result, int index) {
 
 
         if (projectClassMap.size() == index) {
             Project project = new Project();
-            project.setProjectName(Paths.get(this.gitRootPath));
+            project.setProjectPath(this.gitRootPath);
             project.setClasses(projectsPrevious);
             result.add(project);
             return;
@@ -105,7 +105,7 @@ public class ProjectBuilderUtils {
         List<ProjectClass> projectClasses = new ArrayList<>();
         for (List<IMergeBlock> mergeBlocks : resolvedMergedConflicts) {
             ProjectClass projectClassResolved = new ProjectClass();
-            projectClassResolved.setProjectName(projectClass.getProjectName());
+            projectClassResolved.setClassPath(projectClass.getClassPath());
             projectClassResolved.setMergeBlocks(mergeBlocks);
             projectClasses.add(projectClassResolved);
         }
@@ -136,7 +136,7 @@ public class ProjectBuilderUtils {
 
     public static ProjectClass getProjectClass(MergeResult<? extends Sequence> mergeResult, String classPath) {
         ProjectClass projectClass = new ProjectClass();
-        projectClass.setProjectName(Paths.get(classPath));
+        projectClass.setClassPath(Paths.get(classPath));
         List<IMergeBlock> mergeBlockList = new ArrayList<>();
         for (Iterator<MergeChunk> i = mergeResult.iterator(); i.hasNext(); ) {
             MergeChunk mergeChunk = i.next();
@@ -154,5 +154,19 @@ public class ProjectBuilderUtils {
         }
         projectClass.setMergeBlocks(mergeBlockList);
         return projectClass;
+    }
+
+    public static List<IPattern> extractPatterns(Project project) {
+        List<IPattern> result = new ArrayList<>();
+
+        for (ProjectClass cls : project.getClasses()) {
+            for (IMergeBlock block : cls.getMergeBlocks()) {
+                if (block instanceof ConflictBlock conflict) {
+                    result.add(conflict.getPattern());
+                }
+            }
+        }
+
+        return result;
     }
 }

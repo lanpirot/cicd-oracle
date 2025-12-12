@@ -53,7 +53,7 @@ class MavenRunnerTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils("src/test/resources/test-merge-projects/myTest","temp");
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get("src/test/resources/test-merge-projects/myTest"),Paths.get("temp"));
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
         ObjectId branch1 = git.getRepository().resolve("master");

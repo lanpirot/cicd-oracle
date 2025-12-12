@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +25,6 @@ class FileUtilsTest {
         ResolveMerger merger = GitUtils.makeMerge("","", git);
         Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
 
-        FileUtils.saveFilesFromObjectId("mytempt\\subfolder", map, git);
+        FileUtils.saveFilesFromObjectId(Paths.get("mytempt\\subfolder"), map, git);
     }
 }

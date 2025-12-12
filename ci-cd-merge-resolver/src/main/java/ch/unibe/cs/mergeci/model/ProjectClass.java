@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ProjectClass{
-    private Path projectName;
+    private Path classPath;
     private List<IMergeBlock> mergeBlocks;
 
     @Override

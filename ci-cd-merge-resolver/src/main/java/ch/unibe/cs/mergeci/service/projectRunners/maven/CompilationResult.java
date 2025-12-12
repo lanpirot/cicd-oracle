@@ -47,8 +47,14 @@ public class CompilationResult {
 
         Pattern buildStatusPattern = Pattern.compile(BUILD_STATUS_REGEX);
         Matcher buildMatcher = buildStatusPattern.matcher(string);
-        buildMatcher.find();
-        this.buildStatus = Status.valueOf(buildMatcher.group(1));
+        if (buildMatcher.find()) {
+            this.buildStatus = Status.valueOf(buildMatcher.group(1));
+        } else {
+            this.totalTime = 0;
+            this.buildStatus = null;
+            return;
+        }
+
 
         Pattern totalTimePAttern = Pattern.compile(TOTAL_TIME_REGEX);
         Matcher totalTimeMatcher = totalTimePAttern.matcher(string);
@@ -109,7 +115,7 @@ public class CompilationResult {
                 .map(x -> "\t" + x)
                 .collect(Collectors.collectingAndThen(
                         Collectors.joining("\n"),
-                        joined -> joined.isEmpty() ? "[]" : "\n" + joined+"\n"
+                        joined -> joined.isEmpty() ? "[]" : "\n" + joined + "\n"
                 ));
 
         return "CompilationResult{" +

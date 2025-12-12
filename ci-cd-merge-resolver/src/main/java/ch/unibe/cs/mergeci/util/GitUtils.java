@@ -48,15 +48,15 @@ public class GitUtils {
         return Git.open(new File(file));
     }
 
-    public static ResolveMerger makeMerge(String source, String target, Git git) throws IOException {
+    public static ResolveMerger makeMerge(String oursBranch, String theirsBranch, Git git) throws IOException {
         Repository repo = git.getRepository();
 
-        ObjectId feature = repo.resolve(source);
-        ObjectId head = repo.resolve(target);
+        ObjectId oursObject = repo.resolve(oursBranch);
+        ObjectId theirsObject = repo.resolve(theirsBranch);
 
         ResolveMerger merger = (ResolveMerger) MergeStrategy.RESOLVE.newMerger(repo, true);
 
-        boolean isMergedWithoutConflicts = merger.merge(head, feature);
+        boolean isMergedWithoutConflicts = merger.merge(oursObject, theirsObject);
 
         return merger;
     }

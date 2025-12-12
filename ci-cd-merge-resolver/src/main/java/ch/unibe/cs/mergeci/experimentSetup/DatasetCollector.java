@@ -119,7 +119,7 @@ public class DatasetCollector {
 
         try (Git git = GitUtils.getGit(projectPath)) {
             Map<String, ObjectId> objects = GitUtils.getObjectsFromCommit(mergeCommit, git);
-            FileUtils.saveFilesFromObjectId(newProjectPath.toString(), objects, git);
+            FileUtils.saveFilesFromObjectId(newProjectPath, objects, git);
         } catch (Exception e) {
             e.printStackTrace();
         }

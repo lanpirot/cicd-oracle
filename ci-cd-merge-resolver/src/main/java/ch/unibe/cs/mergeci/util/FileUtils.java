@@ -21,18 +21,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileUtils {
-    public static void saveFilesFromObjectId(String projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
+    public static void saveFilesFromObjectId(Path projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
         for (Map.Entry<String, ObjectId> entry : files.entrySet()) {
             ObjectStream objectStream = getFileFromObject(entry.getValue(), git);
-            saveFile(projectRoot + File.separator + entry.getKey(), objectStream);
+            saveFile(projectRoot.resolve(entry.getKey()).toFile(), objectStream);
         }
     }
 
-    public static void saveFile(String path, ObjectStream objectStream) throws IOException {
-        File file = new File(path);
+    public static void saveFile(File file, ObjectStream objectStream) throws IOException {
         if (file.getParentFile() != null) file.getParentFile().mkdirs();
         file.createNewFile();
-        try (FileOutputStream objectOutputStream = new FileOutputStream(file); objectStream) {
+        try (OutputStream objectOutputStream = new FileOutputStream(file); objectStream) {
             while (objectStream.available() > 0) {
                 objectOutputStream.write(objectStream.readAllBytes());
             }

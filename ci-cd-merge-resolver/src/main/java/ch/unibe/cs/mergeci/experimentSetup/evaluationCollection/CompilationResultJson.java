@@ -53,9 +53,10 @@ public class CompilationResultJson {
                 MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, "temp");
                 mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
                 mergeAnalyzer.runTests();
+
                 Instant finish = Instant.now();
                 long timeElapsed = Duration.between(start, finish).toSeconds();
-                mergeOutputJSON.setVariantsExecutionTime(timeElapsed);
+                mergeOutputJSON.setTotalExecutionTime(timeElapsed);
 
                 System.out.println("Compilation result:");
                 Map<String, CompilationResult> compilationResultMap = mergeAnalyzer.collectCompilationResults();
@@ -81,6 +82,8 @@ public class CompilationResultJson {
                     variant.setVariantName(entry.getKey());
                     variant.setCompilationResult(entry.getValue());
                     variant.setTestResults(testTotalMap.get(entry.getKey()));
+
+                    variant.setConflictPatterns(mergeAnalyzer.getConflictPatterns().get(variants.size()));
 
                     variants.add(variant);
                 }

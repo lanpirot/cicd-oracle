@@ -28,11 +28,17 @@ public class MavenRunner implements IRunner {
     private final Path tempDir;
     private final static String LOG_PATH = "log";
     private final Path logDir;
+    private final boolean isUseMavenDaemon;
 
-    public MavenRunner(Path tempDir) {
+    public MavenRunner(Path tempDir, boolean isUseMavenDaemon) {
         this.tempDir = tempDir;
         this.logDir = tempDir.resolve(LOG_PATH);
         this.logDir.toFile().mkdirs();
+        this.isUseMavenDaemon = isUseMavenDaemon;
+    }
+
+    public MavenRunner(Path tempDir) {
+        this(tempDir, false);
     }
 
     public MavenRunner() {
@@ -56,7 +62,7 @@ public class MavenRunner implements IRunner {
             try {
                 injectCacheArtifact(path[i]);
                 copyTarget(path[0].toFile(), path[i].toFile());
-                FileUtils.copyDirectoryCompatibityMode(path[0].resolve( ".cache").toFile(), path[i].resolve(".cache").toFile());
+                FileUtils.copyDirectoryCompatibityMode(path[0].resolve(".cache").toFile(), path[i].resolve(".cache").toFile());
                 projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
@@ -91,7 +97,7 @@ public class MavenRunner implements IRunner {
                         try {
                             injectCacheArtifact(path[finalI]);
                             copyTarget(path[0].toFile(), path[finalI].toFile());
-                            FileUtils.copyDirectoryCompatibityMode(path[0].resolve( ".cache").toFile(), path[finalI].resolve(".cache").toFile());
+                            FileUtils.copyDirectoryCompatibityMode(path[0].resolve(".cache").toFile(), path[finalI].resolve(".cache").toFile());
                             projectName.set(path[finalI].getFileName());
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
@@ -257,6 +263,10 @@ public class MavenRunner implements IRunner {
     }
 
     private String resolveMavenCommand(Path projectPath) {
+        if (isUseMavenDaemon) {
+            return "mvnd";
+        }
+
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase(Locale.ENGLISH)
                 .contains("windows");
