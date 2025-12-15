@@ -1,0 +1,4217 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "78ef964e7fa33b3de8e6e842f851f4c991d1a5da",
+    "parent1" : "28f79ff09756b47247ef250366b3a5a8a68b7060",
+    "parent2" : "a0d3ea4c096fa847153ae4d43dbda49a5c4f73dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 75,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Bt 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.103
+      }, {
+        "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.783
+      }, {
+        "moduleName" : "Bt Core 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.325
+      }, {
+        "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.307
+      }, {
+        "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.728
+      }, {
+        "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.225
+      }, {
+        "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.048
+      }, {
+        "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Examples 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 22.8
+    },
+    "testResults" : {
+      "runNum" : 265,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.9680002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 38,
+      "variants" : [ {
+        "variantName" : "bt_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.387
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.227
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.268
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.945
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.014
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.74
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 35.457
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.9389997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_0"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.027
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.3
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.321
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.297
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.175
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.761
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 34.939
+        },
+        "testResults" : {
+          "runNum" : 265,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3839998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_1"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.045
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.056
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.19
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.345
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.617
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.844,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_2"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.053
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.157
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.766
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.32
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.292
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.066,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_3"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.382
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.235
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.146
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.328
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.882
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.62,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_4"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.466
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.053
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.809
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.889
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.95
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.5520002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_5"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bt_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.148
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.051
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.206
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.583
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.032
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.2939997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_6"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bt_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Bt 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "Bt BEncoding 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.136
+          }, {
+            "moduleName" : "Bt Core 1.10-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.68
+          }, {
+            "moduleName" : "Bt HTTP Tracker Client 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mldht - Bittorrent Mainline DHT library 0.1.1",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.186
+          }, {
+            "moduleName" : "Bt Tests 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt DHT 1.10-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Bt libmldht adapter 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt UPnP 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Bt CLI Launcher 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Examples 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "JaCoCo aggregate report 1.10-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.181
+        },
+        "testResults" : {
+          "runNum" : 51,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.9810001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bt_7"
+        },
+        "conflictPatterns" : {
+          "bt-core\\src\\main\\java\\bt\\net\\pipeline\\SocketChannelHandler.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

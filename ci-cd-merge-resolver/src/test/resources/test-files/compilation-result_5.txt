@@ -1,0 +1,20 @@
+[INFO] ------------------------------------------------------------------------
+[INFO] Skipping
+[INFO] This project has been banned from the build due to previous failures.
+[INFO] ------------------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for ANTLR 4 4.11-SNAPSHOT:
+[INFO]
+[INFO] ANTLR 4 ............................................ SUCCESS [  0.346 s]
+[INFO] ANTLR 4 Runtime .................................... SUCCESS [  7.550 s]
+[INFO] ANTLR 4 Tool ....................................... SUCCESS [ 11.373 s]
+[INFO] ANTLR 4 Maven plugin ............................... SUCCESS [ 10.465 s]
+[INFO] ANTLR 4 Runtime Tests (4th generation) ............. FAILURE [ 37.041 s]
+[INFO] ANTLR 4 Tool Tests ................................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:07 min
+[INFO] Finished at: 2025-12-15T01:45:54+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-sure

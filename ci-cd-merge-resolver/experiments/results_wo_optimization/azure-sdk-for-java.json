@@ -1,0 +1,399 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "a46ca3d87d05c9757ef13514686ee451c2ca5949",
+    "parent1" : "eeb198f3dff5581b6a06bbe942decd6871cdd211",
+    "parent2" : "9b585e22bed27bb2f5267141a0e23f288e07ab3b",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 177,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 3.839
+      }, {
+        "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 3.931
+    },
+    "testResults" : {
+      "runNum" : 163,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 5,
+      "elapsedTime" : 0.048,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 6,
+      "variants" : [ {
+        "variantName" : "azure-sdk-for-java_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.907
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.054
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_0"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "azure-sdk-for-java_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.049
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.191
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_1"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "azure-sdk-for-java_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.044
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.178
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_2"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "azure-sdk-for-java_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.776
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.918
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 0.037,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_3"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "a46ca3d87d05c9757ef13514686ee451c2ca5949",
+    "parent1" : "eeb198f3dff5581b6a06bbe942decd6871cdd211",
+    "parent2" : "9b585e22bed27bb2f5267141a0e23f288e07ab3b",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 177,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 3.839
+      }, {
+        "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 3.931
+    },
+    "testResults" : {
+      "runNum" : 163,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 5,
+      "elapsedTime" : 0.048,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 6,
+      "variants" : [ {
+        "variantName" : "azure-sdk-for-java_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.907
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.054
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_0"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "azure-sdk-for-java_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.049
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.191
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_1"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "azure-sdk-for-java_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.044
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.178
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_2"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "azure-sdk-for-java_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "azure-eventhubs-clients 0.7.8-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "azure-eventhubs 0.7.8-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.776
+          }, {
+            "moduleName" : "azure-eventhubs-eph 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-extensions 0.1.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "azure-eventhubs-samples 0.7.8-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.918
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 0.037,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\azure-sdk-for-java_3"
+        },
+        "conflictPatterns" : {
+          "azure-eventhubs\\src\\main\\java\\com\\microsoft\\azure\\eventhubs\\EventData.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -1,0 +1,621 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "dff58ac23a478a503311aca7507fd7276a3f2948",
+    "parent1" : "863fdcdda6e2e061120c6c882493dd70f6fbfe96",
+    "parent2" : "6d4fbe1869435bfaf3621d6df3c7c1ec83db44dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 232,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bucket4j-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.499
+      }, {
+        "moduleName" : "bucket4j-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 96.0
+      }, {
+        "moduleName" : "bucket4j-jcache",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-hazelcast",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-ignite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-infinispan",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-redis",
+        "status" : "FAILURE",
+        "timeElapsed" : 16.595
+      }, {
+        "moduleName" : "bucket4j-mysql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "bucket4j-postgresql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "experimental",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "bucket4j-benchmarks",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 113.0
+    },
+    "testResults" : {
+      "runNum" : 15,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 92.073006,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 115,
+      "variants" : [ {
+        "variantName" : "bucket4j_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bucket4j-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.643
+          }, {
+            "moduleName" : "bucket4j-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 96.0
+          }, {
+            "moduleName" : "bucket4j-jcache",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-hazelcast",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-ignite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-infinispan",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-redis",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.62
+          }, {
+            "moduleName" : "bucket4j-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "bucket4j-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.022
+          }, {
+            "moduleName" : "experimental",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.027
+          }, {
+            "moduleName" : "bucket4j-benchmarks",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 114.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 92.088005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j_0"
+        },
+        "conflictPatterns" : {
+          "bucket4j-core\\src\\main\\java\\io\\github\\bucket4j\\BucketState.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bucket4j_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bucket4j-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.644
+          }, {
+            "moduleName" : "bucket4j-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.905
+          }, {
+            "moduleName" : "bucket4j-jcache",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-hazelcast",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-ignite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-infinispan",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-redis",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.796
+          }, {
+            "moduleName" : "bucket4j-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "bucket4j-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.021
+          }, {
+            "moduleName" : "experimental",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "bucket4j-benchmarks",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 19.561
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j_1"
+        },
+        "conflictPatterns" : {
+          "bucket4j-core\\src\\main\\java\\io\\github\\bucket4j\\BucketState.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "dff58ac23a478a503311aca7507fd7276a3f2948",
+    "parent1" : "863fdcdda6e2e061120c6c882493dd70f6fbfe96",
+    "parent2" : "6d4fbe1869435bfaf3621d6df3c7c1ec83db44dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 232,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bucket4j-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.499
+      }, {
+        "moduleName" : "bucket4j-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 96.0
+      }, {
+        "moduleName" : "bucket4j-jcache",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-hazelcast",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-ignite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-infinispan",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-redis",
+        "status" : "FAILURE",
+        "timeElapsed" : 16.595
+      }, {
+        "moduleName" : "bucket4j-mysql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "bucket4j-postgresql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "experimental",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "bucket4j-benchmarks",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 113.0
+    },
+    "testResults" : {
+      "runNum" : 15,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 92.073006,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 115,
+      "variants" : [ {
+        "variantName" : "bucket4j_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bucket4j-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.643
+          }, {
+            "moduleName" : "bucket4j-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 96.0
+          }, {
+            "moduleName" : "bucket4j-jcache",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-hazelcast",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-ignite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-infinispan",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-redis",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.62
+          }, {
+            "moduleName" : "bucket4j-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "bucket4j-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.022
+          }, {
+            "moduleName" : "experimental",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.027
+          }, {
+            "moduleName" : "bucket4j-benchmarks",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 114.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 92.088005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j_0"
+        },
+        "conflictPatterns" : {
+          "bucket4j-core\\src\\main\\java\\io\\github\\bucket4j\\BucketState.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bucket4j_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bucket4j-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.644
+          }, {
+            "moduleName" : "bucket4j-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.905
+          }, {
+            "moduleName" : "bucket4j-jcache",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-hazelcast",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-ignite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-infinispan",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-redis",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.796
+          }, {
+            "moduleName" : "bucket4j-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "bucket4j-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.021
+          }, {
+            "moduleName" : "experimental",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "bucket4j-benchmarks",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 19.561
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j_1"
+        },
+        "conflictPatterns" : {
+          "bucket4j-core\\src\\main\\java\\io\\github\\bucket4j\\BucketState.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "dff58ac23a478a503311aca7507fd7276a3f2948",
+    "parent1" : "863fdcdda6e2e061120c6c882493dd70f6fbfe96",
+    "parent2" : "6d4fbe1869435bfaf3621d6df3c7c1ec83db44dd",
+    "numConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 232,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bucket4j-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.499
+      }, {
+        "moduleName" : "bucket4j-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 96.0
+      }, {
+        "moduleName" : "bucket4j-jcache",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-hazelcast",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-ignite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-infinispan",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j-redis",
+        "status" : "FAILURE",
+        "timeElapsed" : 16.595
+      }, {
+        "moduleName" : "bucket4j-mysql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "bucket4j-postgresql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "experimental",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "bucket4j-benchmarks",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bucket4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 113.0
+    },
+    "testResults" : {
+      "runNum" : 15,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 92.073006,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 115,
+      "variants" : [ {
+        "variantName" : "bucket4j_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bucket4j-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.643
+          }, {
+            "moduleName" : "bucket4j-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 96.0
+          }, {
+            "moduleName" : "bucket4j-jcache",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-hazelcast",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-ignite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-infinispan",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-redis",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.62
+          }, {
+            "moduleName" : "bucket4j-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "bucket4j-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.022
+          }, {
+            "moduleName" : "experimental",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.027
+          }, {
+            "moduleName" : "bucket4j-benchmarks",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 114.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 92.088005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j_0"
+        },
+        "conflictPatterns" : {
+          "bucket4j-core\\src\\main\\java\\io\\github\\bucket4j\\BucketState.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bucket4j_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bucket4j-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.644
+          }, {
+            "moduleName" : "bucket4j-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.905
+          }, {
+            "moduleName" : "bucket4j-jcache",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-hazelcast",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-ignite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-infinispan",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j-redis",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.796
+          }, {
+            "moduleName" : "bucket4j-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "bucket4j-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.021
+          }, {
+            "moduleName" : "experimental",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "bucket4j-benchmarks",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bucket4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 19.561
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bucket4j_1"
+        },
+        "conflictPatterns" : {
+          "bucket4j-core\\src\\main\\java\\io\\github\\bucket4j\\BucketState.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

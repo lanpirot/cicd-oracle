@@ -12,11 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class CompilationResultTest {
     @Test
     void test() throws IOException {
-        File file = new File("src/test/resources/test-files/compilation-result_3.txt");
+        File file = new File("src/test/resources/test-files/compilation-result_2.txt");
         CompilationResult compilationResult = new CompilationResult(file);
 
         System.out.println(compilationResult);
-
 
     }
 

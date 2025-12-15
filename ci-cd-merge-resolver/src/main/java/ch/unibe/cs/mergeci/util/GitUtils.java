@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.experimentSetup.SimpleProgressMonitor;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,9 +13,11 @@ import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.errors.NoMergeBaseException;
+import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
@@ -24,10 +27,12 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.filter.RevFilter;
+import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -107,7 +112,7 @@ public class GitUtils {
                     String path = treeWalk.getPathString();
                     if (!conflictPaths.contains(path)) {
                         nonConflictObjects.put(path, treeWalk.getObjectId(0));
-                        System.out.println("Auto-merged: " + path + "\t" + treeWalk.getObjectId(0).getName());
+//                        System.out.println("Auto-merged: " + path + "\t" + treeWalk.getObjectId(0).getName());
                     }
                 }
             }
@@ -310,5 +315,26 @@ public class GitUtils {
         }
 
         return map;
+    }
+
+    public static File cloneRepo(Path folderToClone, String url) {
+
+        // then clone
+        System.out.printf("Cloning from %s to %s %n", url, folderToClone);
+        try (Git result = Git.cloneRepository()
+                .setURI(url)
+                .setDirectory(folderToClone.toFile())
+                .setProgressMonitor(new SimpleProgressMonitor())
+                .call()) {
+            // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
+            System.out.println("Having repository: " + result.getRepository().getDirectory());
+
+        } catch (GitAPIException e) {
+            throw new RuntimeException(e);
+        }
+        RepositoryCache.clear();
+        WindowCache.reconfigure(new WindowCacheConfig());
+
+        return folderToClone.toFile();
     }
 }

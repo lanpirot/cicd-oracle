@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,37 +17,49 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Getter
+@JsonPropertyOrder({"moduleResults", "buildStatus", "totalTime"})
 public class CompilationResult {
     private final List<ModuleResult> moduleResults;
     private final Status buildStatus;
     private final float totalTime;
-    private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+)\\s\\.+\\s(SUCCESS|FAILURE|SKIPPED)\\s(\\[\\s*([\\d.:]+) (min|s|ms)\\])?";
+    private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+?)\\s\\.*\\s*(SUCCESS|FAILURE|SKIPPED)\\s(\\[\\s*([\\d.:]+) (min|s|ms)\\])?";
     private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE)";
     private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:\\s+([\\d.:]+) (min|s|ms)";
+    private final static String REACTOR_BLOCK = "\\[INFO\\]\\s+Reactor Summary(?:.*?)?:\\s*((.*\\R)*?)\\[INFO\\]\\s+-+";
 
     public CompilationResult(File testResultFile) throws IOException {
         moduleResults = new ArrayList<>();
 
         String string = new String(Files.readAllBytes(testResultFile.toPath()));
-        Pattern p = Pattern.compile(MODULE_REGEX);
-        Matcher m = p.matcher(string);
+        String buildStatusString = string;
 
-        while (m.find()) {
-            String moduleName = m.group(1);
-            Status status = Status.valueOf(m.group(2));
-            float timeElapsed = status == Status.SKIPPED ? 0 : parseTime(m.group(4), m.group(5));
+        Pattern reactorBlockPattern = Pattern.compile(REACTOR_BLOCK);
+        Matcher matcher = reactorBlockPattern.matcher(string);
+        if (matcher.find()) {
 
-            ModuleResult moduleResult = ModuleResult.builder()
-                    .moduleName(moduleName)
-                    .status(status)
-                    .timeElapsed(timeElapsed)
-                    .build();
+            String modulesString = matcher.group(1);
+            buildStatusString = string.substring(matcher.end());
 
-            moduleResults.add(moduleResult);
+            Pattern p = Pattern.compile(MODULE_REGEX);
+            Matcher m = p.matcher(modulesString);
+
+            while (m.find()) {
+                String moduleName = m.group(1);
+                Status status = Status.valueOf(m.group(2));
+                float timeElapsed = status == Status.SKIPPED ? 0 : parseTime(m.group(4), m.group(5));
+
+                ModuleResult moduleResult = ModuleResult.builder()
+                        .moduleName(moduleName)
+                        .status(status)
+                        .timeElapsed(timeElapsed)
+                        .build();
+
+                moduleResults.add(moduleResult);
+            }
         }
 
         Pattern buildStatusPattern = Pattern.compile(BUILD_STATUS_REGEX);
-        Matcher buildMatcher = buildStatusPattern.matcher(string);
+        Matcher buildMatcher = buildStatusPattern.matcher(buildStatusString);
         if (buildMatcher.find()) {
             this.buildStatus = Status.valueOf(buildMatcher.group(1));
         } else {
@@ -57,10 +70,11 @@ public class CompilationResult {
 
 
         Pattern totalTimePAttern = Pattern.compile(TOTAL_TIME_REGEX);
-        Matcher totalTimeMatcher = totalTimePAttern.matcher(string);
+        Matcher totalTimeMatcher = totalTimePAttern.matcher(buildStatusString);
         totalTimeMatcher.find();
         this.totalTime = parseTime(totalTimeMatcher.group(1), totalTimeMatcher.group(2));
     }
+
 
     private int getNumberOfModules() {
         return moduleResults.size();

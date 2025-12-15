@@ -24,15 +24,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 @Getter
-public class MavenRunner implements IRunner {
-    private final Path tempDir;
-    private final static String LOG_PATH = "log";
+public class MavenRunner{
     private final Path logDir;
     private final boolean isUseMavenDaemon;
+    private static final String COMPILATION_POSTFIX = "_compilation";
 
-    public MavenRunner(Path tempDir, boolean isUseMavenDaemon) {
-        this.tempDir = tempDir;
-        this.logDir = tempDir.resolve(LOG_PATH);
+    public MavenRunner(Path logDir, boolean isUseMavenDaemon) {
+        this.logDir = logDir;
         this.logDir.toFile().mkdirs();
         this.isUseMavenDaemon = isUseMavenDaemon;
     }
@@ -54,7 +52,7 @@ public class MavenRunner implements IRunner {
         Path projectName = path[0].getFileName();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+        runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
 
         for (int i = 1; i < path.length; i++) {
@@ -66,7 +64,7 @@ public class MavenRunner implements IRunner {
                 projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                runCommand(path[i].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+                runCommand(path[i].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -80,7 +78,7 @@ public class MavenRunner implements IRunner {
         System.out.println(path[0].toAbsolutePath().toString());
         Process pr = null;
         injectCacheArtifact(path[0]);
-        AtomicReference<Path> projectName = new AtomicReference<>(path[0].getFileName());
+        String projectName = path[0].getFileName().toString();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
         runCommand(path[0].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
@@ -94,14 +92,15 @@ public class MavenRunner implements IRunner {
             String finalMavenCommand = mavenCommand;
 
             executorService.submit(() -> {
+                        String projectNameFinal = path[finalI].getFileName().toString();
                         try {
                             injectCacheArtifact(path[finalI]);
                             copyTarget(path[0].toFile(), path[finalI].toFile());
                             FileUtils.copyDirectoryCompatibityMode(path[0].resolve(".cache").toFile(), path[finalI].resolve(".cache").toFile());
-                            projectName.set(path[finalI].getFileName());
+
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + "_compilation").toFile(), finalMavenCommand, "test", "-fae");
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectNameFinal + COMPILATION_POSTFIX).toFile(), finalMavenCommand, "test", "-fae");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -109,12 +108,7 @@ public class MavenRunner implements IRunner {
                     }
             );
         }
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(1, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        shutdownAndAwaitTermination(executorService);
     }
 
 
@@ -125,9 +119,32 @@ public class MavenRunner implements IRunner {
             Path projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-            runCommand(path[i].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+            runCommand(path[i].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
         }
+    }
+
+    public void runWithoutCacheMultithread(Path... path) {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        for (int i = 0; i < path.length; i++) {
+            int finalI = i;
+
+            executorService.submit(() -> {
+                String mavenCommand = resolveMavenCommand(path[finalI]);
+                String projectName = path[finalI].getFileName().toString();
+                        try {
+
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+        }
+        shutdownAndAwaitTermination(executorService);
     }
 
     /**
@@ -285,6 +302,24 @@ public class MavenRunner implements IRunner {
                 return "mvnw";
             }
             return "mvn";
+        }
+    }
+
+    void shutdownAndAwaitTermination(ExecutorService pool) {
+        pool.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
+                pool.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            pool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
         }
     }
 }

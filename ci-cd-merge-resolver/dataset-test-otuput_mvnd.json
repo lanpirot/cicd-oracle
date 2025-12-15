@@ -5,180 +5,184 @@
     "parent2" : "55ef6a945c4557241c658f0ed2b61f87c8898ad8",
     "numJavaConflicts" : 3,
     "numConflictChunks" : 3,
-    "totalExecutionTime" : 148,
+    "isMultiModule" : false,
+    "totalExecutionTime" : 189,
     "compilationResult" : {
       "moduleResults" : [ ],
       "buildStatus" : "SUCCESS",
-      "totalTime" : 42.602
+      "totalTime" : 54.2
     },
     "testResults" : {
       "runNum" : 4645,
       "failuresNum" : 0,
       "errorsNum" : 0,
       "skippedNum" : 1,
-      "elapsedTime" : 14.888973,
+      "elapsedTime" : 15.989975,
       "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind"
     },
-    "modulesResults" : [ {
-      "variantName" : "jackson-databind_0",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "SUCCESS",
-        "totalTime" : 65.0
-      },
-      "testResults" : {
-        "runNum" : 4645,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 1,
-        "elapsedTime" : 14.860984,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_0"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_1",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 26.761
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_1"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_2",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 30.249
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_2"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_3",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 26.469
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_3"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_4",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 30.211
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_4"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_5",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 29.749
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_5"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_6",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 26.309
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_6"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
-      }
-    }, {
-      "variantName" : "jackson-databind_7",
-      "compilationResult" : {
-        "moduleResults" : [ ],
-        "buildStatus" : "FAILURE",
-        "totalTime" : 30.597
-      },
-      "testResults" : {
-        "runNum" : 0,
-        "failuresNum" : 0,
-        "errorsNum" : 0,
-        "skippedNum" : 0,
-        "elapsedTime" : 0.0,
-        "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_7"
-      },
-      "conflictPatterns" : {
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
-        "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
-      }
-    } ]
+    "variantsExecution" : {
+      "executionTimeSeconds" : 94,
+      "variants" : [ {
+        "variantName" : "jackson-databind_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 90.0
+        },
+        "testResults" : {
+          "runNum" : 4645,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 1,
+          "elapsedTime" : 27.400003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 27.787
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 26.583
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 23.921
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_4",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 23.774
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_4"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_5",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 25.01
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_5"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_6",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 27.721
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_6"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "jackson-databind_7",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 27.284
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\jackson-databind_7"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\impl\\PropertyBasedCreator.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\SettableBeanProperty.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\fasterxml\\jackson\\databind\\deser\\CreatorProperty.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
   } ]
 }
