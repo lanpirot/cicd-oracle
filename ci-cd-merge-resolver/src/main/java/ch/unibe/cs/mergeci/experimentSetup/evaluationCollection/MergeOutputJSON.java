@@ -4,6 +4,7 @@ import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class MergeOutputJSON {
     @Getter
     @Setter
     @JsonPropertyOrder({"executionTimeSeconds", "results"})
+    @NoArgsConstructor
     public static class VariantsExecution {
         private long executionTimeSeconds;
         private List<Variant> variants;

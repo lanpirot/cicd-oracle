@@ -1,0 +1,1749 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "1f8947164a4ed28784f1be470a68afdba1427f82",
+    "parent1" : "d7ae75855c3ef4ace3a368b66307e11f470c7889",
+    "parent2" : "4fde5adccbdcb476d4124d36a43179fa48591b1d",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 44,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "guacamole-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.801
+      }, {
+        "moduleName" : "guacamole-common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.92
+      }, {
+        "moduleName" : "guacamole-ext",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.229
+      }, {
+        "moduleName" : "guacamole-common-js",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.288
+      }, {
+        "moduleName" : "guacamole",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "extensions",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.286
+      }, {
+        "moduleName" : "guacamole-auth-ban",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-duo",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-header",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-mysql",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-postgresql",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-sqlserver",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-json",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-ldap",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-quickconnect",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-cas",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-openid",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-saml",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-ssl",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-totp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-history-recording-storage",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-ksm",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-display-statistics",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-playback-example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 11.826
+    },
+    "testResults" : {
+      "runNum" : 35,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.13400002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 18,
+      "variants" : [ {
+        "variantName" : "guacamole-client_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.486
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.43
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.368
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.285
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.39
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 16.402
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.197,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_0"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-base\\src\\main\\java\\org\\apache\\guacamole\\auth\\jdbc\\JDBCEnvironment.java" : [ "OursPattern" ],
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "guacamole-client_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.486
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.527
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.287
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.299
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.379
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 16.437
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.23600002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_1"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-base\\src\\main\\java\\org\\apache\\guacamole\\auth\\jdbc\\JDBCEnvironment.java" : [ "OursPattern" ],
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "guacamole-client_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.46
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.507
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.375
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.302
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.364
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 16.453
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.22500001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_2"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-base\\src\\main\\java\\org\\apache\\guacamole\\auth\\jdbc\\JDBCEnvironment.java" : [ "TheirsPattern" ],
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "guacamole-client_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.468
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.689
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.315
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.3
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.333
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 16.549
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.257,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_3"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-base\\src\\main\\java\\org\\apache\\guacamole\\auth\\jdbc\\JDBCEnvironment.java" : [ "TheirsPattern" ],
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "494c4ce05ad187b4640461e16d52acb147cfb819",
+    "parent1" : "b5c9a08e598f66d4196c8a941a0d0dc026aca6fe",
+    "parent2" : "1ae04849f90bb7214b153e21337e573318c47dba",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 348,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "guacamole-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.196
+      }, {
+        "moduleName" : "guacamole-common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.934
+      }, {
+        "moduleName" : "guacamole-ext",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.724
+      }, {
+        "moduleName" : "guacamole-common-js",
+        "status" : "SUCCESS",
+        "timeElapsed" : 11.3
+      }, {
+        "moduleName" : "guacamole",
+        "status" : "FAILURE",
+        "timeElapsed" : 151.0
+      }, {
+        "moduleName" : "extensions",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.25
+      }, {
+        "moduleName" : "guacamole-auth-ban",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-duo",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-header",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-mysql",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-postgresql",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-sqlserver",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-json",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-ldap",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-quickconnect",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-restrict",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-cas",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-openid",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-saml",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-ssl",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-totp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-history-recording-storage",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-ksm",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-display-statistics",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-example",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.925
+      }, {
+        "moduleName" : "guacamole-playback-example",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.127
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 175.0
+    },
+    "testResults" : {
+      "runNum" : 35,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.17500001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 163,
+      "variants" : [ {
+        "variantName" : "guacamole-client_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.91
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.523
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.381
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.388
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "FAILURE",
+            "timeElapsed" : 135.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.29
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-restrict",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.03
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.129
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 162.0
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.169,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_0"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "guacamole-client_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.915
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.518
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.427
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.549
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "FAILURE",
+            "timeElapsed" : 134.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.29
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-restrict",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.034
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.113
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 162.0
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.175,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_1"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "2bf93c1305caaeba1f15a076f84360e6c273e13b",
+    "parent1" : "9320cdb4818344044c32a81070cdc883fd68ee6b",
+    "parent2" : "076f73a3dbc8a877c35e67fe45e6a0ad481566fb",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "totalExecutionTime" : 322,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "guacamole-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.946
+      }, {
+        "moduleName" : "guacamole-common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.274
+      }, {
+        "moduleName" : "guacamole-ext",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.119
+      }, {
+        "moduleName" : "guacamole-common-js",
+        "status" : "SUCCESS",
+        "timeElapsed" : 11.796
+      }, {
+        "moduleName" : "guacamole",
+        "status" : "FAILURE",
+        "timeElapsed" : 127.0
+      }, {
+        "moduleName" : "extensions",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.246
+      }, {
+        "moduleName" : "guacamole-auth-ban",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-duo",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-header",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-mysql",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-postgresql",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-sqlserver",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-jdbc-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-json",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-ldap",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-quickconnect",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-restrict",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-cas",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-openid",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-saml",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-ssl",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-sso-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-auth-totp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-history-recording-storage",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-base",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-ksm",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-vault-dist",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-display-statistics",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "guacamole-example",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.955
+      }, {
+        "moduleName" : "guacamole-playback-example",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.111
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 152.0
+    },
+    "testResults" : {
+      "runNum" : 35,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.16000001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 159,
+      "variants" : [ {
+        "variantName" : "guacamole-client_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.207
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.831
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.869
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.995
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "FAILURE",
+            "timeElapsed" : 128.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.301
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-restrict",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.132
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.132
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 157.0
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.196,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_0"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "guacamole-client_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "guacamole-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.157
+          }, {
+            "moduleName" : "guacamole-common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.866
+          }, {
+            "moduleName" : "guacamole-ext",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.868
+          }, {
+            "moduleName" : "guacamole-common-js",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.996
+          }, {
+            "moduleName" : "guacamole",
+            "status" : "FAILURE",
+            "timeElapsed" : 128.0
+          }, {
+            "moduleName" : "extensions",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.318
+          }, {
+            "moduleName" : "guacamole-auth-ban",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-duo",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-header",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-jdbc-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-json",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-ldap",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-quickconnect",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-restrict",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-cas",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-openid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-saml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-ssl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-sso-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-auth-totp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-history-recording-storage",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-base",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-ksm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-vault-dist",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-display-statistics",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "guacamole-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.155
+          }, {
+            "moduleName" : "guacamole-playback-example",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.151
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 157.0
+        },
+        "testResults" : {
+          "runNum" : 35,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.18200001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\guacamole-client_1"
+        },
+        "conflictPatterns" : {
+          "extensions\\guacamole-auth-jdbc\\modules\\guacamole-auth-jdbc-mysql\\src\\main\\java\\org\\apache\\guacamole\\auth\\mysql\\conf\\MySQLGuacamoleProperties.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -1,9 +1,12 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.File;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @JsonPropertyOrder({"moduleResults", "buildStatus", "totalTime"})
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class CompilationResult {
     private final List<ModuleResult> moduleResults;
     private final Status buildStatus;
@@ -26,6 +30,8 @@ public class CompilationResult {
     private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE)";
     private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:\\s+([\\d.:]+) (min|s|ms)";
     private final static String REACTOR_BLOCK = "\\[INFO\\]\\s+Reactor Summary(?:.*?)?:\\s*((.*\\R)*?)\\[INFO\\]\\s+-+";
+
+
 
     public CompilationResult(File testResultFile) throws IOException {
         moduleResults = new ArrayList<>();
@@ -80,6 +86,7 @@ public class CompilationResult {
         return moduleResults.size();
     }
 
+
     private int getNumberOfSuccessfulModules() {
         return (int) moduleResults.stream().filter(x -> x.status == Status.SUCCESS).count();
     }
@@ -87,10 +94,11 @@ public class CompilationResult {
     @AllArgsConstructor
     @Builder
     @Getter
+    @NoArgsConstructor
     public static class ModuleResult {
-        private final String moduleName;
-        private final Status status;
-        private final float timeElapsed;
+        private String moduleName;
+        private Status status;
+        private float timeElapsed;
 
         @Override
         public String toString() {

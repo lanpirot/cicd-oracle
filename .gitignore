@@ -38,4 +38,6 @@ temp/
 dataset_temp/
 /ci-cd-merge-resolver/repoCollector/*
 !/ci-cd-merge-resolver/repoCollector/datasets
+/ci-cd-merge-resolver/experiments/temp
+/ci-cd-merge-resolver/analysis
 

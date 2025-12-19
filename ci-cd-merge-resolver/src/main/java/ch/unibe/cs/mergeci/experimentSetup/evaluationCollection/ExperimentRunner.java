@@ -96,7 +96,7 @@ public class ExperimentRunner {
 
     public static void makeAnalysisByDataset(File dataset, File repoPath, File Output) throws Exception {
         List<MergeOutputJSON> merges = new ArrayList<>();
-        MergeOutputJSON mergeOutputJSON = new MergeOutputJSON();
+
 
         try (FileInputStream file = new FileInputStream(dataset);
              Workbook workbook = new XSSFWorkbook(file);) {
@@ -105,8 +105,9 @@ public class ExperimentRunner {
             Sheet sheet = workbook.getSheetAt(0);
             int i = 0;
             for (Row row : sheet) {
+                MergeOutputJSON mergeOutputJSON = new MergeOutputJSON();
                 if (i++ == 0) continue;
-                System.out.printf("Start processing %d/%d of %s \n", i, sheet.getLastRowNum(), dataset.getName());
+                System.out.printf("Start processing %d/%d of %s \n", i-1, sheet.getLastRowNum(), dataset.getName());
 
                 mergeOutputJSON.setMergeCommit(row.getCell(0).getStringCellValue());
                 mergeOutputJSON.setParent1(row.getCell(1).getStringCellValue());
