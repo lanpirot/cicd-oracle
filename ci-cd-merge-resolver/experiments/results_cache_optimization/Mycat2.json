@@ -1,0 +1,6005 @@
+{
+  "projectName" : "Mycat2",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "6913f127ebdfb4266988729721eb5376674fac3f",
+    "parent1" : "d631b829b83c4eebbf3acaf4f2df912d2092e8c7",
+    "parent2" : "d1225a20bf217fb7dfed10f2a87c1349b33b6a86",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 4,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 40,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "config",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.668
+      }, {
+        "moduleName" : "common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.824
+      }, {
+        "moduleName" : "logTip",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.125
+      }, {
+        "moduleName" : "sqlparser",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.956
+      }, {
+        "moduleName" : "router",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.86
+      }, {
+        "moduleName" : "security",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.123
+      }, {
+        "moduleName" : "plug",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.163
+      }, {
+        "moduleName" : "expression",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.095
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.841
+      }, {
+        "moduleName" : "jdbc",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.188
+      }, {
+        "moduleName" : "grid",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.187
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.096
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 7.252
+    },
+    "testResults" : {
+      "runNum" : 3,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.072,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 25,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.637
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.856
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.133
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.97
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.922
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.11
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.163
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.074
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.74
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.137
+          }, {
+            "moduleName" : "grid",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.174
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.81
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.9
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.439
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.315
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.127
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.092
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.173
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.078
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.022
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.842
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.178
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.842
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.549
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.279
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.083
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.079
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.161
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.082
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.031
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.167
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.189
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.163
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_10"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.552
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.37
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.103
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.169
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.051
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.029
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.713
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.185
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.814
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_11"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.962
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.337
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.038
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.111
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.123
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.028
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.579
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.171
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.312
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_12"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.843
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.168
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.031
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.035
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.088
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.025
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.097
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.162
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.166
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.642
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_13"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.448
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.329
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.081
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.186
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.073
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.075
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.035
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.071
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.188
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.138
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_14"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.791
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.275
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.102
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.073
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.208
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.974
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.175
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.047
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_15"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.492
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.518
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.074
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.118
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.176
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.322
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.187
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.956
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_2"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.744
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.157
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.028
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.085
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.023
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.028
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.198
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.161
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.112
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_3"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.416
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.305
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.072
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.133
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.066
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.046
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.344
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.175
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.094
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_4"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.526
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.347
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.048
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.084
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.149
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.079
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.093
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.084
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.748
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.181
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.944
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_5"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.696
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.342
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.06
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.095
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.235
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.059
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.17
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.18
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.409
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_6"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.509
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.288
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.212
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.161
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.132
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.048
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.918
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.148
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.178
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_7"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.979
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.232
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.095
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.098
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.483
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.189
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.686
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_8"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.748
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.327
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.105
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.163
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.07
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.076
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.483
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.208
+          }, {
+            "moduleName" : "grid",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.722
+        },
+        "testResults" : {
+          "runNum" : 3,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.061,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_9"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\handler\\backend\\MySQLSynContext.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "bebe04ef757b829101263c5cf69564b5e7a083e2",
+    "parent1" : "74bb3f10045306cdd2ee34709fa28344e7cfbd1e",
+    "parent2" : "8b5a4a4b9e72165a5322cd5d3fd2b5576c343fef",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 20,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "config",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.414
+      }, {
+        "moduleName" : "common",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "router",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "plug",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "replica",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "datasource",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "hbt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "pattern",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "booster",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "testsuite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.504
+      }, {
+        "moduleName" : "statistic",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 3.059
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.042,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 9,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.374
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.46
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.02
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.037,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\calcite\\MycatSqlDialect.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.518
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.447
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.11
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.037,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\calcite\\MycatSqlDialect.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "432756d6ba3764a9e54582047e7fef71bd3143d7",
+    "parent1" : "0d2626eabdf6163b3797d4785fc3ad3ef88cbee6",
+    "parent2" : "63f087a06557178ca690aede971448230ed521df",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 5,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 68,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.003
+      }, {
+        "moduleName" : "config",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.155
+      }, {
+        "moduleName" : "common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.949
+      }, {
+        "moduleName" : "logTip",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.175
+      }, {
+        "moduleName" : "sqlparser",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.3
+      }, {
+        "moduleName" : "router",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.127
+      }, {
+        "moduleName" : "security",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.151
+      }, {
+        "moduleName" : "plug",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.225
+      }, {
+        "moduleName" : "expression",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.082
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.792
+      }, {
+        "moduleName" : "rpc",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.197
+      }, {
+        "moduleName" : "jdbc",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.175
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.788
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 8.306
+    },
+    "testResults" : {
+      "runNum" : 2,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.089,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 43,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.31
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.05
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.165
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.312
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.219
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.162
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.237
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.083
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.797
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.184
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.179
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.068
+          } ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 8.936
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.327
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.684
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.098
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.127
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.397
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.133
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.127
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.135
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.234
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.106
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.94
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.092
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.748
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.304
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.083
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.093
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.136
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.102
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.07
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.169
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.059
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.039
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.296
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.594
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_10"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.028
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.924
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.656
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.142
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.098
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.276
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.16
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.187
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.373
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.08
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.088
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.974
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.698
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_11"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.833
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.273
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.076
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.163
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.077
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.099
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.068
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.201
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.411
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.854
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_12"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.129
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.316
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.088
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.119
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.183
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.088
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.146
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.155
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.076
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.353
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.319
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_13"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.412
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.676
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.179
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.204
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.34
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.103
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.266
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.185
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.318
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.095
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.094
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.685
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.941
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_14"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.771
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.306
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.06
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.091
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.153
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.111
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.049
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.196
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.07
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.428
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.89
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_15"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_16",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.9
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.234
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.095
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.18
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.107
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.682
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.105
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.109
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_16"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_17",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.976
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.387
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.111
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.185
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.624
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.142
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.157
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.172
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.166
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.081
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.701
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_17"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_18",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.004
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.339
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.085
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.07
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.158
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.039
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.087
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.029
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.544
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.059
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.022
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.344
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_18"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_19",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.964
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.264
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.142
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.228
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.087
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.069
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.655
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.069
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.249
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_19"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.717
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.666
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.145
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.106
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.514
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.123
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.093
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.335
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.074
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.646
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.394
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_2"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_20",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.044
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.371
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.102
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.134
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.201
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.068
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.101
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.627
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.054
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.066
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.48
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_20"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_21",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.458
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.348
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.069
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.112
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.17
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.06
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.085
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.648
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.046
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.025
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.876
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_21"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_22",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.791
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.264
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.104
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.101
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.157
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.035
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.666
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.076
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.897
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_22"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_23",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.101
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.496
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.201
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.161
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.4
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.082
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.286
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.097
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.22
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.114
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.035
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.215
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_23"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_24",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.374
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.279
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.079
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.109
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.146
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.08
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.555
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.444
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_24"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_25",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.114
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.277
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.155
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.06
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.031
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.651
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.864
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_25"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_26",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.517
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.219
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.11
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.046
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.383
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.033
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.8
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_26"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_27",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.509
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.221
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.112
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.037
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.018
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.391
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.039
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.029
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.821
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_27"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_28",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.492
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.146
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.088
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.038
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.27
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.025
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.455
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_28"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_29",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.493
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.142
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.083
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.028
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.309
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.017
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.536
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_29"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.018
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.044
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.671
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.131
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.246
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.383
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.158
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.124
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.127
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.339
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.102
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.048
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.937
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.062
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_3"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_30",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.458
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.143
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.029
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.094
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.029
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.031
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.271
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.027
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.022
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.413
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_30"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_31",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.094
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.221
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.046
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.069
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.106
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.039
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "proxy",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.627
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.693
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_31"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.304
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.498
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.181
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.169
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.4
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.087
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.128
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.07
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.306
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.138
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.08
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.825
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.769
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_4"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.791
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.309
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.085
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.11
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.194
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.075
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.023
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.164
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.078
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.34
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.738
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_5"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.041
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.518
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.124
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.122
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.237
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.075
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.25
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.159
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.437
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.146
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.08
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.743
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.513
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_6"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.019
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.331
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.595
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.133
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.194
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.188
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.083
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.124
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.308
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.252
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.143
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.859
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.034
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_7"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.859
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.337
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.054
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.069
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.145
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.071
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.268
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.129
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.462
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.093
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_8"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.755
+          }, {
+            "moduleName" : "common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.29
+          }, {
+            "moduleName" : "logTip",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.101
+          }, {
+            "moduleName" : "sqlparser",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.085
+          }, {
+            "moduleName" : "router",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.212
+          }, {
+            "moduleName" : "security",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.172
+          }, {
+            "moduleName" : "plug",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.087
+          }, {
+            "moduleName" : "expression",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.13
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.296
+          }, {
+            "moduleName" : "rpc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.137
+          }, {
+            "moduleName" : "jdbc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.08
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.321
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.383
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.088,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_9"
+        },
+        "conflictPatterns" : {
+          "proxy\\src\\main\\java\\io\\mycat\\proxy\\monitor\\MycatMonitorLogCallback.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\MycatCore.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "48049412ebff4b45c3f883a43dbbe7dd791b7793",
+    "parent1" : "cbe23b794455fdcd87d314b9c47cdaa7afcc9db3",
+    "parent2" : "7861b37075cb4e4cd3e9336e91c903dd57d27ea3",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 104,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "config",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.956
+      }, {
+        "moduleName" : "common",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "router",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "plug",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "replica",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "datasource",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "linq4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 8.308
+      }, {
+        "moduleName" : "calcite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "hbt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "pattern",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "booster",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "testsuite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.043
+      }, {
+        "moduleName" : "statistic",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 11.53
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 26,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.283
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.796
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.326
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.639
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.844
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.012
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.236
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.441
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.834
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.037
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.23
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.682
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_2"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.835
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.332
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.268
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.685
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_3"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.865
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.044
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.206
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.437
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_4"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.725
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.292
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.281
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.59
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_5"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.845
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.274
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.254
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.627
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_6"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "OursPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.949
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.998
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.225
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.75
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_7"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\DrdsRunner.java" : [ "TheirsPattern" ],
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ShowCreateTableSQLHandler.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "a83a694babe3110f9c799a438348897971033229",
+    "parent1" : "69c6e8d8274ffe71beec94f45ab0db073ce5dd56",
+    "parent2" : "6d5cfe9137344df9e0787791d62d16c1f3961373",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 56,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.003
+      }, {
+        "moduleName" : "config",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.914
+      }, {
+        "moduleName" : "common",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "router",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "plug",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "replica",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "datasource",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "linq4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 9.642
+      }, {
+        "moduleName" : "calcite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "hbt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "pattern",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "booster",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "testsuite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.086
+      }, {
+        "moduleName" : "statistic",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 12.87
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.004,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 25,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.931
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.452
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.108
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.676
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "mycat2\\src\\main\\java\\io\\mycat\\commands\\MycatdbCommand.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.966
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.728
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.188
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.132
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "mycat2\\src\\main\\java\\io\\mycat\\commands\\MycatdbCommand.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "c8682920b3b4e843041f5db7bce294212c2d5438",
+    "parent1" : "6cd8f2ea760c944f33a67839d7d2520b9f7d541f",
+    "parent2" : "fccd893b89df6eb801115c1b2467118cf4f45958",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 61,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.004
+      }, {
+        "moduleName" : "config",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.896
+      }, {
+        "moduleName" : "common",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "router",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "plug",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "replica",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "datasource",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "linq4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.476
+      }, {
+        "moduleName" : "calcite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "hbt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "pattern",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "booster",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "testsuite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.055
+      }, {
+        "moduleName" : "statistic",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 10.644
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.004,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 19,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.836
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.288
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.03
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.392
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\IndexTableView.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.828
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.807
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.174
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.043
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "hbt\\src\\main\\java\\io\\mycat\\hbt3\\IndexTableView.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "7861b37075cb4e4cd3e9336e91c903dd57d27ea3",
+    "parent1" : "00b9789ad2b8be7cf5b821cd9e44b45a6b7103e4",
+    "parent2" : "41706e01361485f1f494ef7351ae8e73561f3e72",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 52,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.004
+      }, {
+        "moduleName" : "config",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.884
+      }, {
+        "moduleName" : "common",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "router",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "plug",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "replica",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "datasource",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "linq4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.584
+      }, {
+        "moduleName" : "calcite",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "hbt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "pattern",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "booster",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "testsuite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.088
+      }, {
+        "moduleName" : "statistic",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 10.765
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.004,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 21,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.834
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.514
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.076
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.661
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "datasource\\src\\main\\java\\io\\mycat\\datasource\\jdbc\\transactionsession\\TransactionSessionTemplate.java" : [ "OursPattern" ],
+          "hbt\\src\\main\\java\\io\\mycat\\hbt4\\ProxyExecutorImplementor.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.38
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.966
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.21
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.829
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "datasource\\src\\main\\java\\io\\mycat\\datasource\\jdbc\\transactionsession\\TransactionSessionTemplate.java" : [ "TheirsPattern" ],
+          "hbt\\src\\main\\java\\io\\mycat\\hbt4\\ProxyExecutorImplementor.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.363
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.907
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.225
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.79
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_2"
+        },
+        "conflictPatterns" : {
+          "datasource\\src\\main\\java\\io\\mycat\\datasource\\jdbc\\transactionsession\\TransactionSessionTemplate.java" : [ "OursPattern" ],
+          "hbt\\src\\main\\java\\io\\mycat\\hbt4\\ProxyExecutorImplementor.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.271
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.005
+          }, {
+            "moduleName" : "calcite",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.212
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.764
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_3"
+        },
+        "conflictPatterns" : {
+          "datasource\\src\\main\\java\\io\\mycat\\datasource\\jdbc\\transactionsession\\TransactionSessionTemplate.java" : [ "TheirsPattern" ],
+          "hbt\\src\\main\\java\\io\\mycat\\hbt4\\ProxyExecutorImplementor.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "c9fcf204099bfbfaae03f05fc069a42750548ff7",
+    "parent1" : "fb72097c4ec4eb8a8811df3bf41b6b5c9f23aa99",
+    "parent2" : "bf95cc194af47f9b46e5848e47c3e3dd5ffbc06a",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 58,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.003
+      }, {
+        "moduleName" : "config",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.821
+      }, {
+        "moduleName" : "common",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "router",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "plug",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "replica",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "datasource",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "proxy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "linq4j",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.888
+      }, {
+        "moduleName" : "calcite",
+        "status" : "FAILURE",
+        "timeElapsed" : 9.107
+      }, {
+        "moduleName" : "hbt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "pattern",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "booster",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mycat2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "example",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "testsuite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.281
+      }, {
+        "moduleName" : "statistic",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 13.3
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.059,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 26,
+      "variants" : [ {
+        "variantName" : "Mycat2_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.859
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.946
+          }, {
+            "moduleName" : "calcite",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.013
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.433
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.466
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.054,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_0"
+        },
+        "conflictPatterns" : {
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ExplainSQLHandler.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.162
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.867
+          }, {
+            "moduleName" : "calcite",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.551
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.228
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.073
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.054,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_1"
+        },
+        "conflictPatterns" : {
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ExplainSQLHandler.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.203
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.846
+          }, {
+            "moduleName" : "calcite",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.496
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.23
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.062
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.054,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_2"
+        },
+        "conflictPatterns" : {
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ExplainSQLHandler.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Mycat2_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "config",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.216
+          }, {
+            "moduleName" : "common",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "router",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "plug",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "replica",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "datasource",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "proxy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "linq4j",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.85
+          }, {
+            "moduleName" : "calcite",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.467
+          }, {
+            "moduleName" : "hbt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "pattern",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "booster",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mycat2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "example",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "testsuite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.225
+          }, {
+            "moduleName" : "statistic",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.038
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.054,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Mycat2_3"
+        },
+        "conflictPatterns" : {
+          "mycat2\\src\\main\\java\\io\\mycat\\sqlhandler\\dql\\ExplainSQLHandler.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

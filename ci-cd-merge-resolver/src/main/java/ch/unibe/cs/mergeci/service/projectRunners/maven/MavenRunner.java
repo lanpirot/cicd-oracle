@@ -20,11 +20,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 @Getter
-public class MavenRunner{
+public class MavenRunner {
     private final Path logDir;
     private final boolean isUseMavenDaemon;
     private static final String COMPILATION_POSTFIX = "_compilation";
@@ -73,7 +72,7 @@ public class MavenRunner{
     }
 
     public void runWithCacheMultithread(Path... path) {
-        String mavenCommand = resolveMavenCommand(path[0]);
+        String mavenCommand = "mvn.cmd";
 
         System.out.println(path[0].toAbsolutePath().toString());
         Process pr = null;
@@ -81,15 +80,13 @@ public class MavenRunner{
         String projectName = path[0].getFileName().toString();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0].toFile(), logDir.resolve(projectName + "_compilation").toFile(), mavenCommand, "test", "-fae");
+        runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         for (int i = 1; i < path.length; i++) {
             int finalI = i;
-            mavenCommand = resolveMavenCommand(path[i]);
-            String finalMavenCommand = mavenCommand;
 
             executorService.submit(() -> {
                         String projectNameFinal = path[finalI].getFileName().toString();
@@ -100,7 +97,7 @@ public class MavenRunner{
 
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectNameFinal + COMPILATION_POSTFIX).toFile(), finalMavenCommand, "test", "-fae");
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectNameFinal + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -119,7 +116,7 @@ public class MavenRunner{
             Path projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-            runCommand(path[i].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+            runCommand(path[i].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "-fae", "test");
 
         }
     }
@@ -132,11 +129,43 @@ public class MavenRunner{
             int finalI = i;
 
             executorService.submit(() -> {
-                String mavenCommand = resolveMavenCommand(path[finalI]);
-                String projectName = path[finalI].getFileName().toString();
+                        String mavenCommand = resolveMavenCommand(path[finalI]);
+                        String projectName = path[finalI].getFileName().toString();
                         try {
 
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "-fae","-Dmaven.test.failure.ignore=true","test");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+        }
+        shutdownAndAwaitTermination(executorService);
+    }
+
+    public void runWithCoverage(Path... path) {
+        final String jacoco = "org.jacoco:jacoco-maven-plugin:0.8.14";
+        String jacocoGoalPrepareAgent = ":prepare-agent";
+        String jacocoGoalReport = ":report";
+
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        for (int i = 0; i < path.length; i++) {
+            int finalI = i;
+
+            executorService.submit(() -> {
+                        String mavenCommand = resolveMavenCommand(path[finalI]);
+                        String projectName = path[finalI].getFileName().toString();
+                        try {
+
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(),
+                                    mavenCommand,
+                                    "-fae",
+                                    "-Dmaven.test.failure.ignore=true",
+                                    jacoco + jacocoGoalPrepareAgent,
+                                    "test",
+                                    jacoco + jacocoGoalReport);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -266,7 +295,7 @@ public class MavenRunner{
                         System.out.println("Copying target folder: " + dst + "->" + destDir);
                         try {
                             FileUtils.copyDirectoryCompatibityMode(dir.toFile(), destDir);
-                            FileUtils.deleteDirectory(destDir.toPath().resolve("surefire-reports").toFile());
+//                            FileUtils.deleteDirectory(destDir.toPath().resolve("surefire-reports").toFile());
                         } catch (IOException e) {
                             e.printStackTrace();
                             System.err.println("Failed to copy " + dst + ": " + e.getMessage());
@@ -278,6 +307,7 @@ public class MavenRunner{
 
         return true;
     }
+
 
     private String resolveMavenCommand(Path projectPath) {
         if (isUseMavenDaemon) {

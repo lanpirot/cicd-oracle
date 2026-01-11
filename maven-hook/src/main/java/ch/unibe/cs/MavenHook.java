@@ -42,10 +42,10 @@ public class MavenHook extends AbstractEventSpy {
                 String lifecyclePhase = mojoExecution.getLifecyclePhase();
                 log.debug("LifecyclePhase:{}", lifecyclePhase);
 
-                if ((lifecyclePhase.equals("compile") || lifecyclePhase.equals("test-compile")) && !isReportsDeleted) {
+                if ((lifecyclePhase.equals("compile") || lifecyclePhase.equals("test-compile"))) {
                     MavenSession session = ee.getSession();
                     MavenProject mavenProject = session.getCurrentProject();
-                    File surefireReportsPath = mavenProject.getFile().toPath()
+                    File surefireReportsPath = mavenProject.getBasedir().toPath()
                             .resolve("target", "surefire-reports").toFile();
 
                     log.info("Delete folder: {}", surefireReportsPath);

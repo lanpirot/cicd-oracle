@@ -1,0 +1,1109 @@
+{
+  "projectName" : "smart-doc",
+  "repoUrl" : "https://github.com/TongchengOpenSource/smart-doc",
+  "merges" : [ {
+    "mergeCommit" : "ba3c7195db6b317c5112406631fa20773c2131c9",
+    "parent1" : "c427604e236bfdb36074f133e426b039a0a6cf9c",
+    "parent2" : "9cf296679eaf03e2c3c60afcf5270a51c3fc5eed",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 22,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 8.744
+    },
+    "testResults" : {
+      "runNum" : 5,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.88899994,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 8,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.211
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\template\\SpringBootDocBuildTemplate.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.695
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\template\\SpringBootDocBuildTemplate.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.602
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\template\\SpringBootDocBuildTemplate.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.996
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\template\\SpringBootDocBuildTemplate.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "d1bdf37d2612c66842dc0ad03950757a2a4ae9a9",
+    "parent1" : "b9d108fd4b579ee1e58e1d96df07c8c25040c2cb",
+    "parent2" : "d073d143b6190501816d2dbf548432f72241ca63",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 28,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 9.613
+    },
+    "testResults" : {
+      "runNum" : 7,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 2.4240003,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 12,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.45
+        },
+        "testResults" : {
+          "runNum" : 7,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.5660002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.373
+        },
+        "testResults" : {
+          "runNum" : 7,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.491,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "a57687e2283d359b3b000803e6936e65a9fe20eb",
+    "parent1" : "a01b868087d43db733074b939346cbdd7dd8f958",
+    "parent2" : "0ce056087bd471e4e2b704148dd4e59b2fb8da2a",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 26,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 8.734
+    },
+    "testResults" : {
+      "runNum" : 5,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.81,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 12,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.266
+        },
+        "testResults" : {
+          "runNum" : 5,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.019,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\DocClassUtil.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.255
+        },
+        "testResults" : {
+          "runNum" : 5,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.92700005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\DocClassUtil.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "33203a6d72cb3f121eca95d342063c772b806a3e",
+    "parent1" : "723f7f87c0c36e5c3ff9dcd3ad3e725de452febf",
+    "parent2" : "1cd889b2f39e6a4ffc5d0cb0763ed5f30bd15157",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 23,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 7.865
+    },
+    "testResults" : {
+      "runNum" : 4,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 1.3610001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 10,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.915
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.426,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\template\\SpringBootDocBuildTemplate.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.835
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.4200001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\template\\SpringBootDocBuildTemplate.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "4bac204e5050f303bceb0d928c48b5475aa864fb",
+    "parent1" : "b9d108fd4b579ee1e58e1d96df07c8c25040c2cb",
+    "parent2" : "d073d143b6190501816d2dbf548432f72241ca63",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 21,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 6.894
+    },
+    "testResults" : {
+      "runNum" : 7,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 1.6750002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 9,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.681
+        },
+        "testResults" : {
+          "runNum" : 7,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.929,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.789
+        },
+        "testResults" : {
+          "runNum" : 7,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.023,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "c3929bc003415ae0352fefd6a4bdf9ec33c68925",
+    "parent1" : "1612f8f1ce7928856d967714d8ea789c10aa6675",
+    "parent2" : "37e4ac7090c4569b98c0dd10bb2619f09d0a989a",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 21,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 6.754
+    },
+    "testResults" : {
+      "runNum" : 16,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 1.2600001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 11,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.117
+        },
+        "testResults" : {
+          "runNum" : 16,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.6740001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\ly\\doc\\utils\\TornaUtil.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.16
+        },
+        "testResults" : {
+          "runNum" : 16,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.66,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\ly\\doc\\utils\\TornaUtil.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "1330e887c81055ec50dd14f060b9f77511909ec6",
+    "parent1" : "388c178662269c58c9fa694eb702ef1bdc39f02c",
+    "parent2" : "31fbc383940d35ffd5e7c84657e0066cfe8a7cba",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 27,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 9.318
+    },
+    "testResults" : {
+      "runNum" : 7,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 2.404,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 12,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.893
+        },
+        "testResults" : {
+          "runNum" : 7,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.463,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.285
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "95769e1519f44ccf305bcdb7ce4b6388760d8f77",
+    "parent1" : "3558654371d56aaaa7b2f23342060a602c6f869d",
+    "parent2" : "908fb933b86252a60fa047c688c01a711e7b4938",
+    "numConflictFiles" : 3,
+    "numJavaConflictFiles" : 3,
+    "numConflictChunks" : 3,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : 0.15154257,
+      "lineCoverage" : 0.13628957
+    },
+    "totalExecutionTime" : 40,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 11.238
+    },
+    "testResults" : {
+      "runNum" : 17,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.1780002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 20,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.111
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.198
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.332
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.137
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_4",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.345
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_4"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_5",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.098
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_5"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_6",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.22
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_6"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_7",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 16.806
+        },
+        "testResults" : {
+          "runNum" : 17,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.2800002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_7"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\TornaUtil.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\IRestDocTemplate.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\template\\JaxrsDocBuildTemplate.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "900300dacec8ad786866ba0e91635e2c43c27217",
+    "parent1" : "9462fb87c1f3b9b05c2784f38012547ede3a0c67",
+    "parent2" : "6a3288f4ae5753285c871782c70e9266ca088b58",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 22,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 8.006
+    },
+    "testResults" : {
+      "runNum" : 5,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.139,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 8,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.087
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.823
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.179
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.21
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\builder\\OpenApiBuilder.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "cf6452c5d1804db57d71afc90d20328ecb3e988f",
+    "parent1" : "1330e887c81055ec50dd14f060b9f77511909ec6",
+    "parent2" : "a50b3a01cffc169e2c07a7a4566b756da160413c",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 3,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 30,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 9.173
+    },
+    "testResults" : {
+      "runNum" : 7,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 2.3160002,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 13,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.095
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.622
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.111
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.099
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "OursPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_4",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.066
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_4"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_5",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.732
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_5"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_6",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.816
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_6"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_7",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.685
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_7"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\model\\ApiConfig.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\com\\power\\doc\\builder\\TornaBuilder.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "6ad1b25c661fe8cb392ab095b3baab0c24b6b2b8",
+    "parent1" : "47e4b196a2e0d4ec7681f6bb882f544388453a9e",
+    "parent2" : "8c65ce901a27822d1c7aafeae0c267adce4da89a",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 24,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 10.889
+    },
+    "testResults" : {
+      "runNum" : 11,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.22700001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 8,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.83
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\DocClassUtil.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.718
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\power\\doc\\utils\\DocClassUtil.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "05c84dfc287aff6c746263044cd00e4c7cf6643c",
+    "parent1" : "ea6a3b4c59f18bb99f79618a67372f41f75482c0",
+    "parent2" : "ac6720099eeb00b521391236c0e30f59dd1b15f4",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 36,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 15.98
+    },
+    "testResults" : {
+      "runNum" : 19,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.3140006,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 15,
+      "variants" : [ {
+        "variantName" : "smart-doc_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.948
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.3020003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\ly\\doc\\model\\ApiMethodDoc.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "smart-doc_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.911
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.453,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\smart-doc_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\ly\\doc\\model\\ApiMethodDoc.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

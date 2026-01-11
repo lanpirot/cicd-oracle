@@ -1,0 +1,2238 @@
+{
+  "projectName" : "serverless-java-container",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "32d15fa80a0429619563bd2bcd3510a73614508f",
+    "parent1" : "9b189fd8e392349ffe495ae1590040414b9e0f35",
+    "parent2" : "b9f486ef2ff4a6c5ca3629c7e0abfed05e44629e",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 29,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "AWS Serverless Java container",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.594
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 4.33
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Spark implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Spring implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 7.159
+    },
+    "testResults" : {
+      "runNum" : 23,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.004,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 17,
+      "variants" : [ {
+        "variantName" : "serverless-java-container_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.721
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.986
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.902
+        },
+        "testResults" : {
+          "runNum" : 23,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_0"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.654
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.47
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.285
+        },
+        "testResults" : {
+          "runNum" : 23,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.006,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_1"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.706
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.451
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.327
+        },
+        "testResults" : {
+          "runNum" : 23,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.007,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_2"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.65
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.438
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.255
+        },
+        "testResults" : {
+          "runNum" : 23,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_3"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "550edae1a0d63696b1e4bff80d9594ae8c5deb88",
+    "parent1" : "af27cf709af3f34ece267c61bb8dd18ecb498c5a",
+    "parent2" : "ef2f14560ebed7d657ce20b8c250802eb49641e1",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 4,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 41,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "AWS Serverless Java container support - Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 4.359
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Spark implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Spring implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.114
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 4.637
+    },
+    "testResults" : {
+      "runNum" : 19,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.003,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 30,
+      "variants" : [ {
+        "variantName" : "serverless-java-container_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.116
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.094
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.35
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_0"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "OursPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.925
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.128
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.453
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_1"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.646
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.141
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.236
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.031,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_10"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.038
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.134
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.557
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_11"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.644
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.174
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.564
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.029,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_12"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.737
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.253
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.254
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_13"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.125
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.105
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.708
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.006,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_14"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.542
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.255
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.144
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.031,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_15"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.17
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.15
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.724
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_2"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "OursPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.536
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.198
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.036
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.031,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_3"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.745
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.122
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.247
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.011,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_4"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.985
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.161
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.456
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.014,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_5"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.588
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.292
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.323
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.031,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_6"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.558
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.21
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.104
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.053,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_7"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.606
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.196
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.127
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.048,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_8"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.647
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.259
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.3
+        },
+        "testResults" : {
+          "runNum" : 19,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.024,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_9"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringAwsProxyTest.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\spring\\SpringLambdacontainerHandler.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "71bde0a8dd80ae26b9f04a3687f533d4dea55c24",
+    "parent1" : "a318a113d3cb4d8c221f020ed84f2df20a1c3dbb",
+    "parent2" : "7a16f04e9ce3467c3f72650287f2dd9df63e05a3",
+    "numConflictFiles" : 4,
+    "numJavaConflictFiles" : 4,
+    "numConflictChunks" : 5,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 59,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "AWS Serverless Java container",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.71
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 4.608
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Spark implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "AWS Serverless Java container support - Spring implementation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 5.543
+    },
+    "testResults" : {
+      "runNum" : 34,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.017,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 43,
+      "variants" : [ {
+        "variantName" : "serverless-java-container_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.668
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.092
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.923
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_0"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.569
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.83
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.883
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_1"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.581
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.297
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.288
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_10"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.651
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.633
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.788
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_11"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.899
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.11
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.521
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_12"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.65
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.058
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.094
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_13"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.621
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.786
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.867
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_14"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.641
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.971
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.015
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_15"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_16",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.773
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.657
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.913
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_16"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_17",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.574
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.35
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.388
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_17"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_18",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.853
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.808
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.028
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_18"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_19",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.789
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.485
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.785
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_19"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.757
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.652
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.019
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_2"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_20",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.943
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.085
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.605
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_20"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_21",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.82
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.542
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.858
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_21"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_22",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.541
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.866
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.851
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_22"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_23",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.512
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.264
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.186
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_23"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_24",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.777
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.607
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.899
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_24"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_25",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.276
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.119
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.657
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_25"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_26",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.375
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.186
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.833
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_26"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_27",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.34
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.13
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.742
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_27"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_28",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.565
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.262
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.573
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_28"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_29",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.886
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.187
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.661
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_29"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.675
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.785
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.948
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_3"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_30",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.344
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.147
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.766
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_30"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_31",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.371
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.004
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.657
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_31"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.792
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.148
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.46
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_4"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.883
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.671
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.156
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_5"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.947
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.872
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.507
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_6"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.697
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.471
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.695
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_7"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.77
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.561
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.794
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_8"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "OursPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "serverless-java-container_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "AWS Serverless Java container",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.999
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.791
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Jersey implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spark implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "AWS Serverless Java container support - Spring implementation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.414
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\serverless-java-container_9"
+        },
+        "conflictPatterns" : {
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyServletContext.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoSpringAppConfig.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-spring\\src\\test\\java\\com\\amazonaws\\serverless\\proxy\\spring\\echoapp\\EchoResource.java" : [ "TheirsPattern" ],
+          "aws-serverless-java-container-core\\src\\main\\java\\com\\amazonaws\\serverless\\proxy\\internal\\servlet\\AwsProxyHttpServletRequest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -1,0 +1,1601 @@
+{
+  "projectName" : "ignite",
+  "repoUrl" : "https://github.com/apache/ignite",
+  "merges" : [ {
+    "mergeCommit" : "32ebec351936952b3c548886b005a85a2695700c",
+    "parent1" : "43d2f18ac24ddfc6f94e2ff0e674242033ebdade",
+    "parent2" : "34a9518e356a85ffe11f8fa6920f83fbfdbbb403",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 73,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "ignite-apache-license-gen",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.089
+      }, {
+        "moduleName" : "ignite-tools",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.395
+      }, {
+        "moduleName" : "ignite-core",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-indexing",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-dev-utils",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-direct-io",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-log4j",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-urideploy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spring",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-hadoop",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-p2p",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-uri-dep",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-uri",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-platform",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-rest-http",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-clients",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spring-data",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-web",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-aop",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-ssh",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-jta",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-aws",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-log4j2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-slf4j",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-jcl",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-codegen",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-gce",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-cloud",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-mesos",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.573
+      }, {
+        "moduleName" : "ignite-kafka",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-flume",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-yarn",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.269
+      }, {
+        "moduleName" : "ignite-jms11",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-twitter",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-mqtt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-zookeeper",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-hibernate-core",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-camel",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-storm",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-osgi-paxlogging",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.854
+      }, {
+        "moduleName" : "ignite-osgi-karaf",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.037
+      }, {
+        "moduleName" : "ignite-osgi",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-appserver-test",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-websphere-test",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-cassandra",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.016
+      }, {
+        "moduleName" : "ignite-cassandra-store",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-cassandra-serializers",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-flink",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-kubernetes",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-zeromq",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-rocketmq",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-sqlline",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.063
+      }, {
+        "moduleName" : "ignite-ml",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-scalar",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spark",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-visor-console",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-visor-plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apache-ignite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.017
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 10.902
+    },
+    "testResults" : {
+      "runNum" : 18,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 2.377,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ignite"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 15,
+      "variants" : [ {
+        "variantName" : "ignite_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ignite-apache-license-gen",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.15
+          }, {
+            "moduleName" : "ignite-tools",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.69
+          }, {
+            "moduleName" : "ignite-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-indexing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-dev-utils",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-direct-io",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-urideploy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hadoop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-p2p",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri-dep",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-platform",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rest-http",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-clients",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring-data",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-web",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ssh",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jta",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aws",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-slf4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jcl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-codegen",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-gce",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cloud",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mesos",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.95
+          }, {
+            "moduleName" : "ignite-kafka",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flume",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-yarn",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.779
+          }, {
+            "moduleName" : "ignite-jms11",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-twitter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mqtt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zookeeper",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hibernate-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-camel",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-storm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-osgi-paxlogging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.9
+          }, {
+            "moduleName" : "ignite-osgi-karaf",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "ignite-osgi",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-appserver-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-websphere-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.019
+          }, {
+            "moduleName" : "ignite-cassandra-store",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra-serializers",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flink",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-kubernetes",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zeromq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rocketmq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-sqlline",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "ignite-ml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-scalar",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-console",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apache-ignite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 14.01
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.4250002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ignite_0"
+        },
+        "conflictPatterns" : {
+          "modules\\cassandra\\store\\src\\test\\java\\org\\apache\\ignite\\tests\\CassandraSessionImplTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "ignite_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ignite-apache-license-gen",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.15
+          }, {
+            "moduleName" : "ignite-tools",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.659
+          }, {
+            "moduleName" : "ignite-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-indexing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-dev-utils",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-direct-io",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-urideploy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hadoop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-p2p",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri-dep",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-platform",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rest-http",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-clients",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring-data",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-web",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ssh",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jta",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aws",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-slf4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jcl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-codegen",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-gce",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cloud",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mesos",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.008
+          }, {
+            "moduleName" : "ignite-kafka",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flume",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-yarn",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.806
+          }, {
+            "moduleName" : "ignite-jms11",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-twitter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mqtt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zookeeper",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hibernate-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-camel",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-storm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-osgi-paxlogging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.092
+          }, {
+            "moduleName" : "ignite-osgi-karaf",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.049
+          }, {
+            "moduleName" : "ignite-osgi",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-appserver-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-websphere-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "ignite-cassandra-store",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra-serializers",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flink",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-kubernetes",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zeromq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rocketmq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-sqlline",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.075
+          }, {
+            "moduleName" : "ignite-ml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-scalar",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-console",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apache-ignite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.023
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.305
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.447,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ignite_1"
+        },
+        "conflictPatterns" : {
+          "modules\\cassandra\\store\\src\\test\\java\\org\\apache\\ignite\\tests\\CassandraSessionImplTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "e2be216255149105db89a73de544382136218cf9",
+    "parent1" : "d2f71c6211ab48228cebbf59976b056dfcbc8d9c",
+    "parent2" : "9c721f7f053f80558444fb38fe638c50018dabe3",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 144,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "ignite-apache-license-gen",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.712
+      }, {
+        "moduleName" : "ignite-tools",
+        "status" : "FAILURE",
+        "timeElapsed" : 2.555
+      }, {
+        "moduleName" : "ignite-core",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-compress",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-indexing",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-dev-utils",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-direct-io",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-log4j",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-urideploy",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spring",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-hadoop",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-p2p",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-uri-dep",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-uri",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-extdata-platform",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-rest-http",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-clients",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spring-data",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spring-data_2.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-web",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-aop",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-ssh",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-jta",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-aws",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-log4j2",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-slf4j",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-jcl",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-codegen",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-gce",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-cloud",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-mesos",
+        "status" : "FAILURE",
+        "timeElapsed" : 2.731
+      }, {
+        "moduleName" : "ignite-kafka",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-flume",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-yarn",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.1
+      }, {
+        "moduleName" : "ignite-jms11",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-twitter",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-mqtt",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-zookeeper",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-hibernate-core",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-camel",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-storm",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-osgi-paxlogging",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.518
+      }, {
+        "moduleName" : "ignite-osgi-karaf",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.078
+      }, {
+        "moduleName" : "ignite-osgi",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-appserver-test",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-websphere-test",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-cassandra",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.049
+      }, {
+        "moduleName" : "ignite-cassandra-store",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-cassandra-serializers",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-flink",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-kubernetes",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-zeromq",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-rocketmq",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-sqlline",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.158
+      }, {
+        "moduleName" : "ignite-ml",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-ml-spark-model-parser",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-ml-xgboost-model-parser",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-tensorflow",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-ml-mleap-model-parser",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-scalar",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-spark",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-visor-console",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "ignite-visor-plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apache-ignite",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.047
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 18.636
+    },
+    "testResults" : {
+      "runNum" : 9,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 3.493,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ignite"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 20,
+      "variants" : [ {
+        "variantName" : "ignite_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ignite-apache-license-gen",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.69
+          }, {
+            "moduleName" : "ignite-tools",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.623
+          }, {
+            "moduleName" : "ignite-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-compress",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-indexing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-dev-utils",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-direct-io",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-urideploy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hadoop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-p2p",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri-dep",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-platform",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rest-http",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-clients",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring-data",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring-data_2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-web",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ssh",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jta",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aws",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-slf4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jcl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-codegen",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-gce",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cloud",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mesos",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.649
+          }, {
+            "moduleName" : "ignite-kafka",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flume",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-yarn",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.17
+          }, {
+            "moduleName" : "ignite-jms11",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-twitter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mqtt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zookeeper",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hibernate-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-camel",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-storm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-osgi-paxlogging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.393
+          }, {
+            "moduleName" : "ignite-osgi-karaf",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.131
+          }, {
+            "moduleName" : "ignite-osgi",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-appserver-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-websphere-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.043
+          }, {
+            "moduleName" : "ignite-cassandra-store",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra-serializers",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flink",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-kubernetes",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zeromq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rocketmq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-sqlline",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.142
+          }, {
+            "moduleName" : "ignite-ml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ml-spark-model-parser",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ml-xgboost-model-parser",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-tensorflow",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ml-mleap-model-parser",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-scalar",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-console",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apache-ignite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.047
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 18.667
+        },
+        "testResults" : {
+          "runNum" : 9,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.477,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ignite_0"
+        },
+        "conflictPatterns" : {
+          "modules\\core\\src\\main\\java\\org\\apache\\ignite\\internal\\processors\\cache\\persistence\\GridCacheDatabaseSharedManager.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "ignite_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ignite-apache-license-gen",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.69
+          }, {
+            "moduleName" : "ignite-tools",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.623
+          }, {
+            "moduleName" : "ignite-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-compress",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-indexing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-dev-utils",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-direct-io",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-urideploy",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hadoop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-p2p",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri-dep",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-uri",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-extdata-platform",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rest-http",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-clients",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring-data",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spring-data_2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-web",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aop",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ssh",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jta",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-aws",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-log4j2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-slf4j",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-jcl",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-codegen",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-gce",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cloud",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mesos",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.649
+          }, {
+            "moduleName" : "ignite-kafka",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flume",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-yarn",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.181
+          }, {
+            "moduleName" : "ignite-jms11",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-twitter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-mqtt",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zookeeper",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-hibernate-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-camel",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-storm",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-osgi-paxlogging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.397
+          }, {
+            "moduleName" : "ignite-osgi-karaf",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.085
+          }, {
+            "moduleName" : "ignite-osgi",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-appserver-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-websphere-test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.073
+          }, {
+            "moduleName" : "ignite-cassandra-store",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-cassandra-serializers",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-flink",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-kubernetes",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-zeromq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-rocketmq",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-sqlline",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.144
+          }, {
+            "moduleName" : "ignite-ml",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ml-spark-model-parser",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ml-xgboost-model-parser",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-tensorflow",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-ml-mleap-model-parser",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-scalar",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-spark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-console",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "ignite-visor-plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apache-ignite",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 17.668
+        },
+        "testResults" : {
+          "runNum" : 9,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.486,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ignite_1"
+        },
+        "conflictPatterns" : {
+          "modules\\core\\src\\main\\java\\org\\apache\\ignite\\internal\\processors\\cache\\persistence\\GridCacheDatabaseSharedManager.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

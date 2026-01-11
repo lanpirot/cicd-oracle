@@ -1,0 +1,1553 @@
+{
+  "projectName" : "hive",
+  "repoUrl" : "https://github.com/apache/hive",
+  "merges" : [ {
+    "mergeCommit" : "4cc7819d77dc32ac44f857b8ed742439da68c56f",
+    "parent1" : "648ab648f70abe739a447bc6f9066dbdf2a0d790",
+    "parent2" : "6a8f4cbe328608a29f04c97c47b9d8c17f4ae29e",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 285,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 57.257
+      }, {
+        "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 3.018
+      }, {
+        "moduleName" : "Hive 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 11.173
+      }, {
+        "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 72.0
+    },
+    "testResults" : {
+      "runNum" : 188,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 29.973999,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 49,
+      "variants" : [ {
+        "variantName" : "hive_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 41.703
+          }, {
+            "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.532
+          }, {
+            "moduleName" : "Hive 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.415
+          }, {
+            "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 46.55
+        },
+        "testResults" : {
+          "runNum" : 188,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 17.221998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive_0"
+        },
+        "conflictPatterns" : {
+          "standalone-metastore\\src\\main\\java\\org\\apache\\hadoop\\hive\\metastore\\HiveMetaStore.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "hive_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 43.782
+          }, {
+            "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.999
+          }, {
+            "moduleName" : "Hive 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.561
+          }, {
+            "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 47.243
+        },
+        "testResults" : {
+          "runNum" : 188,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 19.092,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive_1"
+        },
+        "conflictPatterns" : {
+          "standalone-metastore\\src\\main\\java\\org\\apache\\hadoop\\hive\\metastore\\HiveMetaStore.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "4743c7984d8a547cab135f9fc0fc550ac32dd61f",
+    "parent1" : "42a9f3bb031624da1f3553dfd9a61702bf280846",
+    "parent2" : "6d532e7c4396a81b0afd16b66b4873c5fe9398ee",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 171,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 36.525
+      }, {
+        "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.603
+      }, {
+        "moduleName" : "Hive 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 6.405
+      }, {
+        "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 43.895
+    },
+    "testResults" : {
+      "runNum" : 188,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 17.028,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 53,
+      "variants" : [ {
+        "variantName" : "hive_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 45.861
+          }, {
+            "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.85
+          }, {
+            "moduleName" : "Hive 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.813
+          }, {
+            "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 51.304
+        },
+        "testResults" : {
+          "runNum" : 188,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 20.480999,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive_0"
+        },
+        "conflictPatterns" : {
+          "standalone-metastore\\src\\main\\java\\org\\apache\\hadoop\\hive\\metastore\\HiveMetaStore.java" : [ "OursPattern" ],
+          "ql\\src\\java\\org\\apache\\hadoop\\hive\\ql\\metadata\\Hive.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "hive_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 46.907
+          }, {
+            "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.09
+          }, {
+            "moduleName" : "Hive 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.56
+          }, {
+            "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 51.345
+        },
+        "testResults" : {
+          "runNum" : 188,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 21.719,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive_1"
+        },
+        "conflictPatterns" : {
+          "standalone-metastore\\src\\main\\java\\org\\apache\\hadoop\\hive\\metastore\\HiveMetaStore.java" : [ "OursPattern" ],
+          "ql\\src\\java\\org\\apache\\hadoop\\hive\\ql\\metadata\\Hive.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "hive_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 45.818
+          }, {
+            "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.834
+          }, {
+            "moduleName" : "Hive 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.893
+          }, {
+            "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 51.336
+        },
+        "testResults" : {
+          "runNum" : 188,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 20.742,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive_2"
+        },
+        "conflictPatterns" : {
+          "standalone-metastore\\src\\main\\java\\org\\apache\\hadoop\\hive\\metastore\\HiveMetaStore.java" : [ "TheirsPattern" ],
+          "ql\\src\\java\\org\\apache\\hadoop\\hive\\ql\\metadata\\Hive.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "hive_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Hive Storage API 2.7.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 46.897
+          }, {
+            "moduleName" : "Hive Upgrade Acid 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.084
+          }, {
+            "moduleName" : "Hive 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Classifications 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 0.23 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Scheduler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service RPC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Serde 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Standalone Metastore 4.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.576
+          }, {
+            "moduleName" : "Hive Metastore 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Vector-Code-Gen Utilities 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Common 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Tez 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Spark Remote Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Query Language 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap Server 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Service 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Accumulo Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Beeline 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive CLI 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Contrib 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Druid Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HBase Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive JDBC Handler 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Core 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Pig Adapter 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Server Extensions 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat Java Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Webhcat 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HCatalog Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive HPL/SQL 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Streaming 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Llap External Client 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Shims Aggregator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Kryo Registrator 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive TestUtils 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Hive Packaging 4.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 51.33
+        },
+        "testResults" : {
+          "runNum" : 188,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 20.895998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\hive_3"
+        },
+        "conflictPatterns" : {
+          "standalone-metastore\\src\\main\\java\\org\\apache\\hadoop\\hive\\metastore\\HiveMetaStore.java" : [ "TheirsPattern" ],
+          "ql\\src\\java\\org\\apache\\hadoop\\hive\\ql\\metadata\\Hive.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

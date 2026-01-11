@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
+import ch.unibe.cs.mergeci.service.IRunner;
 import ch.unibe.cs.mergeci.service.MavenExecutionFactory;
 import ch.unibe.cs.mergeci.service.MergeAnalyzer;
 import ch.unibe.cs.mergeci.service.RunExecutionTIme;
@@ -40,7 +41,7 @@ public class ExperimentRunner {
         this.tempDir = tempDir;
     }
 
-    public void runTests(File outputDir) throws Exception {
+    public void runTests(File outputDir, boolean withCash) throws Exception {
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
@@ -48,6 +49,7 @@ public class ExperimentRunner {
         File[] xlsxDataset = getFilesFromDir(datasetsDir);
 
         for (File dataset : xlsxDataset) {
+            String repoUrl = getRepoUrl(dataset);
             String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + ".json";
             if (Arrays.stream(outputDir.listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
                 System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
@@ -57,10 +59,10 @@ public class ExperimentRunner {
 
             File repoPath = tempDir.toPath().resolve(repoName).toFile();
             if (!repoPath.exists()) {
-                GitUtils.cloneRepo(tempDir.toPath().resolve(repoName), getRepoUrl(dataset));
+                GitUtils.cloneRepo(tempDir.toPath().resolve(repoName), repoUrl);
             }
 
-            makeAnalysisByDataset(dataset, repoPath, new File(outputDir, nameOfOutputFIle));
+            makeAnalysisByDataset(dataset, repoPath, new File(outputDir, nameOfOutputFIle), withCash);
             RepositoryCache.clear();
             WindowCache.reconfigure(new WindowCacheConfig());
             FileUtils.deleteDirectory(repoPath);
@@ -94,7 +96,7 @@ public class ExperimentRunner {
         return null;
     }
 
-    public static void makeAnalysisByDataset(File dataset, File repoPath, File Output) throws Exception {
+    public static void makeAnalysisByDataset(File dataset, File repoPath, File Output, boolean withCache) throws Exception {
         List<MergeOutputJSON> merges = new ArrayList<>();
 
 
@@ -107,7 +109,7 @@ public class ExperimentRunner {
             for (Row row : sheet) {
                 MergeOutputJSON mergeOutputJSON = new MergeOutputJSON();
                 if (i++ == 0) continue;
-                System.out.printf("Start processing %d/%d of %s \n", i-1, sheet.getLastRowNum(), dataset.getName());
+                System.out.printf("Start processing %d/%d of %s \n", i - 1, sheet.getLastRowNum(), dataset.getName());
 
                 mergeOutputJSON.setMergeCommit(row.getCell(0).getStringCellValue());
                 mergeOutputJSON.setParent1(row.getCell(1).getStringCellValue());
@@ -139,8 +141,13 @@ public class ExperimentRunner {
                 Instant start = Instant.now();
                 MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, "temp");
                 mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
-                RunExecutionTIme runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunner());
+                RunExecutionTIme runExecutionTIme;
 
+                if (!withCache) {
+                    runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunnerWithoutParallelization());
+                } else {
+                    runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunnerWithCache());
+                }
                 Instant finish = Instant.now();
                 long timeElapsed = Duration.between(start, finish).toSeconds();
                 mergeOutputJSON.setTotalExecutionTime(timeElapsed);
@@ -185,6 +192,7 @@ public class ExperimentRunner {
         }
 
         AllMergesJSON allMergesJSON = new AllMergesJSON();
+        allMergesJSON.setProjectName(Files.getNameWithoutExtension(dataset.getName()));
         allMergesJSON.setMerges(merges);
 
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);

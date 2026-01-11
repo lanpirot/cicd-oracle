@@ -1,0 +1,1008 @@
+{
+  "projectName" : "WxJava",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "516c1cc80a23e8188c9b231f3f4ea55c40e9e947",
+    "parent1" : "1ab807d752b3e315d914b141c06da1bb3d5b2b98",
+    "parent2" : "e84325d0e4010015da62e7661b9720fa12e5d833",
+    "numConflictFiles" : 5,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 5,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 70,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "WeiXin Java Tools - Parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "WeiXin Java Tools - Common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.105
+      }, {
+        "moduleName" : "WeiXin Java Tools - CP",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.485
+      }, {
+        "moduleName" : "WeiXin Java Tools - MP",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.571
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 5.994
+    },
+    "testResults" : {
+      "runNum" : 10,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.448,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 50,
+      "variants" : [ {
+        "variantName" : "WxJava_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_0"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_1"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.309
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.354
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.575
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.269
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.4,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_10"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.4
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.072
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.538
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.449
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.073,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_11"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_12",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_12"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_13",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_13"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.453
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.527
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.21
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 18.72
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.287,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_14"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.939
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.339
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.543
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 19.917
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.36,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_15"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_16",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_16"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_17",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_17"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_18",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.662
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.442
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.37
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.789
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.327,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_18"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_19",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.912
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.268
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.105
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 18.835
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.031,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_19"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 15.359
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.525
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.194
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 24.336
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 6.018,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_2"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_20",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_20"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_21",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_21"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_22",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.297
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.181
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.217
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 18.119
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.97,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_22"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_23",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 13.438
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.541
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.229
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 23.095
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.952,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_23"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_24",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_24"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_25",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_25"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_26",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.021
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.077
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.193
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.933
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 17.204
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.384,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_26"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_27",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.956
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.121
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.363
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.703
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.074,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_27"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_28",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_28"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_29",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_29"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 15.18
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.628
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.591
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 24.135
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 5.724,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_3"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "OursPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_30",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.544
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.669
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.777
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.366
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.664,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_30"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_31",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.231
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.793
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.082
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.745
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.977,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_31"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_4",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_4"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_5",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_5"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "OursPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.142
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.566
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.631
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 23.797
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.744,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_6"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "WeiXin Java Tools - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "WeiXin Java Tools - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.15
+          }, {
+            "moduleName" : "WeiXin Java Tools - CP",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.028
+          }, {
+            "moduleName" : "WeiXin Java Tools - MP",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.689
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.614
+        },
+        "testResults" : {
+          "runNum" : 10,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.215,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_7"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_8",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_8"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "WxJava_9",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : null,
+          "totalTime" : 0.0
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\WxJava_9"
+        },
+        "conflictPatterns" : {
+          "src\\test\\resources\\test-config.sample.xml" : [ "TheirsPattern" ],
+          "src\\main\\java\\me\\chanjar\\weixin\\api\\WxConsts.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\me\\chanjar\\weixin\\api\\WxBaseAPITest.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          "README.md" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

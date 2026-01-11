@@ -1,0 +1,640 @@
+{
+  "projectName" : "OpenPDF",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "ce4cdc07de491d979fa34d84f27eb18c4b2deb96",
+    "parent1" : "83d5a8befc09746a03d7a2c189228b5e0ef5e63a",
+    "parent2" : "dc154e5dd754dd70cc9100c01cbad7df3b19f6ff",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 5,
+    "isMultiModule" : false,
+    "coverage" : null,
+    "totalExecutionTime" : 148,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 15.487
+    },
+    "testResults" : {
+      "runNum" : 18,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 1.885,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 88,
+      "variants" : [ {
+        "variantName" : "OpenPDF_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 14.713
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 8.738
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_10",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 12.947
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_10"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_11",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 10.571
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_11"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_12",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 13.517
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_12"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_13",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 10.68
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_13"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_14",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 12.926
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_14"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_15",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 12.34
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_15"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_16",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.529
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_16"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_17",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.175
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_17"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_18",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 29.596
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_18"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_19",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 28.54
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_19"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 12.667
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_20",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 30.114
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_20"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_21",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 28.852
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_21"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_22",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 28.288
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_22"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_23",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.291
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_23"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_24",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 22.0
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_24"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_25",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 16.195
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_25"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_26",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.096
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_26"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_27",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.513
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_27"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_28",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.399
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_28"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_29",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.822
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_29"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 12.39
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_30",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.87
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_30"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_31",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.878
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_31"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_4",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 14.878
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_4"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_5",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 9.699
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_5"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_6",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 11.042
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_6"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_7",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 11.078
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_7"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_8",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 11.317
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_8"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "OpenPDF_9",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 14.197
+        },
+        "testResults" : {
+          "runNum" : 18,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.076,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\OpenPDF_9"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\com\\lowagie\\text\\pdf\\PdfReader.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -1,0 +1,2140 @@
+{
+  "projectName" : "openbas",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "c189bde46bf05e8b568e7393e120cf50f0093d32",
+    "parent1" : "b11f5164446d27f57f0ec40eee52d5e07288b470",
+    "parent2" : "a1bb0e07ba07f99f74ae1e6e891a7ea5bd0c6554",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 146,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "OpenBAS platform",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.004
+      }, {
+        "moduleName" : "OpenBAS model",
+        "status" : "SUCCESS",
+        "timeElapsed" : 6.383
+      }, {
+        "moduleName" : "OpenBAS framework",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.747
+      }, {
+        "moduleName" : "OpenBAS API",
+        "status" : "FAILURE",
+        "timeElapsed" : 35.765
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 45.312
+    },
+    "testResults" : {
+      "runNum" : 40,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 4.224,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 86,
+      "variants" : [ {
+        "variantName" : "openbas_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.421
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.592
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 60.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 75.0
+        },
+        "testResults" : {
+          "runNum" : 40,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.555,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_0"
+        },
+        "conflictPatterns" : {
+          "openbas-framework\\src\\main\\java\\io\\openbas\\execution\\ExecutionContextService.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.147
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.152
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.754
+        },
+        "testResults" : {
+          "runNum" : 40,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.555,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_1"
+        },
+        "conflictPatterns" : {
+          "openbas-framework\\src\\main\\java\\io\\openbas\\execution\\ExecutionContextService.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "71085c50a6d67d7a8b41368e51d5b8571cea0a51",
+    "parent1" : "100a43944a680a43971502168ce4927e3fb2ed1e",
+    "parent2" : "056d1b13c18ba4cb32d261503e36efa16d5547b7",
+    "numConflictFiles" : 3,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 114,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "OpenBAS platform",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.003
+      }, {
+        "moduleName" : "OpenBAS model",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.088
+      }, {
+        "moduleName" : "OpenBAS framework",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.489
+      }, {
+        "moduleName" : "OpenBAS API",
+        "status" : "FAILURE",
+        "timeElapsed" : 40.204
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 51.256
+    },
+    "testResults" : {
+      "runNum" : 28,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 6.3089995,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 26,
+      "variants" : [ {
+        "variantName" : "openbas_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.29
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.763
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_0"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "OursPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "OursPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.744
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.564
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_1"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "OursPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "TheirsPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.797
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.59
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_2"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "OursPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "OursPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.735
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.4
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_3"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "OursPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "TheirsPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.909
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.731
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_4"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "TheirsPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "OursPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.738
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.312
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_5"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "TheirsPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "TheirsPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.794
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.397
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_6"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "TheirsPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "OursPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.928
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.555
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_7"
+        },
+        "conflictPatterns" : {
+          "openbas-model\\src\\main\\java\\io\\openbas\\database\\specification\\EndpointSpecification.java" : [ "TheirsPattern" ],
+          "openbas-front\\src\\admin\\components\\common\\injects\\InjectDefinition.js" : [ "TheirsPattern" ],
+          "openbas-front\\src\\utils\\Localization.js" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "4792f5d5df23dfd33907efc59295ef872d6349b1",
+    "parent1" : "aa914d03bc9456d98efe8a34a74366eb64562baa",
+    "parent2" : "1471de8ce86db8f8fb57214a78c0e89c2457f490",
+    "numConflictFiles" : 3,
+    "numJavaConflictFiles" : 3,
+    "numConflictChunks" : 5,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 284,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "OpenBAS platform",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.047
+      }, {
+        "moduleName" : "OpenBAS model",
+        "status" : "SUCCESS",
+        "timeElapsed" : 13.101
+      }, {
+        "moduleName" : "OpenBAS framework",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.378
+      }, {
+        "moduleName" : "OpenBAS API",
+        "status" : "FAILURE",
+        "timeElapsed" : 78.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 97.0
+    },
+    "testResults" : {
+      "runNum" : 92,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 27.92,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 80,
+      "variants" : [ {
+        "variantName" : "openbas_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.035
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.633
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.899
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.973
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 28.002
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_0"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.087
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.69
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.106
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.386
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.754
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_1"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.128
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.787
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.924
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.471
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.453
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_10"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.287
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.771
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.676
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.231
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 19.624
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_11"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.074
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.188
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.767
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.727
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.008
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_12"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.114
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.769
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.284
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.896
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.88
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_13"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.231
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.515
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.396
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.147
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 16.189
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_14"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.141
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.578
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.347
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.651
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_15"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_16",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.109
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.502
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.084
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.118
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 17.986
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_16"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_17",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.076
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.372
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.704
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.41
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.866
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_17"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_18",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.183
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.265
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.043
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.536
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 15.404
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_18"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_19",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.32
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.722
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.087
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 18.774
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_19"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.154
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.407
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.272
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.847
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 18.405
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_2"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_20",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.597
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.59
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.314
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.476
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_20"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_21",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.616
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.519
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.665
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.77
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_21"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_22",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.11
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.906
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.014
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.713
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 17.339
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_22"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_23",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.495
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.518
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.795
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.692
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_23"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_24",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.286
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.238
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.704
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 14.784
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_24"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_25",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.153
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.193
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.338
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.25
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.126
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_25"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_26",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.082
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.572
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.706
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.305
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_26"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_27",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.052
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.473
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.653
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.054
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_27"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_28",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.049
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.974
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.527
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.585
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.974
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_28"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_29",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.059
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.11
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.344
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.172
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.976
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_29"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.115
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.587
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.184
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 13.224
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_3"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_30",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.326
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.645
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.377
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.34
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_30"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_31",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.09
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.71
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.497
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.619
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.886
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_31"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.743
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.917
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.863
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.691
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_4"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.18
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.647
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.206
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 11.807
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 23.778
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_5"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.198
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.631
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.338
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.46
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_6"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.364
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.576
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.938
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 11.265
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_7"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.082
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.888
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.632
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.787
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.432
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_8"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "OursPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.099
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.589
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.261
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.377
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.264
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_9"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\inject\\service\\InjectStatusService.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\scheduler\\jobs\\InjectsExecutionJob.java" : [ "TheirsPattern" ],
+          "openbas-api\\src\\main\\java\\io\\openbas\\rest\\finding\\FindingUtils.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "27c4cb7df2840935f740db8d9ae4b66bc8caa1be",
+    "parent1" : "0ce3c15bdd4efb3379e499da34ccb6038121587e",
+    "parent2" : "895f90eea1b7fe48dbb22fe93ac95537d10e69e3",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 248,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "OpenBAS platform",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.044
+      }, {
+        "moduleName" : "OpenBAS model",
+        "status" : "SUCCESS",
+        "timeElapsed" : 14.557
+      }, {
+        "moduleName" : "OpenBAS framework",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.497
+      }, {
+        "moduleName" : "OpenBAS API",
+        "status" : "FAILURE",
+        "timeElapsed" : 99.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 119.0
+    },
+    "testResults" : {
+      "runNum" : 48,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 14.021,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 94,
+      "variants" : [ {
+        "variantName" : "openbas_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.032
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.46
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.088
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 69.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 81.0
+        },
+        "testResults" : {
+          "runNum" : 48,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 10.075001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_0"
+        },
+        "conflictPatterns" : {
+          ".drone.yml" : [ "OursPattern" ],
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\inject\\InjectImportTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.391
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.256
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.979
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.257
+        },
+        "testResults" : {
+          "runNum" : 48,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 10.075001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_1"
+        },
+        "conflictPatterns" : {
+          ".drone.yml" : [ "TheirsPattern" ],
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\inject\\InjectImportTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.027
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.396
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.242
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.967
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.257
+        },
+        "testResults" : {
+          "runNum" : 48,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 10.075001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_2"
+        },
+        "conflictPatterns" : {
+          ".drone.yml" : [ "OursPattern" ],
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\inject\\InjectImportTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.038
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.395
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.234
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.98
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.247
+        },
+        "testResults" : {
+          "runNum" : 48,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 10.075001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_3"
+        },
+        "conflictPatterns" : {
+          ".drone.yml" : [ "TheirsPattern" ],
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\inject\\InjectImportTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "d4a1e6924105a0d53fadc6d6e03bab4a46f7609b",
+    "parent1" : "990a92c4701db7eb8ca3900a350a2ce9ada60331",
+    "parent2" : "0a9f285015130b59c82191c656091990617a49f4",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 216,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "OpenBAS platform",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.036
+      }, {
+        "moduleName" : "OpenBAS model",
+        "status" : "SUCCESS",
+        "timeElapsed" : 10.144
+      }, {
+        "moduleName" : "OpenBAS framework",
+        "status" : "SUCCESS",
+        "timeElapsed" : 3.064
+      }, {
+        "moduleName" : "OpenBAS API",
+        "status" : "FAILURE",
+        "timeElapsed" : 75.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 88.0
+    },
+    "testResults" : {
+      "runNum" : 47,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 11.396999,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 103,
+      "variants" : [ {
+        "variantName" : "openbas_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.038
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.517
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.563
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 71.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 83.0
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_0"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.235
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.356
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.804
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.187
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_1"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.037
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.029
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.42
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.158
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.569
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_2"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.164
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.344
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.905
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.212
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_3"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.916
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.404
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.265
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.539
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_4"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.038
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.235
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.363
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.834
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.383
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_5"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.038
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.186
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.364
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.883
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.389
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_6"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openbas_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "OpenBAS platform",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "OpenBAS model",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.966
+          }, {
+            "moduleName" : "OpenBAS framework",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.39
+          }, {
+            "moduleName" : "OpenBAS API",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.222
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.526
+        },
+        "testResults" : {
+          "runNum" : 47,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 9.150001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openbas_7"
+        },
+        "conflictPatterns" : {
+          "openbas-api\\src\\test\\java\\io\\openbas\\rest\\scenario\\ScenarioInjectTestApiTest.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

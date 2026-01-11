@@ -1,0 +1,140 @@
+{
+  "projectName" : "soapui",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "06e02aa34433728ec630208285b786a7f9ad09c2",
+    "parent1" : "f7c997175f30a01a81ec59fb01fbfcdd60b9d52d",
+    "parent2" : "bb89c71027e73a02d013d452c6122349a939908e",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 255,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "SoapUI project",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.576
+      }, {
+        "moduleName" : "SoapUI",
+        "status" : "FAILURE",
+        "timeElapsed" : 79.0
+      }, {
+        "moduleName" : "SoapUI Maven plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "SoapUI installer",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "SoapUI Maven plugin tester",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "SoapUI system test",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 80.0
+    },
+    "testResults" : {
+      "runNum" : 376,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 5,
+      "elapsedTime" : 9.4920025,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\soapui"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 160,
+      "variants" : [ {
+        "variantName" : "soapui_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "SoapUI project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.563
+          }, {
+            "moduleName" : "SoapUI",
+            "status" : "FAILURE",
+            "timeElapsed" : 78.0
+          }, {
+            "moduleName" : "SoapUI Maven plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "SoapUI installer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "SoapUI Maven plugin tester",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "SoapUI system test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 78.0
+        },
+        "testResults" : {
+          "runNum" : 376,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 9.816999,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\soapui_0"
+        },
+        "conflictPatterns" : {
+          "soapui\\src\\main\\java\\com\\eviware\\soapui\\plugins\\PluginManager.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "soapui_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "SoapUI project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.578
+          }, {
+            "moduleName" : "SoapUI",
+            "status" : "FAILURE",
+            "timeElapsed" : 62.0
+          }, {
+            "moduleName" : "SoapUI Maven plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "SoapUI installer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "SoapUI Maven plugin tester",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "SoapUI system test",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 63.0
+        },
+        "testResults" : {
+          "runNum" : 376,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 8.656001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\soapui_1"
+        },
+        "conflictPatterns" : {
+          "soapui\\src\\main\\java\\com\\eviware\\soapui\\plugins\\PluginManager.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

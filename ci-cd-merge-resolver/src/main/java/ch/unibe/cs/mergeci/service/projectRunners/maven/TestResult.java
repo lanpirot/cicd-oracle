@@ -30,7 +30,7 @@ public class TestResult {
     public static TestResult createTestResultFromFile(File testResultFile) throws IOException {
         TestResult testResult = null;
 
-        String string = Files.readAllLines(testResultFile.toPath()).getLast();
+        String string = Files.readString(testResultFile.toPath());
         Pattern p = Pattern.compile("Tests run: (\\d+), Failures: (\\d+), Errors: (\\d+), Skipped: (\\d+), Time elapsed: (\\d+(.\\d+)?).*");
         Matcher m = p.matcher(string);
 
@@ -42,6 +42,8 @@ public class TestResult {
             float timeElapsed = Float.parseFloat(m.group(5));
 
             testResult = new TestResult(runNum, failuresNum, errorsNum, skippedNum, timeElapsed);
+        }else {
+            System.out.println("Failed to parse test result file: " + testResultFile.getAbsolutePath());
         }
 
         return testResult;

@@ -1,0 +1,71 @@
+{
+  "projectName" : "Ant-Media-Server",
+  "repoUrl" : "https://github.com/ant-media/Ant-Media-Server",
+  "merges" : [ {
+    "mergeCommit" : "af67326e6f3a26cafb268b1e8a413b7746108897",
+    "parent1" : "50607679762370f9dbddc306dbd23f8c18ae6705",
+    "parent2" : "5e4f804865e1bfeb30713f42589e45c1171c800f",
+    "numConflictFiles" : 0,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : {
+      "instructionCoverage" : 0.025181778,
+      "lineCoverage" : 0.028327256
+    },
+    "totalExecutionTime" : 102,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 40.926
+    },
+    "testResults" : {
+      "runNum" : 95,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 91,
+      "elapsedTime" : 15.475001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Ant-Media-Server"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 54,
+      "variants" : [ {
+        "variantName" : "Ant-Media-Server_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 52.686
+        },
+        "testResults" : {
+          "runNum" : 95,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 91,
+          "elapsedTime" : 15.747002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Ant-Media-Server_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\io\\antmedia\\AntMediaApplicationAdapter.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Ant-Media-Server_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 52.806
+        },
+        "testResults" : {
+          "runNum" : 95,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 91,
+          "elapsedTime" : 15.755001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Ant-Media-Server_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\io\\antmedia\\AntMediaApplicationAdapter.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -34,7 +34,7 @@ public class TestTotalXml {
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
                 "**/target/surefire-reports/TEST-*.xml");
 
-        List<Path> paths = FileUtils.listFilesUsingFileWalk(projectDir.getPath());
+        List<Path> paths = FileUtils.listFilesUsingFileWalk(projectDir.toPath());
         int counter = 0;
 
         for (Path file : paths) {

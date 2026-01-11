@@ -1,0 +1,392 @@
+{
+  "projectName" : null,
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "ca2539a6a76ff48c63471a65a5cc98931c069e7d",
+    "parent1" : "b9d975a73fef4c6c9a59607274ea998a85799c3d",
+    "parent2" : "6a2cd79aa9ce049e074b3a7d26f40dc13cb5897e",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 246,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "ANTLR 4",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.827
+      }, {
+        "moduleName" : "ANTLR 4 Runtime",
+        "status" : "SUCCESS",
+        "timeElapsed" : 8.696
+      }, {
+        "moduleName" : "ANTLR 4 Tool",
+        "status" : "SUCCESS",
+        "timeElapsed" : 8.529
+      }, {
+        "moduleName" : "ANTLR 4 Maven plugin",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.685
+      }, {
+        "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+        "status" : "SUCCESS",
+        "timeElapsed" : 37.774
+      }, {
+        "moduleName" : "ANTLR 4 Tool Tests",
+        "status" : "SUCCESS",
+        "timeElapsed" : 13.722
+      } ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 78.0
+    },
+    "testResults" : {
+      "runNum" : 808,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 5,
+      "elapsedTime" : 30.133999,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 149,
+      "variants" : [ {
+        "variantName" : "antlr4_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.135
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.721
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 26.004
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.832
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.909
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 72.0
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 6.861,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_0"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.096
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.075
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.693
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.906
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.022
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 73.0
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.461,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_1"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.936
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.52
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.402
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 15.435
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.328
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 64.0
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 5.515,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_2"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.982
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.003
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 25.3
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.832
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.716
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 73.0
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.441,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_3"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.933
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.656
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.538
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 15.002
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.105
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 64.0
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 5.348,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_4"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.924
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.589
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.536
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 15.201
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.75
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 64.0
+        },
+        "testResults" : {
+          "runNum" : 4,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 5.488,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_5"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.103
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 19.838
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.426
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.484
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "SUCCESS",
+            "timeElapsed" : 63.0
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.936
+          } ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 146.0
+        },
+        "testResults" : {
+          "runNum" : 808,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 51.301,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_6"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "antlr4_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "ANTLR 4",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.968
+          }, {
+            "moduleName" : "ANTLR 4 Runtime",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.415
+          }, {
+            "moduleName" : "ANTLR 4 Tool",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.498
+          }, {
+            "moduleName" : "ANTLR 4 Maven plugin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 15.179
+          }, {
+            "moduleName" : "ANTLR 4 Runtime Tests (4th generation)",
+            "status" : "SUCCESS",
+            "timeElapsed" : 70.0
+          }, {
+            "moduleName" : "ANTLR 4 Tool Tests",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.866
+          } ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 145.0
+        },
+        "testResults" : {
+          "runNum" : 808,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 50.091,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\antlr4_7"
+        },
+        "conflictPatterns" : {
+          "runtime-testsuite\\test\\org\\antlr\\v4\\test\\runtime\\go\\GoRunner.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

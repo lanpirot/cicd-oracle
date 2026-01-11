@@ -1,0 +1,684 @@
+{
+  "projectName" : "canal",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "7cec0994e97d126274aef7a7dd95ec96a896bb89",
+    "parent1" : "c070757da008a09f74dfe075eb33276f0bf64bb6",
+    "parent2" : "483044916d8935d3ba4e2809127c451734091606",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 294,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "canal module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.116
+      }, {
+        "moduleName" : "canal common module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.198
+      }, {
+        "moduleName" : "canal protocol module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.505
+      }, {
+        "moduleName" : "canal meta module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.044
+      }, {
+        "moduleName" : "canal driver module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.213
+      }, {
+        "moduleName" : "canal dbsync module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.283
+      }, {
+        "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.791
+      }, {
+        "moduleName" : "canal store module for otter 1.1.4-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 16.988
+      }, {
+        "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal parse module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal instance core module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal instance manager module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal instance spring module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal instance module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.003
+      }, {
+        "moduleName" : "canal server module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal client module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.998
+      }, {
+        "moduleName" : "canal prometheus module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal deployer module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal example module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.418
+      }, {
+        "moduleName" : "canal client adapter module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal client adapter common module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.32
+      }, {
+        "moduleName" : "canal client adapter logger example module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.224
+      }, {
+        "moduleName" : "canal client adapter hbase module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.148
+      }, {
+        "moduleName" : "canal client adapter elasticsearch module for otter 1.1.4-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.239
+      }, {
+        "moduleName" : "canal client adapter rdb module for otter 1.1.4-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.587
+      }, {
+        "moduleName" : "canal client adapter launcher module for otter 1.1.4-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal-admin",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "canal-admin-ui",
+        "status" : "FAILURE",
+        "timeElapsed" : 49.124
+      }, {
+        "moduleName" : "canal-admin-server",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.538
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 93.0
+    },
+    "testResults" : {
+      "runNum" : 45,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 13,
+      "elapsedTime" : 13.076,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\canal"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 192,
+      "variants" : [ {
+        "variantName" : "canal_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "canal module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.164
+          }, {
+            "moduleName" : "canal common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.057
+          }, {
+            "moduleName" : "canal protocol module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.588
+          }, {
+            "moduleName" : "canal meta module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.051
+          }, {
+            "moduleName" : "canal driver module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.107
+          }, {
+            "moduleName" : "canal dbsync module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.287
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.777
+          }, {
+            "moduleName" : "canal store module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.99
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal parse module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance core module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance manager module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance spring module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "canal server module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal client module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.908
+          }, {
+            "moduleName" : "canal prometheus module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal deployer module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.442
+          }, {
+            "moduleName" : "canal client adapter module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "canal client adapter common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.244
+          }, {
+            "moduleName" : "canal client adapter logger example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.309
+          }, {
+            "moduleName" : "canal client adapter hbase module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.891
+          }, {
+            "moduleName" : "canal client adapter elasticsearch module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.056
+          }, {
+            "moduleName" : "canal client adapter rdb module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "canal client adapter launcher module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal-admin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal-admin-ui",
+            "status" : "FAILURE",
+            "timeElapsed" : 46.865
+          }, {
+            "moduleName" : "canal-admin-server",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.353
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 89.0
+        },
+        "testResults" : {
+          "runNum" : 45,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 13,
+          "elapsedTime" : 13.057,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\canal_0"
+        },
+        "conflictPatterns" : {
+          "deployer\\src\\main\\java\\com\\alibaba\\otter\\canal\\deployer\\CanalConstants.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "canal_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "canal module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.217
+          }, {
+            "moduleName" : "canal common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.727
+          }, {
+            "moduleName" : "canal protocol module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.075
+          }, {
+            "moduleName" : "canal meta module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "canal driver module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.099
+          }, {
+            "moduleName" : "canal dbsync module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.1
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "canal store module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.142
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal parse module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance core module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance manager module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance spring module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "canal server module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal client module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.052
+          }, {
+            "moduleName" : "canal prometheus module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal deployer module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "canal client adapter module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "canal client adapter common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.503
+          }, {
+            "moduleName" : "canal client adapter logger example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.023
+          }, {
+            "moduleName" : "canal client adapter hbase module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "canal client adapter elasticsearch module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "canal client adapter rdb module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.256
+          }, {
+            "moduleName" : "canal client adapter launcher module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal-admin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal-admin-ui",
+            "status" : "FAILURE",
+            "timeElapsed" : 79.0
+          }, {
+            "moduleName" : "canal-admin-server",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.447
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 87.0
+        },
+        "testResults" : {
+          "runNum" : 45,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 13,
+          "elapsedTime" : 13.057,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\canal_1"
+        },
+        "conflictPatterns" : {
+          "deployer\\src\\main\\java\\com\\alibaba\\otter\\canal\\deployer\\CanalConstants.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "canal_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "canal module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.21
+          }, {
+            "moduleName" : "canal common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.744
+          }, {
+            "moduleName" : "canal protocol module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "canal meta module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "canal driver module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.102
+          }, {
+            "moduleName" : "canal dbsync module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.091
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.045
+          }, {
+            "moduleName" : "canal store module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.144
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal parse module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance core module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance manager module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance spring module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "canal server module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal client module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.048
+          }, {
+            "moduleName" : "canal prometheus module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal deployer module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "canal client adapter module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal client adapter common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.502
+          }, {
+            "moduleName" : "canal client adapter logger example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.024
+          }, {
+            "moduleName" : "canal client adapter hbase module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "canal client adapter elasticsearch module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "canal client adapter rdb module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.263
+          }, {
+            "moduleName" : "canal client adapter launcher module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal-admin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "canal-admin-ui",
+            "status" : "FAILURE",
+            "timeElapsed" : 80.0
+          }, {
+            "moduleName" : "canal-admin-server",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.408
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 88.0
+        },
+        "testResults" : {
+          "runNum" : 45,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 13,
+          "elapsedTime" : 13.057,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\canal_2"
+        },
+        "conflictPatterns" : {
+          "deployer\\src\\main\\java\\com\\alibaba\\otter\\canal\\deployer\\CanalConstants.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "canal_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "canal module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.218
+          }, {
+            "moduleName" : "canal common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.77
+          }, {
+            "moduleName" : "canal protocol module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.071
+          }, {
+            "moduleName" : "canal meta module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "canal driver module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.103
+          }, {
+            "moduleName" : "canal dbsync module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.089
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "canal store module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.046
+          }, {
+            "moduleName" : "canal sink module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal parse module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance core module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance manager module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance spring module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal instance module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "canal server module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal client module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "canal prometheus module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal deployer module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.052
+          }, {
+            "moduleName" : "canal client adapter module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal client adapter common module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.511
+          }, {
+            "moduleName" : "canal client adapter logger example module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.025
+          }, {
+            "moduleName" : "canal client adapter hbase module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.044
+          }, {
+            "moduleName" : "canal client adapter elasticsearch module for otter 1.1.4-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.043
+          }, {
+            "moduleName" : "canal client adapter rdb module for otter 1.1.4-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.264
+          }, {
+            "moduleName" : "canal client adapter launcher module for otter 1.1.4-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "canal-admin",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "canal-admin-ui",
+            "status" : "FAILURE",
+            "timeElapsed" : 80.0
+          }, {
+            "moduleName" : "canal-admin-server",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.385
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 88.0
+        },
+        "testResults" : {
+          "runNum" : 45,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 13,
+          "elapsedTime" : 13.057,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\canal_3"
+        },
+        "conflictPatterns" : {
+          "deployer\\src\\main\\java\\com\\alibaba\\otter\\canal\\deployer\\CanalConstants.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

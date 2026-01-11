@@ -1,0 +1,3573 @@
+{
+  "projectName" : "openapi-generator",
+  "repoUrl" : "https://github.com/OpenAPITools/openapi-generator",
+  "merges" : [ {
+    "mergeCommit" : "eb75515715c60e0de827d7e2162c61bdd1899195",
+    "parent1" : "bd61978b5f0a90e42d621807d0197eb6c3e7f1c1",
+    "parent2" : "f6001c2768191d3ae2d5984968e9d65461a184bf",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : 0.0,
+      "lineCoverage" : 0.0
+    },
+    "totalExecutionTime" : 318,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "openapi-generator-project",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.565
+      }, {
+        "moduleName" : "openapi-generator-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.423
+      }, {
+        "moduleName" : "openapi-generator (core library)",
+        "status" : "FAILURE",
+        "timeElapsed" : 45.792
+      }, {
+        "moduleName" : "openapi-generator (executable)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "openapi-generator (maven-plugin)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "openapi-generator-online",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 51.325
+    },
+    "testResults" : {
+      "runNum" : 15,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.679,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 92,
+      "variants" : [ {
+        "variantName" : "openapi-generator_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.699
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.128
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 81.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 90.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.925,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_0"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "samples\\client\\petstore\\java\\okhttp-gson\\src\\test\\java\\org\\openapitools\\client\\auth\\RetryingOAuthTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.743
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.062
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 81.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 90.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.95,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_1"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "samples\\client\\petstore\\java\\okhttp-gson\\src\\test\\java\\org\\openapitools\\client\\auth\\RetryingOAuthTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.684
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.951
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 81.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 90.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.975,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_2"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "samples\\client\\petstore\\java\\okhttp-gson\\src\\test\\java\\org\\openapitools\\client\\auth\\RetryingOAuthTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.765
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.046
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 81.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 90.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.027,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_3"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "samples\\client\\petstore\\java\\okhttp-gson\\src\\test\\java\\org\\openapitools\\client\\auth\\RetryingOAuthTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "c8b84c4d0314aaff6e44c6c879b21e202af7ff30",
+    "parent1" : "9c3d4ef2a6406a7d7f1af390649e55ab05fcd047",
+    "parent2" : "3ed6343933a27b8069e52f0bdf795b278f37a066",
+    "numConflictFiles" : 6,
+    "numJavaConflictFiles" : 5,
+    "numConflictChunks" : 6,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : 0.0,
+      "lineCoverage" : 0.0
+    },
+    "totalExecutionTime" : 3259,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "openapi-generator-project",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.048
+      }, {
+        "moduleName" : "openapi-generator-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.104
+      }, {
+        "moduleName" : "openapi-generator (core library)",
+        "status" : "FAILURE",
+        "timeElapsed" : 91.0
+      }, {
+        "moduleName" : "openapi-generator (executable)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "openapi-generator (maven-plugin)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "openapi-generator-online",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 100.0
+    },
+    "testResults" : {
+      "runNum" : 15,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.979,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 369,
+      "variants" : [ {
+        "variantName" : "openapi-generator_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.793
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.004
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 71.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 98.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 6.234,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_0"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.047
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.976
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 78.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 98.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.33,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_1"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.095
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.976
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 93.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 138.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.938,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_10"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.484
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 34.356
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 91.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 142.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.209,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_11"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.772
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.334
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 76.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 97.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.505,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_12"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.936
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.555
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 79.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 105.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.97,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_13"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.946
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.959
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 78.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 104.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.33,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_14"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.814
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.229
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 76.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 97.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.563,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_15"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_16",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.214
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 29.674
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 94.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 141.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.705,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_16"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_17",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.054
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 29.183
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 95.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 141.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.772,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_17"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_18",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.071
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.548
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 97.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 143.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.06,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_18"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_19",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.621
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.799
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 73.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 93.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.475,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_19"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.907
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 33.498
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 93.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 144.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 6.823,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_2"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_20",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.8
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.405
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 74.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 95.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.299,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_20"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_21",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.918
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 29.323
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 95.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 141.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.394,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_21"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_22",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.731
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.915
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 96.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 141.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.508,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_22"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_23",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.631
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.432
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 74.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 95.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.673,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_23"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_24",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.162
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.563
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 57.746
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 72.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.796,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_24"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_25",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.426
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 35.987
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 107.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 164.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.622,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_25"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_26",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 13.276
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 38.188
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 105.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 167.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 10.337,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_26"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_27",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.168
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.733
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 70.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 96.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 6.975,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_27"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_28",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.143
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 24.743
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 55.426
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 82.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 8.096,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_28"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_29",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.411
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 39.828
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 105.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 165.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.567,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_29"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.931
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 30.516
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 95.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 142.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.961,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_3"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_30",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.087
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.617
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 60.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 77.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.224,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_30"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_31",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.959
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 37.899
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 108.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 168.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.131,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_31"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_32",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.336
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.931
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 62.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 76.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.322,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_32"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_33",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.569
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.823
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 69.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 94.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 6.631,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_33"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_34",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.718
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 25.83
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 111.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 157.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.06,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_34"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_35",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.633
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 35.637
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 110.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 158.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.981,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_35"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_36",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.891
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 27.271
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 92.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 123.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 7.215,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_36"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_37",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.776
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.708
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 85.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 105.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.06,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_37"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_38",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.946
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 32.784
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 113.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 157.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.724,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_38"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_39",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.637
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 18.017
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 86.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 107.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.467,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_39"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.446
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 26.725
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 92.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 137.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.916,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_4"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_40",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.301
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 40.298
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 107.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 158.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.075,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_40"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_41",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.15
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 30.102
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 108.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 149.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.949,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_41"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_42",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.719
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 30.8
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 112.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 153.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.92,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_42"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_43",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.798
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.449
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 84.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 105.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.15,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_43"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_44",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.818
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.324
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 83.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 104.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.884,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_44"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_45",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.1
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 36.229
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 110.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 157.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.14,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_45"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_46",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.424
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.768
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 86.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 107.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.679,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_46"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_47",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.023
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 33.944
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 111.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 153.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.395,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_47"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_48",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.575
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.755
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 102.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 128.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.018,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_48"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_49",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.305
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.609
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 100.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 124.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.51,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_49"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.162
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 26.519
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 93.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 137.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.302,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_5"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_50",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.355
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.019
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 100.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 126.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.685,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_50"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_51",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.258
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 13.857
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 88.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 106.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.005,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_51"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_52",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.288
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.653
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 85.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 98.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.394,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_52"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_53",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.811
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.189
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 98.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 113.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.065,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_53"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_54",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.838
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.334
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 63.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 90.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.137,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_54"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_55",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.385
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.841
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 60.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 75.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.291,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_55"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_56",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.321
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 16.837
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 58.351
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 77.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.324,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_56"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_57",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.027
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 27.691
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 60.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 96.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.636,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_57"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_58",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.114
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 31.724
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 49.892
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 91.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.111,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_58"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_59",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.413
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 33.153
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 43.611
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 82.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.808,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_59"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.746
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.15
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 80.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 105.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.415,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_6"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_60",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 3.145
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 29.585
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 45.313
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 80.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.169,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_60"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_61",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.526
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 24.176
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 47.671
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 74.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 5.696,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_61"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_62",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.463
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.798
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 40.875
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 64.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.129,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_62"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_63",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.864
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.798
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 47.288
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 71.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.209,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_63"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.209
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 31.271
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 96.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 142.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.019,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_7"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "OursPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.161
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 24.81
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 95.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 136.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 3.614,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_8"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "OursPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "openapi-generator_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "openapi-generator-project",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.767
+          }, {
+            "moduleName" : "openapi-generator-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.496
+          }, {
+            "moduleName" : "openapi-generator (core library)",
+            "status" : "FAILURE",
+            "timeElapsed" : 78.0
+          }, {
+            "moduleName" : "openapi-generator (executable)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator (maven-plugin)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-gradle-plugin (maven wrapper)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "openapi-generator-online",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 99.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.859,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\openapi-generator_9"
+        },
+        "conflictPatterns" : {
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\KotlinServerDeprecatedCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\CodegenModel.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\IJsonSchemaValidationProperties.java" : [ "TheirsPattern" ],
+          "docs\\generators\\flash-deprecated.md" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\PhpSilexServerCodegen.java" : [ "TheirsPattern" ],
+          "modules\\openapi-generator\\src\\main\\java\\org\\openapitools\\codegen\\languages\\FlashClientCodegen.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -1,0 +1,64 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "af67326e6f3a26cafb268b1e8a413b7746108897",
+    "parent1" : "50607679762370f9dbddc306dbd23f8c18ae6705",
+    "parent2" : "5e4f804865e1bfeb30713f42589e45c1171c800f",
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "totalExecutionTime" : 102,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 40.926
+    },
+    "testResults" : {
+      "runNum" : 95,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 91,
+      "elapsedTime" : 15.475001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Ant-Media-Server"
+    },
+    "numJavaConflictFiles" : 1,
+    "variantsExecution" : {
+      "executionTimeSeconds" : 54,
+      "variants" : [ {
+        "variantName" : "Ant-Media-Server_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 52.686
+        },
+        "testResults" : {
+          "runNum" : 95,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 91,
+          "elapsedTime" : 15.747002,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Ant-Media-Server_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\io\\antmedia\\AntMediaApplicationAdapter.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Ant-Media-Server_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 52.806
+        },
+        "testResults" : {
+          "runNum" : 95,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 91,
+          "elapsedTime" : 15.755001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Ant-Media-Server_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\io\\antmedia\\AntMediaApplicationAdapter.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

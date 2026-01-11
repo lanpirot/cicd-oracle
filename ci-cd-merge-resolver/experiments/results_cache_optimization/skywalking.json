@@ -1,0 +1,1064 @@
+{
+  "projectName" : "skywalking",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "7a91ef7a0255e0da82d300c1b4fbc9b4ea4425ba",
+    "parent1" : "07ae13a6503becd3bfa9b31df74aa0801f248396",
+    "parent2" : "bf9887b06b9cac5d0f3528ca370d2527d6add3e1",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 50,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "apm",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.522
+      }, {
+        "moduleName" : "apm-commons",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.118
+      }, {
+        "moduleName" : "apm-util",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.063
+      }, {
+        "moduleName" : "apm-logging-api",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.127
+      }, {
+        "moduleName" : "apm-datacarrier",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.234
+      }, {
+        "moduleName" : "apm-network",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.635
+      }, {
+        "moduleName" : "apm-sniffer",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-agent-core",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-test-tools",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-sdk-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "jedis-2.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "jdbc-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "httpclient-4.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "dubbo-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "tomcat-7.x-8.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "motan-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "mongodb-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "resin-3.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "resin-4.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "okhttp-3.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-feign-default-http-9.x-plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-application-toolkit",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.077
+      }, {
+        "moduleName" : "apm-toolkit-log4j-1.x",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.11
+      }, {
+        "moduleName" : "apm-toolkit-activation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-toolkit-log4j-1.x-activation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-toolkit-log4j-2.x-activation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-toolkit-logback-1.x-activation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-toolkit-trace-context-activation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-toolkit-opentracing",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.182
+      }, {
+        "moduleName" : "apm-toolkit-opentracing-activation",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-agent",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-toolkit-log4j-2.x",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.131
+      }, {
+        "moduleName" : "apm-toolkit-logback-1.x",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.118
+      }, {
+        "moduleName" : "apm-toolkit-trace-context",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.092
+      }, {
+        "moduleName" : "apm-collector",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.057
+      }, {
+        "moduleName" : "apm-collector-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.601
+      }, {
+        "moduleName" : "apm-collector-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.411
+      }, {
+        "moduleName" : "apm-collector-cluster",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.361
+      }, {
+        "moduleName" : "apm-collector-queue",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.228
+      }, {
+        "moduleName" : "apm-collector-storage",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.066
+      }, {
+        "moduleName" : "h2-storage",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.059
+      }, {
+        "moduleName" : "elasticsearch-storage",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.077
+      }, {
+        "moduleName" : "apm-collector-server",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-collector-discovery",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.083
+      }, {
+        "moduleName" : "apm-collector-agentstream",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-collector-ui",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.057
+      }, {
+        "moduleName" : "apm-collector-boot",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "apm-collector-remote",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 10.002
+    },
+    "testResults" : {
+      "runNum" : 1,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.22,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\skywalking"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 23,
+      "variants" : [ {
+        "variantName" : "skywalking_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "apm",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.23
+          }, {
+            "moduleName" : "apm-commons",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.136
+          }, {
+            "moduleName" : "apm-util",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.904
+          }, {
+            "moduleName" : "apm-logging-api",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.139
+          }, {
+            "moduleName" : "apm-datacarrier",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.27
+          }, {
+            "moduleName" : "apm-network",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.199
+          }, {
+            "moduleName" : "apm-sniffer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-test-tools",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-sdk-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jedis-2.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jdbc-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "httpclient-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "dubbo-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "tomcat-7.x-8.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "motan-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mongodb-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "okhttp-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-feign-default-http-9.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-application-toolkit",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.068
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.148
+          }, {
+            "moduleName" : "apm-toolkit-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-trace-context-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-opentracing",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.178
+          }, {
+            "moduleName" : "apm-toolkit-opentracing-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.118
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.109
+          }, {
+            "moduleName" : "apm-toolkit-trace-context",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.099
+          }, {
+            "moduleName" : "apm-collector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.081
+          }, {
+            "moduleName" : "apm-collector-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.421
+          }, {
+            "moduleName" : "apm-collector-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.374
+          }, {
+            "moduleName" : "apm-collector-cluster",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.387
+          }, {
+            "moduleName" : "apm-collector-queue",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.236
+          }, {
+            "moduleName" : "apm-collector-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.07
+          }, {
+            "moduleName" : "h2-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "elasticsearch-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.061
+          }, {
+            "moduleName" : "apm-collector-server",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-discovery",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.107
+          }, {
+            "moduleName" : "apm-collector-agentstream",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-ui",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.083
+          }, {
+            "moduleName" : "apm-collector-boot",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-remote",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 8.98
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.187,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\skywalking_0"
+        },
+        "conflictPatterns" : {
+          "apm-sniffer\\apm-agent-core\\src\\main\\java\\org\\skywalking\\apm\\agent\\core\\context\\ContextSnapshot.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "skywalking_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "apm",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.25
+          }, {
+            "moduleName" : "apm-commons",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "apm-util",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.755
+          }, {
+            "moduleName" : "apm-logging-api",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.225
+          }, {
+            "moduleName" : "apm-datacarrier",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.384
+          }, {
+            "moduleName" : "apm-network",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.714
+          }, {
+            "moduleName" : "apm-sniffer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-test-tools",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-sdk-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jedis-2.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jdbc-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "httpclient-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "dubbo-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "tomcat-7.x-8.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "motan-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mongodb-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "okhttp-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-feign-default-http-9.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-application-toolkit",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.17
+          }, {
+            "moduleName" : "apm-toolkit-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-trace-context-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-opentracing",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.26
+          }, {
+            "moduleName" : "apm-toolkit-opentracing-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.181
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.198
+          }, {
+            "moduleName" : "apm-toolkit-trace-context",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.147
+          }, {
+            "moduleName" : "apm-collector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "apm-collector-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.49
+          }, {
+            "moduleName" : "apm-collector-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.047
+          }, {
+            "moduleName" : "apm-collector-cluster",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.05
+          }, {
+            "moduleName" : "apm-collector-queue",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.04
+          }, {
+            "moduleName" : "apm-collector-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "h2-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "elasticsearch-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "apm-collector-server",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-discovery",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.028
+          }, {
+            "moduleName" : "apm-collector-agentstream",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-ui",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "apm-collector-boot",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-remote",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.694
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.187,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\skywalking_1"
+        },
+        "conflictPatterns" : {
+          "apm-sniffer\\apm-agent-core\\src\\main\\java\\org\\skywalking\\apm\\agent\\core\\context\\ContextSnapshot.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "skywalking_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "apm",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.209
+          }, {
+            "moduleName" : "apm-commons",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "apm-util",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.693
+          }, {
+            "moduleName" : "apm-logging-api",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.22
+          }, {
+            "moduleName" : "apm-datacarrier",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.368
+          }, {
+            "moduleName" : "apm-network",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.761
+          }, {
+            "moduleName" : "apm-sniffer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-test-tools",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-sdk-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jedis-2.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jdbc-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "httpclient-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "dubbo-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "tomcat-7.x-8.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "motan-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mongodb-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "okhttp-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-feign-default-http-9.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-application-toolkit",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.175
+          }, {
+            "moduleName" : "apm-toolkit-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-trace-context-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-opentracing",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.263
+          }, {
+            "moduleName" : "apm-toolkit-opentracing-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.176
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.195
+          }, {
+            "moduleName" : "apm-toolkit-trace-context",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.13
+          }, {
+            "moduleName" : "apm-collector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "apm-collector-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.498
+          }, {
+            "moduleName" : "apm-collector-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.046
+          }, {
+            "moduleName" : "apm-collector-cluster",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "apm-collector-queue",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "apm-collector-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "h2-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "elasticsearch-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "apm-collector-server",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-discovery",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.023
+          }, {
+            "moduleName" : "apm-collector-agentstream",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-ui",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.025
+          }, {
+            "moduleName" : "apm-collector-boot",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-remote",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.632
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.187,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\skywalking_2"
+        },
+        "conflictPatterns" : {
+          "apm-sniffer\\apm-agent-core\\src\\main\\java\\org\\skywalking\\apm\\agent\\core\\context\\ContextSnapshot.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "skywalking_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "apm",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.266
+          }, {
+            "moduleName" : "apm-commons",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "apm-util",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.734
+          }, {
+            "moduleName" : "apm-logging-api",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.261
+          }, {
+            "moduleName" : "apm-datacarrier",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.364
+          }, {
+            "moduleName" : "apm-network",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.701
+          }, {
+            "moduleName" : "apm-sniffer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-test-tools",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-sdk-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jedis-2.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "jdbc-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "httpclient-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "dubbo-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "tomcat-7.x-8.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "motan-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "mongodb-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "resin-4.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "okhttp-3.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-feign-default-http-9.x-plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-application-toolkit",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.2
+          }, {
+            "moduleName" : "apm-toolkit-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-trace-context-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-opentracing",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.295
+          }, {
+            "moduleName" : "apm-toolkit-opentracing-activation",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-agent",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-toolkit-log4j-2.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.195
+          }, {
+            "moduleName" : "apm-toolkit-logback-1.x",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.227
+          }, {
+            "moduleName" : "apm-toolkit-trace-context",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.137
+          }, {
+            "moduleName" : "apm-collector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "apm-collector-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.455
+          }, {
+            "moduleName" : "apm-collector-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "apm-collector-cluster",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "apm-collector-queue",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.026
+          }, {
+            "moduleName" : "apm-collector-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "h2-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "elasticsearch-storage",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "apm-collector-server",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-discovery",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "apm-collector-agentstream",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-ui",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "apm-collector-boot",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "apm-collector-remote",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.727
+        },
+        "testResults" : {
+          "runNum" : 1,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.187,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\skywalking_3"
+        },
+        "conflictPatterns" : {
+          "apm-sniffer\\apm-agent-core\\src\\main\\java\\org\\skywalking\\apm\\agent\\core\\context\\ContextSnapshot.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

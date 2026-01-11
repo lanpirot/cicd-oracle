@@ -1,0 +1,391 @@
+{
+  "projectName" : "clickhouse-java",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "0f5de183b9a3a3f509f94314da7db8f46dddd49c",
+    "parent1" : "6cc8b68491d7f2c1b30d622888ed75ed880edcf4",
+    "parent2" : "26da7d8a05fdd712dc45d780a1be515230d4b578",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 57,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "clickhouse-java",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.861
+      }, {
+        "moduleName" : "clickhouse-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 18.714
+      }, {
+        "moduleName" : "clickhouse-grpc-client",
+        "status" : "FAILURE",
+        "timeElapsed" : 2.65
+      }, {
+        "moduleName" : "clickhouse-http-client",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.757
+      }, {
+        "moduleName" : "clickhouse-tcp-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.036
+      }, {
+        "moduleName" : "clickhouse-jdbc",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "clickhouse-benchmark",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 24.041
+    },
+    "testResults" : {
+      "runNum" : 288,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 13.396,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 29,
+      "variants" : [ {
+        "variantName" : "clickhouse-java_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "clickhouse-java",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.876
+          }, {
+            "moduleName" : "clickhouse-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 19.134
+          }, {
+            "moduleName" : "clickhouse-grpc-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.917
+          }, {
+            "moduleName" : "clickhouse-http-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.458
+          }, {
+            "moduleName" : "clickhouse-tcp-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.042
+          }, {
+            "moduleName" : "clickhouse-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "clickhouse-benchmark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 22.795
+        },
+        "testResults" : {
+          "runNum" : 288,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 13.055,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java_0"
+        },
+        "conflictPatterns" : {
+          "clickhouse-jdbc\\src\\test\\java\\ru\\yandex\\clickhouse\\response\\ClickHouseResultSetTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "clickhouse-java_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "clickhouse-java",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.775
+          }, {
+            "moduleName" : "clickhouse-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.398
+          }, {
+            "moduleName" : "clickhouse-grpc-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.212
+          }, {
+            "moduleName" : "clickhouse-http-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.275
+          }, {
+            "moduleName" : "clickhouse-tcp-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.017
+          }, {
+            "moduleName" : "clickhouse-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "clickhouse-benchmark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.014
+        },
+        "testResults" : {
+          "runNum" : 288,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 13.055,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java_1"
+        },
+        "conflictPatterns" : {
+          "clickhouse-jdbc\\src\\test\\java\\ru\\yandex\\clickhouse\\response\\ClickHouseResultSetTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "a265d08132600286e031ffb89537d430207798cf",
+    "parent1" : "9afa1c448907e23500a63b4ab656a6be38b6f537",
+    "parent2" : "8a4aee2081607c032bdef671778e2e10e07e8026",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 56,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "clickhouse-java",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.83
+      }, {
+        "moduleName" : "clickhouse-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 17.888
+      }, {
+        "moduleName" : "clickhouse-grpc-client",
+        "status" : "FAILURE",
+        "timeElapsed" : 2.107
+      }, {
+        "moduleName" : "clickhouse-http-client",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.381
+      }, {
+        "moduleName" : "clickhouse-tcp-client",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.028
+      }, {
+        "moduleName" : "clickhouse-jdbc",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "clickhouse-benchmark",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 21.625
+    },
+    "testResults" : {
+      "runNum" : 288,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 12.373,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 30,
+      "variants" : [ {
+        "variantName" : "clickhouse-java_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "clickhouse-java",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.851
+          }, {
+            "moduleName" : "clickhouse-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.732
+          }, {
+            "moduleName" : "clickhouse-grpc-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.991
+          }, {
+            "moduleName" : "clickhouse-http-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.443
+          }, {
+            "moduleName" : "clickhouse-tcp-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "clickhouse-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "clickhouse-benchmark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.45
+        },
+        "testResults" : {
+          "runNum" : 288,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 12.481,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java_0"
+        },
+        "conflictPatterns" : {
+          "clickhouse-jdbc\\src\\test\\java\\ru\\yandex\\clickhouse\\util\\ClickHouseHttpClientBuilderTest.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "clickhouse-java_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "clickhouse-java",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.174
+          }, {
+            "moduleName" : "clickhouse-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.649
+          }, {
+            "moduleName" : "clickhouse-grpc-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.335
+          }, {
+            "moduleName" : "clickhouse-http-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.461
+          }, {
+            "moduleName" : "clickhouse-tcp-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "clickhouse-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "clickhouse-benchmark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.17
+        },
+        "testResults" : {
+          "runNum" : 288,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 12.481,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java_1"
+        },
+        "conflictPatterns" : {
+          "clickhouse-jdbc\\src\\test\\java\\ru\\yandex\\clickhouse\\util\\ClickHouseHttpClientBuilderTest.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "clickhouse-java_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "clickhouse-java",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.241
+          }, {
+            "moduleName" : "clickhouse-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.686
+          }, {
+            "moduleName" : "clickhouse-grpc-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.347
+          }, {
+            "moduleName" : "clickhouse-http-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.517
+          }, {
+            "moduleName" : "clickhouse-tcp-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "clickhouse-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "clickhouse-benchmark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.31
+        },
+        "testResults" : {
+          "runNum" : 288,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 12.481,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java_2"
+        },
+        "conflictPatterns" : {
+          "clickhouse-jdbc\\src\\test\\java\\ru\\yandex\\clickhouse\\util\\ClickHouseHttpClientBuilderTest.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "clickhouse-java_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "clickhouse-java",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.189
+          }, {
+            "moduleName" : "clickhouse-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.656
+          }, {
+            "moduleName" : "clickhouse-grpc-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.344
+          }, {
+            "moduleName" : "clickhouse-http-client",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.475
+          }, {
+            "moduleName" : "clickhouse-tcp-client",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.082
+          }, {
+            "moduleName" : "clickhouse-jdbc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "clickhouse-benchmark",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 3.232
+        },
+        "testResults" : {
+          "runNum" : 288,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 12.481,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\clickhouse-java_3"
+        },
+        "conflictPatterns" : {
+          "clickhouse-jdbc\\src\\test\\java\\ru\\yandex\\clickhouse\\util\\ClickHouseHttpClientBuilderTest.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

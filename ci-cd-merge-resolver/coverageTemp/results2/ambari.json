@@ -1,0 +1,575 @@
+{
+  "projectName" : "ambari",
+  "repoUrl" : "https://github.com/apache/ambari",
+  "merges" : [ {
+    "mergeCommit" : "2b89b14b22b5829cc25333396c70c61f6cf542d2",
+    "parent1" : "a6536f3c6fb0fa5415b42b63ff994fd2bc78c621",
+    "parent2" : "69762201ee278a4be486a1656f3c56a775c24518",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : 0.8567164,
+      "lineCoverage" : 0.8055556
+    },
+    "totalExecutionTime" : 727,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.916
+      }, {
+        "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.731
+      }, {
+        "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.038
+      }, {
+        "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 3.948
+      }, {
+        "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 88.0
+      }, {
+        "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.151
+      }, {
+        "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 71.0
+      }, {
+        "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.122
+      }, {
+        "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 167.0
+    },
+    "testResults" : {
+      "runNum" : 2,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.74300003,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 492,
+      "variants" : [ {
+        "variantName" : "ambari_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.953
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.285
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.115
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.106
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 99.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.334
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 245.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.499
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 364.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.707,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_0"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.934
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.989
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.116
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.846
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 89.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.501
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 352.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.147
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 461.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.5970001,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_1"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.03
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.039
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.103
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.014
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 164.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.466
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 251.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.745
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 435.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.246,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_2"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.933
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.034
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.106
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.363
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 121.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.464
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 322.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.398
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 461.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.605,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_3"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.963
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.274
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.121
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.029
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 89.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.493
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 263.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.354
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 372.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.675,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_4"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.972
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.305
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.134
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.974
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 179.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.589
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 290.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.219
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 489.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.487,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_5"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.029
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.146
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.084
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.071
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 89.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.408
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 353.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.312
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 462.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 2.343,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_6"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "ambari_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Ambari Service Advisor 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.014
+          }, {
+            "moduleName" : "Ambari Main 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.15
+          }, {
+            "moduleName" : "Apache Ambari Project POM 2.0.0.0-SNAPSHOT",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.1
+          }, {
+            "moduleName" : "ambari-utility 1.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 10.203
+          }, {
+            "moduleName" : "Ambari Web 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 124.0
+          }, {
+            "moduleName" : "Ambari Views 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.604
+          }, {
+            "moduleName" : "Ambari Admin View 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 316.0
+          }, {
+            "moduleName" : "Ambari Server SPI 2.0.0.0-SNAPSHOT",
+            "status" : "FAILURE",
+            "timeElapsed" : 1.155
+          }, {
+            "moduleName" : "Ambari Server 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Functional Tests 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Ambari Agent 2.0.0.0-SNAPSHOT",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 461.0
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 1.777,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\ambari_7"
+        },
+        "conflictPatterns" : {
+          "ambari-server\\src\\main\\java\\org\\apache\\ambari\\server\\controller\\internal\\StackVersionResourceProvider.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

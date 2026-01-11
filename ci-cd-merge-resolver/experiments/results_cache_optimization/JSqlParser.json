@@ -1,0 +1,988 @@
+{
+  "projectName" : "JSqlParser",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "8a238f527786633eab6eb6af929b5fe7412a38c6",
+    "parent1" : "3b89cd28ad893ae2e5dbb4ebf83931c4c4137175",
+    "parent2" : "f4b10cff44e90f405cfe0360d853f790158f806a",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : null,
+    "totalExecutionTime" : 102,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 31.567
+    },
+    "testResults" : {
+      "runNum" : 942,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 8,
+      "elapsedTime" : 17.481005,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 64,
+      "variants" : [ {
+        "variantName" : "JSqlParser_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 30.575
+        },
+        "testResults" : {
+          "runNum" : 941,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 8,
+          "elapsedTime" : 17.825,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_0"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\alter\\AlterTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 28.876
+        },
+        "testResults" : {
+          "runNum" : 942,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 8,
+          "elapsedTime" : 17.761003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_1"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\alter\\AlterTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "aa304d6c37a210a915e0c2dc3f6da27c5e604104",
+    "parent1" : "1deeab8b349343ff493fb9eb799d937c6f195f27",
+    "parent2" : "2cae62dbf74a744a9ea0cbbeecf7c28fdd47e0fe",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : null,
+    "totalExecutionTime" : 110,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 33.296
+    },
+    "testResults" : {
+      "runNum" : 1350,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 7,
+      "elapsedTime" : 9.985003,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 71,
+      "variants" : [ {
+        "variantName" : "JSqlParser_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 33.661
+        },
+        "testResults" : {
+          "runNum" : 1350,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 7,
+          "elapsedTime" : 9.993003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_0"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 32.032
+        },
+        "testResults" : {
+          "runNum" : 1350,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 7,
+          "elapsedTime" : 9.856003,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_1"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "1c8d8daf48ebac1017503ce771238a987a20b09e",
+    "parent1" : "2aec1f61ec4298ebc9c355af2ddcf86e55d7f8ba",
+    "parent2" : "ea4477bb775ebdb77d507bc7e1858373281b14dd",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : null,
+    "totalExecutionTime" : 200,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 63.0
+    },
+    "testResults" : {
+      "runNum" : 2114,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 10,
+      "elapsedTime" : 38.349,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 131,
+      "variants" : [ {
+        "variantName" : "JSqlParser_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 63.0
+        },
+        "testResults" : {
+          "runNum" : 1678,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 10,
+          "elapsedTime" : 35.247997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\net\\sf\\jsqlparser\\parser\\ParserKeywordsUtils.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 62.0
+        },
+        "testResults" : {
+          "runNum" : 2102,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 10,
+          "elapsedTime" : 36.32901,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\net\\sf\\jsqlparser\\parser\\ParserKeywordsUtils.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "c4c41d47bf718664ff5ee43436d38d247ba0764b",
+    "parent1" : "002f5966c577366a50a1e2df59279c8856a41d65",
+    "parent2" : "f18e92eaf4b3bc68eef06b9f5e9a5429a235ab8f",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "coverage" : null,
+    "totalExecutionTime" : 189,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 59.81
+    },
+    "testResults" : {
+      "runNum" : 736,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 2,
+      "elapsedTime" : 36.04998,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 124,
+      "variants" : [ {
+        "variantName" : "JSqlParser_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 59.655
+        },
+        "testResults" : {
+          "runNum" : 736,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 2,
+          "elapsedTime" : 35.99698,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_0"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 59.362
+        },
+        "testResults" : {
+          "runNum" : 1292,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 7,
+          "elapsedTime" : 37.746983,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_1"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "c181c07349f5538fb7ce3c2119028f5b6991af8f",
+    "parent1" : "c107a0962168ce83e18bb7aa9f389ad1b69165ee",
+    "parent2" : "a815f5fb97e0269850b959f33122b4cb8ec10d19",
+    "numConflictFiles" : 5,
+    "numJavaConflictFiles" : 4,
+    "numConflictChunks" : 5,
+    "isMultiModule" : false,
+    "coverage" : null,
+    "totalExecutionTime" : 752,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "SUCCESS",
+      "totalTime" : 79.0
+    },
+    "testResults" : {
+      "runNum" : 3052,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 16,
+      "elapsedTime" : 53.955982,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 650,
+      "variants" : [ {
+        "variantName" : "JSqlParser_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 78.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 54.203987,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 371.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 226.774,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_10",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 365.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 219.86792,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_10"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_11",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 409.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 193.48196,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_11"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_12",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 309.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 182.04301,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_12"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_13",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 449.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 203.63701,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_13"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_14",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 366.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 215.20694,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_14"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_15",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 348.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 219.4611,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_15"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_16",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 364.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 218.57698,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_16"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_17",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 412.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 197.38301,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_17"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_18",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 428.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 195.78302,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_18"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_19",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 410.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 181.812,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_19"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_2",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 370.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 223.20901,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_2"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_20",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 306.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 177.20201,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_20"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_21",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 455.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 217.71303,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_21"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_22",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 415.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 190.12802,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_22"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_23",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 361.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 231.32399,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_23"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_24",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 434.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 189.83797,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_24"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_25",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 202.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 86.67798,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_25"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_26",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 191.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 82.604996,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_26"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_27",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 163.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 88.04004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_27"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_28",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 167.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 78.56095,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_28"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_29",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 167.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 90.58698,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_29"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_3",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 476.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 216.07103,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_3"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_30",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 167.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 78.43498,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_30"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_31",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 168.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 78.982994,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_31"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_4",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 452.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 202.622,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_4"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_5",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 364.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 217.98697,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_5"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_6",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 392.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 239.57503,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_6"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_7",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 433.0
+        },
+        "testResults" : {
+          "runNum" : 3051,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 214.15,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_7"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "OursPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_8",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 407.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 189.54,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_8"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "OursPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "JSqlParser_9",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "SUCCESS",
+          "totalTime" : 418.0
+        },
+        "testResults" : {
+          "runNum" : 3052,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 16,
+          "elapsedTime" : 196.99501,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\JSqlParser_9"
+        },
+        "conflictPatterns" : {
+          "src\\main\\jjtree\\net\\sf\\jsqlparser\\parser\\JSqlParserCC.jjt" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\SelectTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClause.java" : [ "TheirsPattern" ],
+          "src\\test\\java\\net\\sf\\jsqlparser\\statement\\select\\ForClauseTest.java" : [ "TheirsPattern" ],
+          "src\\main\\java\\net\\sf\\jsqlparser\\util\\PerformanceTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

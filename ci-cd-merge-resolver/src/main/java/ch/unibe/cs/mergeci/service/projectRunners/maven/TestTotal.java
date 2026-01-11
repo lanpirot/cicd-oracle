@@ -36,7 +36,7 @@ public class TestTotal {
 
         List<Path> paths = null;
         try {
-            paths = FileUtils.listFilesUsingFileWalk(projectDir.getPath());
+            paths = FileUtils.listFilesUsingFileWalk(projectDir.toPath());
 
 
         for (Path file : paths) {

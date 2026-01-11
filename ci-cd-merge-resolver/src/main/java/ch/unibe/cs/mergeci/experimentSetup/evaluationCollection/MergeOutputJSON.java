@@ -1,19 +1,24 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
+import ch.unibe.cs.mergeci.experimentSetup.coverageCalculater.CoverageCalculator;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
+import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
-@JsonPropertyOrder({"mergeCommit", "parent1", "parent2", "numConflictFiles", "numJavaConflictFiles", "numConflictChunks", "isMultiModule", "totalExecutionTime",
+@JsonPropertyOrder({"mergeCommit", "parent1", "parent2", "numConflictFiles", "numJavaConflictFiles",
+        "numConflictChunks", "isMultiModule", "coverage", "totalExecutionTime",
         "compilationResult", "testResults", "modulesResults"})
+@ToString
 public class MergeOutputJSON {
     private String mergeCommit;
     private String parent1;
@@ -26,6 +31,8 @@ public class MergeOutputJSON {
     private int numJavaConflictFiles;
     private int numConflictChunks;
     private Boolean isMultiModule;
+
+    private JacocoReportFinder.CoverageDTO coverage;
 
     private long totalExecutionTime;
 
@@ -53,4 +60,5 @@ public class MergeOutputJSON {
             this.variants = variants;
         }
     }
+
 }

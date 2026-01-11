@@ -53,7 +53,7 @@ public class DatasetCollector {
         AtomicInteger counter = new AtomicInteger(0);
 
         int threads = Runtime.getRuntime().availableProcessors();
-        ExecutorService pool = Executors.newFixedThreadPool(24);
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
 
         FileUtils.deleteDirectory(new File(tempPath));
 

@@ -1,0 +1,4811 @@
+{
+  "projectName" : "struts",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "f36c7678c5cdd04614a9c3a0090d15350714f4af",
+    "parent1" : "c4d3ef8687a30f715ca9494e130d1776c7d2427d",
+    "parent2" : "76bbe60a78b2b47fcb961f85d3db9971d85fc2d1",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 297,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Struts 2 Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.846
+      }, {
+        "moduleName" : "Struts 2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.469
+      }, {
+        "moduleName" : "Struts 2 Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 84.0
+      }, {
+        "moduleName" : "Struts 2 Plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Async Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Bean Validation Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 CDI Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Velocity Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Configuration Browser Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Convention Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 DWR Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 GXP Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Spring Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Portlet Mocks Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Portlet Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JUnit Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Jasper Reports Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Java Templates Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JFreeChart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JSON Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OVal Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Pell Multipart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Plexus Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Portlet Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 REST Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Sitemesh Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 TestNG Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Bundles",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Admin Bundle",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Demo Bundle",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Webapps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Rest Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Assembly",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 87.0
+    },
+    "testResults" : {
+      "runNum" : 2326,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 61.66399,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 188,
+      "variants" : [ {
+        "variantName" : "struts_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.923
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.472
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 89.0
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 GXP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Mocks Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OVal Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Plexus Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Bundles",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Admin Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Demo Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 92.0
+        },
+        "testResults" : {
+          "runNum" : 2324,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 67.361984,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_0"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\org\\apache\\struts2\\views\\jsp\\ui\\OptionTransferSelectTagTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.931
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.42
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 84.0
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 GXP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Mocks Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OVal Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Plexus Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Bundles",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Admin Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Demo Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 87.0
+        },
+        "testResults" : {
+          "runNum" : 2324,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 62.24198,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_1"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\org\\apache\\struts2\\views\\jsp\\ui\\OptionTransferSelectTagTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "b72200aabf3c687bb3690a89035f5baa29636631",
+    "parent1" : "16e7c9b459276293c692da49d09ec2a4c2fa42b9",
+    "parent2" : "bea1c6f09f05ab88cca2d7cc14b2d4a6fb999a9a",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 157,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Struts 2 Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.793
+      }, {
+        "moduleName" : "Struts 2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.595
+      }, {
+        "moduleName" : "Struts 2 Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 86.0
+      }, {
+        "moduleName" : "Struts 2 Plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Async Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Bean Validation Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 CDI Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Velocity Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Configuration Browser Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Convention Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 DWR Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Spring Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JUnit Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Jasper Reports Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Java Templates Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JFreeChart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JSON Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Pell Multipart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 REST Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 TestNG Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Webapps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Rest Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Assembly",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 88.0
+    },
+    "testResults" : {
+      "runNum" : 2394,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 63.445004,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 47,
+      "variants" : [ {
+        "variantName" : "struts_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.122
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.53
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 18.094
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.089
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_0"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\com\\opensymphony\\xwork2\\ognl\\OgnlUtilTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.876
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.41
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.202
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 19.876
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_1"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\com\\opensymphony\\xwork2\\ognl\\OgnlUtilTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "4c370110204cc4fcc42d30d7537d2c5cc1486e3b",
+    "parent1" : "fbb31ee65b972f2c64fba470f9e88d51aa169a70",
+    "parent2" : "c0940529690697611aaab38ea9ea1186d909267b",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 313,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Struts 2 Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.768
+      }, {
+        "moduleName" : "Struts 2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.585
+      }, {
+        "moduleName" : "Struts 2 Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 84.0
+      }, {
+        "moduleName" : "Struts 2 Plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Async Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Bean Validation Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 CDI Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Velocity Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Configuration Browser Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Convention Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 DWR Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Spring Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JUnit Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Jasper Reports Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Java Templates Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JFreeChart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JSON Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Pell Multipart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 REST Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 TestNG Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Webapps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Rest Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Assembly",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 87.0
+    },
+    "testResults" : {
+      "runNum" : 2369,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 61.77802,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 198,
+      "variants" : [ {
+        "variantName" : "struts_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.011
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.49
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 86.0
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 89.0
+        },
+        "testResults" : {
+          "runNum" : 2328,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 63.12198,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_0"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\config\\providers\\StrutsDefaultConfigurationProvider.java" : [ "OursPattern" ],
+          "core\\src\\main\\resources\\struts-default.xml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.913
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.478
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 41.229
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 44.298
+        },
+        "testResults" : {
+          "runNum" : 245,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.2209997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_1"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\config\\providers\\StrutsDefaultConfigurationProvider.java" : [ "TheirsPattern" ],
+          "core\\src\\main\\resources\\struts-default.xml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.925
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.478
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 97.0
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 100.0
+        },
+        "testResults" : {
+          "runNum" : 2328,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 65.58299,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_2"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\config\\providers\\StrutsDefaultConfigurationProvider.java" : [ "OursPattern" ],
+          "core\\src\\main\\resources\\struts-default.xml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "struts_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.934
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.483
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 41.863
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin (since 2.6)",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Sitemesh Plugin - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 2.6",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 44.942
+        },
+        "testResults" : {
+          "runNum" : 245,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 4.161999,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_3"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\config\\providers\\StrutsDefaultConfigurationProvider.java" : [ "TheirsPattern" ],
+          "core\\src\\main\\resources\\struts-default.xml" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "e1167d42beefa26686b31e797179f0c396930ac8",
+    "parent1" : "f36c7678c5cdd04614a9c3a0090d15350714f4af",
+    "parent2" : "b2bfdc5c88a13e82d647e7ae836089a12ce001fe",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 141,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Struts 2 Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.719
+      }, {
+        "moduleName" : "Struts 2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.541
+      }, {
+        "moduleName" : "Struts 2 Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 83.0
+      }, {
+        "moduleName" : "Struts 2 Plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Async Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Bean Validation Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 CDI Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Velocity Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Configuration Browser Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Convention Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 DWR Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 GXP Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Spring Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Portlet Mocks Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Portlet Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JUnit Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Jasper Reports Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Java Templates Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JFreeChart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JSON Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OVal Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Pell Multipart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Plexus Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Portlet Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 REST Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Sitemesh Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 TestNG Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Bundles",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Admin Bundle",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 OSGi Demo Bundle",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Webapps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Rest Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Assembly",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 85.0
+    },
+    "testResults" : {
+      "runNum" : 2342,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 60.802017,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 29,
+      "variants" : [ {
+        "variantName" : "struts_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.13
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.529
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 6.574
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 GXP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Mocks Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OVal Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Plexus Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Bundles",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Admin Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Demo Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.545
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_0"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\org\\apache\\struts2\\views\\jsp\\BeanTagTest.java" : [ "OursPattern" ],
+          "core\\src\\main\\java\\org\\apache\\struts2\\components\\Component.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.921
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.507
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.877
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 GXP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Mocks Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OVal Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Plexus Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Bundles",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Admin Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Demo Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.967
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_1"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\org\\apache\\struts2\\views\\jsp\\BeanTagTest.java" : [ "OursPattern" ],
+          "core\\src\\main\\java\\org\\apache\\struts2\\components\\Component.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "struts_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.857
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.502
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.185
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 GXP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Mocks Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OVal Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Plexus Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Bundles",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Admin Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Demo Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.242
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_2"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\org\\apache\\struts2\\views\\jsp\\BeanTagTest.java" : [ "TheirsPattern" ],
+          "core\\src\\main\\java\\org\\apache\\struts2\\components\\Component.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.882
+          }, {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.481
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 9.359
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 GXP Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Mocks Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OVal Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Pell Multipart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Plexus Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Portlet Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Bundles",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Admin Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 OSGi Demo Bundle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 12.349
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_3"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\org\\apache\\struts2\\views\\jsp\\BeanTagTest.java" : [ "TheirsPattern" ],
+          "core\\src\\main\\java\\org\\apache\\struts2\\components\\Component.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "69a7195df7ed673f9fa641920e97ade462d9b6e7",
+    "parent1" : "f3c160d9d60a3ef04c15b0333ad14e3c978fcca2",
+    "parent2" : "ed06d61f2fcfad32aeba28ae6e2f5e7335f251dc",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 253,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Struts 2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.429
+      }, {
+        "moduleName" : "Struts 2 Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.023
+      }, {
+        "moduleName" : "Struts 2 Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 98.0
+      }, {
+        "moduleName" : "Struts 2 Plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Async Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Bean Validation Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 CDI Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Spring Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JUnit Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Velocity Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Configuration Browser Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Convention Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 DWR Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Jasper Reports Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Java Templates Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JFreeChart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JSON Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 REST Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Sitemesh Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 TestNG Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 XSLT Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Webapps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Rest Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Assembly",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 101.0
+    },
+    "testResults" : {
+      "runNum" : 2548,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 2,
+      "elapsedTime" : 75.38199,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 130,
+      "variants" : [ {
+        "variantName" : "struts_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.511
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.034
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 18.938
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.685
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_0"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\com\\opensymphony\\xwork2\\interceptor\\ParametersInterceptorTest.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.353
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 99.0
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 101.0
+        },
+        "testResults" : {
+          "runNum" : 2548,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 2,
+          "elapsedTime" : 75.97499,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_1"
+        },
+        "conflictPatterns" : {
+          "core\\src\\test\\java\\com\\opensymphony\\xwork2\\interceptor\\ParametersInterceptorTest.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "0566a207f4f6efb5e3a36d63b30d9fa5abe994b9",
+    "parent1" : "d7df9ce9981558d230c40cd065d2c67aa110b657",
+    "parent2" : "7929d8634c58b60709db1133e8a6d42a30c2827f",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 3,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 182,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Struts 2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.319
+      }, {
+        "moduleName" : "Struts 2 Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.023
+      }, {
+        "moduleName" : "Struts 2 Core",
+        "status" : "FAILURE",
+        "timeElapsed" : 97.0
+      }, {
+        "moduleName" : "Struts 2 Plugins",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Async Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Bean Validation Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 CDI Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Spring Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JUnit Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Velocity Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Configuration Browser Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Convention Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 DWR Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Jasper Reports Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Java Templates Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JFreeChart Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 JSON Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Tiles Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 REST Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Sitemesh Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 TestNG Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 XSLT Plugin",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Webapps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Rest Showcase Webapp",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Struts 2 Assembly",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 99.0
+    },
+    "testResults" : {
+      "runNum" : 2520,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 2,
+      "elapsedTime" : 74.258,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 42,
+      "variants" : [ {
+        "variantName" : "struts_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.537
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.041
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 8.042
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.906
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_0"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.278
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.139
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.627
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_1"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "struts_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.023
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 15.793
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.325
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_2"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.371
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.021
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.442
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.156
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_3"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "struts_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.032
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.019
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.955
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.592
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_4"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.315
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.019
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 15.643
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.14
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_5"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "struts_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.313
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.051
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 21.601
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_6"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "struts_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Struts 2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.022
+          }, {
+            "moduleName" : "Struts 2 Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.019
+          }, {
+            "moduleName" : "Struts 2 Core",
+            "status" : "FAILURE",
+            "timeElapsed" : 16.129
+          }, {
+            "moduleName" : "Struts 2 Plugins",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Async Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Bean Validation Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 CDI Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Spring Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JUnit Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Velocity Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Configuration Browser Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Convention Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 DWR Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Embedded JSP Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 GXP Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Jasper Reports Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Java Templates Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JFreeChart Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 JSON Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OVal Plugin, since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Pell Multipart Plugin - since 6.2.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Plexus Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Mocks Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet JUnit Plugin - since 6.3.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Tiles Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 Portlet Tiles Plugin - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 REST Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Sitemesh Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 TestNG Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 XSLT Plugin",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Bundles - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Admin Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "DEPRECATED: Struts 2 OSGi Demo Bundle - since 6.0.0",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Webapps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Rest Showcase Webapp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Struts 2 Assembly",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 20.777
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\struts_7"
+        },
+        "conflictPatterns" : {
+          "core\\src\\main\\java\\com\\opensymphony\\xwork2\\ognl\\SecurityMemberAccess.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

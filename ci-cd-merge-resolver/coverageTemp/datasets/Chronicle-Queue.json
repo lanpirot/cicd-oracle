@@ -1,0 +1,127 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "2d82b3d989c1a9449799dc93babf75382943289b",
+    "parent1" : "3c4aa2b6904342b44cfad397e82663e5cd42427f",
+    "parent2" : "137b0971178c1ae971526c7719cc4952785171ae",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "totalExecutionTime" : 24,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 8.005
+    },
+    "testResults" : {
+      "runNum" : 2,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.003,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Chronicle-Queue"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 10,
+      "variants" : [ {
+        "variantName" : "Chronicle-Queue_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.884
+        },
+        "testResults" : {
+          "runNum" : 2,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.004,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Chronicle-Queue_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\net\\openhft\\chronicle\\queue\\impl\\single\\SingleChronicleQueue.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Chronicle-Queue_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.208
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Chronicle-Queue_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\net\\openhft\\chronicle\\queue\\impl\\single\\SingleChronicleQueue.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "410b9544737e017b40fb0aa7b2cbf660808739c3",
+    "parent1" : "c9ce5b333be411a3b7ed30bad9ee37946853905c",
+    "parent2" : "1e9af663c65f33be6cf46a029ef99c962e345ace",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "totalExecutionTime" : 245,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 119.0
+    },
+    "testResults" : {
+      "runNum" : 66,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 5,
+      "elapsedTime" : 1.264,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Chronicle-Queue"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 119,
+      "variants" : [ {
+        "variantName" : "Chronicle-Queue_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.749
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Chronicle-Queue_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\net\\openhft\\chronicle\\queue\\RollCycles.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "Chronicle-Queue_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 116.0
+        },
+        "testResults" : {
+          "runNum" : 66,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 5,
+          "elapsedTime" : 1.272,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\Chronicle-Queue_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\net\\openhft\\chronicle\\queue\\RollCycles.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

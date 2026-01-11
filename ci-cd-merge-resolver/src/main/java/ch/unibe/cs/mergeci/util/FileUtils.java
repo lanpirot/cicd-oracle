@@ -127,8 +127,8 @@ public class FileUtils {
         }
     }
 
-    public static List<Path> listFilesUsingFileWalk(String dir) throws IOException {
-        try (Stream<Path> stream = Files.walk(Paths.get(dir), 100)) {
+    public static List<Path> listFilesUsingFileWalk(Path dir) throws IOException {
+        try (Stream<Path> stream = Files.walk(dir, 100)) {
             return stream
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());

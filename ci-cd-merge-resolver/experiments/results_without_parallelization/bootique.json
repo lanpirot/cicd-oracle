@@ -1,0 +1,1749 @@
+{
+  "projectName" : "bootique",
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "87aeec2487a43d6bb7ffc1389e375dd975ba3d3f",
+    "parent1" : "39937c0afca646a8b0f7952344d23011238d1edf",
+    "parent2" : "125670859b0afa45c153dd706f2b34cbedf87080",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 32,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bootique-framework-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.067
+      }, {
+        "moduleName" : "bootique: core of Bootique launcher and integration framework",
+        "status" : "FAILURE",
+        "timeElapsed" : 6.17
+      }, {
+        "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 6.39
+    },
+    "testResults" : {
+      "runNum" : 174,
+      "failuresNum" : 0,
+      "errorsNum" : 69,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.5279999,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 22,
+      "variants" : [ {
+        "variantName" : "bootique_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.071
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.5
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.696
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_0"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\BootiqueUtilsTest.java" : [ "OursPattern" ],
+          "bootique\\src\\main\\java\\io\\bootique\\BootiqueUtils.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.492
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 2.677
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_1"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\BootiqueUtilsTest.java" : [ "TheirsPattern" ],
+          "bootique\\src\\main\\java\\io\\bootique\\BootiqueUtils.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.995
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.182
+        },
+        "testResults" : {
+          "runNum" : 171,
+          "failuresNum" : 0,
+          "errorsNum" : 66,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.5239999,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_2"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\BootiqueUtilsTest.java" : [ "OursPattern" ],
+          "bootique\\src\\main\\java\\io\\bootique\\BootiqueUtils.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.051
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.81
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.989
+        },
+        "testResults" : {
+          "runNum" : 174,
+          "failuresNum" : 0,
+          "errorsNum" : 69,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.4699999,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_3"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\BootiqueUtilsTest.java" : [ "TheirsPattern" ],
+          "bootique\\src\\main\\java\\io\\bootique\\BootiqueUtils.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "5a6bd998d36bf3c030ea974cd971394cba5db808",
+    "parent1" : "8c255bb8e918ee369b11b6b3cffeb28237360a82",
+    "parent2" : "559b27de88d71a5b17500c3022cb96aa90a4bbfc",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 5,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 196,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bootique-framework-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.053
+      }, {
+        "moduleName" : "bootique: core of Bootique launcher and integration framework",
+        "status" : "FAILURE",
+        "timeElapsed" : 7.292
+      }, {
+        "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 7.484
+    },
+    "testResults" : {
+      "runNum" : 230,
+      "failuresNum" : 0,
+      "errorsNum" : 2,
+      "skippedNum" : 0,
+      "elapsedTime" : 1.3240001,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 179,
+      "variants" : [ {
+        "variantName" : "bootique_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.227
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.437
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_0"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.052
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.986
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.166
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_1"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.976
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.172
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_10"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.143
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.333
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_11"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.926
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.113
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_12"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.057
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.247
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_13"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.054
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.079
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.281
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_14"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.276
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.468
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_15"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_16",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.071
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.563
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.787
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_16"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_17",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.06
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.976
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.175
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_17"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_18",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.068
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.919
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.138
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_18"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_19",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.962
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.146
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_19"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.134
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.332
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_2"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_20",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.033
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.222
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_20"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_21",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.956
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.163
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_21"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_22",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.025
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.219
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_22"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "OursPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_23",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.982
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.175
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_23"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_24",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.052
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.962
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.154
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_24"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_25",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.069
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.936
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.144
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_25"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_26",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.998
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.19
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_26"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_27",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.054
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.93
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.117
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_27"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_28",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.083
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.274
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_28"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_29",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.08
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.275
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_29"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.029
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.234
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_3"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "OursPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_30",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.065
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.954
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.157
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_30"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_31",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.053
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.322
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.51
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_31"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.051
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.936
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.116
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_4"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.055
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.202
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.399
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_5"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "OursPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.063
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.952
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.154
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_6"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.059
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.871
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.071
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_7"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.062
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.971
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.164
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_8"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.064
+          }, {
+            "moduleName" : "bootique: core of Bootique launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 4.085
+          }, {
+            "moduleName" : "bootique-test: unit/integration test framework for Bootique apps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.289
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_9"
+        },
+        "conflictPatterns" : {
+          "RELEASE-NOTES.md" : [ "TheirsPattern" ],
+          "bootique\\src\\test\\java\\io\\bootique\\unit\\BQInternalTestFactory.java" : [ "TheirsPattern", "TheirsPattern", "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "005fca1ddeb83439c290c3a0b23f30ffd7c4b92e",
+    "parent1" : "e45291dafdd3df66c9f135b20d355c6a5737e5b8",
+    "parent2" : "de32d73b7f8755abaabf6a64e15e7c37b9a7f001",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 39,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bootique-framework-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.071
+      }, {
+        "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.714
+      }, {
+        "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bootique-docs: bootique documentation",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.155
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 8.092
+    },
+    "testResults" : {
+      "runNum" : 174,
+      "failuresNum" : 0,
+      "errorsNum" : 69,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.48699993,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 27,
+      "variants" : [ {
+        "variantName" : "bootique_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.06
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 5.696
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.948
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 7.84
+        },
+        "testResults" : {
+          "runNum" : 174,
+          "failuresNum" : 0,
+          "errorsNum" : 69,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.48099998,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_0"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\main\\java\\io\\bootique\\jopt\\JoptCli.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.051
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.564
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.155
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.904
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_1"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\main\\java\\io\\bootique\\jopt\\JoptCli.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.542
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.13
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.869
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_2"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\main\\java\\io\\bootique\\jopt\\JoptCli.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.067
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 2.595
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.079
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 4.883
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_3"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\main\\java\\io\\bootique\\jopt\\JoptCli.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "17794d8f0d4afa1540ba6f583739d5b164036fae",
+    "parent1" : "b566523108d7887f4194abf2c1b8a6cece95a536",
+    "parent2" : "c86e617658253d0d307f790490921fe33726a4c1",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 40,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "bootique-framework-parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.056
+      }, {
+        "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+        "status" : "FAILURE",
+        "timeElapsed" : 5.545
+      }, {
+        "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "bootique-docs: bootique documentation",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.94
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 7.673
+    },
+    "testResults" : {
+      "runNum" : 174,
+      "failuresNum" : 0,
+      "errorsNum" : 69,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.462,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 29,
+      "variants" : [ {
+        "variantName" : "bootique_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.056
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.583
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.112
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.885
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_0"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\Bootique_CliOptionsIT.java" : [ "OursPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.47
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.197
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.865
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_1"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\Bootique_CliOptionsIT.java" : [ "OursPattern", "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.058
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.805
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.079
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 6.11
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_2"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\Bootique_CliOptionsIT.java" : [ "TheirsPattern", "OursPattern" ]
+        }
+      }, {
+        "variantName" : "bootique_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "bootique-framework-parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.057
+          }, {
+            "moduleName" : "bootique: a minimally opinionated app launcher and integration framework",
+            "status" : "FAILURE",
+            "timeElapsed" : 3.501
+          }, {
+            "moduleName" : "bootique-test: a unit/integration test framework on top of Bootique",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-test-badspi-it: tests of tests with broken PolymorphicConfig",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "bootique-docs: bootique documentation",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.143
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 5.836
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\bootique_3"
+        },
+        "conflictPatterns" : {
+          "bootique\\src\\test\\java\\io\\bootique\\Bootique_CliOptionsIT.java" : [ "TheirsPattern", "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

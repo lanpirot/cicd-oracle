@@ -1,0 +1,2608 @@
+{
+  "projectName" : null,
+  "repoUrl" : null,
+  "merges" : [ {
+    "mergeCommit" : "2e839afaf503f75bd903890cd937750715f2f722",
+    "parent1" : "4918e6c93a8fe190b98c3b3aa171a94ec62dd402",
+    "parent2" : "7ae9b0f4bb5985252bf7b00f86422e290776da20",
+    "numConflictFiles" : 2,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 2,
+    "isMultiModule" : true,
+    "coverage" : null,
+    "totalExecutionTime" : 224,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "flinkx-all",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.17
+      }, {
+        "moduleName" : "flinkx-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 7.284
+      }, {
+        "moduleName" : "flinkx-launcher",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.927
+      }, {
+        "moduleName" : "flinkx-examples",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.539
+      }, {
+        "moduleName" : "flinkx-stream",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-stream-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.811
+      }, {
+        "moduleName" : "flinkx-stream-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.724
+      }, {
+        "moduleName" : "flinkx-rdb",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "flinkx-rdb-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.77
+      }, {
+        "moduleName" : "flinkx-rdb-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.901
+      }, {
+        "moduleName" : "flinkx-rdb-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.791
+      }, {
+        "moduleName" : "flinkx-mysql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-mysql-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.217
+      }, {
+        "moduleName" : "flinkx-mysql-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.706
+      }, {
+        "moduleName" : "flinkx-mysql-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.677
+      }, {
+        "moduleName" : "flinkx-mysql-dreader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.858
+      }, {
+        "moduleName" : "flinkx-polardb",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-polardb-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.659
+      }, {
+        "moduleName" : "flinkx-polardb-dreader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.72
+      }, {
+        "moduleName" : "flinkx-polardb-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.651
+      }, {
+        "moduleName" : "flinkx-polardb-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.675
+      }, {
+        "moduleName" : "flinkx-oracle",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-oracle-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.354
+      }, {
+        "moduleName" : "flinkx-oracle-reader",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-oracle-writer",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-sqlserver",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "flinkx-sqlserver-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.704
+      }, {
+        "moduleName" : "flinkx-sqlserver-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.686
+      }, {
+        "moduleName" : "flinkx-sqlserver-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.608
+      }, {
+        "moduleName" : "flinkx-postgresql",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-postgresql-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.779
+      }, {
+        "moduleName" : "flinkx-postgresql-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.835
+      }, {
+        "moduleName" : "flinkx-postgresql-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.724
+      }, {
+        "moduleName" : "flinkx-db2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-db2-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.362
+      }, {
+        "moduleName" : "flinkx-db2-reader",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-db2-writer",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-gbase",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "flinkx-gbase-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 1.09
+      }, {
+        "moduleName" : "flinkx-gbase-reader",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-gbase-writer",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-clickhouse",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "flinkx-clickhouse-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.357
+      }, {
+        "moduleName" : "flinkx-clickhouse-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.742
+      }, {
+        "moduleName" : "flinkx-clickhouse-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.939
+      }, {
+        "moduleName" : "flinkx-oraclelogminer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-oraclelogminer-reader",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.341
+      }, {
+        "moduleName" : "flinkx-hdfs",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-hdfs-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.981
+      }, {
+        "moduleName" : "flinkx-hdfs-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.943
+      }, {
+        "moduleName" : "flinkx-hdfs-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.839
+      }, {
+        "moduleName" : "flinkx-hive",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-hive-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.764
+      }, {
+        "moduleName" : "flinkx-hive-writer",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-es",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "flinkx-es-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 10.273
+      }, {
+        "moduleName" : "flinkx-es-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.879
+      }, {
+        "moduleName" : "flinkx-es-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.771
+      }, {
+        "moduleName" : "flinkx-ftp",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-ftp-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.645
+      }, {
+        "moduleName" : "flinkx-ftp-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.673
+      }, {
+        "moduleName" : "flinkx-ftp-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.664
+      }, {
+        "moduleName" : "flinkx-odps",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-odps-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.515
+      }, {
+        "moduleName" : "flinkx-odps-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.955
+      }, {
+        "moduleName" : "flinkx-odps-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.695
+      }, {
+        "moduleName" : "flinkx-hbase",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-hbase-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.637
+      }, {
+        "moduleName" : "flinkx-hbase-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.685
+      }, {
+        "moduleName" : "flinkx-hbase-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.775
+      }, {
+        "moduleName" : "flinkx-phoenix",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-phoenix-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 11.399
+      }, {
+        "moduleName" : "flinkx-phoenix-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.919
+      }, {
+        "moduleName" : "flinkx-phoenix-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.845
+      }, {
+        "moduleName" : "flinkx-carbondata",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-carbondata-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 5.251
+      }, {
+        "moduleName" : "flinkx-carbondata-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.993
+      }, {
+        "moduleName" : "flinkx-carbondata-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.703
+      }, {
+        "moduleName" : "flinkx-kudu",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-kudu-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.96
+      }, {
+        "moduleName" : "flinkx-kudu-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.83
+      }, {
+        "moduleName" : "flinkx-kudu-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.71
+      }, {
+        "moduleName" : "flinkx-redis",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-redis-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.654
+      }, {
+        "moduleName" : "flinkx-redis-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.657
+      }, {
+        "moduleName" : "flinkx-mongodb",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-mongodb-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.466
+      }, {
+        "moduleName" : "flinkx-mongodb-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.693
+      }, {
+        "moduleName" : "flinkx-mongodb-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.614
+      }, {
+        "moduleName" : "flinkx-binlog",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-binlog-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.028
+      }, {
+        "moduleName" : "flinkx-binlog-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.838
+      }, {
+        "moduleName" : "flinkx-kb",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-kb-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.644
+      }, {
+        "moduleName" : "flinkx-kb-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.858
+      }, {
+        "moduleName" : "flinkx-kb-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.64
+      }, {
+        "moduleName" : "flinkx-kafka09",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-kafka09-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.954
+      }, {
+        "moduleName" : "flinkx-kafka09-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.734
+      }, {
+        "moduleName" : "flinkx-kafka10",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-kafka10-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.35
+      }, {
+        "moduleName" : "flinkx-kafka10-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.679
+      }, {
+        "moduleName" : "flinkx-kafka11",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-kafka11-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.951
+      }, {
+        "moduleName" : "flinkx-kafka11-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.621
+      }, {
+        "moduleName" : "flinkx-kafka",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-kafka-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.762
+      }, {
+        "moduleName" : "flinkx-kafka-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.656
+      }, {
+        "moduleName" : "flinkx-sqlservercdc",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-sqlservercdc-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.195
+      }, {
+        "moduleName" : "flinkx-sqlservercdc-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.669
+      }, {
+        "moduleName" : "flinkx-emqx",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-emqx-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 1.514
+      }, {
+        "moduleName" : "flinkx-emqx-reader",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.724
+      }, {
+        "moduleName" : "flinkx-emqx-writer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.637
+      }, {
+        "moduleName" : "flinkx-metadata",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-metadata-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.571
+      }, {
+        "moduleName" : "flinkx-metadata-reader",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-metadata-hive2",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.002
+      }, {
+        "moduleName" : "flinkx-metadata-hive2-core",
+        "status" : "FAILURE",
+        "timeElapsed" : 7.908
+      }, {
+        "moduleName" : "flinkx-metadata-hive2-reader",
+        "status" : "SKIPPED",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "flinkx-restapi",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.001
+      }, {
+        "moduleName" : "flinkx-restapi-core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.702
+      }, {
+        "moduleName" : "flinkx-restapi-writer",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.703
+      }, {
+        "moduleName" : "flinkx-restapi-reader",
+        "status" : "FAILURE",
+        "timeElapsed" : 0.635
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 130.0
+    },
+    "testResults" : {
+      "runNum" : 15,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 0,
+      "elapsedTime" : 0.445,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\chunjun"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 78,
+      "variants" : [ {
+        "variantName" : "chunjun_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "flinkx-all",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.949
+          }, {
+            "moduleName" : "flinkx-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.042
+          }, {
+            "moduleName" : "flinkx-launcher",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.099
+          }, {
+            "moduleName" : "flinkx-examples",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.628
+          }, {
+            "moduleName" : "flinkx-stream",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-stream-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.832
+          }, {
+            "moduleName" : "flinkx-stream-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.852
+          }, {
+            "moduleName" : "flinkx-rdb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-rdb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.933
+          }, {
+            "moduleName" : "flinkx-rdb-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.953
+          }, {
+            "moduleName" : "flinkx-rdb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.874
+          }, {
+            "moduleName" : "flinkx-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-mysql-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.791
+          }, {
+            "moduleName" : "flinkx-mysql-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.894
+          }, {
+            "moduleName" : "flinkx-mysql-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.85
+          }, {
+            "moduleName" : "flinkx-mysql-dreader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.794
+          }, {
+            "moduleName" : "flinkx-polardb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-polardb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.909
+          }, {
+            "moduleName" : "flinkx-polardb-dreader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.83
+          }, {
+            "moduleName" : "flinkx-polardb-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.908
+          }, {
+            "moduleName" : "flinkx-polardb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.906
+          }, {
+            "moduleName" : "flinkx-oracle",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-oracle-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.276
+          }, {
+            "moduleName" : "flinkx-oracle-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-sqlserver-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.739
+          }, {
+            "moduleName" : "flinkx-sqlserver-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.777
+          }, {
+            "moduleName" : "flinkx-sqlserver-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.762
+          }, {
+            "moduleName" : "flinkx-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-postgresql-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.779
+          }, {
+            "moduleName" : "flinkx-postgresql-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.811
+          }, {
+            "moduleName" : "flinkx-postgresql-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.935
+          }, {
+            "moduleName" : "flinkx-db2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-db2-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.34
+          }, {
+            "moduleName" : "flinkx-db2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-gbase-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.282
+          }, {
+            "moduleName" : "flinkx-gbase-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-clickhouse-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.012
+          }, {
+            "moduleName" : "flinkx-clickhouse-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.818
+          }, {
+            "moduleName" : "flinkx-clickhouse-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.77
+          }, {
+            "moduleName" : "flinkx-oraclelogminer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-oraclelogminer-reader",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.248
+          }, {
+            "moduleName" : "flinkx-hdfs",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-hdfs-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.019
+          }, {
+            "moduleName" : "flinkx-hdfs-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.985
+          }, {
+            "moduleName" : "flinkx-hdfs-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.091
+          }, {
+            "moduleName" : "flinkx-hive",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "flinkx-hive-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.655
+          }, {
+            "moduleName" : "flinkx-hive-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "flinkx-es-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.097
+          }, {
+            "moduleName" : "flinkx-es-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.905
+          }, {
+            "moduleName" : "flinkx-es-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.971
+          }, {
+            "moduleName" : "flinkx-ftp",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-ftp-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.794
+          }, {
+            "moduleName" : "flinkx-ftp-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.773
+          }, {
+            "moduleName" : "flinkx-ftp-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.763
+          }, {
+            "moduleName" : "flinkx-odps",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-odps-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.788
+          }, {
+            "moduleName" : "flinkx-odps-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.824
+          }, {
+            "moduleName" : "flinkx-odps-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.779
+          }, {
+            "moduleName" : "flinkx-hbase",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-hbase-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.795
+          }, {
+            "moduleName" : "flinkx-hbase-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.803
+          }, {
+            "moduleName" : "flinkx-hbase-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.936
+          }, {
+            "moduleName" : "flinkx-phoenix",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-phoenix-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.103
+          }, {
+            "moduleName" : "flinkx-phoenix-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.137
+          }, {
+            "moduleName" : "flinkx-phoenix-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.113
+          }, {
+            "moduleName" : "flinkx-carbondata",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-carbondata-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.051
+          }, {
+            "moduleName" : "flinkx-carbondata-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.065
+          }, {
+            "moduleName" : "flinkx-carbondata-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.868
+          }, {
+            "moduleName" : "flinkx-kudu",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kudu-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.768
+          }, {
+            "moduleName" : "flinkx-kudu-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.796
+          }, {
+            "moduleName" : "flinkx-kudu-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.793
+          }, {
+            "moduleName" : "flinkx-redis",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-redis-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.739
+          }, {
+            "moduleName" : "flinkx-redis-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.777
+          }, {
+            "moduleName" : "flinkx-mongodb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-mongodb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.788
+          }, {
+            "moduleName" : "flinkx-mongodb-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.8
+          }, {
+            "moduleName" : "flinkx-mongodb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.765
+          }, {
+            "moduleName" : "flinkx-binlog",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-binlog-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.973
+          }, {
+            "moduleName" : "flinkx-binlog-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.919
+          }, {
+            "moduleName" : "flinkx-kb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "flinkx-kb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.792
+          }, {
+            "moduleName" : "flinkx-kb-reader",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.739
+          }, {
+            "moduleName" : "flinkx-kb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.743
+          }, {
+            "moduleName" : "flinkx-kafka09",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka09-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.819
+          }, {
+            "moduleName" : "flinkx-kafka10",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka10-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.771
+          }, {
+            "moduleName" : "flinkx-kafka11",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka11-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.756
+          }, {
+            "moduleName" : "flinkx-kafka",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.785
+          }, {
+            "moduleName" : "flinkx-sqlservercdc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.785
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.824
+          }, {
+            "moduleName" : "flinkx-emqx",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-emqx-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.728
+          }, {
+            "moduleName" : "flinkx-emqx-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.764
+          }, {
+            "moduleName" : "flinkx-emqx-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.79
+          }, {
+            "moduleName" : "flinkx-metadata",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-metadata-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.716
+          }, {
+            "moduleName" : "flinkx-metadata-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.341
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-restapi-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.742
+          }, {
+            "moduleName" : "flinkx-restapi-writer",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.756
+          }, {
+            "moduleName" : "flinkx-restapi-reader",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.707
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 76.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.503,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\chunjun_0"
+        },
+        "conflictPatterns" : {
+          "flinkx-core\\src\\main\\java\\com\\dtstack\\flinkx\\inputformat\\RichInputFormat.java" : [ "OursPattern" ],
+          "flinkx-kb\\flinkx-kb-reader\\src\\main\\java\\com\\dtstack\\flinkx\\kafkaBase\\reader\\KafkaBaseInputFormat.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "chunjun_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "flinkx-all",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.913
+          }, {
+            "moduleName" : "flinkx-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.337
+          }, {
+            "moduleName" : "flinkx-launcher",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.088
+          }, {
+            "moduleName" : "flinkx-examples",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.567
+          }, {
+            "moduleName" : "flinkx-stream",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-stream-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.841
+          }, {
+            "moduleName" : "flinkx-stream-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.85
+          }, {
+            "moduleName" : "flinkx-rdb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-rdb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.907
+          }, {
+            "moduleName" : "flinkx-rdb-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.993
+          }, {
+            "moduleName" : "flinkx-rdb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.845
+          }, {
+            "moduleName" : "flinkx-mysql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-mysql-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.762
+          }, {
+            "moduleName" : "flinkx-mysql-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.905
+          }, {
+            "moduleName" : "flinkx-mysql-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.806
+          }, {
+            "moduleName" : "flinkx-mysql-dreader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.836
+          }, {
+            "moduleName" : "flinkx-polardb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "flinkx-polardb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.891
+          }, {
+            "moduleName" : "flinkx-polardb-dreader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.805
+          }, {
+            "moduleName" : "flinkx-polardb-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.888
+          }, {
+            "moduleName" : "flinkx-polardb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.948
+          }, {
+            "moduleName" : "flinkx-oracle",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-oracle-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.265
+          }, {
+            "moduleName" : "flinkx-oracle-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-sqlserver-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.741
+          }, {
+            "moduleName" : "flinkx-sqlserver-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.764
+          }, {
+            "moduleName" : "flinkx-sqlserver-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.782
+          }, {
+            "moduleName" : "flinkx-postgresql",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-postgresql-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.767
+          }, {
+            "moduleName" : "flinkx-postgresql-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.798
+          }, {
+            "moduleName" : "flinkx-postgresql-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.024
+          }, {
+            "moduleName" : "flinkx-db2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-db2-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.278
+          }, {
+            "moduleName" : "flinkx-db2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-gbase-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.272
+          }, {
+            "moduleName" : "flinkx-gbase-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-clickhouse-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.995
+          }, {
+            "moduleName" : "flinkx-clickhouse-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.79
+          }, {
+            "moduleName" : "flinkx-clickhouse-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.772
+          }, {
+            "moduleName" : "flinkx-oraclelogminer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-oraclelogminer-reader",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.253
+          }, {
+            "moduleName" : "flinkx-hdfs",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-hdfs-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.025
+          }, {
+            "moduleName" : "flinkx-hdfs-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.033
+          }, {
+            "moduleName" : "flinkx-hdfs-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.094
+          }, {
+            "moduleName" : "flinkx-hive",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-hive-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.598
+          }, {
+            "moduleName" : "flinkx-hive-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-es-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.092
+          }, {
+            "moduleName" : "flinkx-es-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.909
+          }, {
+            "moduleName" : "flinkx-es-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.02
+          }, {
+            "moduleName" : "flinkx-ftp",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-ftp-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.821
+          }, {
+            "moduleName" : "flinkx-ftp-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.8
+          }, {
+            "moduleName" : "flinkx-ftp-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.783
+          }, {
+            "moduleName" : "flinkx-odps",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-odps-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.811
+          }, {
+            "moduleName" : "flinkx-odps-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.814
+          }, {
+            "moduleName" : "flinkx-odps-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.79
+          }, {
+            "moduleName" : "flinkx-hbase",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-hbase-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.794
+          }, {
+            "moduleName" : "flinkx-hbase-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.816
+          }, {
+            "moduleName" : "flinkx-hbase-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.026
+          }, {
+            "moduleName" : "flinkx-phoenix",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-phoenix-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.079
+          }, {
+            "moduleName" : "flinkx-phoenix-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.111
+          }, {
+            "moduleName" : "flinkx-phoenix-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.151
+          }, {
+            "moduleName" : "flinkx-carbondata",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-carbondata-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.984
+          }, {
+            "moduleName" : "flinkx-carbondata-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.041
+          }, {
+            "moduleName" : "flinkx-carbondata-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.848
+          }, {
+            "moduleName" : "flinkx-kudu",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kudu-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.798
+          }, {
+            "moduleName" : "flinkx-kudu-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.801
+          }, {
+            "moduleName" : "flinkx-kudu-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.789
+          }, {
+            "moduleName" : "flinkx-redis",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-redis-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.746
+          }, {
+            "moduleName" : "flinkx-redis-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.792
+          }, {
+            "moduleName" : "flinkx-mongodb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-mongodb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.82
+          }, {
+            "moduleName" : "flinkx-mongodb-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.766
+          }, {
+            "moduleName" : "flinkx-mongodb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.755
+          }, {
+            "moduleName" : "flinkx-binlog",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.977
+          }, {
+            "moduleName" : "flinkx-binlog-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.911
+          }, {
+            "moduleName" : "flinkx-kb",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kb-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.787
+          }, {
+            "moduleName" : "flinkx-kb-reader",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.761
+          }, {
+            "moduleName" : "flinkx-kb-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.749
+          }, {
+            "moduleName" : "flinkx-kafka09",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka09-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.808
+          }, {
+            "moduleName" : "flinkx-kafka10",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka10-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.752
+          }, {
+            "moduleName" : "flinkx-kafka11",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka11-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.757
+          }, {
+            "moduleName" : "flinkx-kafka",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-kafka-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.804
+          }, {
+            "moduleName" : "flinkx-sqlservercdc",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.768
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.8
+          }, {
+            "moduleName" : "flinkx-emqx",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-emqx-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.743
+          }, {
+            "moduleName" : "flinkx-emqx-reader",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.746
+          }, {
+            "moduleName" : "flinkx-emqx-writer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.768
+          }, {
+            "moduleName" : "flinkx-metadata",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-metadata-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.711
+          }, {
+            "moduleName" : "flinkx-metadata-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.349
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "flinkx-restapi-core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.747
+          }, {
+            "moduleName" : "flinkx-restapi-writer",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.73
+          }, {
+            "moduleName" : "flinkx-restapi-reader",
+            "status" : "FAILURE",
+            "timeElapsed" : 0.707
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 76.0
+        },
+        "testResults" : {
+          "runNum" : 15,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.47199997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\chunjun_1"
+        },
+        "conflictPatterns" : {
+          "flinkx-core\\src\\main\\java\\com\\dtstack\\flinkx\\inputformat\\RichInputFormat.java" : [ "OursPattern" ],
+          "flinkx-kb\\flinkx-kb-reader\\src\\main\\java\\com\\dtstack\\flinkx\\kafkaBase\\reader\\KafkaBaseInputFormat.java" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "chunjun_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "flinkx-all",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.927
+          }, {
+            "moduleName" : "flinkx-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.193
+          }, {
+            "moduleName" : "flinkx-launcher",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-examples",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.592
+          }, {
+            "moduleName" : "flinkx-stream",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-stream-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-stream-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-dreader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-dreader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oraclelogminer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oraclelogminer-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hive",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hive-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hive-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-redis",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-redis-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-redis-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.523
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\chunjun_2"
+        },
+        "conflictPatterns" : {
+          "flinkx-core\\src\\main\\java\\com\\dtstack\\flinkx\\inputformat\\RichInputFormat.java" : [ "TheirsPattern" ],
+          "flinkx-kb\\flinkx-kb-reader\\src\\main\\java\\com\\dtstack\\flinkx\\kafkaBase\\reader\\KafkaBaseInputFormat.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "chunjun_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "flinkx-all",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.917
+          }, {
+            "moduleName" : "flinkx-core",
+            "status" : "FAILURE",
+            "timeElapsed" : 7.767
+          }, {
+            "moduleName" : "flinkx-launcher",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-examples",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.308
+          }, {
+            "moduleName" : "flinkx-stream",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-stream-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-stream-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-rdb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mysql-dreader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-dreader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-polardb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oracle-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlserver-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-postgresql-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-db2-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-gbase-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-clickhouse-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oraclelogminer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-oraclelogminer-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hdfs-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hive",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hive-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hive-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-es-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-ftp-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-odps-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-hbase-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-phoenix-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-carbondata-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kudu-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-redis",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-redis-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-redis-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-mongodb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-binlog-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kb-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka09-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka10-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka11-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-kafka-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-sqlservercdc-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-emqx-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-metadata-hive2-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi-core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi-writer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "flinkx-restapi-reader",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 10.826
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\chunjun_3"
+        },
+        "conflictPatterns" : {
+          "flinkx-core\\src\\main\\java\\com\\dtstack\\flinkx\\inputformat\\RichInputFormat.java" : [ "TheirsPattern" ],
+          "flinkx-kb\\flinkx-kb-reader\\src\\main\\java\\com\\dtstack\\flinkx\\kafkaBase\\reader\\KafkaBaseInputFormat.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

@@ -1,0 +1,2207 @@
+{
+  "projectName" : "AxonFramework",
+  "repoUrl" : "https://github.com/AxonFramework/AxonFramework",
+  "merges" : [ {
+    "mergeCommit" : "f6846eecd92d5bd2491c64e5dc1c072342eded39",
+    "parent1" : "6759a08fce894d1e775dd569a2a285f7e70c7592",
+    "parent2" : "557ec78a57fb1bc9c03f1de2aadb455aee0d2787",
+    "numConflictFiles" : 4,
+    "numJavaConflictFiles" : 2,
+    "numConflictChunks" : 4,
+    "isMultiModule" : true,
+    "coverage" : {
+      "instructionCoverage" : "NaN",
+      "lineCoverage" : "NaN"
+    },
+    "totalExecutionTime" : 1107,
+    "compilationResult" : {
+      "moduleResults" : [ {
+        "moduleName" : "Axon Framework - Root",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Axon Framework - Parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Axon Framework - Bill of Materials",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Axon Framework - Common",
+        "status" : "SUCCESS",
+        "timeElapsed" : 23.806
+      }, {
+        "moduleName" : "Axon Framework - Update",
+        "status" : "SUCCESS",
+        "timeElapsed" : 24.078
+      }, {
+        "moduleName" : "Axon Framework - Conversion",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.073
+      }, {
+        "moduleName" : "Axon Framework - Messaging",
+        "status" : "SUCCESS",
+        "timeElapsed" : 59.83
+      }, {
+        "moduleName" : "Axon Framework - Modelling",
+        "status" : "SUCCESS",
+        "timeElapsed" : 8.913
+      }, {
+        "moduleName" : "Axon Framework - Event Sourcing",
+        "status" : "SUCCESS",
+        "timeElapsed" : 11.894
+      }, {
+        "moduleName" : "Axon Framework - Test Fixtures",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.176
+      }, {
+        "moduleName" : "Axon Framework - Axon Server Connector",
+        "status" : "SUCCESS",
+        "timeElapsed" : 16.79
+      }, {
+        "moduleName" : "Axon Extension - Parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Axon Extension - Spring - Parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.0
+      }, {
+        "moduleName" : "Axon Extension - Spring - Core",
+        "status" : "SUCCESS",
+        "timeElapsed" : 9.135
+      }, {
+        "moduleName" : "Axon Extension - Metrics - Parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.004
+      }, {
+        "moduleName" : "Axon Extension - Metrics - Dropwizard",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.63
+      }, {
+        "moduleName" : "Axon Extension - Tracing - Parent",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.004
+      }, {
+        "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.481
+      }, {
+        "moduleName" : "Axon Extension - Metrics - Micrometer",
+        "status" : "SUCCESS",
+        "timeElapsed" : 2.826
+      }, {
+        "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+        "status" : "SUCCESS",
+        "timeElapsed" : 50.958
+      }, {
+        "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.052
+      }, {
+        "moduleName" : "Axon Framework - Integration Tests",
+        "status" : "FAILURE",
+        "timeElapsed" : 12.829
+      }, {
+        "moduleName" : "Axon Framework - Migration",
+        "status" : "SUCCESS",
+        "timeElapsed" : 0.545
+      }, {
+        "moduleName" : "Axon Framework - Legacy Components",
+        "status" : "SUCCESS",
+        "timeElapsed" : 4.354
+      }, {
+        "moduleName" : "Axon Framework - Legacy Aggregate",
+        "status" : "SUCCESS",
+        "timeElapsed" : 8.224
+      }, {
+        "moduleName" : "Axon Framework - Legacy Saga",
+        "status" : "SUCCESS",
+        "timeElapsed" : 8.917
+      }, {
+        "moduleName" : "Axon Framework - TODO",
+        "status" : "SUCCESS",
+        "timeElapsed" : 44.38
+      } ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 302.0
+    },
+    "testResults" : {
+      "runNum" : 3713,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 643,
+      "elapsedTime" : 229.47021,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 659,
+      "variants" : [ {
+        "variantName" : "AxonFramework_0",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 78.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.827
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 19.057
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "FAILURE",
+            "timeElapsed" : 147.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.023
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.939
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 280.0
+        },
+        "testResults" : {
+          "runNum" : 1577,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 28,
+          "elapsedTime" : 144.56697,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_0"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_1",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.01
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 79.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.913
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.432
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "FAILURE",
+            "timeElapsed" : 138.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.998
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 267.0
+        },
+        "testResults" : {
+          "runNum" : 1573,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 28,
+          "elapsedTime" : 139.44101,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_1"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_10",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 62.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 33.815
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.854
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 113.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 29.804
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 27.261
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.457
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 46.237
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.648
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.011
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.629
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.878
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.796
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 103.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.106
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 18.108
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.554
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.36
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.515
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.604
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "FAILURE",
+            "timeElapsed" : 91.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 644.0
+        },
+        "testResults" : {
+          "runNum" : 3704,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 451.27533,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_10"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_11",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.017
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 61.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 31.955
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.727
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 115.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.588
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 31.604
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.547
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 48.021
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.218
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.865
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.706
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.79
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 101.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.149
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.796
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.474
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.616
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.578
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.462
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "FAILURE",
+            "timeElapsed" : 91.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 641.0
+        },
+        "testResults" : {
+          "runNum" : 3704,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 446.0371,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_11"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_12",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 71.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 32.344
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 13.545
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "FAILURE",
+            "timeElapsed" : 152.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.025
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.048
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.898
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 276.0
+        },
+        "testResults" : {
+          "runNum" : 1573,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 28,
+          "elapsedTime" : 145.55196,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_12"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_13",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.003
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 45.601
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 40.811
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.65
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 130.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 30.08
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 26.419
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 13.775
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 40.027
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.659
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.802
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.671
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.924
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 103.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.123
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.648
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.634
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.677
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.189
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.574
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "FAILURE",
+            "timeElapsed" : 90.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 643.0
+        },
+        "testResults" : {
+          "runNum" : 3704,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 451.67233,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_13"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_14",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 61.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 34.113
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.613
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 138.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 26.198
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.296
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 13.843
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 29.936
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.78
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.012
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.306
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.147
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.72
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 101.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.134
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.928
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.531
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.28
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.694
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.339
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "FAILURE",
+            "timeElapsed" : 91.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 642.0
+        },
+        "testResults" : {
+          "runNum" : 3704,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 439.62646,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_14"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_15",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 62.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 34.131
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.402
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "FAILURE",
+            "timeElapsed" : 140.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.072
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 2.046
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 249.0
+        },
+        "testResults" : {
+          "runNum" : 1577,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 28,
+          "elapsedTime" : 158.21797,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_15"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "OursPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_2",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.027
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 79.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.497
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.903
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 137.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.164
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.417
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.192
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 27.186
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.544
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.842
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 4.839
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.954
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 96.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.059
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 14.147
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.577
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.999
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.446
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.646
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SUCCESS",
+            "timeElapsed" : 87.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 651.0
+        },
+        "testResults" : {
+          "runNum" : 3713,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 408.84097,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_2"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_3",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 71.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 32.746
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 17.368
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 150.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.456
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 27.583
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 11.09
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 25.889
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.695
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.006
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.492
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.195
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.213
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 93.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.108
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 18.738
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.166
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.146
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.062
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.071
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SUCCESS",
+            "timeElapsed" : 80.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 653.0
+        },
+        "testResults" : {
+          "runNum" : 3713,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 409.79413,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_3"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_4",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "FAILURE",
+            "timeElapsed" : 61.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.016
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.601
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 64.0
+        },
+        "testResults" : {
+          "runNum" : 238,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 7,
+          "elapsedTime" : 27.471996,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_4"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_5",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 79.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.306
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.922
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 147.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 24.035
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 26.616
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 10.916
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 24.849
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.219
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.013
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.569
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.231
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.689
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 91.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.203
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 18.877
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.982
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.773
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.463
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.103
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "FAILURE",
+            "timeElapsed" : 76.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 653.0
+        },
+        "testResults" : {
+          "runNum" : 3704,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 391.03125,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_5"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "OursPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_6",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "FAILURE",
+            "timeElapsed" : 62.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.02
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.014
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.716
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 66.0
+        },
+        "testResults" : {
+          "runNum" : 238,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 7,
+          "elapsedTime" : 27.231997,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_6"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_7",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 78.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 28.693
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.463
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "FAILURE",
+            "timeElapsed" : 139.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.03
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.008
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 1.052
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SKIPPED",
+            "timeElapsed" : 0.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 267.0
+        },
+        "testResults" : {
+          "runNum" : 1573,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 28,
+          "elapsedTime" : 140.24702,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_7"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_8",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.005
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 62.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 34.106
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 8.211
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 117.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 30.068
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 25.724
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.679
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 42.342
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.2
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.015
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.49
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.788
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.929
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 101.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.106
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 17.552
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.399
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 7.632
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 21.929
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.575
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SUCCESS",
+            "timeElapsed" : 92.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 639.0
+        },
+        "testResults" : {
+          "runNum" : 3713,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 445.54535,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_8"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "OursPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      }, {
+        "variantName" : "AxonFramework_9",
+        "compilationResult" : {
+          "moduleResults" : [ {
+            "moduleName" : "Axon Framework - Root",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.004
+          }, {
+            "moduleName" : "Axon Framework - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.002
+          }, {
+            "moduleName" : "Axon Framework - Bill of Materials",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.0
+          }, {
+            "moduleName" : "Axon Framework - Common",
+            "status" : "SUCCESS",
+            "timeElapsed" : 71.0
+          }, {
+            "moduleName" : "Axon Framework - Update",
+            "status" : "SUCCESS",
+            "timeElapsed" : 30.476
+          }, {
+            "moduleName" : "Axon Framework - Conversion",
+            "status" : "SUCCESS",
+            "timeElapsed" : 12.057
+          }, {
+            "moduleName" : "Axon Framework - Messaging",
+            "status" : "SUCCESS",
+            "timeElapsed" : 139.0
+          }, {
+            "moduleName" : "Axon Framework - Modelling",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.439
+          }, {
+            "moduleName" : "Axon Framework - Event Sourcing",
+            "status" : "SUCCESS",
+            "timeElapsed" : 25.633
+          }, {
+            "moduleName" : "Axon Framework - Test Fixtures",
+            "status" : "SUCCESS",
+            "timeElapsed" : 14.561
+          }, {
+            "moduleName" : "Axon Framework - Axon Server Connector",
+            "status" : "SUCCESS",
+            "timeElapsed" : 27.114
+          }, {
+            "moduleName" : "Axon Extension - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.001
+          }, {
+            "moduleName" : "Axon Extension - Spring - Core",
+            "status" : "SUCCESS",
+            "timeElapsed" : 20.852
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.007
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Dropwizard",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.389
+          }, {
+            "moduleName" : "Axon Extension - Tracing - Parent",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.009
+          }, {
+            "moduleName" : "Axon Extension - Tracing - OpenTelemetry",
+            "status" : "SUCCESS",
+            "timeElapsed" : 5.078
+          }, {
+            "moduleName" : "Axon Extension - Metrics - Micrometer",
+            "status" : "SUCCESS",
+            "timeElapsed" : 6.351
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Autoconfigure",
+            "status" : "SUCCESS",
+            "timeElapsed" : 99.0
+          }, {
+            "moduleName" : "Axon Extension - Spring - SpringBoot Starter",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.133
+          }, {
+            "moduleName" : "Axon Framework - Integration Tests",
+            "status" : "FAILURE",
+            "timeElapsed" : 14.444
+          }, {
+            "moduleName" : "Axon Framework - Migration",
+            "status" : "SUCCESS",
+            "timeElapsed" : 0.737
+          }, {
+            "moduleName" : "Axon Framework - Legacy Components",
+            "status" : "SUCCESS",
+            "timeElapsed" : 9.669
+          }, {
+            "moduleName" : "Axon Framework - Legacy Aggregate",
+            "status" : "SUCCESS",
+            "timeElapsed" : 22.801
+          }, {
+            "moduleName" : "Axon Framework - Legacy Saga",
+            "status" : "SUCCESS",
+            "timeElapsed" : 23.183
+          }, {
+            "moduleName" : "Axon Framework - TODO",
+            "status" : "SUCCESS",
+            "timeElapsed" : 90.0
+          } ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 647.0
+        },
+        "testResults" : {
+          "runNum" : 3713,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 643,
+          "elapsedTime" : 412.1781,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\AxonFramework_9"
+        },
+        "conflictPatterns" : {
+          "todo\\src\\main\\java\\org\\axonframework\\deadline\\dbscheduler\\DbSchedulerDeadlineManager.java" : [ "TheirsPattern" ],
+          "todo\\src\\main\\java\\org\\axonframework\\eventhandling\\scheduling\\dbscheduler\\DbSchedulerEventScheduler.java" : [ "TheirsPattern" ],
+          "pom.xml" : [ "TheirsPattern" ],
+          ".github\\dependabot.yml" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}

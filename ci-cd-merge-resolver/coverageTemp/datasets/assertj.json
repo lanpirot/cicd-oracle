@@ -1,0 +1,127 @@
+{
+  "merges" : [ {
+    "mergeCommit" : "30d3049359fc8a4cbd2932bebc3b238a7338b8ca",
+    "parent1" : "f63c0c1b2ce21951697b1a9b47f214f4e1a8b5ff",
+    "parent2" : "a2d13c4a3f88f58e95ac894e113c2192263df150",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "totalExecutionTime" : 114,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 42.513
+    },
+    "testResults" : {
+      "runNum" : 12505,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 9,
+      "elapsedTime" : 7.033992,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\assertj"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 52,
+      "variants" : [ {
+        "variantName" : "assertj_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 51.149
+        },
+        "testResults" : {
+          "runNum" : 12505,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 9,
+          "elapsedTime" : 7.375992,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\assertj_0"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\org\\assertj\\core\\api\\assumptions\\Map_special_assertion_methods_in_assumptions_Test.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "assertj_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 51.068
+        },
+        "testResults" : {
+          "runNum" : 12503,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 9,
+          "elapsedTime" : 7.480992,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\assertj_1"
+        },
+        "conflictPatterns" : {
+          "src\\test\\java\\org\\assertj\\core\\api\\assumptions\\Map_special_assertion_methods_in_assumptions_Test.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  }, {
+    "mergeCommit" : "19ad658f9ac9e4d6a05a8527ec2719c13a7ee203",
+    "parent1" : "9d3b9d05db762dc3b3365d53b0d3c85d9a87b5ac",
+    "parent2" : "f32974846381c94d9bd7436e3ba98163a96cd97c",
+    "numConflictFiles" : 1,
+    "numJavaConflictFiles" : 1,
+    "numConflictChunks" : 1,
+    "isMultiModule" : false,
+    "totalExecutionTime" : 106,
+    "compilationResult" : {
+      "moduleResults" : [ ],
+      "buildStatus" : "FAILURE",
+      "totalTime" : 42.616
+    },
+    "testResults" : {
+      "runNum" : 12943,
+      "failuresNum" : 0,
+      "errorsNum" : 0,
+      "skippedNum" : 9,
+      "elapsedTime" : 7.865991,
+      "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\assertj"
+    },
+    "variantsExecution" : {
+      "executionTimeSeconds" : 46,
+      "variants" : [ {
+        "variantName" : "assertj_0",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 9.566
+        },
+        "testResults" : {
+          "runNum" : 0,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 0,
+          "elapsedTime" : 0.0,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\assertj_0"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\org\\assertj\\core\\api\\recursive\\comparison\\RecursiveComparisonDifferenceCalculator.java" : [ "OursPattern" ]
+        }
+      }, {
+        "variantName" : "assertj_1",
+        "compilationResult" : {
+          "moduleResults" : [ ],
+          "buildStatus" : "FAILURE",
+          "totalTime" : 44.504
+        },
+        "testResults" : {
+          "runNum" : 12933,
+          "failuresNum" : 0,
+          "errorsNum" : 0,
+          "skippedNum" : 9,
+          "elapsedTime" : 7.1369877,
+          "projectDir" : "C:\\Users\\vova\\Documents\\BernUni\\Semester3\\Thesis\\ci-cd-merge-resolver\\ci-cd-merge-resolver\\temp\\projects\\assertj_1"
+        },
+        "conflictPatterns" : {
+          "src\\main\\java\\org\\assertj\\core\\api\\recursive\\comparison\\RecursiveComparisonDifferenceCalculator.java" : [ "TheirsPattern" ]
+        }
+      } ]
+    }
+  } ]
+}
