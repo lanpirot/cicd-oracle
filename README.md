@@ -1,3 +1,53 @@
+# CI/CD-Enhanced Conflict Resolution
+
+This repository contains a research-oriented toolchain for **automated merge conflict resolution**
+with **CI/CD-driven validation**.
+
+The project explores heuristic-based conflict resolution strategies and evaluates merge variants
+using compilation and test results collected automatically from build pipelines.
+
+---
+
+## Repository Structure
+
+This repository consists of three main components:
+
+### 🔁 CI/CD Conflict Resolution Core
+Core logic for resolve merge conflicts
+
+📄 Documentation:  
+[README – CI/CD Core](ci-cd-merge-resolver/README.md)
+
+---
+
+### 📦 Maven Plugin
+Extends Maven build, test lifecycles for cache plugin
+
+📄 Documentation:  
+[README – Maven Plugin](maven-hook/README.md)
+
+---
+
+### 🔌 IntelliJ IDEA Plugin
+Provides a graphical interface for running conflict resolution
+
+📄 Documentation:  
+[README – IntelliJ IDEA Plugin](demo/README.md)
+
+
+---
+
+## Research Context
+
+This project investigates:
+- Variant explosion during merge conflict resolution
+- Heuristic pruning strategies
+- CI/CD-based validation of merge outcomes
+- Automated detection of invalid or empty resolutions
+
+---
+
+
 # CI/CD-Enhanced Conflict Resolution – Team Discussion Notes
 
 # 24/09/2025
