@@ -40,7 +40,7 @@ public class MetricsAnalyzer {
         }
     }
 
-    public void makeFullAnalysis(){
+    public void makeFullAnalysis() {
 
         System.out.println("All Merges: " + merges.size());
         System.out.printf("Num of MultiModules: %d %d%% %n", countMultiModulesProjects(), countPercent(merges.size(), countMultiModulesProjects()));
@@ -64,8 +64,6 @@ public class MetricsAnalyzer {
                 .mapToDouble(x -> x.getCoverage().lineCoverage()).average().orElse(0.0));
 
 
-
-
         List<MergeOutputJSON> impactMergesSingleModule = getSingleModuleProjects(impactMerges);
         List<MergeOutputJSON> impactMergesMultiModule = getMultiModuleProjects(impactMerges);
         List<MergeOutputJSON> impactMergesSingleModuleCoverage = getMergesWithCoverage(impactMergesSingleModule);
@@ -78,8 +76,9 @@ public class MetricsAnalyzer {
                 .mapToDouble(x -> x.getCoverage().lineCoverage()).average().orElse(0.0));
 
         List<MergeOutputJSON> atLeastOneResolutionTotal = atLeastOneResolution(impactMergesSingleModule);
-        System.out.printf("At least one resolution %d %d%% %n",
+        System.out.printf("At least one resolution %d/%d %d%% %n",
                 atLeastOneResolution(impactMerges).size(),
+                impactMerges.size(),
                 countPercent(impactMerges.size(),
                         atLeastOneResolution(impactMerges).size()));
 
@@ -135,7 +134,6 @@ public class MetricsAnalyzer {
                     (float) entry.getValue() * 100 / impactMerges.size());
         }
         ;
-
 
 
         System.out.printf("Ratio of execution time between merge and variance: %f %n", ratioInExecutionTime(impactMerges));
@@ -309,9 +307,9 @@ public class MetricsAnalyzer {
                 if (variantBest > best) {
                     best = variantBest;
                     String pattern = whichUniformPatternResolution(variant.getConflictPatterns());
-                    if (!bestResolution.contains(pattern)) {
-                        bestResolution = new ArrayList<>(List.of());
-                    }
+
+                    bestResolution = new ArrayList<>(List.of());
+                    bestResolution.add(pattern);
                 } else if (variantBest == best) {
                     String pattern = whichUniformPatternResolution(variant.getConflictPatterns());
                     if (!bestResolution.contains(pattern)) {
