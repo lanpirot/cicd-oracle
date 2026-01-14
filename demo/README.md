@@ -20,36 +20,33 @@ An IntelliJ IDEA plugin to assist developers in **resolving merge conflicts**, a
 - **IntelliJ IDEA**: `2022.3+` (Community or Ultimate)
 - **Java**: 17+
 - **Maven**:
-- **Maven Daemon**
-- **Maven Hook**
+- **Maven Daemon** (Optional)
+- **[Maven Hook](../maven-hook/README.md)** (Required for cached builds)
+- **[Plugin DevKit](https://plugins.jetbrains.com/plugin/22851-plugin-devkit)** (Required for further plugin development)
 ---
 
 ## Installation
 
 ### From Compiled ZIP
 
-1. Build the plugin JAR/ZIP using Gradle:
-    ```bash
-    ./gradlew buildPlugin
-    ```  
-   > The output `.zip` file will be located in `build/distributions/`.
+**Already compiled plugin:** [demo-1.0-SNAPSHOT.zip](plugin-zip/demo-1.0-SNAPSHOT.zip)
 
-2. Install the plugin in IntelliJ IDEA:
+Install the plugin in IntelliJ IDEA:
     - Go to **Settings → Plugins → ⚙️ → Install Plugin from Disk**
     - Select the generated `.zip` file
     - Restart IntelliJ IDEA
 
-**Already compiled plugin:** [demo-1.0-SNAPSHOT.zip](plugin-zip/demo-1.0-SNAPSHOT.zip)
+
 
 ---
 
 ### From Source (Optional)
 
-1. Build the plugin:
-    ```bash
-    ./gradlew buildPlugin
-    ```
-2. Follow the steps in **From Compiled ZIP** to install.
+Build the plugin:
+```bash
+./gradlew buildPlugin
+```
+> The output `.zip` file will be located in `build/distributions/`.
 
 ---
 
@@ -67,6 +64,7 @@ An IntelliJ IDEA plugin to assist developers in **resolving merge conflicts**, a
 
 ### Running via Sandbox
 
+> HINT: `Plugin DevKit` is required !!!
 ```bash
 ./gradlew runIde
 ```
