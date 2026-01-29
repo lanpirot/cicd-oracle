@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experimentSetup.coverageCalculater;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.AllMergesJSON;
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.MergeOutputJSON;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
@@ -69,8 +70,7 @@ public class CoverageCalculator {
 
             Path projectRepoPath = cloneDir.resolve(projectName);
 
-            int threads = Runtime.getRuntime().availableProcessors();
-            ExecutorService pool = Executors.newFixedThreadPool(threads);
+            ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
             int index = 0;
             for (MergeOutputJSON merge : allMergesJSON.getMerges()) {

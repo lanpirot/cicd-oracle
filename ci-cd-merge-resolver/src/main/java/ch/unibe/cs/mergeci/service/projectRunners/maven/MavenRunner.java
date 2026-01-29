@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import lombok.Getter;
 
@@ -83,7 +84,7 @@ public class MavenRunner {
         runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
 
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         for (int i = 1; i < path.length; i++) {
             int finalI = i;
@@ -123,7 +124,7 @@ public class MavenRunner {
 
     public void runWithoutCacheMultithread(Path... path) {
 
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         for (int i = 0; i < path.length; i++) {
             int finalI = i;
@@ -149,7 +150,7 @@ public class MavenRunner {
         String jacocoGoalPrepareAgent = ":prepare-agent";
         String jacocoGoalReport = ":report";
 
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         for (int i = 0; i < path.length; i++) {
             int finalI = i;

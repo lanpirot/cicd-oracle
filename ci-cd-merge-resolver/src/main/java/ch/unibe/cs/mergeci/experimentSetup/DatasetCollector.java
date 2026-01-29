@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.service.MergeAnalyzer;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner;
@@ -53,9 +54,7 @@ public class DatasetCollector {
         AtomicInteger counter = new AtomicInteger(0);
 
         int threads = Runtime.getRuntime().availableProcessors();
-        System.out.println(threads);
-        threads = Math.min(12, threads);
-        ExecutorService pool = Executors.newFixedThreadPool(threads);
+        ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         FileUtils.deleteDirectory(new File(tempPath));
 
