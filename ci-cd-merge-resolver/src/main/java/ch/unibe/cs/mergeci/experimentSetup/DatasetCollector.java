@@ -53,6 +53,8 @@ public class DatasetCollector {
         AtomicInteger counter = new AtomicInteger(0);
 
         int threads = Runtime.getRuntime().availableProcessors();
+        System.out.println(threads);
+        threads = Math.min(12, threads);
         ExecutorService pool = Executors.newFixedThreadPool(threads);
 
         FileUtils.deleteDirectory(new File(tempPath));
@@ -137,7 +139,10 @@ public class DatasetCollector {
         int runTests = testTotal.getRunNum();
         float time = testTotal.getElapsedTime();
 
-        if (runTests == 0) return;
+        if (runTests == 0) {
+            System.out.println("No tests run");
+            return; //there should be some tests in the repository, otherwise we skip
+        };
         boolean testSuccess = runTests > 0;
 
         ExcelWriter.DatasetRow row = new ExcelWriter.DatasetRow(

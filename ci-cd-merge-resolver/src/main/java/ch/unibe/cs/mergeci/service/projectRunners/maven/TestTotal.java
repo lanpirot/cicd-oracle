@@ -42,9 +42,7 @@ public class TestTotal {
         for (Path file : paths) {
             if (pathMatcher.matches(file)) {
                 TestResult testResult = TestResult.createTestResultFromFile(file.toFile());
-//                System.out.println(file.toString()+": "+testResult.getRunNum());
-                if (testResult == null) {
-                    continue;}
+                if (testResult == null) {continue;}
                 runNum += testResult.getRunNum();
                 failuresNum += testResult.getFailuresNum();
                 errorsNum += testResult.getErrorsNum();

@@ -266,7 +266,8 @@ public class GitUtils {
                         conflictingMergeCount++;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (!(e instanceof NoMergeBaseException)) //we skip criss-cross merges that are not supported by jGit: we could not get base version or find auto-merges/conflicts etc.
+                        e.printStackTrace();
                 }
             }
         }

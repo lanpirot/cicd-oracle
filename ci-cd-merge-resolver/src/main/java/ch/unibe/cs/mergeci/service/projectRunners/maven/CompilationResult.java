@@ -37,6 +37,7 @@ public class CompilationResult {
         moduleResults = new ArrayList<>();
 
         String string = new String(Files.readAllBytes(testResultFile.toPath()));
+        string = string.replaceAll("\u001B\\[[;\\d]*m", ""); //clean ANSI color codes from Maven output
         String buildStatusString = string;
 
         Pattern reactorBlockPattern = Pattern.compile(REACTOR_BLOCK);
