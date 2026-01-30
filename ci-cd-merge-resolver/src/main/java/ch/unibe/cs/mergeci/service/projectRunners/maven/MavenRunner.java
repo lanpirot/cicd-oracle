@@ -328,7 +328,7 @@ public class MavenRunner {
         } else {
             if (mvnw.exists()) {
                 mvnw.setExecutable(true);
-                return "mvnw";
+                return "./mvnw";
             }
             return "mvn";
         }

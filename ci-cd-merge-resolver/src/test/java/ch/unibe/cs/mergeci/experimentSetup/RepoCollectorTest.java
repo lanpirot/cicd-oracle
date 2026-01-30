@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ class RepoCollectorTest {
 
     @Test
     void processExcel() throws Exception {
-        RepoCollector repoCollector = new RepoCollector("cloneDir","tempDir", 300, 400);
-        repoCollector.processExcel(new File("projects_Java_desc-stars-1000.xlsx"));
+        RepoCollector repoCollector = new RepoCollector(AppConfig.REPO_DIR.getAbsolutePath(),AppConfig.TMP_DIR.getAbsolutePath());
+        repoCollector.processExcel(AppConfig.INPUT_PROJECT_XLSX_TEST);
     }
 }

@@ -42,7 +42,7 @@ class MavenRunnerTest {
     void run() throws IOException, GitAPIException {
         FileUtils.deleteDirectory(new File("temp"));
         Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
-        ResolveMerger merger = GitUtils.makeMerge("","", git);
+        ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
         Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
@@ -62,19 +62,19 @@ class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(Paths.get("temp\\airlift_0"), Paths.get("temp\\airlift_1"));
+        mavenRunner.run(Paths.get("temp/airlift_0"), Paths.get("temp/airlift_1"));
     }
 
     @Test
     void injectCacheArtifact() throws IOException {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.injectCacheArtifact(Paths.get("temp\\ripme_0"));
+        mavenRunner.injectCacheArtifact(Paths.get("temp/ripme_0"));
     }
 
     @Test
     void copyTarget() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.copyTarget("temp\\Activiti_0", "temp\\Activiti_1");
-        mavenRunner.copyTarget(new File("temp\\Activiti_target"), new File("temp\\Activiti_0"));
+        mavenRunner.copyTarget(new File("temp/Activiti_target"), new File("temp/Activiti_0"));
     }
 }

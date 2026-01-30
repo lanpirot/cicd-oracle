@@ -1,7 +1,5 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
-import ch.unibe.cs.mergeci.service.MavenExecutionFactory;
-import org.apache.commons.math3.analysis.function.Exp;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,7 +12,7 @@ class ExperimentRunnerTest {
         File output = new File("dataset-test-otuput_mvnd.json");
         ExperimentRunner.makeAnalysisByDataset(dataset,
                 new File("src\\test\\resources\\test-merge-projects\\jackson-databind"),
-                output,false);
+                output,false, false);
     }
 
     @Test
@@ -24,17 +22,17 @@ class ExperimentRunnerTest {
                 new File("experiments/temp")
                 );
 
-        experimentRunner.runTests(new File("experiments/results_wo_optimization2"), false);
+        experimentRunner.runTests(new File("experiments/results_wo_optimization2"), true,false);
     }
 
     @Test
-    void runTestsWthCash() throws Exception {
+    void runTestsWithCash() throws Exception {
         ExperimentRunner experimentRunner = new ExperimentRunner(new File("experiments/datasets"),
                 new File("experiments/projects_Java_desc-stars-1000.xlsx"),
                 new File("experiments/temp")
         );
 
-        experimentRunner.runTests(new File("experiments/results_cache_optimization"), true);
+        experimentRunner.runTests(new File("experiments/results_cache_optimization"), true, false);
     }
 
     @Test
@@ -44,6 +42,6 @@ class ExperimentRunnerTest {
                 new File("experiments/temp")
         );
 
-        experimentRunner.runTests(new File("experiments/results_without_parallelization"), false);
+        experimentRunner.runTests(new File("experiments/results_without_parallelization"), false, false);
     }
 }

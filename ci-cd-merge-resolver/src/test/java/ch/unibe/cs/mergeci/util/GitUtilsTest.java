@@ -79,6 +79,7 @@ class GitUtilsTest {
         List<MergeInfo> list = GitUtils.getConflictCommits(100, git);
 
         System.out.printf("Total number of conflicts: %d", list.size());
+        System.out.println();
         for (MergeInfo mergeInfo : list) {
             System.out.println(mergeInfo);
         }

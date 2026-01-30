@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: org.adoptopenjdk.jitwatch.test.TestIntrinsicFinder
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 2, Errors: 1, Skipped: 1, Time elapsed: 3.456 sec
+
+Results :
+
+Tests run: 10, Failures: 2, Errors: 1, Skipped: 1

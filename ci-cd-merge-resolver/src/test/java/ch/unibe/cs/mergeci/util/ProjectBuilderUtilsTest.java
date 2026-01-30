@@ -25,7 +25,7 @@ class ProjectBuilderUtilsTest {
     @Test
     void getAllPossibleConflictResolution() throws IOException, GitAPIException {
         Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
-        ResolveMerger merger = GitUtils.makeMerge("","", git);
+        ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
         Map.Entry<String, MergeResult<? extends Sequence>> entry = mergeResultMap.entrySet().iterator().next();
         ProjectClass projectClass = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());

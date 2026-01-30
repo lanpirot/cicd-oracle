@@ -50,8 +50,6 @@ public class DatasetCollector {
 
         List<ExcelWriter.DatasetRow> rows = Collections.synchronizedList(new ArrayList<>());
         AtomicInteger counter = new AtomicInteger(0);
-
-        int threads = Runtime.getRuntime().availableProcessors();
         ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         FileUtils.deleteDirectory(new File(tempPath));

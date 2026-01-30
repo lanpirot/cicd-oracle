@@ -13,7 +13,8 @@ class TestTotalTest {
     void outputResult() throws IOException {
 //        TestTotal testTotal = new TestTotal(new File("src\\test\\resources\\test-merge-projects\\jitwatch_1"));
 //        TestTotal testTotal = new TestTotal(new File("temp\\projects\\zemberek-nlp_3"));
-        TestTotal testTotal = new TestTotal(new File("src\\test\\resources\\jackson-databind"));
+        TestTotal testTotal = new TestTotal(new File("src/test/resources/test-merge-projects/jackson-databind"));
+
         System.out.println(testTotal);
     }
 }

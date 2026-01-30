@@ -11,14 +11,15 @@ import java.util.List;
 @Configuration
 public class AppConfig {
     public static final String BASE_DIR = "/home/lanpirot/";
-    public static final String DATA_BASE_DIR = BASE_DIR + "data/bruteforce/";
+    public static final String DATA_BASE_DIR = BASE_DIR + "data/bruteforcemerge/";
 
 
     public static final File INPUT_PROJECT_XLSX = new File(DATA_BASE_DIR + "projects_Java_desc-stars-1000.xlsx"); // Excel file with list of repositories  and their repo URL
+    public static final File INPUT_PROJECT_XLSX_TEST = new File(DATA_BASE_DIR + "projects_test.xlsx"); // Excel file with list of repositories  and their repo URL
     public static final File DATASET_DIR = new File(DATA_BASE_DIR + "datasets/");       // directory with dataset that were collected by `RepoCollector`
-    public static final File REPO_DIR = new File(DATA_BASE_DIR + "repos/");                      // name of directory to clone projects
+    public static final File REPO_DIR = new File(BASE_DIR + "tmp/bruteforce_repos");                      // name of directory to clone projects
     public static final String EXPERIMENTS_DIR = DATA_BASE_DIR + "experiments/";
-    public static final File TMP_DIR = new File(BASE_DIR + "tmp/bruteforce");           // temporary working directory
+    public static final File TMP_DIR = new File(BASE_DIR + "tmp/bruteforce_tmp");           // temporary working directory
 
 
 

@@ -122,8 +122,8 @@ class CiCdMergeResolverApplicationTests {
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
-        ObjectId feature = repo.resolve("feature");
         ObjectId head = repo.resolve("master");
+        ObjectId feature = repo.resolve("feature");
 
         System.out.println(MergeStrategy.RESOLVE.newMerger(repo, true));
         RecursiveMerger merger = (RecursiveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);

@@ -10,7 +10,7 @@ class TestTotalXmlTest {
 
     @Test
     void getRunNum() throws Exception {
-        TestTotalXml testTotal = new TestTotalXml(new File("src\\test\\resources\\jackson-databind"));
+        TestTotalXml testTotal = new TestTotalXml(new File("src/test/resources/test-merge-projects/jackson-databind"));
         System.out.println(testTotal);
     }
 }

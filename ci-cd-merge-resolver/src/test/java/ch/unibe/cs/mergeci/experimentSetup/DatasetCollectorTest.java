@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,10 +15,10 @@ class DatasetCollectorTest {
     void collectDataset() throws Exception {
         DatasetCollector collector = new DatasetCollector(
                 "src/test/resources/test-merge-projects/jackson-databind",
-                "dataset_temp",
+                AppConfig.TMP_DIR.getAbsolutePath(),
                 2
         );
 
-        collector.collectDataset(new File("jackson-databind-dataset_wcache.xlsx"));
+        collector.collectDataset(new File(AppConfig.DATASET_DIR+"jackson-databind-dataset-test.xlsx"));
     }
 }
