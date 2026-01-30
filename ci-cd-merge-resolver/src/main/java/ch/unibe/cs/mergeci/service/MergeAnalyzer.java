@@ -1,10 +1,9 @@
 package ch.unibe.cs.mergeci.service;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.Project;
 import ch.unibe.cs.mergeci.model.ProjectClass;
 import ch.unibe.cs.mergeci.model.patterns.IPattern;
-import ch.unibe.cs.mergeci.model.patterns.OursPattern;
-import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.FileUtils;
@@ -66,7 +65,7 @@ public class MergeAnalyzer {
         Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
             ProjectClass projectClass = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
-            List<IPattern> patterns = List.of(new OursPattern(), new TheirsPattern());
+            List<IPattern> patterns = AppConfig.patterns;
             List<ProjectClass> projectClasses = ProjectBuilderUtils.getAllPossibleConflictResolution(projectClass, patterns);
             mapClasses.put(entry.getKey(), projectClasses);
         }
@@ -89,7 +88,6 @@ public class MergeAnalyzer {
     }
 
     public RunExecutionTIme runTests(IRunner runner) {
-        MavenRunner mavenRunner = new MavenRunner(logDir, false);
 
         int numProjects = countProjects();
         List<Path> args = new ArrayList<>(countProjects());

@@ -1,8 +1,12 @@
 package ch.unibe.cs.mergeci.config;
 
+import ch.unibe.cs.mergeci.model.patterns.IPattern;
+import ch.unibe.cs.mergeci.model.patterns.OursPattern;
+import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.util.List;
 
 @Configuration
 public class AppConfig {
@@ -21,6 +25,9 @@ public class AppConfig {
     public static final int MAX_THREADS = Math.min(Runtime.getRuntime().availableProcessors(), 12); //avoid hogging all RAM of machine
     public static final int MAX_CONFLICT_MERGES = 200;  //sample maximally this many merges per project to avoid bias towards giant projects
     public static final int MAX_CONFLICT_CHUNKS = 6;    //if a merge has more chunks than this, we don't attempt resolutions
+
+
+    public static final List<IPattern> patterns = List.of(new OursPattern(), new TheirsPattern()); //patterns we check in Experiments
 
 
     public static final int HASH_PREFIX_LENGTH = 8;     //this many chars are used to ensure uniqueness/save paths using commit hash ids

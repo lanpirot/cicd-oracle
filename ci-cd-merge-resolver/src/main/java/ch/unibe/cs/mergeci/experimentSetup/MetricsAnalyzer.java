@@ -338,11 +338,12 @@ public class MetricsAnalyzer {
                         break;
                     case "Mixed":
                         numberOfMixedResolutions++;
+                        break;
                     default:
                 }
             }
 
-            if (bestResolution.stream().anyMatch(x -> !x.equals("Human"))) {
+            if (bestResolution.stream().anyMatch(x -> !x.equals("Human"))) { //TODO: this seems highly smelly to test equality not >= or >
                 numberAtLeastOneResolution++;
             }
 

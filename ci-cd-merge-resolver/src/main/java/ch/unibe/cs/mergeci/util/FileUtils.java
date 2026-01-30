@@ -37,6 +37,7 @@ public class FileUtils {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw(e);
         }
     }
 

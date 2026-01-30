@@ -315,6 +315,9 @@ public class GitUtils {
             map.put(path, treeWalk.getObjectId(0));
         }
 
+        treeWalk.close();
+        walk.close();
+
         return map;
     }
 
