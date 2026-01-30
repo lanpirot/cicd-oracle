@@ -1,12 +1,13 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
-import ch.unibe.cs.mergeci.service.IRunner;
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.service.MavenExecutionFactory;
 import ch.unibe.cs.mergeci.service.MergeAnalyzer;
 import ch.unibe.cs.mergeci.service.RunExecutionTIme;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
+import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.io.Files;
@@ -41,7 +42,7 @@ public class ExperimentRunner {
         this.tempDir = tempDir;
     }
 
-    public void runTests(File outputDir, boolean withCash) throws Exception {
+    public void runTests(File outputDir, boolean isParallel, boolean isCache) throws Exception {
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
@@ -62,12 +63,11 @@ public class ExperimentRunner {
                 GitUtils.cloneRepo(tempDir.toPath().resolve(repoName), repoUrl);
             }
 
-            makeAnalysisByDataset(dataset, repoPath, new File(outputDir, nameOfOutputFIle), withCash);
+            makeAnalysisByDataset(dataset, repoPath, new File(outputDir, nameOfOutputFIle), isParallel, isCache);
             RepositoryCache.clear();
             WindowCache.reconfigure(new WindowCacheConfig());
             FileUtils.deleteDirectory(repoPath);
         }
-
     }
 
     private File[] getFilesFromDir(File dir) {
@@ -82,9 +82,9 @@ public class ExperimentRunner {
             for (int i = 1; i < sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
 
-                String repoName = row.getCell(0).getStringCellValue().split("/")[1].trim();
+                String repoName = row.getCell(Utility.PROJECTCOLUMN.repoName.getColumnNumber()).getStringCellValue().split("/")[1].trim();
                 if (repoName.equals(Files.getNameWithoutExtension(dataset.getName()))) {
-                    return row.getCell(1).getStringCellValue().trim();
+                    return row.getCell(Utility.PROJECTCOLUMN.repoURL.getColumnNumber()).getStringCellValue().trim();
                 }
 
             }
@@ -96,7 +96,7 @@ public class ExperimentRunner {
         return null;
     }
 
-    public static void makeAnalysisByDataset(File dataset, File repoPath, File Output, boolean withCache) throws Exception {
+    public static void makeAnalysisByDataset(File dataset, File repoPath, File Output, boolean isParallel, boolean isCache) throws Exception {
         List<MergeOutputJSON> merges = new ArrayList<>();
 
 
@@ -111,25 +111,25 @@ public class ExperimentRunner {
                 if (i++ == 0) continue;
                 System.out.printf("Start processing %d/%d of %s \n", i - 1, sheet.getLastRowNum(), dataset.getName());
 
-                mergeOutputJSON.setMergeCommit(row.getCell(0).getStringCellValue());
-                mergeOutputJSON.setParent1(row.getCell(1).getStringCellValue());
-                mergeOutputJSON.setParent2(row.getCell(2).getStringCellValue());
+                mergeOutputJSON.setMergeCommit(row.getCell(Utility.MERGECOLUMN.mergeCommit.getColumnNumber()).getStringCellValue());
+                mergeOutputJSON.setParent1(row.getCell(Utility.MERGECOLUMN.parent1.getColumnNumber()).getStringCellValue());
+                mergeOutputJSON.setParent2(row.getCell(Utility.MERGECOLUMN.parent2.getColumnNumber()).getStringCellValue());
 
 //                mergeOutputJSON.getTestResults().setRunNum((int) row.getCell(3).getNumericCellValue());
 
                 int numConflictChunks = countNumberOfConflictChunks(repoPath, mergeOutputJSON.getParent1(), mergeOutputJSON.getParent2());
-                if (numConflictChunks > 6) {
-                    System.out.printf("Too many conflict chunks: %d > 6 \n", numConflictChunks);
+                if (numConflictChunks > AppConfig.MAX_CONFLICT_CHUNKS) {
+                    System.out.printf("Too many conflict chunks: %d > %d \n", numConflictChunks, AppConfig.MAX_CONFLICT_CHUNKS);
                     continue;
                 }
 
                 mergeOutputJSON.setNumConflictChunks(numConflictChunks);
-                mergeOutputJSON.setNumConflictFiles((int) row.getCell(4).getNumericCellValue());
-                mergeOutputJSON.setNumJavaConflictFiles((int) row.getCell(5).getNumericCellValue());
+                mergeOutputJSON.setNumConflictFiles((int) row.getCell(Utility.MERGECOLUMN.numConflictingFiles.getColumnNumber()).getNumericCellValue());
+                mergeOutputJSON.setNumJavaConflictFiles((int) row.getCell(Utility.MERGECOLUMN.numJavaFiles.getColumnNumber()).getNumericCellValue());
 
 
 //                mergeOutputJSON.getTestResults().setElapsedTime((float) row.getCell(8).getNumericCellValue());
-                mergeOutputJSON.setIsMultiModule(row.getCell(9).getBooleanCellValue());
+                mergeOutputJSON.setIsMultiModule(row.getCell(Utility.MERGECOLUMN.isMultiModule.getColumnNumber()).getBooleanCellValue());
 
                 ////////////RUN RESOLUTION////////////////////////
 
@@ -143,11 +143,8 @@ public class ExperimentRunner {
                 mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
                 RunExecutionTIme runExecutionTIme;
 
-                if (!withCache) {
-                    runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunnerWithoutParallelization());
-                } else {
-                    runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunnerWithCache());
-                }
+                runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunner(isParallel, isCache));
+
                 Instant finish = Instant.now();
                 long timeElapsed = Duration.between(start, finish).toSeconds();
                 mergeOutputJSON.setTotalExecutionTime(timeElapsed);

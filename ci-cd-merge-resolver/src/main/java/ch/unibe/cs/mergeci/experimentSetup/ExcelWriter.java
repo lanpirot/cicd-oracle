@@ -1,9 +1,9 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
-import ch.unibe.cs.mergeci.util.FileUtils;
+import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.util.Utility;
 import lombok.Builder;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,10 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
-
-import org.apache.poi.xssf.usermodel.XSSFCell;
 
 
 public class ExcelWriter {
@@ -24,31 +21,27 @@ public class ExcelWriter {
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("dataset");
 
-        String[] headers = {
-                "mergeCommit", "parent1", "parent2",
-                "numTests", "numConflictingFiles", "numJavaFiles",
-                "compilationSuccess", "testSuccess", "elapsedTestTime", "isMultiModule"
-        };
-
         Row h = sheet.createRow(0);
-        for (int i = 0; i < headers.length; i++) {
-            h.createCell(i).setCellValue(headers[i]);
+        for (Utility.MERGECOLUMN c : Utility.MERGECOLUMN.values()){
+            h.createCell(c.getColumnNumber()).setCellValue(c.getColumnName());
         }
 
         int rowIndex = 1;
         for (DatasetRow r : rows) {
             Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(r.mergeCommit());
-            row.createCell(1).setCellValue(r.parent1());
-            row.createCell(2).setCellValue(r.parent2());
-            row.createCell(3).setCellValue(r.numTests());
-            row.createCell(4).setCellValue(r.numConflictingFiles());
-            row.createCell(5).setCellValue(r.numJavaFiles());
-            row.createCell(6).setCellValue(r.compilationSuccess());
-            row.createCell(7).setCellValue(r.testSuccess());
-            row.createCell(8).setCellValue(r.elapsedTestTime());
-            row.createCell(9).setCellValue(r.isMultiModule());
+            row.createCell(Utility.MERGECOLUMN.mergeCommit.getColumnNumber()).setCellValue(r.mergeCommit());
+            row.createCell(Utility.MERGECOLUMN.parent1.getColumnNumber()).setCellValue(r.parent1());
+            row.createCell(Utility.MERGECOLUMN.parent2.getColumnNumber()).setCellValue(r.parent2());
+            row.createCell(Utility.MERGECOLUMN.numTests.getColumnNumber()).setCellValue(r.numTests());
+            row.createCell(Utility.MERGECOLUMN.numConflictingFiles.getColumnNumber()).setCellValue(r.numConflictingFiles());
+            row.createCell(Utility.MERGECOLUMN.numJavaFiles.getColumnNumber()).setCellValue(r.numJavaFiles());
+            row.createCell(Utility.MERGECOLUMN.compilationSuccess.getColumnNumber()).setCellValue(r.compilationSuccess());
+            row.createCell(Utility.MERGECOLUMN.testSuccess.getColumnNumber()).setCellValue(r.testSuccess());
+            row.createCell(Utility.MERGECOLUMN.elapsedTestTime.getColumnNumber()).setCellValue(r.elapsedTestTime());
+            row.createCell(Utility.MERGECOLUMN.isMultiModule.getColumnNumber()).setCellValue(r.isMultiModule());
         }
+
+
 
         if (outputFile.getParentFile() != null) outputFile.getParentFile().mkdirs();
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
@@ -108,8 +101,7 @@ public class ExcelWriter {
                     Row row = sheet.getRow(i);
 
                     int numConflictingFiles = (int) row.getCell(4).getNumericCellValue();
-                    if (numConflictingFiles > 6) {
-
+                    if (numConflictingFiles > AppConfig.MAX_CONFLICT_CHUNKS) {
                         continue;
                     }
 

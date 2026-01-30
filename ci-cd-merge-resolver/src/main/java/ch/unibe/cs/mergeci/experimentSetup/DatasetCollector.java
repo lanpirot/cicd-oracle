@@ -1,17 +1,16 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.service.MergeAnalyzer;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
+import ch.unibe.cs.mergeci.util.Utility;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatasetCollector {
@@ -86,22 +84,7 @@ public class DatasetCollector {
                 System.out.printf("Processing merge: %s \t %d/%d FINISH\n", merge.getResultedMergeCommit(), taskID, finalMerges.size());
             });
         }
-        pool.shutdown();
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
-                pool.shutdownNow(); // Cancel currently executing tasks
-                // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
-            }
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-            // (Re-)Cancel if current thread also interrupted
-            pool.shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
-        }
+        Utility.shutdownAndAwaitTermination(pool);
 
         if (rows.isEmpty()) {
             System.out.printf("Project %s has no successful merges! \n No need to save!!!\n", projectName);
@@ -115,7 +98,7 @@ public class DatasetCollector {
         String p1 = merge.getCommit1().getName();
         String p2 = merge.getCommit2().getName();
 
-        String newProjectName = projectName + "_" + mergeCommit.substring(0, 8);
+        String newProjectName = projectName + "_" + mergeCommit.substring(0, AppConfig.HASH_PREFIX_LENGTH);
         Path newProjectPath = tempDir.resolve(newProjectName);
 
         try (Git git = GitUtils.getGit(projectPath)) {
@@ -128,7 +111,7 @@ public class DatasetCollector {
         int javaFiles = merge.getConflictingFiles().size();
 
         MavenRunner maven = new MavenRunner(tempDir);
-        maven.runWithoutCache(newProjectPath);
+        maven.run_no_optimization(newProjectPath);
 
 
         CompilationResult compilationResult = new CompilationResult(maven.getLogDir().resolve(newProjectName + "_compilation").toFile());

@@ -14,68 +14,30 @@ public class MavenExecutionFactory {
         this.logDir = logDir;
     }
 
-    public IRunner createMavenRunner() {
+    public IRunner createMavenRunner(boolean isParallel, boolean isCache) {
         return new IRunner() {
             @Override
             public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
                 MavenRunner mavenRunner = new MavenRunner(logDir, false);
-                RunExecutionTIme runExecutionTIme = new RunExecutionTIme();
+                RunExecutionTIme runExecutionTime = new RunExecutionTIme();
 
                 Instant start = Instant.now();
-                mavenRunner.runWithoutCache(mainProject);
+                mavenRunner.run_no_optimization(mainProject);
                 Instant end = Instant.now();
-                runExecutionTIme.setMainExecutionTime(Duration.between(start, end));
+                runExecutionTime.setMainExecutionTime(Duration.between(start, end));
 
                 start = Instant.now();
-                mavenRunner.runWithoutCacheMultithread(variants.toArray(new Path[0]));
+                if (isParallel && isCache)
+                    mavenRunner.run_cache_parallel(variants.toArray(new Path[0]));
+                else if (isParallel)
+                    mavenRunner.run_parallel(variants.toArray(new Path[0]));
+                else if (!isCache)
+                    mavenRunner.run_no_optimization(variants.toArray(new Path[0]));
+                else System.out.println("ERROR in createMavenRunner!");
                 end = Instant.now();
-                runExecutionTIme.setVariantsExecutionTime(Duration.between(start, end));
+                runExecutionTime.setVariantsExecutionTime(Duration.between(start, end));
 
-                return runExecutionTIme;
-            }
-        };
-    }
-
-    public IRunner createMavenRunnerWithCache() {
-        return new IRunner() {
-            @Override
-            public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
-                MavenRunner mavenRunner = new MavenRunner(logDir, false);
-                RunExecutionTIme runExecutionTIme = new RunExecutionTIme();
-
-                Instant start = Instant.now();
-                mavenRunner.runWithoutCache(mainProject);
-                Instant end = Instant.now();
-                runExecutionTIme.setMainExecutionTime(Duration.between(start, end));
-
-                start = Instant.now();
-                mavenRunner.runWithCacheMultithread(variants.toArray(new Path[0]));
-                end = Instant.now();
-                runExecutionTIme.setVariantsExecutionTime(Duration.between(start, end));
-
-                return runExecutionTIme;
-            }
-        };
-    }
-
-    public IRunner createMavenRunnerWithoutParallelization() {
-        return new IRunner() {
-            @Override
-            public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
-                MavenRunner mavenRunner = new MavenRunner(logDir, false);
-                RunExecutionTIme runExecutionTIme = new RunExecutionTIme();
-
-                Instant start = Instant.now();
-                mavenRunner.runWithoutCache(mainProject);
-                Instant end = Instant.now();
-                runExecutionTIme.setMainExecutionTime(Duration.between(start, end));
-
-                start = Instant.now();
-                mavenRunner.runWithoutCache(variants.toArray(new Path[0]));
-                end = Instant.now();
-                runExecutionTIme.setVariantsExecutionTime(Duration.between(start, end));
-
-                return runExecutionTIme;
+                return runExecutionTime;
             }
         };
     }

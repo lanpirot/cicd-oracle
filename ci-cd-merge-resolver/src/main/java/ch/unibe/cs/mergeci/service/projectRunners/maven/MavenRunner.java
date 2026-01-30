@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.FileUtils;
+import ch.unibe.cs.mergeci.util.Utility;
 import lombok.Getter;
 
 import java.io.BufferedReader;
@@ -20,7 +21,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Getter
@@ -72,7 +72,7 @@ public class MavenRunner {
         }
     }
 
-    public void runWithCacheMultithread(Path... path) {
+    public void run_cache_parallel(Path... path) {
         String mavenCommand = "mvn.cmd";
 
         System.out.println(path[0].toAbsolutePath().toString());
@@ -106,11 +106,11 @@ public class MavenRunner {
                     }
             );
         }
-        shutdownAndAwaitTermination(executorService);
+        Utility.shutdownAndAwaitTermination(executorService);
     }
 
 
-    public void runWithoutCache(Path... path) {
+    public void run_no_optimization(Path... path) {
         for (int i = 0; i < path.length; i++) {
             final String mavenCommand = resolveMavenCommand(path[i]);
 
@@ -122,7 +122,7 @@ public class MavenRunner {
         }
     }
 
-    public void runWithoutCacheMultithread(Path... path) {
+    public void run_parallel(Path... path) {
 
         ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
@@ -142,11 +142,11 @@ public class MavenRunner {
                     }
             );
         }
-        shutdownAndAwaitTermination(executorService);
+        Utility.shutdownAndAwaitTermination(executorService);
     }
 
     public void runWithCoverage(Path... path) {
-        final String jacoco = "org.jacoco:jacoco-maven-plugin:0.8.14";
+        final String jacoco = AppConfig.JACOCO_FULL;
         String jacocoGoalPrepareAgent = ":prepare-agent";
         String jacocoGoalReport = ":report";
 
@@ -174,7 +174,7 @@ public class MavenRunner {
                     }
             );
         }
-        shutdownAndAwaitTermination(executorService);
+        Utility.shutdownAndAwaitTermination(executorService);
     }
 
     /**
@@ -205,9 +205,8 @@ public class MavenRunner {
         runCommand(directory, null, command);
     }
 
-    private void updateStatusMavenFile(String fileInputPath,
+    private void updateStatusMavenFile(File file,
                                        String projectNameOld, String projectNameNew, Set<String> conflictList) {
-        File file = new File(fileInputPath);
         if (!file.exists()) {
             return;
         }
@@ -252,9 +251,8 @@ public class MavenRunner {
                 File pom = new File(newFile, "pom.xml");
                 if (pom.exists()) {
                     updateStatusMavenFile(
-                            newFile.getPath() + File.separator + "target" + File.separator + "maven-status" +
-                                    File.separator + "maven-compiler-plugin" + File.separator + "compile" +
-                                    File.separator + "default-compile" + File.separator + "inputFiles.lst",
+                            Paths.get(newFile.getPath()+ "target", "maven-status", "maven-compiler-plugin",
+                                    "compile", "default-compile", "inputFiles.lst").toFile(),
                             projectNameOld, projectNameNew, conflictList
                     );
                 }
@@ -333,24 +331,6 @@ public class MavenRunner {
                 return "mvnw";
             }
             return "mvn";
-        }
-    }
-
-    void shutdownAndAwaitTermination(ExecutorService pool) {
-        pool.shutdown(); // Disable new tasks from being submitted
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
-                pool.shutdownNow(); // Cancel currently executing tasks
-                // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
-            }
-        } catch (InterruptedException ie) {
-            // (Re-)Cancel if current thread also interrupted
-            pool.shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
         }
     }
 }

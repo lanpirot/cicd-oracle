@@ -1,9 +1,11 @@
 package ch.unibe.cs.mergeci;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.experimentSetup.MetricsAnalyzer;
 import ch.unibe.cs.mergeci.experimentSetup.RepoCollector;
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunner;
 import ch.unibe.cs.mergeci.util.GitUtils;
+import ch.unibe.cs.mergeci.util.Utility;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -30,10 +32,9 @@ public class CiCdMergeResolverApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CiCdMergeResolverApplication.class, args);
-        File project = new File("src/test/resources/test-merge-projects/myTest");
 
-        //collect();
-        //generateMergeVariants();
+        collect();
+        generateMergeVariants();
         analyzeResults();
     }
 
@@ -44,29 +45,24 @@ public class CiCdMergeResolverApplication {
 
     private static void generateMergeVariants() {
         ExperimentRunner experimentRunner = new ExperimentRunner(
-                new File("repoCollector/datasets/"), // directory with dataset that were collected by `RepoCollector`
-                new File("experiments/projects_Java_desc-stars-1000.xlsx"), // Excel file with list of repositories
-                new File("/home/lanpirot/tmp/bruteforce") // temporary working directory
+                AppConfig.DATASET_DIR,
+                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.TMP_DIR
         );
 
-        try {
-            experimentRunner.runTests(new File("experiments/results_cache_optimization"), false); // output directory, build cache optimization flag
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        for (Utility.Experiments ex : Utility.Experiments.values()) {
+            try {
+                experimentRunner.runTests(new File(AppConfig.EXPERIMENTS_DIR + ex.getName()), ex.isParallel(), ex.isCache());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     private static void collect() {
-        RepoCollector collector =
-                new RepoCollector(
-                        "/home/lanpirot/data/brutforcemerge/repos",   // name of directory to clone projects
-                        "/home/lanpirot/tmp/bruteforcemerge",    // temporary working directory
-                        578,         // start row
-                        1000        // end row
-                );
-        // File with list of java projects and their repo URL
+        RepoCollector collector = new RepoCollector(AppConfig.REPO_DIR.getAbsolutePath(), AppConfig.TMP_DIR.getAbsolutePath());
         try {
-            collector.processExcel(new File("experiments/projects_Java_desc-stars-1000.xlsx"));
+            collector.processExcel(AppConfig.INPUT_PROJECT_XLSX);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

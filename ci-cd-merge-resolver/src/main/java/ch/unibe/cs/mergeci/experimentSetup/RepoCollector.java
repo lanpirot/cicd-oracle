@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -24,16 +25,12 @@ public class RepoCollector {
     private final Path cloneDir;
     private final Path tempDir;
     private final Path datasetDir;
-    private final int start;
-    private final int end;
-    private final Path repoCollector = Path.of("repoCollector");
 
-    public RepoCollector(String cloneDir, String tempDir, int start, int end) {
+    public RepoCollector(String cloneDir, String tempDir) {
+        Path repoCollector = Path.of("repoCollector");
         this.cloneDir = repoCollector.resolve(cloneDir);
         this.tempDir = repoCollector.resolve(tempDir);
         this.datasetDir = repoCollector.resolve("datasets");
-        this.start = start;
-        this.end = end;
     }
 
     int headerLine = 1;
@@ -49,13 +46,7 @@ public class RepoCollector {
 
             Sheet sheet = workbook.getSheetAt(0);
 
-            int count = 0;
-
             for (Row row : sheet) {
-                count++;
-                if (count < start) continue;
-                if (count >= end) break;
-
                 if (row.getRowNum() < headerLine) continue;
 
                 String repoName = receiveRepoName(row.getCell(0).getStringCellValue().trim());
@@ -84,7 +75,7 @@ public class RepoCollector {
                 DatasetCollector collector = new DatasetCollector(
                         repoFolder.getPath(),
                         tempDir.resolve(repoName).toString(),
-                        200
+                        AppConfig.MAX_CONFLICT_MERGES
                 );
 
                 collector.collectDataset(datasetDir.resolve(repoName + ".xlsx").toFile());

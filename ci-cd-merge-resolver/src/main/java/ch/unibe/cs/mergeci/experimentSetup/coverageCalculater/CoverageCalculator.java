@@ -7,6 +7,7 @@ import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
+import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.poi.ss.usermodel.Row;
@@ -29,6 +30,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static ch.unibe.cs.mergeci.util.Utility.*;
 
 public class CoverageCalculator {
     private final File folder;
@@ -76,7 +79,7 @@ public class CoverageCalculator {
             for (MergeOutputJSON merge : allMergesJSON.getMerges()) {
                 if (merge.getCoverage() != null) continue;
 
-                String newProjectName = allMergesJSON.getProjectName() + '_' + merge.getMergeCommit().substring(0, 8);
+                String newProjectName = allMergesJSON.getProjectName() + '_' + merge.getMergeCommit().substring(0, AppConfig.HASH_PREFIX_LENGTH);
                 Path newProjectPath = tempDir.resolve(newProjectName);
 
                 if (!projectRepoPath.toFile().exists()) {
@@ -104,7 +107,7 @@ public class CoverageCalculator {
                 });
             }
 
-            shutdownAndAwaitTermination(pool);
+            Utility.shutdownAndAwaitTermination(pool);
 
             try {
                 objectMapper.writeValue(outputDir.toPath().resolve(file.getName()).toFile(), allMergesJSON);
@@ -148,23 +151,7 @@ public class CoverageCalculator {
 
 
 
-    void shutdownAndAwaitTermination(ExecutorService pool) {
-        pool.shutdown(); // Disable new tasks from being submitted
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
-                pool.shutdownNow(); // Cancel currently executing tasks
-                // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
-            }
-        } catch (InterruptedException ie) {
-            // (Re-)Cancel if current thread also interrupted
-            pool.shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
-        }
-    }
+
 
 /*    private static List<String> getConflictJavaFiles(File repo, String parent1, String parent2) {
         try (Git git = GitUtils.getGit(repo);) {
