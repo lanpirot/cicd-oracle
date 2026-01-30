@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.experimentSetup;
 
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.AllMergesJSON;
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.MergeOutputJSON;
+import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -288,7 +289,13 @@ public class MetricsAnalyzer {
 
 
     private static List<MergeOutputJSON> getMergesWithCoverage(List<MergeOutputJSON> merges) {
-        return merges.stream().filter(x -> !Double.isNaN(x.getCoverage().lineCoverage())).toList();
+        return merges.stream()
+                .peek(x -> {
+                    if (x.getCoverage() == null) {
+                        x.setCoverage(new JacocoReportFinder.CoverageDTO(Float.NaN, Float.NaN)); // Assign N/A
+                    }
+                })
+                .toList();
     }
 
     private static Map<String, Integer> gerRanking(List<MergeOutputJSON> merges) {
@@ -403,9 +410,9 @@ public class MetricsAnalyzer {
                     .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-            System.out.printf("%n Number of conflict chunks:%d %n", groupedByConflictEntry.getKey());
+            System.out.printf("%n Number of conflict chunks: %d %n", groupedByConflictEntry.getKey());
             for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
-                System.out.printf("\t %s :%d/%d %.2f %% %n",
+                System.out.printf("\t %s: %d/%d %.2f %% %n",
                         entry.getKey(),
                         entry.getValue(),
                         mergeOutputJSONS.size(),

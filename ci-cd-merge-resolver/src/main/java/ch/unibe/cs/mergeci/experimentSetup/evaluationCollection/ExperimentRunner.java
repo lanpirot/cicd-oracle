@@ -119,7 +119,7 @@ public class ExperimentRunner {
 
                 int numConflictChunks = countNumberOfConflictChunks(repoPath, mergeOutputJSON.getParent1(), mergeOutputJSON.getParent2());
                 if (numConflictChunks > 6) {
-                    System.out.printf("To many conflict chunks: %d > 6 \n", numConflictChunks);
+                    System.out.printf("Too many conflict chunks: %d > 6 \n", numConflictChunks);
                     continue;
                 }
 
