@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -12,7 +13,7 @@ class TestResultTest {
     @Test
     void createTestResultFromFile() throws IOException {
         // Arrange - use cross-platform path to test resource
-        File testFile = new File("src/test/resources/test-files/sample-test-result.txt");
+        File testFile = new File(AppConfig.TEST_RESOURCE_DIR2.getPath()+"/sample-test-result.txt");
 
         // Act
         TestResult testResult = TestResult.createTestResultFromFile(testFile);

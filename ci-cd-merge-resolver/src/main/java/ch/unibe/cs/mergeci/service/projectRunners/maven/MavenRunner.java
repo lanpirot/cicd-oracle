@@ -40,7 +40,7 @@ public class MavenRunner {
     }
 
     public MavenRunner() {
-        this(Paths.get("temp"));
+        this(Paths.get(AppConfig.TMP_DIR.getPath()));
     }
 
     public void run(Path... path) {

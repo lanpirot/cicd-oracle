@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.Project;
 import ch.unibe.cs.mergeci.model.ProjectClass;
 import ch.unibe.cs.mergeci.model.patterns.IPattern;
@@ -24,7 +25,7 @@ class ProjectBuilderUtilsTest {
 
     @Test
     void getAllPossibleConflictResolution() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        Git git = GitUtils.getGit(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest");
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
         Map.Entry<String, MergeResult<? extends Sequence>> entry = mergeResultMap.entrySet().iterator().next();
@@ -35,7 +36,7 @@ class ProjectBuilderUtilsTest {
 
     @Test
     void getProjects() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        Git git = GitUtils.getGit(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest");
         ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -47,14 +48,14 @@ class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get("src/test/resources/test-merge-projects/myTest"),Paths.get("temp"));
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"), AppConfig.TEST_TEMP_DIR.toPath());
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
     }
 
     @Test
     void saveProjects() throws GitAPIException, IOException, InterruptedException {
-        FileUtils.deleteDirectory(new File("temp"));
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        FileUtils.deleteDirectory(AppConfig.TEST_TEMP_DIR);
+        Git git = GitUtils.getGit(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest");
         ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -70,7 +71,7 @@ class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get("src/test/resources/test-merge-projects/myTest"),Paths.get("temp"));
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"), AppConfig.TEST_TEMP_DIR.toPath());
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
 

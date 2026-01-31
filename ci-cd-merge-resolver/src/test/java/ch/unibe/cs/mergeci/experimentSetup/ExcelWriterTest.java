@@ -12,6 +12,6 @@ class ExcelWriterTest {
 
     @Test
     void filterDatasetsByConflictingFiles() throws IOException {
-        ExcelWriter.filterDatasetsByConflictingFiles(AppConfig.DATASET_DIR);
+        ExcelWriter.filterDatasetsByConflictingFiles(AppConfig.TEST_DATASET_TEMP_DIR);
     }
 }

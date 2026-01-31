@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
@@ -17,16 +18,16 @@ class FileUtilsTest {
 
     @Test
     void saveFilesFromObjectId() throws GitAPIException, IOException {
-        FileUtils.deleteDirectory(new File("mytemp"));
+        FileUtils.deleteDirectory(AppConfig.TEST_MYTEMP_DIR);
 
-        Git git = GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        Git git = GitUtils.getGit(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest");
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         //ResolveMerger merger = GitUtils.makeMerge("","", git);
         Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
 
-        FileUtils.saveFilesFromObjectId(Paths.get("mytemp"), map, git);
-        FileUtils.deleteDirectory(new File("mytemp"));
+        FileUtils.saveFilesFromObjectId(AppConfig.TEST_MYTEMP_DIR.toPath(), map, git);
+        FileUtils.deleteDirectory(AppConfig.TEST_MYTEMP_DIR);
     }
 }

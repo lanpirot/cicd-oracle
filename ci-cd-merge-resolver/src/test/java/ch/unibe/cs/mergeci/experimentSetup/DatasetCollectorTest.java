@@ -14,11 +14,11 @@ class DatasetCollectorTest {
     @Test
     void collectDataset() throws Exception {
         DatasetCollector collector = new DatasetCollector(
-                "src/test/resources/test-merge-projects/jackson-databind",
+                AppConfig.TEST_RESOURCE_DIR.getPath()+"/jackson-databind",
                 AppConfig.TMP_DIR.getAbsolutePath(),
                 2
         );
 
-        collector.collectDataset(new File(AppConfig.DATASET_DIR+"jackson-databind-dataset-test.xlsx"));
+        collector.collectDataset(new File(AppConfig.TEST_DATASET_TEMP_DIR+"jackson-databind-dataset-test.xlsx"));
     }
 }

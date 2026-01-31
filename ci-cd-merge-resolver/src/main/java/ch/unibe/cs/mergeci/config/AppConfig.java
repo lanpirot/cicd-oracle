@@ -15,11 +15,23 @@ public class AppConfig {
 
 
     public static final File INPUT_PROJECT_XLSX = new File(DATA_BASE_DIR + "projects_Java_desc-stars-1000.xlsx"); // Excel file with list of repositories  and their repo URL
-    public static final File INPUT_PROJECT_XLSX_TEST = new File(DATA_BASE_DIR + "projects_test.xlsx"); // Excel file with list of repositories  and their repo URL
     public static final File DATASET_DIR = new File(DATA_BASE_DIR + "datasets/");       // directory with dataset that were collected by `RepoCollector`
     public static final File REPO_DIR = new File(BASE_DIR + "tmp/bruteforce_repos");                      // name of directory to clone projects
     public static final String EXPERIMENTS_DIR = DATA_BASE_DIR + "experiments/";
     public static final File TMP_DIR = new File(BASE_DIR + "tmp/bruteforce_tmp");           // temporary working directory
+
+    // Test-specific directories (all test output goes here)
+    public static final String TEST_BASE_DIR = DATA_BASE_DIR + "test/";
+    public static final File INPUT_PROJECT_XLSX_TEST = new File(TEST_BASE_DIR + "projects_test.xlsx"); // Excel file with list of repositories  and their repo URL
+    public static final File TEST_TEMP_DIR = new File(TEST_BASE_DIR + "temp/");
+    public static final File TEST_MYTEMP_DIR = new File(TEST_BASE_DIR + "mytemp/");
+    public static final File TEST_COVERAGE_DIR = new File(TEST_BASE_DIR + "coverageTemp/");
+    public static final File TEST_DATASET_TEMP_DIR = new File(TEST_BASE_DIR + "dataset_temp/");
+    public static final String TEST_EXPERIMENTS_DIR = TEST_BASE_DIR + "experiments/";
+    public static final File TEST_RESOURCE_DIR = new File("src/test/resources/test-merge-projects/");
+    public static final File TEST_RESOURCE_DIR2 = new File("src/test/resources/test-files/");
+
+
 
 
 

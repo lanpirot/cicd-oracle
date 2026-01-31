@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.Project;
 import ch.unibe.cs.mergeci.model.ProjectClass;
 import ch.unibe.cs.mergeci.model.patterns.IPattern;
@@ -32,16 +33,16 @@ class MavenRunnerTest {
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.run(Set.of(),"temp\\jackson-databind_0", "temp\\jackson-databind_1");
-        mavenRunner.run(Paths.get("temp\\jackson-databind_0"),
-                Paths.get("temp\\jackson-databind_1"),
-                Paths.get("temp\\jackson-databind_2"),
-                Paths.get("temp\\jackson-databind_3"));
+        mavenRunner.run(Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_0"),
+                Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_1"),
+                Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_2"),
+                Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_3"));
     }
 
     @Test
     void run() throws IOException, GitAPIException {
-        FileUtils.deleteDirectory(new File("temp"));
-        Git git =GitUtils.getGit("src/test/resources/test-merge-projects/myTest");
+        FileUtils.deleteDirectory(AppConfig.TEST_TEMP_DIR);
+        Git git =GitUtils.getGit(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest");
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -53,7 +54,7 @@ class MavenRunnerTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get("src/test/resources/test-merge-projects/myTest"),Paths.get("temp"));
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"), AppConfig.TEST_TEMP_DIR.toPath());
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
         ObjectId branch1 = git.getRepository().resolve("master");
@@ -62,19 +63,19 @@ class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(Paths.get("temp/airlift_0"), Paths.get("temp/airlift_1"));
+        mavenRunner.run(Paths.get(AppConfig.TMP_DIR.getPath(), "/airlift_0"), Paths.get(AppConfig.TMP_DIR.getPath(), "/airlift_1"));
     }
 
     @Test
     void injectCacheArtifact() throws IOException {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.injectCacheArtifact(Paths.get("temp/ripme_0"));
+        mavenRunner.injectCacheArtifact(Paths.get(AppConfig.TMP_DIR.getPath(), "/ripme_0"));
     }
 
     @Test
     void copyTarget() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.copyTarget("temp\\Activiti_0", "temp\\Activiti_1");
-        mavenRunner.copyTarget(new File("temp/Activiti_target"), new File("temp/Activiti_0"));
+        mavenRunner.copyTarget(new File(AppConfig.TMP_DIR.getPath(), "/Activiti_target"), new File(AppConfig.TMP_DIR.getPath(), "/Activiti_0"));
     }
 }

@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.Status;
@@ -15,6 +16,7 @@ import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.merge.RecursiveMerger;
 import org.eclipse.jgit.merge.ResolveMerger;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -30,7 +32,7 @@ class CiCdMergeResolverApplicationTests {
 
     @Test
     void simpleMerge() throws IOException, GitAPIException {
-        Git git = Git.open(new File("src/test/resources/test-merge-projects/myTest"));
+        Git git = Git.open(new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"));
         Status status = git.status().call();
         Set<String> conflictList = status.getConflicting();
         System.out.println(conflictList.size());
@@ -67,7 +69,7 @@ class CiCdMergeResolverApplicationTests {
     }
     @Test
     void gitMerge() throws IOException, GitAPIException {
-        Git git = Git.open(new File("src/test/resources/test-merge-projects/myTest"));
+        Git git = Git.open(new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"));
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
@@ -118,16 +120,17 @@ class CiCdMergeResolverApplicationTests {
 
     @Test
     void gitMerge2() throws IOException, GitAPIException {
-        Git git = Git.open(new File("src/test/resources/test-merge-projects/myTest"));
+        Git git = Git.open(new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"));
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
         ObjectId head = repo.resolve("master");
         ObjectId feature = repo.resolve("feature");
 
-        System.out.println(MergeStrategy.RESOLVE.newMerger(repo, true));
+        System.out.println(MergeStrategy.RECURSIVE.newMerger(repo, true));
         RecursiveMerger merger = (RecursiveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);
-//        merger.setWorkingTreeIterator(new FileTreeIterator(repo));
+        //merger.setWorkingTreeIterator(new FileTreeIterator(repo));
+
 
         boolean isMergedWithoutConflicts = merger.merge(head, feature);
 

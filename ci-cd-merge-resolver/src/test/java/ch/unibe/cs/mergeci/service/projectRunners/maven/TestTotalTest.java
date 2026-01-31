@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,10 +12,11 @@ class TestTotalTest {
 
     @Test
     void outputResult() throws IOException {
-//        TestTotal testTotal = new TestTotal(new File("src\\test\\resources\\test-merge-projects\\jitwatch_1"));
-//        TestTotal testTotal = new TestTotal(new File("temp\\projects\\zemberek-nlp_3"));
-        TestTotal testTotal = new TestTotal(new File("src/test/resources/test-merge-projects/jackson-databind"));
-
+        TestTotal testTotal = new TestTotal(new File(AppConfig.TEST_RESOURCE_DIR.getPath(), "/jitwatch"));
+        System.out.println(testTotal);
+        testTotal = new TestTotal(new File(AppConfig.TEST_RESOURCE_DIR.getPath(), "/zemberek-nlp"));
+        System.out.println(testTotal);
+        testTotal = new TestTotal(new File(AppConfig.TEST_RESOURCE_DIR.getPath(), "/jackson-databind"));
         System.out.println(testTotal);
     }
 }
