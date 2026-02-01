@@ -12,7 +12,7 @@ class MergeAnalyzerTest {
 
     @Test
     void buildProjects() throws Exception {
-        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(new File("src/test/resources/test-merge-projects/zemberek-nlp"), AppConfig.TEST_TEMP_DIR.getPath());
+        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(new File(AppConfig.TEST_REPO_DIR,"zemberek-nlp"), AppConfig.TEST_TMP_DIR.getPath());
         mergeAnalyzer.buildProjects("c10e035c4b36e0b4cd50e009fb94b67e8fc51a45", "356fa0178ca851a1ccee41c7a1846a1a19abbd6b", "4b39a3ee35ffcf61f66a783dde2af1d9fbd9c12a");
         mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunner(true,false));
 

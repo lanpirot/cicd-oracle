@@ -8,14 +8,12 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectStream;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.merge.RecursiveMerger;
-import org.eclipse.jgit.merge.ResolveMerger;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +30,7 @@ class CiCdMergeResolverApplicationTests {
 
     @Test
     void simpleMerge() throws IOException, GitAPIException {
-        Git git = Git.open(new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"));
+        Git git = Git.open(new File(AppConfig.TEST_REPO_DIR.getPath(),"myTest"));
         Status status = git.status().call();
         Set<String> conflictList = status.getConflicting();
         System.out.println(conflictList.size());
@@ -69,7 +67,7 @@ class CiCdMergeResolverApplicationTests {
     }
     @Test
     void gitMerge() throws IOException, GitAPIException {
-        Git git = Git.open(new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"));
+        Git git = Git.open(new File(AppConfig.TEST_REPO_DIR.getPath(),"myTest"));
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
@@ -120,7 +118,7 @@ class CiCdMergeResolverApplicationTests {
 
     @Test
     void gitMerge2() throws IOException, GitAPIException {
-        Git git = Git.open(new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"));
+        Git git = Git.open(new File(AppConfig.TEST_REPO_DIR.getPath(),"myTest"));
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
@@ -129,8 +127,7 @@ class CiCdMergeResolverApplicationTests {
 
         System.out.println(MergeStrategy.RECURSIVE.newMerger(repo, true));
         RecursiveMerger merger = (RecursiveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);
-        //merger.setWorkingTreeIterator(new FileTreeIterator(repo));
-
+        merger.setWorkingTreeIterator(new FileTreeIterator(repo));
 
         boolean isMergedWithoutConflicts = merger.merge(head, feature);
 
@@ -140,9 +137,8 @@ class CiCdMergeResolverApplicationTests {
             List<String> conflictPaths = merger.getUnmergedPaths();
             Map<String, MergeResult<? extends Sequence>> mergeResult = merger.getMergeResults();
 
-            System.out.println(merger.getResultTreeId());
-            System.out.println(merger.getResultTreeId().getName());
-            System.out.println("Amount of conflicts:" + conflictPaths.size());
+
+            System.out.println("Amount of conflicts: " + conflictPaths.size());
             for (Map.Entry<String, MergeResult<? extends Sequence>> mergeResultEntry : mergeResult.entrySet()) {
                 String path = mergeResultEntry.getKey();
                 MergeResult<? extends Sequence> mergeChunks = mergeResultEntry.getValue();
@@ -155,10 +151,8 @@ class CiCdMergeResolverApplicationTests {
                     int seqIndex = chunk.getSequenceIndex();
 
                     Sequence seq = mergeResultEntry.getValue().getSequences().get(seqIndex);
-                    if (chunk.getConflictState() == MergeChunk.ConflictState.BASE_CONFLICTING_RANGE || chunk.getConflictState() == MergeChunk.ConflictState.NO_CONFLICT) {
-                        for (int i = chunk.getBegin(); i < chunk.getEnd(); i++) {
-                            System.out.println("    " + ((RawText) seq).getString(i));
-                        }
+                    for (int i = chunk.getBegin(); i < chunk.getEnd(); i++) {
+                        System.out.println("    " + ((RawText) seq).getString(i));
                     }
                 }
             }

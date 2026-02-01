@@ -39,7 +39,7 @@ public class CiCdMergeResolverApplication {
 
         for (Utility.Experiments ex : Utility.Experiments.values()) {
             try {
-                experimentRunner.runTests(new File(AppConfig.EXPERIMENTS_DIR + ex.getName()), ex.isParallel(), ex.isCache());
+                experimentRunner.runTests(new File(AppConfig.EXPERIMENTS_DIR, ex.getName()), ex.isParallel(), ex.isCache());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -48,7 +48,7 @@ public class CiCdMergeResolverApplication {
 
     private static void analyzeResults() {
         for (Utility.Experiments ex : Utility.Experiments.values()){
-            MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.EXPERIMENTS_DIR + ex.getName()));
+            MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.EXPERIMENTS_DIR, ex.getName()));
             metricsAnalyzer.makeFullAnalysis();
         }
     }

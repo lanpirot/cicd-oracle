@@ -6,17 +6,15 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class TestTotalTest {
 
     @Test
     void outputResult() throws IOException {
-        TestTotal testTotal = new TestTotal(new File(AppConfig.TEST_RESOURCE_DIR.getPath(), "/jitwatch"));
+        TestTotal testTotal = new TestTotal(new File(AppConfig.TEST_REPO_DIR, "jitwatch"));
         System.out.println(testTotal);
-        testTotal = new TestTotal(new File(AppConfig.TEST_RESOURCE_DIR.getPath(), "/zemberek-nlp"));
+        testTotal = new TestTotal(new File(AppConfig.TEST_REPO_DIR, "zemberek-nlp"));
         System.out.println(testTotal);
-        testTotal = new TestTotal(new File(AppConfig.TEST_RESOURCE_DIR.getPath(), "/jackson-databind"));
+        testTotal = new TestTotal(new File(AppConfig.TEST_REPO_DIR, "jackson-databind"));
         System.out.println(testTotal);
     }
 }

@@ -9,40 +9,40 @@ class ExperimentRunnerTest {
 
     @Test
     void makeAnalysisByDataset() throws Exception {
-        File dataset = new File(AppConfig.TEST_EXPERIMENTS_DIR + "dataset-test.xlsx");
-        File output = new File(AppConfig.TEST_EXPERIMENTS_DIR + "dataset-test-output_mvnd.json");
+        File dataset = new File(AppConfig.TEST_DATASET_DIR, "jackson-databind-dataset-test.xlsx");
+        File output = new File(AppConfig.TEST_EXPERIMENTS_DIR, "dataset-test-output_mvnd.json");
         ExperimentRunner.makeAnalysisByDataset(dataset,
-                new File(AppConfig.TEST_RESOURCE_DIR.getPath()+"/jackson-databind"),
+                new File(AppConfig.TEST_REPO_DIR, "jackson-databind"),
                 output,false, false);
     }
 
     @Test
     void runTests() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR + "datasets"),
-                AppConfig.INPUT_PROJECT_XLSX_TEST,
-                new File(AppConfig.TEST_EXPERIMENTS_DIR + "temp")
+        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR, "datasets"),
+                AppConfig.TEST_INPUT_PROJECT_XLSX,
+                new File(AppConfig.TEST_EXPERIMENTS_DIR, "temp")
                 );
 
-        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR + "results_wo_optimization2"), true,false);
+        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, "results_wo_optimization2"), true,false);
     }
 
     @Test
     void runTestsWithCache() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR + "datasets"),
-                AppConfig.INPUT_PROJECT_XLSX_TEST,
-                new File(AppConfig.TEST_EXPERIMENTS_DIR + "temp")
+        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR, "datasets"),
+                AppConfig.TEST_INPUT_PROJECT_XLSX,
+                new File(AppConfig.TEST_EXPERIMENTS_DIR,"temp")
         );
 
-        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR + "results_cache_optimization"), true, false);
+        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, "results_cache_optimization"), true, false);
     }
 
     @Test
     void runTestsWithoutParallelization() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR + "datasets"),
-                AppConfig.INPUT_PROJECT_XLSX_TEST,
-                new File(AppConfig.TEST_EXPERIMENTS_DIR + "temp")
+        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR, "datasets"),
+                AppConfig.TEST_INPUT_PROJECT_XLSX,
+                new File(AppConfig.TEST_EXPERIMENTS_DIR, "temp")
         );
 
-        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR + "results_without_parallelization"), false, false);
+        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, "results_without_parallelization"), false, false);
     }
 }

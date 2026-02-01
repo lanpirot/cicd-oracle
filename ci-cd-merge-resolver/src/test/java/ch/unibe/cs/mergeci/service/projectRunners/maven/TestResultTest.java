@@ -13,7 +13,7 @@ class TestResultTest {
     @Test
     void createTestResultFromFile() throws IOException {
         // Arrange - use cross-platform path to test resource
-        File testFile = new File(AppConfig.TEST_RESOURCE_DIR2.getPath()+"/sample-test-result.txt");
+        File testFile = new File(AppConfig.TEST_RESOURCE_DIR.getPath(),"sample-test-result.txt");
 
         // Act
         TestResult testResult = TestResult.createTestResultFromFile(testFile);

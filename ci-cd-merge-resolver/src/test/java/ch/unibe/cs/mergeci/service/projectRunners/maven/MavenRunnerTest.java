@@ -23,9 +23,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MavenRunnerTest {
 
@@ -41,8 +38,8 @@ class MavenRunnerTest {
 
     @Test
     void run() throws IOException, GitAPIException {
-        FileUtils.deleteDirectory(AppConfig.TEST_TEMP_DIR);
-        Git git =GitUtils.getGit(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest");
+        FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR);
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR,"myTest"));
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -54,7 +51,7 @@ class MavenRunnerTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(Paths.get(AppConfig.TEST_RESOURCE_DIR.getPath()+"/myTest"), AppConfig.TEST_TEMP_DIR.toPath());
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(new File(AppConfig.TEST_REPO_DIR,"myTest").toPath(), AppConfig.TEST_TMP_DIR.toPath());
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
         ObjectId branch1 = git.getRepository().resolve("master");
