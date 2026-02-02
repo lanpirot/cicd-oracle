@@ -78,7 +78,7 @@ public class RepoCollector {
                         AppConfig.MAX_CONFLICT_MERGES
                 );
 
-                collector.collectDataset(datasetDir.resolve(repoName + ".xlsx").toFile());
+                collector.collectDataset(datasetDir.resolve(repoName + AppConfig.XLSX).toFile());
                 System.out.printf("Deleting repository %s%n", repoFolder);
                 RepositoryCache.clear();
                 WindowCache.reconfigure(new WindowCacheConfig());
@@ -111,7 +111,7 @@ public class RepoCollector {
     }
 
     private boolean isMavenProject(File repo) {
-        return Files.exists(repo.toPath().resolve("pom.xml"));
+        return Files.exists(repo.toPath().resolve(AppConfig.POMXML));
     }
 
     private String receiveRepoName(String repoUrl) {

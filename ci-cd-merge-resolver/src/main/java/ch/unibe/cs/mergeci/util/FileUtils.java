@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,11 +98,11 @@ public class FileUtils {
             destinationDirectory.mkdir();
         }
         for (String f : sourceDirectory.list()) {
-            copyDirectoryCompatibityMode(new File(sourceDirectory, f), new File(destinationDirectory, f));
+            copyDirectoryCompatibilityMode(new File(sourceDirectory, f), new File(destinationDirectory, f));
         }
     }
 
-    public static void copyDirectoryCompatibityMode(File source, File destination) throws IOException {
+    public static void copyDirectoryCompatibilityMode(File source, File destination) throws IOException {
         if (source.isDirectory()) {
             copyDirectory(source, destination);
         } else {

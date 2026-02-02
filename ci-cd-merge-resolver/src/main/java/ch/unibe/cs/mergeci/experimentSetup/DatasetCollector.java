@@ -131,7 +131,7 @@ public class DatasetCollector {
                 runTests,
                 merge.getConflictingFiles().size(),
                 (int) merge.getConflictingFiles().keySet().stream()
-                        .filter(f -> f.endsWith(".java")).count(),
+                        .filter(f -> f.endsWith(AppConfig.JAVA)).count(),
                 compilationSuccess,
                 testSuccess,
                 time,
@@ -145,7 +145,7 @@ public class DatasetCollector {
                 .numTests(runTests)
                 .numConflictingFiles(merge.getConflictingFiles().size())
                 .numJavaFiles((int) merge.getConflictingFiles().keySet().stream()
-                        .filter(f -> f.endsWith(".java")).count())
+                        .filter(f -> f.endsWith(AppConfig.JAVA)).count())
                 .compilationSuccess(compilationSuccess)
                 .testSuccess(testSuccess)
                 .elapsedTestTime(time)
@@ -160,6 +160,6 @@ public class DatasetCollector {
         return merge.getConflictingFiles()
                 .keySet()
                 .stream()
-                .anyMatch(f -> f.endsWith(".java"));
+                .anyMatch(f -> f.endsWith(AppConfig.JAVA));
     }
 }

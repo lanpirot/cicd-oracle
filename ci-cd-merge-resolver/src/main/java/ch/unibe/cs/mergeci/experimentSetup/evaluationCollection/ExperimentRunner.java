@@ -51,7 +51,7 @@ public class ExperimentRunner {
 
         for (File dataset : xlsxDataset) {
             String repoUrl = getRepoUrl(dataset);
-            String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + ".json";
+            String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + AppConfig.JSON;
             if (Arrays.stream(outputDir.listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
                 System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
                 continue;
@@ -137,9 +137,13 @@ public class ExperimentRunner {
                 String parent1Hash = mergeOutputJSON.getParent1();
                 String parent2Hash = mergeOutputJSON.getParent2();
 
-                FileUtils.deleteDirectory(new File("temp"));
+                FileUtils.deleteDirectory(AppConfig.TMP_DIR); ///THIS SEEMED FISHY
                 Instant start = Instant.now();
-                MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, "temp");
+                MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR.toString());
+                //CHANGED FROM
+                //FileUtils.deleteDirectory(new File("temp"));
+                //Instant start = Instant.now();
+                //MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, "temp");
                 mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
                 RunExecutionTIme runExecutionTIme;
 

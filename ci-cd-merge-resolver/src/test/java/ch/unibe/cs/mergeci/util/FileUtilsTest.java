@@ -17,7 +17,7 @@ class FileUtilsTest {
     void saveFilesFromObjectId() throws GitAPIException, IOException {
         FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR);
 
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "myTest"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);

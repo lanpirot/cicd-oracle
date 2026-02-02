@@ -45,8 +45,8 @@ public class MavenHook extends AbstractEventSpy {
                 if ((lifecyclePhase.equals("compile") || lifecyclePhase.equals("test-compile"))) {
                     MavenSession session = ee.getSession();
                     MavenProject mavenProject = session.getCurrentProject();
-                    File surefireReportsPath = mavenProject.getBasedir().toPath()
-                            .resolve("target", "surefire-reports").toFile();
+                    File surefireReportsPath;
+                    surefireReportsPath = mavenProject.getBasedir().toPath().resolve("target").resolve("surefire-reports").toFile();
 
                     log.info("Delete folder: {}", surefireReportsPath);
                     FileUtils.deleteDirectory(surefireReportsPath);

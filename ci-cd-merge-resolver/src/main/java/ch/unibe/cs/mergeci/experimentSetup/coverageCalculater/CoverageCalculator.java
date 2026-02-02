@@ -156,7 +156,7 @@ public class CoverageCalculator {
 /*    private static List<String> getConflictJavaFiles(File repo, String parent1, String parent2) {
         try (Git git = GitUtils.getGit(repo);) {
             Map<String, Integer> map = GitUtils.countConflictChunks(parent1, parent2, git);
-            List<String> files = map.keySet().stream().filter(x -> x.endsWith(".java")).map(x->);
+            List<String> files = map.keySet().stream().filter(x -> x.endsWith(AppConfig.JAVA)).map(x->);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

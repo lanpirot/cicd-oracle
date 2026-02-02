@@ -69,7 +69,7 @@ public class ExcelWriter {
             throws IOException {
 
         File[] excelFiles = datasetsDir.listFiles(
-                f -> f.isFile() && f.getName().endsWith(".xlsx")
+                f -> f.isFile() && f.getName().endsWith(AppConfig.XLSX)
         );
 
         if (excelFiles == null) return;

@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.util.Utility;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -9,40 +10,40 @@ class ExperimentRunnerTest {
 
     @Test
     void makeAnalysisByDataset() throws Exception {
-        File dataset = new File(AppConfig.TEST_DATASET_DIR, "jackson-databind-dataset-test.xlsx");
-        File output = new File(AppConfig.TEST_EXPERIMENTS_DIR, "dataset-test-output_mvnd.json");
+        File dataset = new File(AppConfig.TEST_DATASET_DIR, AppConfig.jacksonDatabind + AppConfig.XLSX);
+        File output = new File(AppConfig.TEST_EXPERIMENTS_DIR, AppConfig.jacksonDatabind + AppConfig.JSON);
         ExperimentRunner.makeAnalysisByDataset(dataset,
-                new File(AppConfig.TEST_REPO_DIR, "jackson-databind"),
+                new File(AppConfig.TEST_REPO_DIR, AppConfig.jacksonDatabind),
                 output,false, false);
     }
 
     @Test
     void runTests() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR, "datasets"),
-                AppConfig.TEST_INPUT_PROJECT_XLSX,
-                new File(AppConfig.TEST_EXPERIMENTS_DIR, "temp")
+        ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
+                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.TEST_EXPERIMENTS_TEMP_DIR
                 );
 
-        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, "results_wo_optimization2"), true,false);
+        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.no_cache_parallel.getName()), Utility.Experiments.no_cache_parallel.isParallel(), Utility.Experiments.no_cache_parallel.isCache());
     }
 
     @Test
     void runTestsWithCache() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR, "datasets"),
-                AppConfig.TEST_INPUT_PROJECT_XLSX,
-                new File(AppConfig.TEST_EXPERIMENTS_DIR,"temp")
+        ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
+                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 
-        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, "results_cache_optimization"), true, false);
+        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.cache_parallel.getName()), Utility.Experiments.cache_parallel.isParallel(), Utility.Experiments.cache_parallel.isCache());
     }
 
     @Test
     void runTestsWithoutParallelization() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(new File(AppConfig.TEST_EXPERIMENTS_DIR, "datasets"),
-                AppConfig.TEST_INPUT_PROJECT_XLSX,
-                new File(AppConfig.TEST_EXPERIMENTS_DIR, "temp")
+        ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
+                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 
-        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, "results_without_parallelization"), false, false);
+        experimentRunner.runTests(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.no_cache_no_parallel.getName()), Utility.Experiments.no_cache_no_parallel.isParallel(), Utility.Experiments.no_cache_no_parallel.isCache());
     }
 }

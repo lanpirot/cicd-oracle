@@ -29,7 +29,7 @@ class GitUtilsTest {
     void getNonConflictObjects() throws IOException, GitAPIException {
 
 
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "myTest"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
         ResolveMerger merger = GitUtils.makeMerge("master", "feature", git);
@@ -39,7 +39,7 @@ class GitUtilsTest {
     @Test
     void getNonConflictObjectsFromRealMerge() throws IOException, GitAPIException, InterruptedException {
 
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "myTest"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
         ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
         ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
         Map<String, ObjectId> map = GitUtils.getNonConflictObjects(git, branch1, branch2);
@@ -48,7 +48,7 @@ class GitUtilsTest {
     @Test
     void testGetNonConflictObjects() throws IOException, GitAPIException, InterruptedException {
 
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "myTest"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
 
@@ -59,20 +59,20 @@ class GitUtilsTest {
 
     @Test
     void isConflict() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "ripme"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.ripme));
         GitUtils.isConflict("e0b104f55b153", "3241ae0a84046a21", git);
     }
 
     @Test
     void getConflictCommits() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "jackson-databind"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.jacksonDatabind));
 
         ObjectId head = git.getRepository().resolve("HEAD");
 
         RevWalk walk = new RevWalk(git.getRepository());
 
 
-        List<MergeInfo> list = GitUtils.getConflictCommits(100, git);
+        List<MergeInfo> list = GitUtils.getConflictCommits(AppConfig.TEST_MAX_CONFLICT_MERGES, git);
 
         System.out.printf("Total number of conflicts: %d", list.size());
         System.out.println();
@@ -83,7 +83,7 @@ class GitUtilsTest {
 
     @Test
     void getNonConflictObjects2() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "myTest"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
         ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
         ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
 
@@ -101,7 +101,7 @@ class GitUtilsTest {
 
     @Test
     void countConflictChunks() throws IOException {
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, "ruoyi-vue-pro"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.ruoyivuepro));
         Map<String, Integer> map = GitUtils.countConflictChunks("41eec7806d81c64605e6f1b84454df31801a2488","c6c20234404536803f1e9d7fe0095e50db4c54a1",git);
         System.out.println(map);
     }

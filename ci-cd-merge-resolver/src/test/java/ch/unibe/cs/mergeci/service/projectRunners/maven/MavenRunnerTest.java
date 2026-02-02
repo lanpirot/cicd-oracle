@@ -30,16 +30,16 @@ class MavenRunnerTest {
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.run(Set.of(),"temp\\jackson-databind_0", "temp\\jackson-databind_1");
-        mavenRunner.run(Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_0"),
-                Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_1"),
-                Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_2"),
-                Paths.get(AppConfig.TMP_DIR.getPath(), "/jackson-databind_3"));
+        mavenRunner.run(Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.jacksonDatabind + "_0"),
+                        Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.jacksonDatabind + "_1"),
+                        Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.jacksonDatabind + "_2"),
+                        Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.jacksonDatabind + "_3"));
     }
 
     @Test
     void run() throws IOException, GitAPIException {
         FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR);
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR,"myTest"));
+        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -51,7 +51,7 @@ class MavenRunnerTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(new File(AppConfig.TEST_REPO_DIR,"myTest").toPath(), AppConfig.TEST_TMP_DIR.toPath());
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(new File(AppConfig.TEST_REPO_DIR,AppConfig.myTest).toPath(), AppConfig.TEST_TMP_DIR.toPath());
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
         ObjectId branch1 = git.getRepository().resolve("master");
@@ -60,19 +60,20 @@ class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(Paths.get(AppConfig.TMP_DIR.getPath(), "/airlift_0"), Paths.get(AppConfig.TMP_DIR.getPath(), "/airlift_1"));
+        mavenRunner.run(Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.airlift+"_0"),
+                        Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.airlift+"_1"));
     }
 
     @Test
     void injectCacheArtifact() throws IOException {
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.injectCacheArtifact(Paths.get(AppConfig.TMP_DIR.getPath(), "/ripme_0"));
+        mavenRunner.injectCacheArtifact(Paths.get(AppConfig.TMP_DIR.getPath(), AppConfig.ripme+"_0"));
     }
 
     @Test
     void copyTarget() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.copyTarget("temp\\Activiti_0", "temp\\Activiti_1");
-        mavenRunner.copyTarget(new File(AppConfig.TMP_DIR.getPath(), "/Activiti_target"), new File(AppConfig.TMP_DIR.getPath(), "/Activiti_0"));
+        mavenRunner.copyTarget(new File(AppConfig.TMP_DIR.getPath(), AppConfig.Activiti+"_target"), new File(AppConfig.TMP_DIR.getPath(), AppConfig.Activiti+"_0"));
     }
 }

@@ -25,9 +25,33 @@ public class AppConfig {
     public static final File TEST_DATASET_DIR = new File(TEST_BASE_DIR,"dataset_temp");
     public static final File TEST_REPO_DIR = new File("src/test/resources/test-merge-projects");
     public static final File TEST_EXPERIMENTS_DIR = new File(TEST_BASE_DIR, "experiments");
+    public static final File TEST_EXPERIMENTS_TEMP_DIR = new File(TEST_EXPERIMENTS_DIR, "temp");
     public static final File TEST_TMP_DIR = new File(TEST_BASE_DIR, "temp");
-    public static final File TEST_COVERAGE_DIR = new File(TEST_BASE_DIR, "coverageTemp");
+    public static final File TEST_COVERAGE_DIR = new File(TEST_BASE_DIR, "coverage");
+    public static final File TEST_COVERAGE_DATASETS_DIR = new File(TEST_COVERAGE_DIR, "datasets");
+    public static final File TEST_COVERAGE_RESULTS2_DIR = new File(TEST_COVERAGE_DIR, "results2");
     public static final File TEST_RESOURCE_DIR = new File("src/test/resources/test-files");
+
+    public static final String myTest = "myTest";
+    public static final String jacksonDatabind = "jackson-databind";
+    public static final String ruoyivuepro = "ruoyi-vue-pro";
+    public static final String Activiti = "Activiti";
+    public static final String ripme = "ripme";
+    public static final String airlift = "airlift";
+    public static final String zembereknlp = "zemberek-nlp";
+    public static final String jitwatch = "jitwatch";
+    public static final String XLSX = ".xlsx";
+    public static final String JSON = ".json";
+    public static final String POMXML = "pom.xml";
+    public static final String JAVA = ".java";
+    public static final String XML = ".xml";
+    public static final int TEST_MAX_CONFLICT_MERGES = 100;  //sample maximally this many merges per project to avoid bias towards giant projects
+
+
+
+
+
+
 
 
     public static final int MAX_THREADS = Math.min(Runtime.getRuntime().availableProcessors(), 12); //avoid hogging all RAM of machine

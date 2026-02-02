@@ -55,12 +55,13 @@ public class MavenRunner {
         runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
 
 
+
         for (int i = 1; i < path.length; i++) {
             mavenCommand = resolveMavenCommand(path[i]);
             try {
                 injectCacheArtifact(path[i]);
                 copyTarget(path[0].toFile(), path[i].toFile());
-                FileUtils.copyDirectoryCompatibityMode(path[0].resolve(".cache").toFile(), path[i].resolve(".cache").toFile());
+                FileUtils.copyDirectoryCompatibilityMode(path[0].resolve(".cache").toFile(), path[i].resolve(".cache").toFile());
                 projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
@@ -73,7 +74,9 @@ public class MavenRunner {
     }
 
     public void run_cache_parallel(Path... path) {
-        String mavenCommand = "mvn.cmd";
+        ArrayList<String> mavenCommands = new ArrayList<String>();
+        for (int i = 0; i < path.length; i++)
+            mavenCommands.add(resolveMavenCommand(path[i]));
 
         System.out.println(path[0].toAbsolutePath().toString());
         Process pr = null;
@@ -81,24 +84,24 @@ public class MavenRunner {
         String projectName = path[0].getFileName().toString();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+        runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommands.getFirst(), "test", "-fae");
 
 
         ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         for (int i = 1; i < path.length; i++) {
-            int finalI = i;
+            final int finalI = i;
 
             executorService.submit(() -> {
                         String projectNameFinal = path[finalI].getFileName().toString();
                         try {
                             injectCacheArtifact(path[finalI]);
                             copyTarget(path[0].toFile(), path[finalI].toFile());
-                            FileUtils.copyDirectoryCompatibityMode(path[0].resolve(".cache").toFile(), path[finalI].resolve(".cache").toFile());
+                            FileUtils.copyDirectoryCompatibilityMode(path[0].resolve(".cache").toFile(), path[finalI].resolve(".cache").toFile());
 
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectNameFinal + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+                            runCommand(path[finalI].toFile(), logDir.resolve(projectNameFinal + COMPILATION_POSTFIX).toFile(), mavenCommands.get(finalI), "test", "-fae");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -248,7 +251,7 @@ public class MavenRunner {
 
         for (File newFile : files) {
             if (newFile.isDirectory()) {
-                File pom = new File(newFile, "pom.xml");
+                File pom = new File(newFile, AppConfig.POMXML);
                 if (pom.exists()) {
                     updateStatusMavenFile(
                             Paths.get(newFile.getPath()+ "target", "maven-status", "maven-compiler-plugin",
@@ -263,10 +266,10 @@ public class MavenRunner {
 
     public void injectCacheArtifact(Path projectDir) {
         try {
-            FileUtils.copyDirectoryCompatibityMode(
+            FileUtils.copyDirectoryCompatibilityMode(
                     new File("src/main/resources/cache-artifacts/extensions.xml"),
                     projectDir.resolve(".mvn").resolve("extensions.xml").toFile());
-            FileUtils.copyDirectoryCompatibityMode(
+            FileUtils.copyDirectoryCompatibilityMode(
                     new File("src/main/resources/cache-artifacts/maven-build-cache-config.xml"),
                     projectDir.resolve(".mvn").resolve("maven-build-cache-config.xml").toFile());
         } catch (IOException e) {
@@ -293,7 +296,7 @@ public class MavenRunner {
 
                         System.out.println("Copying target folder: " + dst + "->" + destDir);
                         try {
-                            FileUtils.copyDirectoryCompatibityMode(dir.toFile(), destDir);
+                            FileUtils.copyDirectoryCompatibilityMode(dir.toFile(), destDir);
 //                            FileUtils.deleteDirectory(destDir.toPath().resolve("surefire-reports").toFile());
                         } catch (IOException e) {
                             e.printStackTrace();

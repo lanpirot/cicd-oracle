@@ -10,11 +10,11 @@ class CoverageCalculatorTest {
     @Test
     void calculateCoverage() {
         CoverageCalculator coverageCalculator = new CoverageCalculator(
-                new File(AppConfig.TEST_COVERAGE_DIR, "datasets"),
-                new File(AppConfig.TEST_EXPERIMENTS_DIR, "projects_Java_desc-stars-1000.xlsx"),
+                AppConfig.TEST_COVERAGE_DATASETS_DIR,
+                AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_DATASET_DIR,
                 AppConfig.TEST_COVERAGE_DIR);
 
-        coverageCalculator.calculateCoverage(new File(AppConfig.TEST_COVERAGE_DIR, "results2"));
+        coverageCalculator.calculateCoverage(AppConfig.TEST_COVERAGE_RESULTS2_DIR);
     }
 }
