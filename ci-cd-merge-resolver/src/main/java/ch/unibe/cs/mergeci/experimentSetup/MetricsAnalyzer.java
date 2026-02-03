@@ -91,12 +91,13 @@ public class MetricsAnalyzer {
                         atLeastOneResolution(impactMergesSingleModule).size()));
 
 
-        System.out.printf("At least one resolution in multi Module %d %d%%; just by multi module: %d %% %n",
-                atLeastOneResolution(impactMergesMultiModule).size(),
-                countPercent(impactMerges.size(),
-                        atLeastOneResolution(impactMergesMultiModule).size()),
-                countPercent(impactMergesMultiModule.size(),
-                        atLeastOneResolution(impactMergesMultiModule).size()));
+        if (!impactMergesMultiModule.isEmpty())
+            System.out.printf("At least one resolution in multi Module %d %d%%; just by multi module: %d %% %n",
+                    atLeastOneResolution(impactMergesMultiModule).size(),
+                    countPercent(impactMerges.size(),
+                            atLeastOneResolution(impactMergesMultiModule).size()),
+                    countPercent(impactMergesMultiModule.size(),
+                            atLeastOneResolution(impactMergesMultiModule).size()));
 
         System.out.printf("Merges that have resolution better than original: %d %d%% %n",
                 numberOfResolutionsThatPerformBetter(impactMerges).size(),

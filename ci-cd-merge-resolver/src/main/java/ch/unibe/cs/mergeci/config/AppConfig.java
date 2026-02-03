@@ -28,8 +28,6 @@ public class AppConfig {
     public static final File TEST_EXPERIMENTS_TEMP_DIR = new File(TEST_EXPERIMENTS_DIR, "temp");
     public static final File TEST_TMP_DIR = new File(TEST_BASE_DIR, "temp");
     public static final File TEST_COVERAGE_DIR = new File(TEST_BASE_DIR, "coverage");
-    public static final File TEST_COVERAGE_DATASETS_DIR = new File(TEST_COVERAGE_DIR, "datasets");
-    public static final File TEST_COVERAGE_RESULTS2_DIR = new File(TEST_COVERAGE_DIR, "results2");
     public static final File TEST_RESOURCE_DIR = new File("src/test/resources/test-files");
 
     public static final String myTest = "myTest";
