@@ -33,7 +33,6 @@ public class MetricsAnalyzer {
         for (File file : dir.listFiles()) {
             try {
                 AllMergesJSON allMergesJSON = objectMapper.readValue(file, AllMergesJSON.class);
-
                 merges.addAll(allMergesJSON.getMerges());
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -44,16 +43,16 @@ public class MetricsAnalyzer {
     public void makeFullAnalysis() {
 
         System.out.println("All Merges: " + merges.size());
-        System.out.printf("Num of MultiModules: %d %d%% %n", countMultiModulesProjects(), countPercent(merges.size(), countMultiModulesProjects()));
+        printfIfNonZero("Num of MultiModules: %d %d%% %n", merges.size(), countMultiModulesProjects(), countPercent(merges.size(), countMultiModulesProjects()));
 
         List<MergeOutputJSON> impactMerges = filterOutNoImpactMerges(merges);
         List<MergeOutputJSON> noImpactMerges = merges.stream().filter(x -> !impactMerges.contains(x)).toList();
         System.out.println("No Impact Merges: " + noImpactMerges.size());
-        System.out.printf("Impact Merges: %d %d%% %n", impactMerges.size(), countPercent(merges.size(), impactMerges.size()));
+        printfIfNonZero("Impact Merges: %d %d%% %n", merges.size(), impactMerges.size(), countPercent(merges.size(), impactMerges.size()));
         List<MergeOutputJSON> noImpactMergesSingleModule = getSingleModuleProjects(noImpactMerges);
         List<MergeOutputJSON> noImpactMergesMultiModule = getMultiModuleProjects(noImpactMerges);
-        System.out.printf("No Impact Single module merges %d %d%% %n", noImpactMergesSingleModule.size(), countPercent(merges.size(), noImpactMergesSingleModule.size()));
-        System.out.printf("No Impact Multi module merges %d %d%% %n", noImpactMergesMultiModule.size(), countPercent(merges.size(), noImpactMergesMultiModule.size()));
+        printfIfNonZero("No Impact Single module merges %d %d%% %n", merges.size(), noImpactMergesSingleModule.size(), countPercent(merges.size(), noImpactMergesSingleModule.size()));
+        printfIfNonZero("No Impact Multi module merges %d %d%% %n", merges.size(), noImpactMergesMultiModule.size(), countPercent(merges.size(), noImpactMergesMultiModule.size()));
         List<MergeOutputJSON> noImpactMergesTotalCoverage = getMergesWithCoverage(noImpactMerges);
         List<MergeOutputJSON> noImpactMergesSingleModuleCoverage = getMergesWithCoverage(noImpactMergesSingleModule);
         List<MergeOutputJSON> noImpactMergesMultiModuleCoverage = getMergesWithCoverage(noImpactMergesMultiModule);
@@ -69,71 +68,83 @@ public class MetricsAnalyzer {
         List<MergeOutputJSON> impactMergesMultiModule = getMultiModuleProjects(impactMerges);
         List<MergeOutputJSON> impactMergesSingleModuleCoverage = getMergesWithCoverage(impactMergesSingleModule);
         List<MergeOutputJSON> impactMergesMultiModuleCoverage = getMergesWithCoverage(impactMergesMultiModule);
-        System.out.printf("impact Single module merges %d %d%% %n", impactMergesSingleModule.size(), countPercent(impactMerges.size(), impactMergesSingleModule.size()));
-        System.out.printf("impact Multi module merges %d %d%% %n", impactMergesMultiModule.size(), countPercent(impactMerges.size(), impactMergesMultiModule.size()));
+        printfIfNonZero("impact Single module merges %d %d%% %n", impactMerges.size(), impactMergesSingleModule.size(), countPercent(impactMerges.size(), impactMergesSingleModule.size()));
+        printfIfNonZero("impact Multi module merges %d %d%% %n", impactMerges.size(), impactMergesMultiModule.size(), countPercent(impactMerges.size(), impactMergesMultiModule.size()));
         System.out.printf("Coverage  impact single module merges %f %% %n", impactMergesSingleModuleCoverage.stream()
                 .mapToDouble(x -> x.getCoverage().lineCoverage()).average().orElse(0.0));
         System.out.printf("Coverage  impact multi module merges %f %% %n", impactMergesMultiModuleCoverage.stream()
                 .mapToDouble(x -> x.getCoverage().lineCoverage()).average().orElse(0.0));
 
         List<MergeOutputJSON> atLeastOneResolutionTotal = atLeastOneResolution(impactMergesSingleModule);
-        System.out.printf("At least one resolution %d/%d %d%% %n",
+        printfIfNonZero("At least one resolution %d/%d %d%% %n",
+                impactMerges.size(),
                 atLeastOneResolution(impactMerges).size(),
                 impactMerges.size(),
                 countPercent(impactMerges.size(),
                         atLeastOneResolution(impactMerges).size()));
 
-        System.out.printf("At least one resolution in single Module %d %d%% just by single module: %d %% %n",
-                atLeastOneResolution(impactMergesSingleModule).size(),
-                countPercent(impactMerges.size(),
-                        atLeastOneResolution(impactMergesSingleModule).size()),
-                countPercent(impactMergesSingleModule.size(),
-                        atLeastOneResolution(impactMergesSingleModule).size()));
-
-
-        if (!impactMergesMultiModule.isEmpty())
-            System.out.printf("At least one resolution in multi Module %d %d%%; just by multi module: %d %% %n",
-                    atLeastOneResolution(impactMergesMultiModule).size(),
+        if (!impactMerges.isEmpty() && !impactMergesSingleModule.isEmpty()) {
+            System.out.printf("At least one resolution in single Module %d %d%% just by single module: %d %% %n",
+                    atLeastOneResolution(impactMergesSingleModule).size(),
                     countPercent(impactMerges.size(),
-                            atLeastOneResolution(impactMergesMultiModule).size()),
-                    countPercent(impactMergesMultiModule.size(),
-                            atLeastOneResolution(impactMergesMultiModule).size()));
+                            atLeastOneResolution(impactMergesSingleModule).size()),
+                    countPercent(impactMergesSingleModule.size(),
+                            atLeastOneResolution(impactMergesSingleModule).size()));
+        }
 
-        System.out.printf("Merges that have resolution better than original: %d %d%% %n",
+
+        if (!impactMerges.isEmpty() && !impactMergesMultiModule.isEmpty()) {
+            System.out.printf("At least one resolution in multi Module %d %d%%; just by multi module: %d %% %n",
+                        atLeastOneResolution(impactMergesMultiModule).size(),
+                        countPercent(impactMerges.size(),
+                                atLeastOneResolution(impactMergesMultiModule).size()),
+                        countPercent(impactMergesMultiModule.size(),
+                                atLeastOneResolution(impactMergesMultiModule).size()));
+        }
+
+        printfIfNonZero("Merges that have resolution better than original: %d %d%% %n",
+                impactMerges.size(),
                 numberOfResolutionsThatPerformBetter(impactMerges).size(),
                 countPercent(impactMerges.size(),
                         numberOfResolutionsThatPerformBetter(impactMerges).size()));
 
         List<String> patterns = uniformPatternResolution(impactMerges);
-        System.out.printf("Uniform patterns: %d %d%% %n",
+        printfIfNonZero("Uniform patterns: %d %d%% %n",
+                atLeastOneResolution(impactMerges).size(),
                 uniformPatternResolution(atLeastOneResolution(impactMerges)).size(),
                 countPercent(atLeastOneResolution(impactMerges).size(),
                         uniformPatternResolution(atLeastOneResolution(impactMerges)).size()));
 
         List<String> singeModulePattern = uniformPatternResolution(impactMergesSingleModule);
-        System.out.printf("Uniform patterns for single module: %d %d%% %n",
+        printfIfNonZero("Uniform patterns for single module: %d %d%% %n",
+                atLeastOneResolution(impactMergesSingleModule).size(),
                 uniformPatternResolution(atLeastOneResolution(impactMergesSingleModule)).size(),
                 countPercent(atLeastOneResolution(impactMergesSingleModule).size(),
                         uniformPatternResolution(atLeastOneResolution(impactMergesSingleModule)).size()));
 
         List<String> multiModulePattern = uniformPatternResolution(impactMergesMultiModule);
-        System.out.printf("Uniform patterns for multi module: %d %d%% %n",
+        printfIfNonZero("Uniform patterns for multi module: %d %d%% %n",
+                impactMergesMultiModule.size(),
                 uniformPatternResolution(impactMergesSingleModule).size(),
                 countPercent(impactMergesMultiModule.size(),
                         uniformPatternResolution(impactMergesMultiModule).size()));
 
-        groupPattern(patterns).forEach((k, v) -> System.out.printf("%s : %f %% %n", k, (float) v * 100 / patterns.size()));
+        if (!patterns.isEmpty()) {
+            groupPattern(patterns).forEach((k, v) -> System.out.printf("%s : %f %% %n", k, (float) v * 100 / patterns.size()));
+        }
 
         System.out.println("\n\nRanking");
         Map<String, Integer> ranking = gerRanking(impactMerges).entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
-            System.out.printf("%s :%d/%d %.2f %% %n",
-                    entry.getKey(),
-                    entry.getValue(),
-                    impactMerges.size(),
-                    (float) entry.getValue() * 100 / impactMerges.size());
+            if (!impactMerges.isEmpty()) {
+                System.out.printf("%s :%d/%d %.2f %% %n",
+                        entry.getKey(),
+                        entry.getValue(),
+                        impactMerges.size(),
+                        (float) entry.getValue() * 100 / impactMerges.size());
+            }
         }
         ;
 
@@ -277,7 +288,23 @@ public class MetricsAnalyzer {
     }
 
     private static int countPercent(int whole, int part) {
+        if (whole == 0)
+            return 0;
         return part * 100 / whole;
+    }
+
+    /**
+     * Prints formatted output only if the denominator is not zero.
+     * This prevents division by zero errors in countPercent calls.
+     *
+     * @param format the format string
+     * @param denominator the denominator to check (if 0, printing is skipped)
+     * @param args the arguments for the format string
+     */
+    private static void printfIfNonZero(String format, int denominator, Object... args) {
+        if (denominator != 0) {
+            System.out.printf(format, args);
+        }
     }
 
     public static List<MergeOutputJSON> getMultiModuleProjects(List<MergeOutputJSON> merges) {
@@ -391,11 +418,13 @@ public class MetricsAnalyzer {
 
             System.out.printf("%nThreshold: [%.2f, %.2f) %n", min, max);
             for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
-                System.out.printf("\t %s :%d/%d %.2f %% %n",
-                        entry.getKey(),
-                        entry.getValue(),
-                        filteredMerges.size(),
-                        (float) entry.getValue() * 100 / filteredMerges.size());
+                if (!filteredMerges.isEmpty()) {
+                    System.out.printf("\t %s :%d/%d %.2f %% %n",
+                            entry.getKey(),
+                            entry.getValue(),
+                            filteredMerges.size(),
+                            (float) entry.getValue() * 100 / filteredMerges.size());
+                }
             }
         }
     }
@@ -414,11 +443,13 @@ public class MetricsAnalyzer {
 
             System.out.printf("%n Number of conflict chunks: %d %n", groupedByConflictEntry.getKey());
             for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
-                System.out.printf("\t %s: %d/%d %.2f %% %n",
-                        entry.getKey(),
-                        entry.getValue(),
-                        mergeOutputJSONS.size(),
-                        (float) entry.getValue() * 100 / mergeOutputJSONS.size());
+                if (!mergeOutputJSONS.isEmpty()) {
+                    System.out.printf("\t %s: %d/%d %.2f %% %n",
+                            entry.getKey(),
+                            entry.getValue(),
+                            mergeOutputJSONS.size(),
+                            (float) entry.getValue() * 100 / mergeOutputJSONS.size());
+                }
             }
         }
     }

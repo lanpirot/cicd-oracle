@@ -3,7 +3,7 @@ package ch.unibe.cs.mergeci.experimentSetup;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 
-class RepoCollectorTest {
+public class RepoCollectorTest {
 
     @Test
     void processExcel() throws Exception {

@@ -10,12 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-class MetricsAnalyzerTest {
+public class MetricsAnalyzerTest {
 
     @Test
     void loadAllMerges() {
         MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.no_cache_parallel.getName()));
-
         metricsAnalyzer.makeFullAnalysis();
     }
 

@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestResultTest {
+public class TestResultTest {
 
     @Test
     void createTestResultFromFile() throws IOException {

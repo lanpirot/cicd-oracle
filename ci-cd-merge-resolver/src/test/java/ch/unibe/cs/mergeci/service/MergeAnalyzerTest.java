@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Map;
 
-class MergeAnalyzerTest {
+public class MergeAnalyzerTest {
 
     @Test
     void buildProjects() throws Exception {

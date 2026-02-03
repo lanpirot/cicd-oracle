@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-class CompilationResultTest {
+public class CompilationResultTest {
     @Test
     void test() throws IOException {
         File file = new File(AppConfig.TEST_RESOURCE_DIR,"compilation-result_2.txt");

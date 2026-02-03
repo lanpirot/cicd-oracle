@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class CoverageCalculatorTest {
+public class CoverageCalculatorTest {
 
     @Test
     void calculateCoverage() {

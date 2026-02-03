@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class ExperimentRunnerTest {
+public class ExperimentRunnerTest {
 
     @Test
     void makeAnalysisByDataset() throws Exception {
@@ -18,7 +18,7 @@ class ExperimentRunnerTest {
     }
 
     @Test
-    void runTests() throws Exception {
+    void runTestsNoCacheParallel() throws Exception {
         ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
                 AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
@@ -28,7 +28,7 @@ class ExperimentRunnerTest {
     }
 
     @Test
-    void runTestsWithCache() throws Exception {
+    void runTestsCacheParallel() throws Exception {
         ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
                 AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
@@ -38,7 +38,7 @@ class ExperimentRunnerTest {
     }
 
     @Test
-    void runTestsWithoutParallelization() throws Exception {
+    void runTestsNoCacheNoParallel() throws Exception {
         ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
                 AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR

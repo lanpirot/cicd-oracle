@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-class TestTotalTest {
+public class TestTotalTest {
 
     @Test
     void outputResult() throws IOException {

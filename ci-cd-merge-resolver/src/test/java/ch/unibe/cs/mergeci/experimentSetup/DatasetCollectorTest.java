@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class DatasetCollectorTest {
+public class DatasetCollectorTest {
 
     @Test
     void collectDataset() throws Exception {

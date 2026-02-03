@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-class FileUtilsTest {
+public class FileUtilsTest {
 
     @Test
     void saveFilesFromObjectId() throws GitAPIException, IOException {

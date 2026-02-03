@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class MavenRunnerTest {
+public class MavenRunnerTest {
 
     @Test
     void run1() {

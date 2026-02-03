@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class TestTotalXmlTest {
+public class TestTotalXmlTest {
 
     @Test
     void getRunNum() throws Exception {

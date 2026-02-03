@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-class GitUtilsTest {
+public class GitUtilsTest {
 
     @Test
     void getConflictChunks() {
