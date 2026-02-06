@@ -14,13 +14,13 @@ public class MetricsAnalyzerTest {
 
     @Test
     void loadAllMerges() {
-        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.no_cache_parallel.getName()));
+        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.no_cache_parallel.getName()));
         metricsAnalyzer.makeFullAnalysis();
     }
 
     @Test
     void makeCacheOptimizationAnalysis() {
-        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.cache_parallel.getName()));
+        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.cache_parallel.getName()));
 
         List<MergeOutputJSON> initMerges = metricsAnalyzer.getMerges();
         List<MergeOutputJSON> merges;
@@ -39,7 +39,7 @@ public class MetricsAnalyzerTest {
 
     @Test
     void withoutOptimization() {
-        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.TEST_EXPERIMENTS_DIR, Utility.Experiments.no_cache_no_parallel.getName()));
+        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.no_cache_no_parallel.getName()));
         System.out.printf(metricsAnalyzer.getMerges().size()+" %n");
         Map<Integer, Double> map = MetricsAnalyzer.ratioInExecutionTimeDistribution(metricsAnalyzer.getMerges());
         System.out.printf("Total: %s %n",map);

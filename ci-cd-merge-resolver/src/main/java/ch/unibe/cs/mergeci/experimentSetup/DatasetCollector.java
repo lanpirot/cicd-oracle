@@ -27,14 +27,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DatasetCollector {
     private final Path projectPath;
     private final Path tempPath;
-    private final Path tempDir;
     private final String projectName;
     private final int maxConflictMerges;
 
     public DatasetCollector(Path projectPath, Path tempPath, int maxConflictMerges) throws IOException {
         this.projectPath = projectPath;
         this.tempPath = tempPath;
-        this.tempDir = tempPath;
         this.projectName = projectPath.toFile().getName();
         this.maxConflictMerges = maxConflictMerges;
     }
@@ -97,7 +95,7 @@ public class DatasetCollector {
         String p2 = merge.getCommit2().getName();
 
         String newProjectName = projectName + "_" + mergeCommit.substring(0, AppConfig.HASH_PREFIX_LENGTH);
-        Path newProjectPath = tempDir.resolve(newProjectName);
+        Path newProjectPath = tempPath.resolve(newProjectName);
 
         try (Git git = GitUtils.getGit(projectPath)) {
             Map<String, ObjectId> objects = GitUtils.getObjectsFromCommit(mergeCommit, git);
@@ -108,7 +106,7 @@ public class DatasetCollector {
 
         int javaFiles = merge.getConflictingFiles().size();
 
-        MavenRunner maven = new MavenRunner(tempDir);
+        MavenRunner maven = new MavenRunner(tempPath);
         maven.run_no_optimization(newProjectPath);
 
 

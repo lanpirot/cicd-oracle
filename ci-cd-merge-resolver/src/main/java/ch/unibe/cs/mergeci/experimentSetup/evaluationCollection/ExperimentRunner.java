@@ -138,6 +138,7 @@ public class ExperimentRunner {
                 String parent1Hash = mergeOutputJSON.getParent1();
                 String parent2Hash = mergeOutputJSON.getParent2();
 
+                FileUtils.deleteDirectory(AppConfig.TMP_PROJECT_DIR.toFile());
                 Instant start = Instant.now();
                 MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
                 mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
