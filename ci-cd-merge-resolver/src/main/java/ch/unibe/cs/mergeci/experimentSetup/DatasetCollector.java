@@ -8,6 +8,7 @@ import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.Utility;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
+import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
@@ -15,7 +16,6 @@ import org.eclipse.jgit.lib.ObjectId;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,12 +97,15 @@ public class DatasetCollector {
         String newProjectName = projectName + "_" + mergeCommit.substring(0, AppConfig.HASH_PREFIX_LENGTH);
         Path newProjectPath = tempPath.resolve(newProjectName);
 
-        try (Git git = GitUtils.getGit(projectPath)) {
-            Map<String, ObjectId> objects = GitUtils.getObjectsFromCommit(mergeCommit, git);
-            FileUtils.saveFilesFromObjectId(newProjectPath, objects, git);
-        } catch (Exception e) {
-            e.printStackTrace();
+        //copy all files from old projectPath to newProjectPath
+        try {
+            FileUtils.copyDirectoryCompatibilityMode(projectPath.toFile(), newProjectPath.toFile());
+        } catch(IOException e){
+            System.err.println("Error copying folder: " + e.getMessage());
         }
+        //then checkout the mergeCommit
+        CheckoutCommand checkout = GitUtils.getGit(newProjectPath).checkout();
+        checkout.setName(mergeCommit).setForced(true).call();
 
         int javaFiles = merge.getConflictingFiles().size();
 

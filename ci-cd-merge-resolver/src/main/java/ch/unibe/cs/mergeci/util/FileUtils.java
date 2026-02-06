@@ -42,8 +42,13 @@ public class FileUtils {
 
 
     public static ObjectStream getFileFromObject(ObjectId objectId, Git git) throws IOException {
-        ObjectLoader objectLoader = git.getRepository().open(objectId);
-        return objectLoader.openStream();
+        try {
+            ObjectLoader objectLoader = git.getRepository().open(objectId);
+            return objectLoader.openStream();
+        }catch (Exception e){
+            System.out.println();
+        }
+        return null;
     }
 
     public static Map<String, String> objectIdToStringMap(Map<String, ObjectId> map, Git git) throws IOException {
