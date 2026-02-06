@@ -42,7 +42,7 @@ public class ProjectBuilderUtils {
         for (Project project : projects) {
             Path projectNewRootPath = temp_path.resolve(gitRootPath.getFileName().getFileName() + "_" + index);
 
-            Git git = GitUtils.getGit(gitRootPath.toFile());
+            Git git = GitUtils.getGit(gitRootPath);
             FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
             for (ProjectClass projectClass : project.getClasses()) {
 

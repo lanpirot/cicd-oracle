@@ -41,19 +41,18 @@ public class MergeAnalyzer {
     private List<Map<String, List<String>>> conflictPatterns;
     private boolean isVerbose = false;
 
-    public MergeAnalyzer(File repoPath, String tempDir) {
-        this.repositoryPath = repoPath.toPath();
-        this.tempDir = Paths.get(tempDir);
+    public MergeAnalyzer(Path repoPath, Path tempDir, Path projectTempDir) {
+        this.repositoryPath = repoPath;
+        this.tempDir = tempDir;
         this.mavenRunner = new MavenRunner(this.tempDir);
-        this.projectName = repositoryPath.getFileName().toString();
-        this.projectTempDir = this.tempDir.resolve("projects");
-        this.logDir = this.tempDir.resolve("log");
+        this.projectName = repositoryPath.toFile().getName();
+        this.projectTempDir = projectTempDir;
+        this.logDir = tempDir.resolve("log");
         conflictPatterns = new ArrayList<>();
     }
 
     public void buildProjects(String commit1, String commit2, String mergeCommit) throws Exception {
-        FileUtils.deleteDirectory(tempDir.toFile());
-        Git git = GitUtils.getGit(repositoryPath.toFile());
+        Git git = GitUtils.getGit(repositoryPath);
         ResolveMerger merger = GitUtils.makeMerge(commit1, commit2, git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -83,11 +82,11 @@ public class MergeAnalyzer {
 
         ///////COPY MERGE COMMIT/////////
         Map<String, ObjectId> objectsFromMergeCommit = GitUtils.getObjectsFromCommit(mergeCommit, git);
-        String nameOfProject = repositoryPath.getFileName().toString();
-        FileUtils.saveFilesFromObjectId(projectTempDir.resolve(nameOfProject), objectsFromMergeCommit, git);
+        FileUtils.saveFilesFromObjectId(projectTempDir.resolve(projectName), objectsFromMergeCommit, git);
     }
 
     public RunExecutionTIme runTests(IRunner runner) {
+        MavenRunner mavenRunner = new MavenRunner(logDir, false);
 
         int numProjects = countProjects();
         List<Path> args = new ArrayList<>(countProjects());
@@ -96,17 +95,17 @@ public class MergeAnalyzer {
             args.add(projectTempDir.resolve(projectName + "_" + i));
         }
 
-        return runner.run(args.get(0), args.subList(1, args.size()), false);
+        return runner.run(args.getFirst(), args.subList(1, args.size()), false);
     }
 
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {
         Map<String, CompilationResult> statistics = new TreeMap<>();
         int numProjects = countProjects();
-        CompilationResult compResult = new CompilationResult(logDir.resolve(projectName + "_compilation").toFile());
+        CompilationResult compResult = new CompilationResult(logDir.resolve(projectName + "_compilation"));
         statistics.put(projectName, compResult);
         for (int i = 0; i < numProjects - 1; i++) {
             Path path = logDir.resolve(projectName + "_" + i + "_compilation");
-            compResult = new CompilationResult(path.toFile());
+            compResult = new CompilationResult(path);
             statistics.put(projectName + "_" + i, compResult);
         }
         return statistics;

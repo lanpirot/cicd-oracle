@@ -25,21 +25,21 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatasetCollector {
-    private final String projectPath;
-    private final String tempPath;
+    private final Path projectPath;
+    private final Path tempPath;
     private final Path tempDir;
     private final String projectName;
     private final int maxConflictMerges;
 
-    public DatasetCollector(String projectPath, String tempPath, int maxConflictMerges) throws IOException {
+    public DatasetCollector(Path projectPath, Path tempPath, int maxConflictMerges) throws IOException {
         this.projectPath = projectPath;
         this.tempPath = tempPath;
-        this.tempDir = Paths.get(tempPath);
-        this.projectName = Paths.get(projectPath).getFileName().toString();
+        this.tempDir = tempPath;
+        this.projectName = projectPath.toFile().getName();
         this.maxConflictMerges = maxConflictMerges;
     }
 
-    public void collectDataset(File excelOutFile) throws Exception {
+    public void collectDataset(Path excelOutFile) throws Exception {
         List<MergeInfo> merges = Collections.emptyList();
 
         try (Git git = GitUtils.getGit(projectPath)) {
@@ -52,7 +52,7 @@ public class DatasetCollector {
         AtomicInteger counter = new AtomicInteger(0);
         ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
-        FileUtils.deleteDirectory(new File(tempPath));
+        FileUtils.deleteDirectory(tempPath.toFile());
 
         for (MergeInfo merge : merges) {
 
@@ -112,7 +112,7 @@ public class DatasetCollector {
         maven.run_no_optimization(newProjectPath);
 
 
-        CompilationResult compilationResult = new CompilationResult(maven.getLogDir().resolve(newProjectName + "_compilation").toFile());
+        CompilationResult compilationResult = new CompilationResult(maven.getLogDir().resolve(newProjectName + "_compilation"));
         boolean compilationSuccess = compilationResult.getBuildStatus() == CompilationResult.Status.SUCCESS;
 
         TestTotal testTotal = new TestTotal(newProjectPath.toFile());

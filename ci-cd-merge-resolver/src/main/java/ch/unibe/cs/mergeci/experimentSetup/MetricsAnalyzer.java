@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,13 +25,13 @@ import java.util.stream.Collectors;
 public class MetricsAnalyzer {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private List<MergeOutputJSON> merges = new ArrayList<>();
-    private final File dir;
+    private final Path dir;
 
-    public MetricsAnalyzer(File dir) {
+    public MetricsAnalyzer(Path dir) {
         this.dir = dir;
         List<MergeOutputJSON> allMerges = new ArrayList<>();
 
-        for (File file : dir.listFiles()) {
+        for (File file : dir.toFile().listFiles()) {
             try {
                 AllMergesJSON allMergesJSON = objectMapper.readValue(file, AllMergesJSON.class);
                 merges.addAll(allMergesJSON.getMerges());

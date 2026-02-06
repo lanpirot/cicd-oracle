@@ -205,8 +205,8 @@ public class GitUtils {
         return Git.open(new File(projectPath));
     }
 
-    public static Git getGit(File projectPath) throws IOException {
-        return Git.open(projectPath);
+    public static Git getGit(Path projectPath) throws IOException {
+        return Git.open(projectPath.toFile());
     }
 
     public static boolean isConflict(String source, String target, Git git) throws GitAPIException, IOException {

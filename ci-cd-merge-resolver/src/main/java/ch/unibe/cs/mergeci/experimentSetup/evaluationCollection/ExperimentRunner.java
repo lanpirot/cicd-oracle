@@ -24,6 +24,7 @@ import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,19 +33,19 @@ import java.util.List;
 import java.util.Map;
 
 public class ExperimentRunner {
-    private final File datasetsDir;
-    private final File repoDatasetsFile;
-    private final File tempDir;
+    private final Path datasetsDir;
+    private final Path repoDatasetsFile;
+    private final Path tempDir;
 
-    public ExperimentRunner(File datasetsDir, File repoDatasetsFile, File tempDir) {
+    public ExperimentRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
         this.datasetsDir = datasetsDir;
         this.repoDatasetsFile = repoDatasetsFile;
         this.tempDir = tempDir;
     }
 
-    public void runTests(File outputDir, boolean isParallel, boolean isCache) throws Exception {
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
+    public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
+        if (!outputDir.toFile().exists()) {
+            outputDir.toFile().mkdirs();
         }
 
         File[] xlsxDataset = getFilesFromDir(datasetsDir);
@@ -52,31 +53,31 @@ public class ExperimentRunner {
         for (File dataset : xlsxDataset) {
             String repoUrl = getRepoUrl(dataset);
             String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + AppConfig.JSON;
-            if (Arrays.stream(outputDir.listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
+            if (Arrays.stream(outputDir.toFile().listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
                 System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
                 continue;
             }
             String repoName = Files.getNameWithoutExtension(dataset.getName());
 
-            File repoPath = tempDir.toPath().resolve(repoName).toFile();
-            if (!repoPath.exists()) {
-                GitUtils.cloneRepo(tempDir.toPath().resolve(repoName), repoUrl);
+            Path repoPath = tempDir.resolve(repoName);
+            if (!repoPath.toFile().exists()) {
+                GitUtils.cloneRepo(tempDir.resolve(repoName), repoUrl);
             }
 
-            makeAnalysisByDataset(dataset, repoPath, new File(outputDir, nameOfOutputFIle), isParallel, isCache);
+            makeAnalysisByDataset(dataset.toPath(), repoPath, outputDir.resolve(nameOfOutputFIle), isParallel, isCache);
             RepositoryCache.clear();
             WindowCache.reconfigure(new WindowCacheConfig());
-            FileUtils.deleteDirectory(repoPath);
+            FileUtils.deleteDirectory(repoPath.toFile());
         }
     }
 
-    private File[] getFilesFromDir(File dir) {
-        return dir.listFiles();
+    private File[] getFilesFromDir(Path dir) {
+        return dir.toFile().listFiles();
     }
 
     private String getRepoUrl(File dataset) {
 
-        try (FileInputStream file = new FileInputStream(repoDatasetsFile); Workbook workbook = new XSSFWorkbook(file);) {
+        try (FileInputStream file = new FileInputStream(repoDatasetsFile.toFile()); Workbook workbook = new XSSFWorkbook(file);) {
             Sheet sheet = workbook.getSheetAt(0);
 
             for (int i = 1; i < sheet.getLastRowNum(); i++) {
@@ -96,11 +97,11 @@ public class ExperimentRunner {
         return null;
     }
 
-    public static void makeAnalysisByDataset(File dataset, File repoPath, File Output, boolean isParallel, boolean isCache) throws Exception {
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path Output, boolean isParallel, boolean isCache) throws Exception {
         List<MergeOutputJSON> merges = new ArrayList<>();
 
 
-        try (FileInputStream file = new FileInputStream(dataset);
+        try (FileInputStream file = new FileInputStream(dataset.toFile());
              Workbook workbook = new XSSFWorkbook(file);) {
 
 
@@ -109,7 +110,7 @@ public class ExperimentRunner {
             for (Row row : sheet) {
                 MergeOutputJSON mergeOutputJSON = new MergeOutputJSON();
                 if (i++ == 0) continue;
-                System.out.printf("Start processing %d/%d of %s \n", i - 1, sheet.getLastRowNum(), dataset.getName());
+                System.out.printf("Start processing %d/%d of %s \n", i - 1, sheet.getLastRowNum(), dataset.getFileName().toString());
 
                 mergeOutputJSON.setMergeCommit(row.getCell(Utility.MERGECOLUMN.mergeCommit.getColumnNumber()).getStringCellValue());
                 mergeOutputJSON.setParent1(row.getCell(Utility.MERGECOLUMN.parent1.getColumnNumber()).getStringCellValue());
@@ -137,13 +138,8 @@ public class ExperimentRunner {
                 String parent1Hash = mergeOutputJSON.getParent1();
                 String parent2Hash = mergeOutputJSON.getParent2();
 
-                FileUtils.deleteDirectory(AppConfig.TMP_DIR); ///THIS SEEMED FISHY
                 Instant start = Instant.now();
-                MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR.toString());
-                //CHANGED FROM
-                //FileUtils.deleteDirectory(new File("temp"));
-                //Instant start = Instant.now();
-                //MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, "temp");
+                MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
                 mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
                 RunExecutionTIme runExecutionTIme;
 
@@ -193,14 +189,14 @@ public class ExperimentRunner {
         }
 
         AllMergesJSON allMergesJSON = new AllMergesJSON();
-        allMergesJSON.setProjectName(Files.getNameWithoutExtension(dataset.getName()));
+        allMergesJSON.setProjectName(Files.getNameWithoutExtension(dataset.getFileName().toString()));
         allMergesJSON.setMerges(merges);
 
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.writeValue(Output, allMergesJSON);
+        objectMapper.writeValue(Output.toFile(), allMergesJSON);
     }
 
-    private static int countNumberOfConflictChunks(File repo, String parent1, String parent2) {
+    private static int countNumberOfConflictChunks(Path repo, String parent1, String parent2) {
         try (Git git = GitUtils.getGit(repo);) {
             Map<String, Integer> map = GitUtils.countConflictChunks(parent1, parent2, git);
             return map.values().stream().mapToInt(Integer::intValue).sum();

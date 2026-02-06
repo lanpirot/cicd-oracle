@@ -12,6 +12,7 @@ import lombok.ToString;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,10 +34,10 @@ public class CompilationResult {
 
 
 
-    public CompilationResult(File testResultFile) throws IOException {
+    public CompilationResult(Path testResultFile) throws IOException {
         moduleResults = new ArrayList<>();
 
-        String string = new String(Files.readAllBytes(testResultFile.toPath()));
+        String string = new String(Files.readAllBytes(testResultFile));
         string = string.replaceAll("\u001B\\[[;\\d]*m", ""); //clean ANSI color codes from Maven output
         String buildStatusString = string;
 

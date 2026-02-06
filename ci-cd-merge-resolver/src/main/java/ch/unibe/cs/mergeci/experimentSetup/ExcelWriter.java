@@ -12,11 +12,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 
 public class ExcelWriter {
-    public static void writeExcel(File outputFile, List<DatasetRow> rows) throws IOException {
+    public static void writeExcel(Path outputFile, List<DatasetRow> rows) throws IOException {
 
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("dataset");
@@ -43,8 +44,8 @@ public class ExcelWriter {
 
 
 
-        if (outputFile.getParentFile() != null) outputFile.getParentFile().mkdirs();
-        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        if (outputFile.getParent() != null) outputFile.getParent().toFile().mkdirs();
+        try (FileOutputStream fos = new FileOutputStream(outputFile.toFile())) {
             wb.write(fos);
         }
         wb.close();

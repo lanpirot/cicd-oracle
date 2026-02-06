@@ -40,7 +40,7 @@ public class MavenRunner {
     }
 
     public MavenRunner() {
-        this(Paths.get(AppConfig.TMP_DIR.getPath()));
+        this(AppConfig.TMP_DIR);
     }
 
     public void run(Path... path) {
@@ -49,10 +49,10 @@ public class MavenRunner {
         System.out.println(path[0].toAbsolutePath().toString());
         Process pr = null;
         injectCacheArtifact(path[0]);
-        Path projectName = path[0].getFileName();
+        String projectName = path[0].toFile().getName();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "test", "-fae");
 
 
 
@@ -62,10 +62,10 @@ public class MavenRunner {
                 injectCacheArtifact(path[i]);
                 copyTarget(path[0].toFile(), path[i].toFile());
                 FileUtils.copyDirectoryCompatibilityMode(path[0].resolve(".cache").toFile(), path[i].resolve(".cache").toFile());
-                projectName = path[i].getFileName();
+                projectName = path[i].toFile().getName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                runCommand(path[i].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "test", "-fae");
+                runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "test", "-fae");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -84,7 +84,7 @@ public class MavenRunner {
         String projectName = path[0].getFileName().toString();
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
 //        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommands.getFirst(), "test", "-fae");
+        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommands.getFirst(), "test", "-fae");
 
 
         ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
@@ -101,7 +101,7 @@ public class MavenRunner {
 
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectNameFinal + COMPILATION_POSTFIX).toFile(), mavenCommands.get(finalI), "test", "-fae");
+                            runCommand(path[finalI], logDir.resolve(projectNameFinal + COMPILATION_POSTFIX), mavenCommands.get(finalI), "test", "-fae");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -120,7 +120,7 @@ public class MavenRunner {
             Path projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-            runCommand(path[i].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "-fae", "test");
+            runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "test");
 
         }
     }
@@ -137,7 +137,7 @@ public class MavenRunner {
                         String projectName = path[finalI].getFileName().toString();
                         try {
 
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(), mavenCommand, "-fae","-Dmaven.test.failure.ignore=true","test");
+                            runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae","-Dmaven.test.failure.ignore=true","test");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -163,7 +163,7 @@ public class MavenRunner {
                         String projectName = path[finalI].getFileName().toString();
                         try {
 
-                            runCommand(path[finalI].toFile(), logDir.resolve(projectName + COMPILATION_POSTFIX).toFile(),
+                            runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX),
                                     mavenCommand,
                                     "-fae",
                                     "-Dmaven.test.failure.ignore=true",
@@ -183,13 +183,13 @@ public class MavenRunner {
     /**
      * Helper function for calling git console commands
      */
-    private static void runCommand(File directory, File outputDirectory, String... command) {
+    private static void runCommand(Path directory, Path outputDirectory, String... command) {
         System.out.println("Executing: " + Arrays.toString(command));
         ProcessBuilder pb = new ProcessBuilder(command);
-        pb.directory(directory);
+        pb.directory(directory.toFile());
         pb.redirectErrorStream(true);
         if (outputDirectory != null) {
-            pb.redirectOutput(outputDirectory);
+            pb.redirectOutput(outputDirectory.toFile());
         } else {
             pb.inheritIO();
         }
@@ -204,7 +204,7 @@ public class MavenRunner {
 
     }
 
-    private static void runCommand(File directory, String... command) {
+    private static void runCommand(Path directory, String... command) {
         runCommand(directory, null, command);
     }
 

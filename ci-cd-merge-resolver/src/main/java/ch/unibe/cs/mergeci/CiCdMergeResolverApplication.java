@@ -22,7 +22,7 @@ public class CiCdMergeResolverApplication {
     }
 
     private static void collect() {
-        RepoCollector collector = new RepoCollector(AppConfig.REPO_DIR.getAbsolutePath(), AppConfig.TMP_DIR.getAbsolutePath());
+        RepoCollector collector = new RepoCollector(AppConfig.REPO_DIR, AppConfig.TMP_DIR, AppConfig.DATASET_DIR);
         try {
             collector.processExcel(AppConfig.INPUT_PROJECT_XLSX);
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class CiCdMergeResolverApplication {
 
         for (Utility.Experiments ex : Utility.Experiments.values()) {
             try {
-                experimentRunner.runTests(new File(AppConfig.EXPERIMENTS_DIR, ex.getName()), ex.isParallel(), ex.isCache());
+                experimentRunner.runTests(AppConfig.EXPERIMENTS_DIR.resolve(ex.getName()), ex.isParallel(), ex.isCache());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -48,7 +48,7 @@ public class CiCdMergeResolverApplication {
 
     private static void analyzeResults() {
         for (Utility.Experiments ex : Utility.Experiments.values()){
-            MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(new File(AppConfig.EXPERIMENTS_DIR, ex.getName()));
+            MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.EXPERIMENTS_DIR.resolve(ex.getName()));
             metricsAnalyzer.makeFullAnalysis();
         }
     }

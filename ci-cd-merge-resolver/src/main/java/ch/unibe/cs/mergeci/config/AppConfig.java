@@ -5,30 +5,34 @@ import ch.unibe.cs.mergeci.model.patterns.OursPattern;
 import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.nio.file.*;
 import java.util.List;
+
 
 @Configuration
 public class AppConfig {
-    public static final File BASE_DIR = new File("/home/lanpirot");
+    public static final Path BASE_DIR = Paths.get("/home/lanpirot");
 
-    public static final File DATA_BASE_DIR = new File(BASE_DIR, "data/bruteforcemerge");
-    public static final File INPUT_PROJECT_XLSX = new File(DATA_BASE_DIR, "projects_Java_desc-stars-1000.xlsx"); // Excel file with list of repositories  and their repo URL
-    public static final File DATASET_DIR = new File(DATA_BASE_DIR, "datasets");       // directory with dataset that were collected by `RepoCollector`
-    public static final File REPO_DIR = new File(BASE_DIR, "tmp/bruteforce_repos");                      // name of directory to clone projects
-    public static final File EXPERIMENTS_DIR = new File(DATA_BASE_DIR, "experiments");
-    public static final File TMP_DIR = new File(BASE_DIR, "tmp/bruteforce_tmp");           // temporary working directory
+    public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");
+    public static final Path INPUT_PROJECT_XLSX = DATA_BASE_DIR.resolve("projects_Java_desc-stars-1000.xlsx"); // Excel Path with list of repositories  and their repo URL
+    public static final Path DATASET_DIR = DATA_BASE_DIR.resolve("datasets");       // directory with dataset that were collected by `RepoCollector`
+    public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                      // name of directory to clone projects
+    public static final Path EXPERIMENTS_DIR = DATA_BASE_DIR.resolve("experiments");
+    public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");           // temporary working directory
+    public static final Path TMP_PROJECT_DIR = TMP_DIR.resolve("projects");
 
     // Test-specific directories (all test output goes here)
-    public static final File TEST_BASE_DIR = new File(DATA_BASE_DIR, "test");
-    public static final File TEST_INPUT_PROJECT_XLSX = new File(TEST_BASE_DIR,"projects_test.xlsx"); // Excel file with list of repositories  and their repo URL
-    public static final File TEST_DATASET_DIR = new File(TEST_BASE_DIR,"dataset_temp");
-    public static final File TEST_REPO_DIR = new File("src/test/resources/test-merge-projects");
-    public static final File TEST_EXPERIMENTS_DIR = new File(TEST_BASE_DIR, "experiments");
-    public static final File TEST_EXPERIMENTS_TEMP_DIR = new File(TEST_EXPERIMENTS_DIR, "temp");
-    public static final File TEST_TMP_DIR = new File(TEST_BASE_DIR, "temp");
-    public static final File TEST_COVERAGE_DIR = new File(TEST_BASE_DIR, "coverage");
-    public static final File TEST_RESOURCE_DIR = new File("src/test/resources/test-files");
+    public static final Path TEST_BASE_DIR = DATA_BASE_DIR.resolve("test");
+    public static final Path TEST_INPUT_PROJECT_XLSX = TEST_BASE_DIR.resolve("projects_test.xlsx"); // Excel Path with list of repositories  and their repo URL
+    public static final Path TEST_DATASET_DIR = TEST_BASE_DIR.resolve("dataset_temp");
+    public static final Path TEST_REPO_DIR = Paths.get("src/test/resources/test-merge-projects");
+    public static final Path TEST_EXPERIMENTS_DIR = TEST_BASE_DIR.resolve("experiments");
+    public static final Path TEST_EXPERIMENTS_TEMP_DIR = TEST_EXPERIMENTS_DIR.resolve("temp");
+    public static final Path TEST_TMP_DIR = TEST_BASE_DIR.resolve("temp");
+    public static final Path TEST_COVERAGE_DIR = TEST_BASE_DIR.resolve("coverage");
+    public static final Path TEST_RESOURCE_DIR = Paths.get("src/test/resources/test-Paths");
 
     public static final String myTest = "myTest";
     public static final String jacksonDatabind = "jackson-databind";
@@ -51,8 +55,10 @@ public class AppConfig {
 
 
 
-
-    public static final int MAX_THREADS = Math.min(Runtime.getRuntime().availableProcessors(), 12); //avoid hogging all RAM of machine
+    static Runtime runtime = Runtime.getRuntime();
+    static long totalRamBytes = runtime.totalMemory();
+    static long totalRamGB = totalRamBytes / (1024 * 1024);
+    public static final int MAX_THREADS = Math.min(Math.round((float) totalRamGB / 8), 16); //avoid hogging all RAM of machine, leave 8GB per thread
     public static final int MAX_CONFLICT_MERGES = 200;  //sample maximally this many merges per project to avoid bias towards giant projects
     public static final int MAX_CONFLICT_CHUNKS = 6;    //if a merge has more chunks than this, we don't attempt resolutions
 

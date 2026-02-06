@@ -37,15 +37,15 @@ public class CoverageCalculator {
     private final File folder;
     private final Path repoDatasetsFile;
     private final Path tempDir;
-    private final Path cloneDir;
+    private final File cloneDir;
 
 
 
-    public CoverageCalculator(File folder, File repoDatasetsFile, File tempDir, File resultDir) {
+    public CoverageCalculator(File folder, File repoDatasetsFile, File tempDir, File cloneDir) {
         this.folder = folder;
         this.repoDatasetsFile = repoDatasetsFile.toPath();
         this.tempDir = tempDir.toPath();
-        cloneDir = resultDir.toPath().resolve("cloneDir");
+        this.cloneDir = cloneDir;
     }
 
     public void calculateCoverage(File outputDir) {
@@ -71,7 +71,7 @@ public class CoverageCalculator {
 
             MavenRunner maven = new MavenRunner(tempDir);
 
-            Path projectRepoPath = cloneDir.resolve(projectName);
+            Path projectRepoPath = new File(cloneDir, projectName).toPath();
 
             ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
@@ -86,7 +86,7 @@ public class CoverageCalculator {
                     GitUtils.cloneRepo(projectRepoPath, getRepoUrl(projectName));
                 }
 
-                try (Git git = GitUtils.getGit(projectRepoPath.toFile())) {
+                try (Git git = GitUtils.getGit(projectRepoPath)) {
                     Map<String, ObjectId> objects = GitUtils.getObjectsFromCommit(merge.getMergeCommit(), git);
                     FileUtils.saveFilesFromObjectId(newProjectPath, objects, git);
                 } catch (Exception e) {

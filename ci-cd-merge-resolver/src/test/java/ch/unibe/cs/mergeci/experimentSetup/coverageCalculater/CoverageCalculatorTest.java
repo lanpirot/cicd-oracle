@@ -15,7 +15,7 @@ public class CoverageCalculatorTest {
                     new File(AppConfig.TEST_EXPERIMENTS_DIR, ex.getName()),
                     AppConfig.INPUT_PROJECT_XLSX,
                     AppConfig.TEST_DATASET_DIR,
-                    AppConfig.TEST_COVERAGE_DIR);
+                    AppConfig.TEST_REPO_DIR);
             coverageCalculator.calculateCoverage(new File(AppConfig.TEST_COVERAGE_DIR, ex.getName()));
         }
     }
