@@ -131,7 +131,7 @@ public class MetricsAnalyzer {
                         uniformPatternResolution(impactMergesMultiModule).size()));
 
         if (!patterns.isEmpty()) {
-            groupPattern(patterns).forEach((k, v) -> System.out.printf("%s : %f %% %n", k, (float) v * 100 / patterns.size()));
+            groupPattern(patterns).forEach((k, v) -> System.out.printf("%s: %f %% %n", k, (float) v * 100 / patterns.size()));
         }
 
         System.out.println("\n\nRanking");
@@ -140,7 +140,7 @@ public class MetricsAnalyzer {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
             if (!impactMerges.isEmpty()) {
-                System.out.printf("%s :%d/%d %.2f %% %n",
+                System.out.printf("%s: %d/%d %.2f %% %n",
                         entry.getKey(),
                         entry.getValue(),
                         impactMerges.size(),
@@ -420,7 +420,7 @@ public class MetricsAnalyzer {
             System.out.printf("%nThreshold: [%.2f, %.2f) %n", min, max);
             for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
                 if (!filteredMerges.isEmpty()) {
-                    System.out.printf("\t %s :%d/%d %.2f %% %n",
+                    System.out.printf("\t %s: %d/%d %.2f %% %n",
                             entry.getKey(),
                             entry.getValue(),
                             filteredMerges.size(),
