@@ -179,22 +179,36 @@ class RepositoryManagerIntegrationTest {
         assertTrue(Files.exists(nonMavenRepoPath), "Non-Maven repository directory should exist");
         assertTrue(Files.isDirectory(nonMavenRepoPath), "Non-Maven repository should be a directory");
         
-        // After rejection, the directory should be empty (except possibly .git if cleanup didn't remove it)
+        // After rejection, the directory should be empty (except status file)
         long fileCount = Arrays.stream(nonMavenRepoPath.toFile().listFiles())
                 .filter(file -> !file.getName().equals(".repo_status.json"))
                 .count();
         
+        assertEquals(0, fileCount, "Non-Maven repository should be empty after rejection");
         System.out.println("Non-Maven repo file count after rejection: " + fileCount);
         
-        // Check status file exists
+        // Check status file exists and has content
         Path statusFile = repoBaseDir.resolve(".repo_status.json");
         assertTrue(Files.exists(statusFile), "Status file should exist");
+        assertTrue(Files.size(statusFile) > 0, "Status file should not be empty");
+        
+        String statusContent = Files.readString(statusFile);
+        assertTrue(statusContent.contains(MAVEN_REPO_NAME), "Status file should contain Maven repo reference");
+        assertTrue(statusContent.contains(NON_MAVEN_REPO_NAME), "Status file should contain non-Maven repo reference");
+        assertTrue(statusContent.contains("SUCCESS"), "Status file should contain SUCCESS status");
+        assertTrue(statusContent.contains("REJECTED_NO_POM"), "Status file should contain REJECTED_NO_POM status");
         
         // Check statuses
         assertEquals(RepositoryStatus.SUCCESS, repoManager.getRepositoryStatus(MAVEN_REPO_NAME), 
                 "Maven repository should be marked as SUCCESS");
         assertEquals(RepositoryStatus.REJECTED_NO_POM, repoManager.getRepositoryStatus(NON_MAVEN_REPO_NAME), 
                 "Non-Maven repository should be marked as REJECTED_NO_POM");
+        
+        // Verify download decisions
+        assertFalse(repoManager.shouldDownloadRepository(MAVEN_REPO_NAME),
+                "Successful repository should not need download");
+        assertFalse(repoManager.shouldDownloadRepository(NON_MAVEN_REPO_NAME),
+                "Rejected repository should not need download");
         
         System.out.println("✓ First run verification passed");
     }
@@ -216,6 +230,22 @@ class RepositoryManagerIntegrationTest {
                 "Maven repository status should be preserved");
         assertEquals(RepositoryStatus.REJECTED_NO_POM, repoManagerSecondRun.getRepositoryStatus(NON_MAVEN_REPO_NAME),
                 "Non-Maven repository status should be preserved");
+        
+        // Verify repository directories still exist
+        Path mavenRepoPath = repoBaseDir.resolve(MAVEN_REPO_NAME);
+        Path nonMavenRepoPath = repoBaseDir.resolve(NON_MAVEN_REPO_NAME);
+        assertTrue(Files.exists(mavenRepoPath), "Maven repository should still exist on second run");
+        assertTrue(Files.exists(nonMavenRepoPath), "Non-Maven repository marker should still exist on second run");
+        
+        // Verify Maven repository still has its content
+        assertTrue(Files.exists(mavenRepoPath.resolve(AppConfig.POMXML)), 
+                "Maven repository should still have pom.xml on second run");
+        
+        // Verify non-Maven repository is still empty
+        long nonMavenFileCount = Arrays.stream(nonMavenRepoPath.toFile().listFiles())
+                .filter(file -> !file.getName().equals(".repo_status.json"))
+                .count();
+        assertEquals(0, nonMavenFileCount, "Non-Maven repository should still be empty on second run");
         
         System.out.println("✓ Second run behavior verification passed");
     }
