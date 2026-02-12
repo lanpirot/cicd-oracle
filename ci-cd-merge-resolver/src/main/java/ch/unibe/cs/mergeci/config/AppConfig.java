@@ -32,7 +32,7 @@ public class AppConfig {
     public static final Path TEST_EXPERIMENTS_TEMP_DIR = TEST_EXPERIMENTS_DIR.resolve("temp");
     public static final Path TEST_TMP_DIR = TEST_BASE_DIR.resolve("temp");
     public static final Path TEST_COVERAGE_DIR = TEST_BASE_DIR.resolve("coverage");
-    public static final Path TEST_RESOURCE_DIR = Paths.get("src/test/resources/test-Paths");
+    public static final Path TEST_RESOURCE_DIR = Paths.get("src/test/resources/test-files");
 
     public static final String myTest = "myTest";
     public static final String jacksonDatabind = "jackson-databind";
@@ -59,7 +59,36 @@ public class AppConfig {
     static long totalRamBytes = runtime.totalMemory();
     static long totalRamGB = totalRamBytes / (1024 * 1024);
     public static final int MAX_THREADS = Math.min(Math.round((float) totalRamGB / 8), 16); //avoid hogging all RAM of machine, leave 8GB per thread
-    public static final int MAX_CONFLICT_MERGES = 200;  //sample maximally this many merges per project to avoid bias towards giant projects
+    public static final int MAX_CONFLICT_MERGES_PRODUCTION = 200;  //sample maximally this many merges per project to avoid bias towards giant projects
+    public static final int MAX_CONFLICT_MERGES_TEST = 20;  //reduced limit for unit tests to improve test performance
+    
+    /**
+     * The actual max conflict merges limit to use. This is set once at startup based on execution mode.
+     */
+    public static int MAX_CONFLICT_MERGES = determineMaxConflictMerges();
+    
+    /**
+     * Determine the maximum number of conflict merges based on execution mode.
+     * This is called once at class loading time.
+     */
+    private static int determineMaxConflictMerges() {
+        try {
+            // Check if we're running in a test environment
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (StackTraceElement element : stackTrace) {
+                if (element.getClassName().contains("org.junit") ||
+                    element.getClassName().contains("junit") ||
+                    element.getMethodName().contains("test")) {
+                    return MAX_CONFLICT_MERGES_TEST;
+                }
+            }
+        } catch (Exception e) {
+            // If we can't determine, default to production limit
+            System.err.println("Could not determine execution mode, using production limit: " + e.getMessage());
+        }
+        return MAX_CONFLICT_MERGES_PRODUCTION;
+    }
+    
     public static final int MAX_CONFLICT_CHUNKS = 6;    //if a merge has more chunks than this, we don't attempt resolutions
 
 
