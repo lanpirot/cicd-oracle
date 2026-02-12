@@ -10,11 +10,11 @@ public class TestTotalTest {
 
     @Test
     void outputResult() throws IOException {
-        TestTotal testTotal = new TestTotal(new File(AppConfig.TEST_REPO_DIR, AppConfig.jitwatch));
+        TestTotal testTotal = new TestTotal(AppConfig.TEST_REPO_DIR.resolve(AppConfig.jitwatch).toFile());
         System.out.println(testTotal);
-        testTotal = new TestTotal(new File(AppConfig.TEST_REPO_DIR, AppConfig.zembereknlp));
+        testTotal = new TestTotal(AppConfig.TEST_REPO_DIR.resolve(AppConfig.zembereknlp).toFile());
         System.out.println(testTotal);
-        testTotal = new TestTotal(new File(AppConfig.TEST_REPO_DIR, AppConfig.jacksonDatabind));
+        testTotal = new TestTotal(AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind).toFile());
         System.out.println(testTotal);
     }
 }

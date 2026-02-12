@@ -12,11 +12,11 @@ public class CoverageCalculatorTest {
     void calculateCoverage() {
         for (Utility.Experiments ex : Utility.Experiments.values()) {
             CoverageCalculator coverageCalculator = new CoverageCalculator(
-                    new File(AppConfig.TEST_EXPERIMENTS_DIR, ex.getName()),
-                    AppConfig.INPUT_PROJECT_XLSX,
-                    AppConfig.TEST_DATASET_DIR,
-                    AppConfig.TEST_REPO_DIR);
-            coverageCalculator.calculateCoverage(new File(AppConfig.TEST_COVERAGE_DIR, ex.getName()));
+                    AppConfig.TEST_EXPERIMENTS_DIR.resolve(ex.getName()).toFile(),
+                    AppConfig.INPUT_PROJECT_XLSX.toFile(),
+                    AppConfig.TEST_DATASET_DIR.toFile(),
+                    AppConfig.TEST_REPO_DIR.toFile());
+            coverageCalculator.calculateCoverage(AppConfig.TEST_COVERAGE_DIR.resolve(ex.getName()).toFile());
         }
     }
 }

@@ -43,7 +43,7 @@ public class TestResult {
 
             testResult = new TestResult(runNum, failuresNum, errorsNum, skippedNum, timeElapsed);
         }else {
-            System.out.println("Failed to parse test result file: " + testResultFile.getAbsolutePath());
+            //System.out.println("Failed to parse test result file: " + testResultFile.getAbsolutePath()); //this case only happened in non-report files
         }
 
         return testResult;

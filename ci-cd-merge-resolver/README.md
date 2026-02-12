@@ -66,6 +66,12 @@ You can create your own patterns by implementing the `IPattern` interface in [di
 
 The workflow consists of **three phases**: dataset collection, experiment execution, and analysis.
 
+**Repository Management:**
+- Successful repositories are preserved between runs to avoid redundant downloads
+- Rejected repositories (non-Maven, clone failures) are marked with empty directories
+- The `.repo_status.json` file tracks the status of each repository
+- Only repositories that don't exist or were previously rejected will be downloaded
+
 ---
 
 ### Repository Collection

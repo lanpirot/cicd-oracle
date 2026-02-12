@@ -43,48 +43,21 @@ public class MavenRunner {
         this(AppConfig.TMP_DIR);
     }
 
-    public void run(Path... path) {
-        String mavenCommand = resolveMavenCommand(path[0]);
-
-        System.out.println(path[0].toAbsolutePath().toString());
-        Process pr = null;
-        injectCacheArtifact(path[0]);
-        String projectName = path[0].toFile().getName();
-//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
-//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "test", "-fae");
-
-
-
-        for (int i = 1; i < path.length; i++) {
-            mavenCommand = resolveMavenCommand(path[i]);
-            try {
-                injectCacheArtifact(path[i]);
-                copyTarget(path[0].toFile(), path[i].toFile());
-                FileUtils.copyDirectoryCompatibilityMode(path[0].resolve(".cache").toFile(), path[i].resolve(".cache").toFile());
-                projectName = path[i].toFile().getName();
-//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
-//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "test", "-fae");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void run_cache_parallel(Path... path) {
         ArrayList<String> mavenCommands = new ArrayList<String>();
         for (int i = 0; i < path.length; i++)
             mavenCommands.add(resolveMavenCommand(path[i]));
 
-        System.out.println(path[0].toAbsolutePath().toString());
-        Process pr = null;
+        System.out.println(path[0].toAbsolutePath());
         injectCacheArtifact(path[0]);
         String projectName = path[0].getFileName().toString();
-//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile").toFile(), mavenCommand, "compile", "-fae");
-//        runCommand(new File(path[0]), logDir.resolve(projectName+"_compile-test").toFile(), mavenCommand, "test-compile", "-fae");
-        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommands.getFirst(), "test", "-fae");
+        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommands.getFirst(), "-fae", "-Dmaven.test.failure.ignore=true", "test");
+
+
+
+
+
+
 
 
         ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
@@ -98,10 +71,7 @@ public class MavenRunner {
                             injectCacheArtifact(path[finalI]);
                             copyTarget(path[0].toFile(), path[finalI].toFile());
                             FileUtils.copyDirectoryCompatibilityMode(path[0].resolve(".cache").toFile(), path[finalI].resolve(".cache").toFile());
-
-//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
-//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-                            runCommand(path[finalI], logDir.resolve(projectNameFinal + COMPILATION_POSTFIX), mavenCommands.get(finalI), "test", "-fae");
+                            runCommand(path[finalI], logDir.resolve(projectNameFinal + COMPILATION_POSTFIX), mavenCommands.get(finalI), "-fae", "-Dmaven.test.failure.ignore=true", "test");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -120,7 +90,7 @@ public class MavenRunner {
             Path projectName = path[i].getFileName();
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
 //                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
-            runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "test");
+            runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "-Dmaven.test.failure.ignore=true", "test");
 
         }
     }
@@ -137,7 +107,7 @@ public class MavenRunner {
                         String projectName = path[finalI].getFileName().toString();
                         try {
 
-                            runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae","-Dmaven.test.failure.ignore=true","test");
+                            runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "-Dmaven.test.failure.ignore=true", "test");
 
                         } catch (Exception e) {
                             e.printStackTrace();

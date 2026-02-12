@@ -25,7 +25,7 @@ public class ProjectBuilderUtilsTest {
 
     @Test
     void getAllPossibleConflictResolution() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
+        Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
         Map.Entry<String, MergeResult<? extends Sequence>> entry = mergeResultMap.entrySet().iterator().next();
@@ -36,7 +36,7 @@ public class ProjectBuilderUtilsTest {
 
     @Test
     void getProjects() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
+        Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -48,14 +48,14 @@ public class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest).toPath(), AppConfig.TEST_TMP_DIR.toPath());
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest), AppConfig.TEST_TMP_DIR);
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
     }
 
     @Test
     void saveProjects() throws GitAPIException, IOException, InterruptedException {
-        FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR);
-        Git git = GitUtils.getGit(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest));
+        FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR.toFile());
+        Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
 
@@ -71,7 +71,7 @@ public class ProjectBuilderUtilsTest {
             mapClasses.put(entry.getKey(), projectClasses);
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(new File(AppConfig.TEST_REPO_DIR, AppConfig.myTest).toPath(), AppConfig.TEST_TMP_DIR.toPath());
+        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest), AppConfig.TEST_TMP_DIR);
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
 

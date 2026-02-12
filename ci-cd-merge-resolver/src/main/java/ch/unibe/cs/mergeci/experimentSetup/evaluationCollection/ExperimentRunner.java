@@ -7,6 +7,8 @@ import ch.unibe.cs.mergeci.service.RunExecutionTIme;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
+import ch.unibe.cs.mergeci.util.RepositoryManager;
+import ch.unibe.cs.mergeci.util.RepositoryStatus;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -36,11 +38,13 @@ public class ExperimentRunner {
     private final Path datasetsDir;
     private final Path repoDatasetsFile;
     private final Path tempDir;
+    private final RepositoryManager repoManager;
 
     public ExperimentRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
         this.datasetsDir = datasetsDir;
         this.repoDatasetsFile = repoDatasetsFile;
         this.tempDir = tempDir;
+        this.repoManager = new RepositoryManager(tempDir);
     }
 
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
@@ -59,15 +63,27 @@ public class ExperimentRunner {
             }
             String repoName = Files.getNameWithoutExtension(dataset.getName());
 
-            Path repoPath = tempDir.resolve(repoName);
-            if (!repoPath.toFile().exists()) {
-                GitUtils.cloneRepo(tempDir.resolve(repoName), repoUrl);
+            Path repoPath;
+            try {
+                repoPath = repoManager.getRepositoryPath(repoName, repoUrl);
+            } catch (IOException e) {
+                System.err.println("Skipping repository " + repoName + ": " + e.getMessage());
+                continue;
             }
 
-            makeAnalysisByDataset(dataset.toPath(), repoPath, outputDir.resolve(nameOfOutputFIle), isParallel, isCache);
-            RepositoryCache.clear();
-            WindowCache.reconfigure(new WindowCacheConfig());
-            FileUtils.deleteDirectory(repoPath.toFile());
+            try {
+                makeAnalysisByDataset(dataset.toPath(), repoPath, outputDir.resolve(nameOfOutputFIle), isParallel, isCache);
+                // Mark as successful only if analysis completes without major issues
+                repoManager.markRepositorySuccess(repoName);
+            } catch (Exception e) {
+                System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
+                // Don't mark as rejected - we might want to retry later
+                throw e;
+            } finally {
+                RepositoryCache.clear();
+                WindowCache.reconfigure(new WindowCacheConfig());
+                // NOTE: No longer delete the repository directory!
+            }
         }
     }
 

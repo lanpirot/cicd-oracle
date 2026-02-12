@@ -30,7 +30,7 @@ class CiCdMergeResolverApplicationTests {
 
     @Test
     void simpleMerge() throws IOException, GitAPIException {
-        Git git = Git.open(new File(AppConfig.TEST_REPO_DIR.getPath(),AppConfig.myTest));
+        Git git = Git.open(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toFile());
         Status status = git.status().call();
         Set<String> conflictList = status.getConflicting();
         System.out.println(conflictList.size());
@@ -67,7 +67,7 @@ class CiCdMergeResolverApplicationTests {
     }
     @Test
     void gitMerge() throws IOException, GitAPIException {
-        Git git = Git.open(new File(AppConfig.TEST_REPO_DIR.getPath(),AppConfig.myTest));
+        Git git = Git.open(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toFile());
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
@@ -118,7 +118,7 @@ class CiCdMergeResolverApplicationTests {
 
     @Test
     void gitMerge2() throws IOException, GitAPIException {
-        Git git = Git.open(new File(AppConfig.TEST_REPO_DIR.getPath(),AppConfig.myTest));
+        Git git = Git.open(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toFile());
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 

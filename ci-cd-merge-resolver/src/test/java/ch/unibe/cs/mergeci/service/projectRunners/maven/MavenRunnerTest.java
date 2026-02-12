@@ -30,7 +30,7 @@ public class MavenRunnerTest {
     void run1() {
         MavenRunner mavenRunner = new MavenRunner();
 //        mavenRunner.run(Set.of(),"temp\\jackson-databind_0", "temp\\jackson-databind_1");
-        mavenRunner.run(AppConfig.TMP_DIR.resolve(AppConfig.jacksonDatabind + "_0"),
+        mavenRunner.run_cache_parallel(AppConfig.TMP_DIR.resolve(AppConfig.jacksonDatabind + "_0"),
                         AppConfig.TMP_DIR.resolve(AppConfig.jacksonDatabind + "_1"),
                         AppConfig.TMP_DIR.resolve(AppConfig.jacksonDatabind + "_2"),
                         AppConfig.TMP_DIR.resolve(AppConfig.jacksonDatabind + "_3"));
@@ -60,7 +60,7 @@ public class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
-        mavenRunner.run(AppConfig.TMP_DIR.resolve(AppConfig.airlift+"_0"),
+        mavenRunner.run_cache_parallel(AppConfig.TMP_DIR.resolve(AppConfig.airlift+"_0"),
                         AppConfig.TMP_DIR.resolve(AppConfig.airlift+"_1"));
     }
 

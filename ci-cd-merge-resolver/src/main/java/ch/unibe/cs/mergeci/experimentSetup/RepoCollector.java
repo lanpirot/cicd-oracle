@@ -2,6 +2,10 @@ package ch.unibe.cs.mergeci.experimentSetup;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.FileUtils;
+import ch.unibe.cs.mergeci.util.GitUtils;
+import ch.unibe.cs.mergeci.util.RepositoryManager;
+import ch.unibe.cs.mergeci.util.RepositoryStatus;
+import ch.unibe.cs.mergeci.util.Utility;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,6 +19,7 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -25,17 +30,19 @@ public class RepoCollector {
     private final Path cloneDir;
     private final Path tempDir;
     private final Path datasetDir;
+    private final RepositoryManager repoManager;
 
     public RepoCollector(Path cloneDir, Path tempDir, Path datasetDir) {
         this.cloneDir = cloneDir;
         this.tempDir = tempDir;
         this.datasetDir = datasetDir;
+        this.repoManager = new RepositoryManager(cloneDir);
     }
 
     int headerLine = 1;
 
     public void processExcel(Path excelFile) throws Exception {
-        FileUtils.deleteDirectory(cloneDir.toFile());
+        // Only clean temp directory, preserve clone directory with successful repos
         FileUtils.deleteDirectory(tempDir.toFile());
 
         Set<String> seen = new HashSet<>();
@@ -57,16 +64,17 @@ public class RepoCollector {
 
                 System.out.println("\n\n=== Processing repository: " + repoName + " ===");
 
-                Path repoFolder = cloneRepo(repoName, repoUrl);
-
-                if (repoFolder == null) {
-                    System.out.println("Failed to clone: " + repoUrl);
+                Path repoFolder;
+                try {
+                    repoFolder = repoManager.getRepositoryPath(repoName, repoUrl);
+                } catch (IOException e) {
+                    System.out.println("Failed to clone: " + repoUrl + " - " + e.getMessage());
                     continue;
                 }
 
                 if (!isMavenProject(repoFolder)) {
                     System.out.println("Not a Maven project, skipping.");
-                    FileUtils.deleteDirectory(repoFolder.toFile());
+                    repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
                     continue;
                 }
 
@@ -78,11 +86,12 @@ public class RepoCollector {
                 );
 
                 collector.collectDataset(datasetDir.resolve(repoName + AppConfig.XLSX));
-                System.out.printf("Deleting repository %s%n", repoFolder);
+                System.out.printf("Repository %s processed successfully%n", repoFolder);
+                repoManager.markRepositorySuccess(repoName);
                 RepositoryCache.clear();
                 WindowCache.reconfigure(new WindowCacheConfig());
-                FileUtils.deleteDirectory(repoFolder.toFile());
-                FileUtils.deleteDirectory(tempDir.toFile());
+                // Clean up temp files but keep the repository
+                FileUtils.deleteDirectory(tempDir.resolve(repoName).toFile());
             }
         }
     }

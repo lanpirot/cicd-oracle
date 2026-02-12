@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class CompilationResultTest {
     @Test
     void test() throws IOException {
-        File file = new File(AppConfig.TEST_RESOURCE_DIR,"compilation-result_2.txt");
+        Path file = AppConfig.TEST_RESOURCE_DIR.resolve("compilation-result_2.txt");
         CompilationResult compilationResult = new CompilationResult(file);
 
         System.out.println(compilationResult);

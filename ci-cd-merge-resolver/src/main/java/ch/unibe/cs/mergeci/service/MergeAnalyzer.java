@@ -89,13 +89,12 @@ public class MergeAnalyzer {
         MavenRunner mavenRunner = new MavenRunner(logDir, false);
 
         int numProjects = countProjects();
-        List<Path> args = new ArrayList<>(countProjects());
-        args.add(projectTempDir.resolve(projectName));
+        List<Path> args = new ArrayList<>(numProjects);
         for (int i = 0; i < numProjects - 1; i++) {
             args.add(projectTempDir.resolve(projectName + "_" + i));
         }
 
-        return runner.run(args.getFirst(), args.subList(1, args.size()), false);
+        return runner.run(projectTempDir.resolve(projectName), args, false);
     }
 
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {
