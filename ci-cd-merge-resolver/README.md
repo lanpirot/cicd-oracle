@@ -62,15 +62,41 @@ You can create your own patterns by implementing the `IPattern` interface in [di
 
 ---
 
-### Usage
+## 🚀 Quick Start
 
-The workflow consists of **three phases**: dataset collection, experiment execution, and analysis.
+### Running the Application
 
-**Repository Management:**
-- Successful repositories are preserved between runs to avoid redundant downloads
-- Rejected repositories (non-Maven, clone failures) are marked with empty directories
-- The `.repo_status.json` file tracks the status of each repository
-- Only repositories that don't exist or were previously rejected will be downloaded
+The simplest way to use the CI/CD Merge Resolver:
+
+```bash
+# Build and run
+mvn clean package
+java -cp "target/*:target/lib/*" ch.unibe.cs.CiCdMergeResolverApplication
+```
+
+### Main Entry Point
+
+The `CiCdMergeResolverApplication` class orchestrates the complete pipeline:
+- Repository collection and analysis
+- Merge conflict resolution variant generation
+- CI/CD-based evaluation using Maven
+- Results aggregation and reporting
+
+### Configuration
+
+Key settings in `AppConfig.java`:
+- `BASE_DIR`: Base directory for operations
+- `MAX_CONFLICT_MERGES`: Maximum merges per repository
+- `MAX_CONFLICT_CHUNKS`: Maximum conflict chunks to process
+- `MAX_THREADS`: Parallel execution threads
+
+## Repository Management
+
+Intelligent repository lifecycle handling:
+- **Successful repos**: Preserved between runs (no re-download)
+- **Rejected repos**: Empty directory markers (visual indicators)
+- **Status tracking**: Persisted in `.repo_status.json`
+- **Smart downloads**: Only new/failed repositories are downloaded
 
 ---
 
