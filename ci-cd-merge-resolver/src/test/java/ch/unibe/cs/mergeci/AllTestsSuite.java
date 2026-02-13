@@ -52,5 +52,5 @@ import org.junit.platform.suite.api.Suite;
     RepoCollectorTest.class,
     ExperimentRunnerTest.class
 })
-public class AllTestsExceptExperimentRunnerSuite {
+public class AllTestsSuite {
 }

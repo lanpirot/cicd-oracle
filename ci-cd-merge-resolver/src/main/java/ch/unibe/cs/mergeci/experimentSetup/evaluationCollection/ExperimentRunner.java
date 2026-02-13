@@ -54,6 +54,8 @@ public class ExperimentRunner {
 
         File[] xlsxDataset = getFilesFromDir(datasetsDir);
 
+        if (xlsxDataset == null) {return;}
+
         for (File dataset : xlsxDataset) {
             String repoUrl = getRepoUrl(dataset);
             String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + AppConfig.JSON;

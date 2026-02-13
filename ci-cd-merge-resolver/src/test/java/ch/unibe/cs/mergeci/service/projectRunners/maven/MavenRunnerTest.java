@@ -17,9 +17,7 @@ import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.ResolveMerger;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +39,7 @@ public class MavenRunnerTest {
         FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR.toFile());
         Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
-        Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
+        Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
 
         Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
@@ -60,6 +58,7 @@ public class MavenRunnerTest {
         projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
         MavenRunner mavenRunner = new MavenRunner();
+        //TODO: currently broken; needs some setup to create actual airlift_0, airlift_1 folders
         mavenRunner.run_cache_parallel(AppConfig.TMP_DIR.resolve(AppConfig.airlift+"_0"),
                         AppConfig.TMP_DIR.resolve(AppConfig.airlift+"_1"));
     }
@@ -73,7 +72,7 @@ public class MavenRunnerTest {
     @Test
     void copyTarget() {
         MavenRunner mavenRunner = new MavenRunner();
-//        mavenRunner.copyTarget("temp\\Activiti_0", "temp\\Activiti_1");
+        //TODO: currently broken, needs some setup to create actual _target or target folders, and an Activiti_0 folder
         mavenRunner.copyTarget(AppConfig.TMP_DIR.resolve(AppConfig.Activiti+"_target").toFile(), AppConfig.TMP_DIR.resolve(AppConfig.Activiti+"_0").toFile());
     }
 }

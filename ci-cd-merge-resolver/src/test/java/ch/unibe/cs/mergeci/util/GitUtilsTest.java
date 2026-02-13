@@ -22,7 +22,7 @@ import java.util.Map;
 public class GitUtilsTest {
 
     @Test
-    void getConflictChunks() {
+    void getMergeResults() {
     }
 
     @Test
@@ -72,7 +72,7 @@ public class GitUtilsTest {
         RevWalk walk = new RevWalk(git.getRepository());
 
 
-        List<MergeInfo> list = GitUtils.getConflictCommits(AppConfig.TEST_MAX_CONFLICT_MERGES, git);
+        List<MergeInfo> list = GitUtils.getConflictCommits(AppConfig.MAX_CONFLICT_MERGES, git);
 
         System.out.printf("Total number of conflicts: %d", list.size());
         System.out.println();

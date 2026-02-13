@@ -19,10 +19,8 @@ import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.ResolveMerger;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +52,7 @@ public class MergeAnalyzer {
     public void buildProjects(String commit1, String commit2, String mergeCommit) throws Exception {
         Git git = GitUtils.getGit(repositoryPath);
         ResolveMerger merger = GitUtils.makeMerge(commit1, commit2, git);
-        Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getConflictChunks(merger);
+        Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
 
         if (isVerbose) {
             System.out.println("conflicts :");

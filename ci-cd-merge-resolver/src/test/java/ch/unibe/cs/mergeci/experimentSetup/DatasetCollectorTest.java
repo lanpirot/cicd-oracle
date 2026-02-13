@@ -12,7 +12,7 @@ public class DatasetCollectorTest {
         DatasetCollector collector = new DatasetCollector(
                 AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind),
                 AppConfig.TMP_DIR,
-                2
+                AppConfig.MAX_CONFLICT_MERGES
         );
 
         collector.collectDataset(AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.XLSX));

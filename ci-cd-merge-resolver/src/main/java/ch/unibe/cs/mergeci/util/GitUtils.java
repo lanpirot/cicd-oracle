@@ -3,11 +3,9 @@ package ch.unibe.cs.mergeci.util;
 import ch.unibe.cs.mergeci.experimentSetup.SimpleProgressMonitor;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.dircache.DirCache;
@@ -21,7 +19,6 @@ import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
-import org.eclipse.jgit.merge.RecursiveMerger;
 import org.eclipse.jgit.merge.ResolveMerger;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
@@ -34,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +62,7 @@ public class GitUtils {
         return merger;
     }
 
-    public static Map<String, MergeResult<? extends Sequence>> getConflictChunks(ResolveMerger merger) throws IOException, GitAPIException {
+    public static Map<String, MergeResult<? extends Sequence>> getMergeResults(ResolveMerger merger) throws IOException, GitAPIException {
         return merger.getMergeResults();
     }
 
@@ -84,6 +80,7 @@ public class GitUtils {
 
             Ref checkout = git.checkout()
                     .setName(tempBranch)
+                    .setForced(true)
                     .setCreateBranch(true)
                     .setStartPoint(head)
                     .call();
@@ -123,7 +120,7 @@ public class GitUtils {
             // Abort merge and delete temp branch
             try {
                 git.reset().setMode(ResetCommand.ResetType.HARD).call();
-                git.checkout().setName(originalBranch.getName()).call();
+                git.checkout().setName(originalBranch.getName()).setForced(true).call();
                 git.branchDelete().setBranchNames(tempBranch).setForce(true).call();
             } catch (GitAPIException e) {
                 throw new RuntimeException(e);

@@ -55,11 +55,6 @@ public class MavenRunner {
 
 
 
-
-
-
-
-
         ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         for (int i = 1; i < path.length; i++) {
@@ -86,29 +81,20 @@ public class MavenRunner {
     public void run_no_optimization(Path... path) {
         for (int i = 0; i < path.length; i++) {
             final String mavenCommand = resolveMavenCommand(path[i]);
-
             Path projectName = path[i].getFileName();
-//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile").toFile(),mavenCommand, "compile", "-fae");
-//                runCommand(new File(path[i]),logDir.resolve(projectName+"_compile-test").toFile(),mavenCommand, "test-compile", "-fae");
             runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "-Dmaven.test.failure.ignore=true", "test");
-
         }
     }
 
     public void run_parallel(Path... path) {
-
         ExecutorService executorService = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
-
         for (int i = 0; i < path.length; i++) {
             int finalI = i;
-
             executorService.submit(() -> {
                         String mavenCommand = resolveMavenCommand(path[finalI]);
                         String projectName = path[finalI].getFileName().toString();
                         try {
-
                             runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "-Dmaven.test.failure.ignore=true", "test");
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -174,10 +160,6 @@ public class MavenRunner {
 
     }
 
-    private static void runCommand(Path directory, String... command) {
-        runCommand(directory, null, command);
-    }
-
     private void updateStatusMavenFile(File file,
                                        String projectNameOld, String projectNameNew, Set<String> conflictList) {
         if (!file.exists()) {
@@ -212,26 +194,6 @@ public class MavenRunner {
         return conflictList.stream()
                 .map(Path::of)
                 .anyMatch(filePath::endsWith);
-    }
-
-    public void visitModules(String path, String projectNameOld, String projectNameNew, Set<String> conflictList) {
-        File dir = new File(path);
-        File[] files = dir.listFiles();
-        if (files == null) return;
-
-        for (File newFile : files) {
-            if (newFile.isDirectory()) {
-                File pom = new File(newFile, AppConfig.POMXML);
-                if (pom.exists()) {
-                    updateStatusMavenFile(
-                            Paths.get(newFile.getPath()+ "target", "maven-status", "maven-compiler-plugin",
-                                    "compile", "default-compile", "inputFiles.lst").toFile(),
-                            projectNameOld, projectNameNew, conflictList
-                    );
-                }
-                visitModules(newFile.getPath(), projectNameOld, projectNameNew, conflictList);
-            }
-        }
     }
 
     public void injectCacheArtifact(Path projectDir) {
@@ -300,7 +262,14 @@ public class MavenRunner {
             return "mvn.cmd";
         } else {
             if (mvnw.exists()) {
+                //fix for Unix: first set executable, then replace wrong line endings
                 mvnw.setExecutable(true);
+                try {
+                    String content = new String(Files.readAllBytes(mvnw.toPath()));
+                    content = content.replace("\r\n", "\n").replace("\r", "\n");
+                    Files.write(mvnw.toPath(), content.getBytes());
+                } catch (IOException e) {}
+
                 return "./mvnw";
             }
             return "mvn";

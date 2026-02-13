@@ -83,7 +83,7 @@ public class DatasetCollector {
         Utility.shutdownAndAwaitTermination(pool);
 
         if (rows.isEmpty()) {
-            System.out.printf("Project %s has no successful merges! \n No need to save!!!\n", projectName);
+            System.out.printf("Project %s has no successful merges! \n", projectName);
             return;
         }
         ExcelWriter.writeExcel(excelOutFile, rows);

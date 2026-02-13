@@ -47,7 +47,6 @@ public class AppConfig {
     public static final String POMXML = "pom.xml";
     public static final String JAVA = ".java";
     public static final String XML = ".xml";
-    public static final int TEST_MAX_CONFLICT_MERGES = 100;  //sample maximally this many merges per project to avoid bias towards giant projects
 
 
 
@@ -59,13 +58,11 @@ public class AppConfig {
     static long totalRamBytes = runtime.totalMemory();
     static long totalRamGB = totalRamBytes / (1024 * 1024);
     public static final int MAX_THREADS = Math.min(Math.round((float) totalRamGB / 8), 16); //avoid hogging all RAM of machine, leave 8GB per thread
-    public static final int MAX_CONFLICT_MERGES_PRODUCTION = 200;  //sample maximally this many merges per project to avoid bias towards giant projects
-    public static final int MAX_CONFLICT_MERGES_TEST = 20;  //reduced limit for unit tests to improve test performance
     
-    /**
-     * The actual max conflict merges limit to use. This is set once at startup based on execution mode.
-     */
+
     public static int MAX_CONFLICT_MERGES = determineMaxConflictMerges();
+    private static final int MAX_CONFLICT_MERGES_PRODUCTION = 10;  //sample maximally this many merges per project to avoid bias towards giant projects
+    private static final int MAX_CONFLICT_MERGES_TEST = 5;  //reduced limit for unit tests to improve test performance
     
     /**
      * Determine the maximum number of conflict merges based on execution mode.

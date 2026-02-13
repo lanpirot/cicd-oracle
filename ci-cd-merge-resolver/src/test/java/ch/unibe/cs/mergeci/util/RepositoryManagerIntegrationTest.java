@@ -164,7 +164,7 @@ class RepositoryManagerIntegrationTest {
     /**
      * Verify results after first run
      */
-    private void verifyFirstRunResults() {
+    private void verifyFirstRunResults() throws IOException {
         System.out.println("Verifying first run results...");
         
         // Check Maven repository exists and has content
