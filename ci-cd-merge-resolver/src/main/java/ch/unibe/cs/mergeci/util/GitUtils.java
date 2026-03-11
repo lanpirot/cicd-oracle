@@ -318,7 +318,7 @@ public class GitUtils {
         return map;
     }
 
-    public static File cloneRepo(Path folderToClone, String url) {
+    public static void cloneRepo(Path folderToClone, String url) {
 
         // then clone
         System.out.printf("Cloning from %s to %s %n", url, folderToClone);
@@ -336,6 +336,5 @@ public class GitUtils {
         RepositoryCache.clear();
         WindowCache.reconfigure(new WindowCacheConfig());
 
-        return folderToClone.toFile();
     }
 }

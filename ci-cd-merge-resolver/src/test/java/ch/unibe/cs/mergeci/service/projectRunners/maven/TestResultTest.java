@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestResultTest {
+public class TestResultTest extends BaseTest {
 
     @Test
     void createTestResultFromFile() throws IOException {

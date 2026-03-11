@@ -13,6 +13,23 @@ import java.util.List;
 
 @Configuration
 public class AppConfig {
+    // ========== EXECUTION MODE ==========
+    /**
+     * Default value for FRESH_RUN mode
+     * If true: Delete all data/output directories and start from scratch
+     * If false: Resume from where work was left off (skip completed repos/experiments)
+     */
+    private static final boolean FRESH_RUN_DEFAULT = false;
+
+    /**
+     * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
+     * @return true if FRESH_RUN mode is enabled
+     */
+    public static boolean isFreshRun() {
+        return Boolean.parseBoolean(System.getProperty("freshRun", String.valueOf(FRESH_RUN_DEFAULT)));
+    }
+
+    // ========== DIRECTORY CONFIGURATION ==========
     public static final Path BASE_DIR = Paths.get("/home/lanpirot");
 
     public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");

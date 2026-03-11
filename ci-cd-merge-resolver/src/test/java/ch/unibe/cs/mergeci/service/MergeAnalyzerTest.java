@@ -1,14 +1,16 @@
 package ch.unibe.cs.mergeci.service;
 
+import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.Map;
 
-public class MergeAnalyzerTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MergeAnalyzerTest extends BaseTest {
 
     @Test
     void buildProjects() throws Exception {
@@ -22,10 +24,26 @@ public class MergeAnalyzerTest {
             System.out.println(k + ": " + v);
         });
 
+        // Verify compilation results were collected
+        assertNotNull(compilationResultMap, "Compilation result map should not be null");
+        assertFalse(compilationResultMap.isEmpty(), "Should have at least one compilation result");
+        for (Map.Entry<String, CompilationResult> entry : compilationResultMap.entrySet()) {
+            assertNotNull(entry.getKey(), "Project name should not be null");
+            assertNotNull(entry.getValue(), "Compilation result should not be null");
+        }
+
         System.out.println("\n\nTesting result:");
         Map<String, TestTotal> testTotalMap = mergeAnalyzer.collectTestResults();
         testTotalMap.forEach((k, v) -> {
             System.out.println(k + ": " + v);
         });
+
+        // Verify test results were collected
+        assertNotNull(testTotalMap, "Test result map should not be null");
+        assertFalse(testTotalMap.isEmpty(), "Should have at least one test result");
+        for (Map.Entry<String, TestTotal> entry : testTotalMap.entrySet()) {
+            assertNotNull(entry.getKey(), "Project name should not be null");
+            assertNotNull(entry.getValue(), "Test total should not be null");
+        }
     }
 }

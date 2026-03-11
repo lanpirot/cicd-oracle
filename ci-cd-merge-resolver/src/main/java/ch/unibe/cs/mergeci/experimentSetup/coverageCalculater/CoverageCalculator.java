@@ -49,6 +49,7 @@ public class CoverageCalculator {
     }
 
     public void calculateCoverage(File outputDir) {
+        //TODO: currently unused and completely out of sync, e.g., clones repos, deletes directories etc.
         if (!outputDir.exists()) {outputDir.mkdirs();}
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         for (File file : folder.listFiles()) {

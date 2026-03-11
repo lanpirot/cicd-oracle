@@ -1,7 +1,7 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,39 +17,25 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration test for the RepositoryManager that simulates the complete pipeline
  * running twice with both Maven and non-Maven projects.
  */
-class RepositoryManagerIntegrationTest {
+class RepositoryManagerIntegrationTest extends BaseTest {
 
     @TempDir
     Path tempDir;
-    
+
     private Path repoBaseDir;
     private RepositoryManager repoManager;
-    
+
     // Test repository URLs (these would be mock URLs in a real test)
     private static final String MAVEN_REPO_NAME = "test-maven-project";
     private static final String MAVEN_REPO_URL = "https://github.com/test/test-maven-project.git";
-    
+
     private static final String NON_MAVEN_REPO_NAME = "test-non-maven-project";
     private static final String NON_MAVEN_REPO_URL = "https://github.com/test/test-non-maven-project.git";
-    
+
     @BeforeEach
     void setUp() {
         repoBaseDir = tempDir.resolve("repos");
         repoManager = new RepositoryManager(repoBaseDir);
-    }
-    
-    @AfterEach
-    void tearDown() throws IOException {
-        // Clean up test directories
-        Files.walk(repoBaseDir)
-                .sorted((a, b) -> -a.compareTo(b)) // reverse order
-                .forEach(path -> {
-                    try {
-                        Files.deleteIfExists(path);
-                    } catch (IOException e) {
-                        // Ignore cleanup errors
-                    }
-                });
     }
     
     /**

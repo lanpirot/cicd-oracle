@@ -42,7 +42,20 @@ public class RepoCollector {
     int headerLine = 1;
 
     public void processExcel(Path excelFile) throws Exception {
-        // Only clean temp directory, preserve clone directory with successful repos
+        // Handle FRESH_RUN mode
+        if (AppConfig.isFreshRun()) {
+            System.out.println("FRESH_RUN enabled: Cleaning collection directories...");
+            if (Files.exists(cloneDir)) {
+                FileUtils.deleteDirectory(cloneDir.toFile());
+            }
+            if (Files.exists(datasetDir)) {
+                FileUtils.deleteDirectory(datasetDir.toFile());
+            }
+            // Reset RepositoryManager cache after deleting directories
+            repoManager.resetCache();
+        }
+
+        // Always clean temp directory
         FileUtils.deleteDirectory(tempDir.toFile());
 
         Set<String> seen = new HashSet<>();
@@ -61,6 +74,12 @@ public class RepoCollector {
                 if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
                 if (seen.contains(repoUrl)) continue;
                 seen.add(repoUrl);
+
+                // Skip if already processed (unless FRESH_RUN)
+                if (!AppConfig.isFreshRun() && Files.exists(datasetDir.resolve(repoName + AppConfig.XLSX))) {
+                    System.out.println("\n\n=== Skipping repository (already processed): " + repoName + " ===");
+                    continue;
+                }
 
                 System.out.println("\n\n=== Processing repository: " + repoName + " ===");
 
@@ -94,28 +113,6 @@ public class RepoCollector {
                 FileUtils.deleteDirectory(tempDir.resolve(repoName).toFile());
             }
         }
-    }
-
-    private Path cloneRepo(String repoName, String url) {
-
-        Path target = cloneDir.resolve(repoName);
-        // then clone
-        System.out.printf("Cloning from %s to %s %n", url, repoName);
-        try (Git result = Git.cloneRepository()
-                .setURI(url)
-                .setDirectory(target.toFile())
-                .setProgressMonitor(new SimpleProgressMonitor())
-                .call()) {
-            // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
-            System.out.println("Having repository: " + result.getRepository().getDirectory());
-
-        } catch (GitAPIException e) {
-            throw new RuntimeException(e);
-        }
-        RepositoryCache.clear();
-        WindowCache.reconfigure(new WindowCacheConfig());
-
-        return target;
     }
 
     private boolean isMavenProject(Path repo) {

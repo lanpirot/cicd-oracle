@@ -1,6 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
-import org.junit.jupiter.api.AfterEach;
+import ch.unibe.cs.mergeci.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,34 +15,18 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit test for RepositoryManager focusing on core functionality
  */
-class RepositoryManagerTest {
+class RepositoryManagerTest extends BaseTest {
 
     @TempDir
     Path tempDir;
-    
+
     private Path repoBaseDir;
     private RepositoryManager repoManager;
-    
+
     @BeforeEach
     void setUp() {
         repoBaseDir = tempDir.resolve("repos");
         repoManager = new RepositoryManager(repoBaseDir);
-    }
-    
-    @AfterEach
-    void tearDown() throws IOException {
-        // Clean up test directories
-        if (Files.exists(repoBaseDir)) {
-            Files.walk(repoBaseDir)
-                    .sorted((a, b) -> -a.compareTo(b)) // reverse order
-                    .forEach(path -> {
-                        try {
-                            Files.deleteIfExists(path);
-                        } catch (IOException e) {
-                            // Ignore cleanup errors
-                        }
-                    });
-        }
     }
     
     @Test

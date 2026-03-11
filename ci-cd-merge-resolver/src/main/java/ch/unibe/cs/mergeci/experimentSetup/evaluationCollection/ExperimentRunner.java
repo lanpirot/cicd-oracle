@@ -48,6 +48,12 @@ public class ExperimentRunner {
     }
 
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
+        // Handle FRESH_RUN mode - clean experiment output directory
+        if (AppConfig.isFreshRun() && outputDir.toFile().exists()) {
+            System.out.println("FRESH_RUN enabled: Cleaning experiment directory: " + outputDir);
+            FileUtils.deleteDirectory(outputDir.toFile());
+        }
+
         if (!outputDir.toFile().exists()) {
             outputDir.toFile().mkdirs();
         }
@@ -59,7 +65,11 @@ public class ExperimentRunner {
         for (File dataset : xlsxDataset) {
             String repoUrl = getRepoUrl(dataset);
             String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + AppConfig.JSON;
-            if (Arrays.stream(outputDir.toFile().listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
+
+            // Skip if already processed (unless FRESH_RUN, which already cleaned the directory)
+            if (!AppConfig.isFreshRun() &&
+                outputDir.toFile().listFiles() != null &&
+                Arrays.stream(outputDir.toFile().listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
                 System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
                 continue;
             }
@@ -98,7 +108,7 @@ public class ExperimentRunner {
         try (FileInputStream file = new FileInputStream(repoDatasetsFile.toFile()); Workbook workbook = new XSSFWorkbook(file);) {
             Sheet sheet = workbook.getSheetAt(0);
 
-            for (int i = 1; i < sheet.getLastRowNum(); i++) {
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
 
                 String repoName = row.getCell(Utility.PROJECTCOLUMN.repoName.getColumnNumber()).getStringCellValue().split("/")[1].trim();

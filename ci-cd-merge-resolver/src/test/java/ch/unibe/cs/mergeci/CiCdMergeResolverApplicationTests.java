@@ -17,8 +17,8 @@ import org.eclipse.jgit.merge.RecursiveMerger;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SpringBootTest
-class CiCdMergeResolverApplicationTests {
+class CiCdMergeResolverApplicationTests extends BaseTest {
 
     @Test
     void simpleMerge() throws IOException, GitAPIException {
@@ -58,11 +58,19 @@ class CiCdMergeResolverApplicationTests {
 
 
         System.out.println("Merge-Results for id: " + mergeBase + ": " + merge);
-        for (Map.Entry<String, int[][]> entry : merge.getConflicts().entrySet()) {
-            System.out.println("Key: " + entry.getKey());
-            for (int[] arr : entry.getValue()) {
-                System.out.println("value: " + Arrays.toString(arr));
+
+        // Check for conflicts with null check (JGit returns null when there are no conflicts)
+        Map<String, int[][]> conflicts = merge.getConflicts();
+        if (conflicts != null) {
+            System.out.println("Amount of conflicts: " + conflicts.size());
+            for (Map.Entry<String, int[][]> entry : conflicts.entrySet()) {
+                System.out.println("Key: " + entry.getKey());
+                for (int[] arr : entry.getValue()) {
+                    System.out.println("value: " + Arrays.toString(arr));
+                }
             }
+        } else {
+            System.out.println("Amount of conflicts: 0 (merge succeeded with no conflicts)");
         }
     }
     @Test
@@ -88,11 +96,17 @@ class CiCdMergeResolverApplicationTests {
             List<String> conflictPaths = merger.getUnmergedPaths();
 
             System.out.println("Amount of conflicts:" + conflictPaths.size());
+            assertNotNull(conflictPaths, "Conflict paths should not be null");
+            assertFalse(conflictPaths.isEmpty(), "Should have at least one conflict");
+
             for (String path : conflictPaths) {
                 MergeResult<? extends Sequence> result = merger.getMergeResults().get(path);
                 if (result == null) continue;
 
                 System.out.println("\nFile: " + path);
+                assertNotNull(result, "Merge result should not be null");
+                assertNotNull(result.getSequences(), "Sequences should not be null");
+
 //                for (Sequence rawText : result.getSequences()) {
 //                    for (int i = 0; i < rawText.size(); i++) {
 //                        System.out.println(((RawText) rawText).getString(i));
@@ -100,6 +114,7 @@ class CiCdMergeResolverApplicationTests {
 //                }
                 for (MergeChunk chunk : result) {
                     System.out.println("  State: " + chunk.getConflictState());
+                    assertNotNull(chunk.getConflictState(), "Chunk state should not be null");
 
                     int seqIndex = chunk.getSequenceIndex();
 
@@ -137,6 +152,10 @@ class CiCdMergeResolverApplicationTests {
             List<String> conflictPaths = merger.getUnmergedPaths();
             Map<String, MergeResult<? extends Sequence>> mergeResult = merger.getMergeResults();
 
+            assertNotNull(conflictPaths, "Conflict paths should not be null");
+            assertFalse(conflictPaths.isEmpty(), "Should have at least one conflict");
+            assertNotNull(mergeResult, "Merge result map should not be null");
+            assertFalse(mergeResult.isEmpty(), "Merge result map should not be empty");
 
             System.out.println("Amount of conflicts: " + conflictPaths.size());
             for (Map.Entry<String, MergeResult<? extends Sequence>> mergeResultEntry : mergeResult.entrySet()) {
@@ -144,13 +163,17 @@ class CiCdMergeResolverApplicationTests {
                 MergeResult<? extends Sequence> mergeChunks = mergeResultEntry.getValue();
 
                 System.out.println("\nFile: " + mergeResultEntry.getKey());
+                assertNotNull(mergeChunks, "Merge chunks should not be null");
+                assertNotNull(mergeChunks.getSequences(), "Sequences should not be null");
 
                 for (MergeChunk chunk : mergeChunks) {
                     System.out.println("  State: " + chunk.getConflictState());
+                    assertNotNull(chunk.getConflictState(), "Chunk state should not be null");
 
                     int seqIndex = chunk.getSequenceIndex();
 
                     Sequence seq = mergeResultEntry.getValue().getSequences().get(seqIndex);
+                    assertNotNull(seq, "Sequence should not be null");
                     for (int i = chunk.getBegin(); i < chunk.getEnd(); i++) {
                         System.out.println("    " + ((RawText) seq).getString(i));
                     }

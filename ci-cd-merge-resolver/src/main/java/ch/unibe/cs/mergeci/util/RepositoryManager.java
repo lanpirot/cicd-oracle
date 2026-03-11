@@ -191,4 +191,13 @@ public class RepositoryManager {
     public Path getRepoBaseDir() {
         return repoBaseDir;
     }
+
+    /**
+     * Clear the in-memory status cache and reload from disk.
+     * Used when FRESH_RUN mode deletes the repository directory.
+     */
+    public void resetCache() {
+        repoStatusCache.clear();
+        repoStatusCache.putAll(loadStatusCache());
+    }
 }

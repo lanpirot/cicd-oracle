@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.Project;
 import ch.unibe.cs.mergeci.model.ProjectClass;
@@ -23,17 +24,27 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ProjectBuilderUtilsTest {
+public class ProjectBuilderUtilsTest extends BaseTest {
 
     @Test
     void getAllPossibleConflictResolution() throws IOException, GitAPIException {
         Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
-        ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
+
+        // Use specific commits instead of branch names to ensure conflicts exist
+        ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
+
+        // Verify we have conflict chunks to work with
+        assertFalse(mergeResultMap.isEmpty(), "Should have at least one conflicting file");
+
         Map.Entry<String, MergeResult<? extends Sequence>> entry = mergeResultMap.entrySet().iterator().next();
         ProjectClass projectClass = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
         List<IPattern> patterns = List.of(new OursPattern(), new TheirsPattern());
         List<ProjectClass> projectClasses = ProjectBuilderUtils.getAllPossibleConflictResolution(projectClass, patterns);
+
+        // Verify the method works correctly
+        assertNotNull(projectClasses, "Result should not be null");
+        assertFalse(projectClasses.isEmpty(), "Should generate at least one resolution");
     }
 
     @Test
@@ -79,7 +90,6 @@ public class ProjectBuilderUtilsTest {
 
     @Test
     void saveProjects() throws GitAPIException, IOException, InterruptedException {
-        FileUtils.deleteDirectory(AppConfig.TEST_TMP_DIR.toFile());
         Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61","ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);

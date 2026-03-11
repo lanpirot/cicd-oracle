@@ -1,11 +1,15 @@
 package ch.unibe.cs.mergeci.experimentSetup;
 
+import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-public class DatasetCollectorTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DatasetCollectorTest extends BaseTest {
 
     @Test
     void collectDataset() throws Exception {
@@ -15,6 +19,12 @@ public class DatasetCollectorTest {
                 AppConfig.MAX_CONFLICT_MERGES
         );
 
-        collector.collectDataset(AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.XLSX));
+        Path outputPath = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.XLSX);
+
+        collector.collectDataset(outputPath);
+
+        // Verify the dataset file was created
+        assertTrue(Files.exists(outputPath), "Dataset file should be created: " + outputPath);
+        assertTrue(Files.size(outputPath) > 0, "Dataset file should not be empty");
     }
 }
