@@ -24,13 +24,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DatasetCollector {
+public class MergeConflictCollector {
     private final Path projectPath;
     private final Path tempPath;
     private final String projectName;
     private final int maxConflictMerges;
 
-    public DatasetCollector(Path projectPath, Path tempPath, int maxConflictMerges) throws IOException {
+    public MergeConflictCollector(Path projectPath, Path tempPath, int maxConflictMerges) throws IOException {
         this.projectPath = projectPath;
         this.tempPath = tempPath;
         this.projectName = projectPath.toFile().getName();
@@ -109,11 +109,18 @@ public class DatasetCollector {
 
         int javaFiles = merge.getConflictingFiles().size();
 
-        MavenRunner maven = new MavenRunner(tempPath);
+        MavenRunner maven = new MavenRunner(tempPath, AppConfig.MAVEN_BUILD_TIMEOUT_CONFLICT_COLLECTION_MINUTES);
         maven.run_no_optimization(newProjectPath);
 
 
         CompilationResult compilationResult = new CompilationResult(maven.getLogDir().resolve(newProjectName + "_compilation"));
+
+        // Skip timeouts during conflict collection - baseline took too long
+        if (compilationResult.getBuildStatus() == CompilationResult.Status.TIMEOUT) {
+            System.out.println("SKIPPING: Baseline build timed out for merge " + mergeCommit);
+            return;
+        }
+
         boolean compilationSuccess = compilationResult.getBuildStatus() == CompilationResult.Status.SUCCESS;
 
         TestTotal testTotal = new TestTotal(newProjectPath.toFile());

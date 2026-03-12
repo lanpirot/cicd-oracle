@@ -71,8 +71,15 @@ public class CompilationResult {
         if (buildMatcher.find()) {
             this.buildStatus = Status.valueOf(buildMatcher.group(1));
         } else {
+            // No BUILD SUCCESS/FAILURE found - likely timeout or process killed
+            // Check if build was properly terminated or interrupted
             this.totalTime = 0;
-            this.buildStatus = null;
+            if (string.contains("[INFO]") && !string.contains("BUILD")) {
+                // Has Maven output but no build termination = timeout
+                this.buildStatus = Status.TIMEOUT;
+            } else {
+                this.buildStatus = null;
+            }
             return;
         }
 
@@ -112,7 +119,8 @@ public class CompilationResult {
     public enum Status {
         SUCCESS,
         FAILURE,
-        SKIPPED
+        SKIPPED,
+        TIMEOUT
     }
 
     private float parseTime(String timeString, String timeUnit) {

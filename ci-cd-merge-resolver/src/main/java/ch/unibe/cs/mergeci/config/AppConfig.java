@@ -115,4 +115,32 @@ public class AppConfig {
     public static final String JACOCO_PLUGIN = "org.jacoco:jacoco-maven-plugin";
     public static final String JACOCO_VERSION = "0.8.14";
     public static final String JACOCO_FULL = JACOCO_PLUGIN + ":" + JACOCO_VERSION;
+
+    // Maven build flags
+    /**
+     * Maven reactor behavior flag.
+     * -fn (fail-never): Continue building all modules regardless of failures, don't skip dependent modules.
+     * This ensures we get compilation results for all modules, not just those before the first failure.
+     */
+    public static final String MAVEN_FAIL_MODE = "-fae";
+
+    /**
+     * Maven test failure behavior flag.
+     * Allows the build to continue even if tests fail, so we can collect complete test results.
+     */
+    public static final String MAVEN_TEST_FAILURE_IGNORE = "-Dmaven.test.failure.ignore=true";
+
+    /**
+     * Maven build timeout for conflict collection (baseline checking).
+     * Lower timeout since we're just verifying the human-resolved merge compiles.
+     * Builds exceeding this timeout are likely stuck and should be skipped.
+     */
+    public static final int MAVEN_BUILD_TIMEOUT_CONFLICT_COLLECTION_MINUTES = 5;
+
+    /**
+     * Maven build timeout for variant testing.
+     * Higher timeout since we're testing multiple resolution strategies.
+     * Variants may take longer to compile due to conflict resolution attempts.
+     */
+    public static final int MAVEN_BUILD_TIMEOUT_VARIANT_TESTING_MINUTES = 20;
 }

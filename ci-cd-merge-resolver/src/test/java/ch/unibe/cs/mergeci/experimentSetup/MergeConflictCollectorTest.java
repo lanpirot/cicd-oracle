@@ -9,11 +9,11 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DatasetCollectorTest extends BaseTest {
+public class MergeConflictCollectorTest extends BaseTest {
 
     @Test
     void collectDataset() throws Exception {
-        DatasetCollector collector = new DatasetCollector(
+        MergeConflictCollector collector = new MergeConflictCollector(
                 AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind),
                 AppConfig.TMP_DIR,
                 AppConfig.MAX_CONFLICT_MERGES

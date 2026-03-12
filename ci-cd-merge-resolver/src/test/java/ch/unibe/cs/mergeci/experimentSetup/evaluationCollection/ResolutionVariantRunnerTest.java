@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ExperimentRunnerTest extends BaseTest {
+public class ResolutionVariantRunnerTest extends BaseTest {
 
     @Test
     void makeAnalysisByDataset() throws Exception {
@@ -18,7 +18,7 @@ public class ExperimentRunnerTest extends BaseTest {
         Path repoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind);
         Path output = AppConfig.TEST_EXPERIMENTS_DIR.resolve( AppConfig.jacksonDatabind + AppConfig.JSON);
 
-        ExperimentRunner.makeAnalysisByDataset(dataset, repoPath, output,false, false);
+        ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, output,false, false);
 
         // Verify output file was created (if dataset and repo exist)
         if (Files.exists(dataset) && Files.exists(repoPath)) {
@@ -29,7 +29,7 @@ public class ExperimentRunnerTest extends BaseTest {
 
     @Test
     void runTestsNoCacheParallel() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
+        ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
                 AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
                 );
@@ -44,7 +44,7 @@ public class ExperimentRunnerTest extends BaseTest {
 
     @Test
     void runTestsCacheParallel() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
+        ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
                 AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
@@ -59,7 +59,7 @@ public class ExperimentRunnerTest extends BaseTest {
 
     @Test
     void runTestsNoCacheNoParallel() throws Exception {
-        ExperimentRunner experimentRunner = new ExperimentRunner(AppConfig.TEST_DATASET_DIR,
+        ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
                 AppConfig.INPUT_PROJECT_XLSX,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );

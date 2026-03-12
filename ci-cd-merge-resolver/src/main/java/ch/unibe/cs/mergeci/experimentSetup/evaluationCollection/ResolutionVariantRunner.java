@@ -34,13 +34,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ExperimentRunner {
+public class ResolutionVariantRunner {
     private final Path datasetsDir;
     private final Path repoDatasetsFile;
     private final Path tempDir;
     private final RepositoryManager repoManager;
 
-    public ExperimentRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
+    public ResolutionVariantRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
         this.datasetsDir = datasetsDir;
         this.repoDatasetsFile = repoDatasetsFile;
         this.tempDir = tempDir;

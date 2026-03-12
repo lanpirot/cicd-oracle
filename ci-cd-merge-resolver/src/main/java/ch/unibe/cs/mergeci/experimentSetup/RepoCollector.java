@@ -98,13 +98,13 @@ public class RepoCollector {
                 }
 
                 System.out.println("Valid Maven repository!");
-                DatasetCollector collector = new DatasetCollector(
+                MergeConflictCollector conflictCollector = new MergeConflictCollector(
                         repoFolder,
                         tempDir.resolve(repoName),
                         AppConfig.MAX_CONFLICT_MERGES
                 );
 
-                collector.collectDataset(datasetDir.resolve(repoName + AppConfig.XLSX));
+                conflictCollector.collectDataset(datasetDir.resolve(repoName + AppConfig.XLSX));
                 System.out.printf("Repository %s processed successfully%n", repoFolder);
                 repoManager.markRepositorySuccess(repoName);
                 RepositoryCache.clear();

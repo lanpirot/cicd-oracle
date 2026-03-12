@@ -22,12 +22,12 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Getter
-public class MetricsAnalyzer {
+public class ResultsPresenter {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private List<MergeOutputJSON> merges = new ArrayList<>();
     private final Path dir;
 
-    public MetricsAnalyzer(Path dir) {
+    public ResultsPresenter(Path dir) {
         this.dir = dir;
         List<MergeOutputJSON> allMerges = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class MetricsAnalyzer {
         }
     }
 
-    public void makeFullAnalysis() {
+    public void presentFullResults() {
 
         System.out.println("All Merges: " + merges.size());
         printfIfNonZero("Num of MultiModules: %d %d%% %n", merges.size(), countMultiModulesProjects(), countPercent(merges.size(), countMultiModulesProjects()));

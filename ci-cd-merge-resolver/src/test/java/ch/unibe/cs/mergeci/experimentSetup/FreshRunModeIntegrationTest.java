@@ -3,7 +3,7 @@ package ch.unibe.cs.mergeci.experimentSetup;
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.AllMergesJSON;
-import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunner;
+import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ResolutionVariantRunner;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.poi.ss.usermodel.Row;
@@ -117,7 +117,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         assertTrue(datasetsAfterFresh.length > 0, "At least one dataset should exist");
 
         // Run experiment for one experiment type (use simplest one)
-        ExperimentRunner freshRunner = new ExperimentRunner(testDatasetDir, testInputExcel, AppConfig.TEST_TMP_DIR);
+        ResolutionVariantRunner freshRunner = new ResolutionVariantRunner(testDatasetDir, testInputExcel, AppConfig.TEST_TMP_DIR);
         Path freshOutputDir = testExperimentsDir.resolve("fresh_run_test");
         freshRunner.runTests(freshOutputDir, false, false);
 
@@ -146,7 +146,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         resumeCollector.processExcel(testInputExcel);
 
         // Run experiment again (should skip already-processed datasets)
-        ExperimentRunner resumeRunner = new ExperimentRunner(testDatasetDir, testInputExcel, AppConfig.TEST_TMP_DIR);
+        ResolutionVariantRunner resumeRunner = new ResolutionVariantRunner(testDatasetDir, testInputExcel, AppConfig.TEST_TMP_DIR);
         resumeRunner.runTests(freshOutputDir, false, false);
 
         long resumeRunEndTime = System.currentTimeMillis();

@@ -21,26 +21,33 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Getter
 public class MavenRunner {
     private final Path logDir;
     private final boolean isUseMavenDaemon;
+    private final int timeoutMinutes;
     private static final String COMPILATION_POSTFIX = "_compilation";
 
-    public MavenRunner(Path logDir, boolean isUseMavenDaemon) {
+    public MavenRunner(Path logDir, boolean isUseMavenDaemon, int timeoutMinutes) {
         this.logDir = logDir;
         this.logDir.toFile().mkdirs();
         this.isUseMavenDaemon = isUseMavenDaemon;
+        this.timeoutMinutes = timeoutMinutes;
+    }
+
+    public MavenRunner(Path tempDir, int timeoutMinutes) {
+        this(tempDir, false, timeoutMinutes);
     }
 
     public MavenRunner(Path tempDir) {
-        this(tempDir, false);
+        this(tempDir, false, AppConfig.MAVEN_BUILD_TIMEOUT_VARIANT_TESTING_MINUTES);
     }
 
     public MavenRunner() {
-        this(AppConfig.TMP_DIR);
+        this(AppConfig.TMP_DIR, false, AppConfig.MAVEN_BUILD_TIMEOUT_VARIANT_TESTING_MINUTES);
     }
 
     public void run_cache_parallel(Path... path) {
@@ -51,7 +58,7 @@ public class MavenRunner {
         System.out.println(path[0].toAbsolutePath());
         injectCacheArtifact(path[0]);
         String projectName = path[0].getFileName().toString();
-        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommands.getFirst(), "-fae", "-Dmaven.test.failure.ignore=true", "test");
+        runCommand(path[0], logDir.resolve(projectName + COMPILATION_POSTFIX), timeoutMinutes, mavenCommands.getFirst(), AppConfig.MAVEN_FAIL_MODE, AppConfig.MAVEN_TEST_FAILURE_IGNORE, "test");
 
 
 
@@ -66,7 +73,7 @@ public class MavenRunner {
                             injectCacheArtifact(path[finalI]);
                             copyTarget(path[0].toFile(), path[finalI].toFile());
                             FileUtils.copyDirectoryCompatibilityMode(path[0].resolve(".cache").toFile(), path[finalI].resolve(".cache").toFile());
-                            runCommand(path[finalI], logDir.resolve(projectNameFinal + COMPILATION_POSTFIX), mavenCommands.get(finalI), "-fae", "-Dmaven.test.failure.ignore=true", "test");
+                            runCommand(path[finalI], logDir.resolve(projectNameFinal + COMPILATION_POSTFIX), timeoutMinutes, mavenCommands.get(finalI), "-o", AppConfig.MAVEN_FAIL_MODE, AppConfig.MAVEN_TEST_FAILURE_IGNORE, "test");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -82,7 +89,7 @@ public class MavenRunner {
         for (int i = 0; i < path.length; i++) {
             final String mavenCommand = resolveMavenCommand(path[i]);
             Path projectName = path[i].getFileName();
-            runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "-Dmaven.test.failure.ignore=true", "test");
+            runCommand(path[i], logDir.resolve(projectName + COMPILATION_POSTFIX), timeoutMinutes, mavenCommand, AppConfig.MAVEN_FAIL_MODE, AppConfig.MAVEN_TEST_FAILURE_IGNORE, "test");
         }
     }
 
@@ -94,7 +101,7 @@ public class MavenRunner {
                         String mavenCommand = resolveMavenCommand(path[finalI]);
                         String projectName = path[finalI].getFileName().toString();
                         try {
-                            runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX), mavenCommand, "-fae", "-Dmaven.test.failure.ignore=true", "test");
+                            runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX), timeoutMinutes, mavenCommand, AppConfig.MAVEN_FAIL_MODE, AppConfig.MAVEN_TEST_FAILURE_IGNORE, "test");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -120,9 +127,10 @@ public class MavenRunner {
                         try {
 
                             runCommand(path[finalI], logDir.resolve(projectName + COMPILATION_POSTFIX),
+                                    timeoutMinutes,
                                     mavenCommand,
-                                    "-fae",
-                                    "-Dmaven.test.failure.ignore=true",
+                                    AppConfig.MAVEN_FAIL_MODE,
+                                    AppConfig.MAVEN_TEST_FAILURE_IGNORE,
                                     jacoco + jacocoGoalPrepareAgent,
                                     "test",
                                     jacoco + jacocoGoalReport);
@@ -137,10 +145,16 @@ public class MavenRunner {
     }
 
     /**
-     * Helper function for calling git console commands
+     * Helper function for calling Maven commands with timeout.
+     * Builds exceeding the timeout will be forcibly terminated.
+     *
+     * @param directory Working directory for the command
+     * @param outputDirectory Output file for command output (null for inherited IO)
+     * @param timeoutMinutes Timeout in minutes before forcibly killing the process
+     * @param command Command and arguments to execute
      */
-    private static void runCommand(Path directory, Path outputDirectory, String... command) {
-        System.out.println("Executing: " + Arrays.toString(command));
+    private static void runCommand(Path directory, Path outputDirectory, int timeoutMinutes, String... command) {
+        System.out.println("Executing: " + Arrays.toString(command) + " (timeout: " + timeoutMinutes + " minutes)");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.directory(directory.toFile());
         pb.redirectErrorStream(true);
@@ -153,9 +167,20 @@ public class MavenRunner {
         Process process = null;
         try {
             process = pb.start();
-            process.waitFor();
+            boolean completed = process.waitFor(timeoutMinutes, TimeUnit.MINUTES);
+
+            if (!completed) {
+                // Timeout occurred - kill the process
+                System.err.println("TIMEOUT: Build exceeded " + timeoutMinutes +
+                    " minutes. Killing process: " + Arrays.toString(command));
+                process.destroyForcibly();
+                process.waitFor(); // Wait for forced termination to complete
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            if (process != null && process.isAlive()) {
+                process.destroyForcibly();
+            }
         }
 
     }

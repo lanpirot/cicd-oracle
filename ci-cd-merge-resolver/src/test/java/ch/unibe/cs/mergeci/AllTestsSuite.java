@@ -1,11 +1,11 @@
 package ch.unibe.cs.mergeci;
 
-import ch.unibe.cs.mergeci.experimentSetup.DatasetCollectorTest;
+import ch.unibe.cs.mergeci.experimentSetup.MergeConflictCollectorTest;
 import ch.unibe.cs.mergeci.experimentSetup.ExcelWriterTest;
-import ch.unibe.cs.mergeci.experimentSetup.MetricsAnalyzerTest;
+import ch.unibe.cs.mergeci.experimentSetup.ResultsPresenterTest;
 import ch.unibe.cs.mergeci.experimentSetup.RepoCollectorTest;
 import ch.unibe.cs.mergeci.experimentSetup.coverageCalculater.CoverageCalculatorTest;
-import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunnerTest;
+import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ResolutionVariantRunnerTest;
 import ch.unibe.cs.mergeci.service.MergeAnalyzerTest;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResultTest;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunnerTest;
@@ -20,8 +20,8 @@ import org.junit.platform.suite.api.Suite;
 
 
 /**
- * Test suite that runs all tests with ExperimentRunnerTest running last.
- * This ensures that the potentially slower or resource-intensive ExperimentRunnerTest
+ * Test suite that runs all tests with ResolutionVariantRunnerTest running last.
+ * This ensures that the potentially slower or resource-intensive ResolutionVariantRunnerTest
  * is executed after all other tests have completed.
  */
 @Suite
@@ -43,14 +43,14 @@ import org.junit.platform.suite.api.Suite;
     // Experiment setup tests
     ExcelWriterTest.class,
     RepoCollectorTest.class,
-    DatasetCollectorTest.class,
-    MetricsAnalyzerTest.class,
+    MergeConflictCollectorTest.class,
+    ResultsPresenterTest.class,
     CoverageCalculatorTest.class,
 
     // Run Runners last
     MavenRunnerTest.class,
     RepoCollectorTest.class,
-    ExperimentRunnerTest.class
+    ResolutionVariantRunnerTest.class
 })
 public class AllTestsSuite {
 }

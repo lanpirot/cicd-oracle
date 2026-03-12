@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MetricsAnalyzerTest extends BaseTest {
+public class ResultsPresenterTest extends BaseTest {
 
     @Test
     void loadAllMerges() {
-        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.no_cache_parallel.getName()));
-        metricsAnalyzer.makeFullAnalysis();
+        ResultsPresenter metricsAnalyzer = new ResultsPresenter(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.no_cache_parallel.getName()));
+        metricsAnalyzer.presentFullResults();
 
         // Verify the analysis loaded merges
         List<MergeOutputJSON> merges = metricsAnalyzer.getMerges();
@@ -26,7 +26,7 @@ public class MetricsAnalyzerTest extends BaseTest {
 
     @Test
     void makeCacheOptimizationAnalysis() {
-        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.cache_parallel.getName()));
+        ResultsPresenter metricsAnalyzer = new ResultsPresenter(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.cache_parallel.getName()));
 
         List<MergeOutputJSON> initMerges = metricsAnalyzer.getMerges();
         assertNotNull(initMerges, "Initial merges should not be null");
@@ -36,29 +36,29 @@ public class MetricsAnalyzerTest extends BaseTest {
                 collect(Collectors.toList());
 
         System.out.printf(merges.size()+" %n");
-        List<MergeOutputJSON> oneModuleMerges = MetricsAnalyzer.getSingleModuleProjects(merges);
-        List<MergeOutputJSON> multiModuleMerges = MetricsAnalyzer.getMultiModuleProjects(merges);
+        List<MergeOutputJSON> oneModuleMerges = ResultsPresenter.getSingleModuleProjects(merges);
+        List<MergeOutputJSON> multiModuleMerges = ResultsPresenter.getMultiModuleProjects(merges);
 
         assertNotNull(oneModuleMerges, "Single module merges should not be null");
         assertNotNull(multiModuleMerges, "Multi module merges should not be null");
 
-        Map<Integer, Double> map = MetricsAnalyzer.ratioInExecutionTimeDistribution(merges);
+        Map<Integer, Double> map = ResultsPresenter.ratioInExecutionTimeDistribution(merges);
         System.out.printf("Total: %s %n",map);
-        System.out.printf("OneModule: %s %n",MetricsAnalyzer.ratioInExecutionTimeDistribution(oneModuleMerges));
-        System.out.printf("MultiModule: %s %n",MetricsAnalyzer.ratioInExecutionTimeDistribution(multiModuleMerges));
+        System.out.printf("OneModule: %s %n",ResultsPresenter.ratioInExecutionTimeDistribution(oneModuleMerges));
+        System.out.printf("MultiModule: %s %n",ResultsPresenter.ratioInExecutionTimeDistribution(multiModuleMerges));
 
         assertNotNull(map, "Execution time distribution should not be null");
     }
 
     @Test
     void withoutOptimization() {
-        MetricsAnalyzer metricsAnalyzer = new MetricsAnalyzer(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.no_cache_no_parallel.getName()));
+        ResultsPresenter metricsAnalyzer = new ResultsPresenter(AppConfig.TEST_EXPERIMENTS_DIR.resolve(Utility.Experiments.no_cache_no_parallel.getName()));
 
         List<MergeOutputJSON> merges = metricsAnalyzer.getMerges();
         assertNotNull(merges, "Merges list should not be null");
 
         System.out.printf(merges.size()+" %n");
-        Map<Integer, Double> map = MetricsAnalyzer.ratioInExecutionTimeDistribution(merges);
+        Map<Integer, Double> map = ResultsPresenter.ratioInExecutionTimeDistribution(merges);
         System.out.printf("Total: %s %n",map);
 
         assertNotNull(map, "Execution time distribution should not be null");
