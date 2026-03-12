@@ -84,7 +84,7 @@ public class MergeAnalyzer {
     }
 
     public RunExecutionTIme runTests(IRunner runner) {
-        MavenRunner mavenRunner = new MavenRunner(logDir, false);
+        MavenRunner mavenRunner = new MavenRunner(logDir);
 
         int numProjects = countProjects();
         List<Path> args = new ArrayList<>(numProjects);
@@ -98,12 +98,19 @@ public class MergeAnalyzer {
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {
         Map<String, CompilationResult> statistics = new TreeMap<>();
         int numProjects = countProjects();
-        CompilationResult compResult = new CompilationResult(logDir.resolve(projectName + "_compilation"));
-        statistics.put(projectName, compResult);
+
+        Path mainLogPath = logDir.resolve(projectName + "_compilation");
+        if (mainLogPath.toFile().exists()) {
+            CompilationResult compResult = new CompilationResult(mainLogPath);
+            statistics.put(projectName, compResult);
+        }
+
         for (int i = 0; i < numProjects - 1; i++) {
             Path path = logDir.resolve(projectName + "_" + i + "_compilation");
-            compResult = new CompilationResult(path);
-            statistics.put(projectName + "_" + i, compResult);
+            if (path.toFile().exists()) {
+                CompilationResult compResult = new CompilationResult(path);
+                statistics.put(projectName + "_" + i, compResult);
+            }
         }
         return statistics;
     }

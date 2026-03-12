@@ -327,14 +327,70 @@ Three modes optimize the brute-force evaluation:
 
 ## Running the Pipeline
 
-### Full Pipeline (FRESH_RUN)
+### Step 1: Compile
+Always compile before running to ensure latest code changes are included:
+```bash
+mvn clean compile
+```
+
+### Step 2: Run Pipeline
+
+#### Option A: Full Pipeline (FRESH_RUN Mode)
+**Use when**: Starting completely fresh, or after code changes
+**What it does**:
+- Deletes all cloned repositories
+- Deletes all dataset files
+- Deletes all experiment results
+- Processes everything from scratch
+
 ```bash
 mvn spring-boot:run -Dspring-boot.run.jvmArguments="-DfreshRun=true"
 ```
 
-### Resume Mode (Default)
+#### Option B: Resume Mode (Default)
+**Use when**: Continuing previous run, adding more repos, or re-running experiments
+**What it does**:
+- Skips already-cloned repositories
+- Skips already-collected datasets
+- Skips already-executed experiments
+- Only processes new/incomplete work
+
 ```bash
 mvn spring-boot:run
+```
+
+### Step 3: Lightweight Cleanup (Between Runs)
+If you want to re-run experiments without re-collecting datasets or re-cloning repos:
+
+```bash
+# Remove only experiment results and temp files
+rm -rf /home/lanpirot/data/bruteforcemerge/experiments
+rm -rf /home/lanpirot/tmp/bruteforce_tmp
+
+# Then run in resume mode
+mvn spring-boot:run
+```
+
+This preserves:
+- Cloned repositories (`/home/lanpirot/tmp/bruteforce_repos`)
+- Collected datasets (`/home/lanpirot/data/bruteforcemerge/datasets`)
+
+### Complete Workflow Examples
+
+**Fresh start with new code:**
+```bash
+mvn clean compile && mvn spring-boot:run -Dspring-boot.run.jvmArguments="-DfreshRun=true"
+```
+
+**Continue previous run:**
+```bash
+mvn clean compile && mvn spring-boot:run
+```
+
+**Re-run experiments with same data:**
+```bash
+rm -rf /home/lanpirot/data/bruteforcemerge/experiments /home/lanpirot/tmp/bruteforce_tmp
+mvn clean compile && mvn spring-boot:run
 ```
 
 ### Configuration

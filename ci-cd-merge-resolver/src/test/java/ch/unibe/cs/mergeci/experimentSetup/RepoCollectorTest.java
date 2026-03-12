@@ -44,7 +44,12 @@ public class RepoCollectorTest extends BaseTest {
 
     @Test
     void processExcel() throws Exception {
-        RepoCollector repoCollector = new RepoCollector(AppConfig.TEST_REPO_DIR, AppConfig.TEST_TMP_DIR, AppConfig.TEST_DATASET_DIR);
+        // Use TEST_TMP_DIR/repos for cloning to ensure clean state between test runs
+        RepoCollector repoCollector = new RepoCollector(
+            AppConfig.TEST_TMP_DIR.resolve("repos"),
+            AppConfig.TEST_TMP_DIR,
+            AppConfig.TEST_DATASET_DIR
+        );
 
         // Verify input file exists
         assertTrue(Files.exists(AppConfig.TEST_INPUT_PROJECT_XLSX),

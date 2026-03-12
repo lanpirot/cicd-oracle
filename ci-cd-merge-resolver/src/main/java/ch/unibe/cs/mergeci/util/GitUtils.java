@@ -84,7 +84,7 @@ public class GitUtils {
                     .setCreateBranch(true)
                     .setStartPoint(head)
                     .call();
-            System.out.println("Checked out temp branch: " + checkout);
+            // Quiet checkout - no console output
 
             // Perform the merge
             org.eclipse.jgit.api.MergeResult mergeResult = git.merge()
@@ -97,7 +97,7 @@ public class GitUtils {
             // Conflicting files
             Set<String> conflictPaths = mergeResult.getConflicts() != null ?
                     mergeResult.getConflicts().keySet() : Collections.emptySet();
-            System.out.println("Conflicts: " + conflictPaths);
+            // Quiet - no console output for conflicts
 
             // Iterate over DirCache to find automatically merged files
             DirCache dirCache = repo.readDirCache();
@@ -240,6 +240,23 @@ public class GitUtils {
         return conflictingFiles;
     }
 
+    /**
+     * Get the total number of conflict chunks across all conflicting files between two commits.
+     * This is a convenience method that wraps countConflictChunks() and sums all values.
+     *
+     * @param repo Path to the repository
+     * @param parent1 First parent commit hash
+     * @param parent2 Second parent commit hash
+     * @return Total number of conflict chunks
+     * @throws IOException if git operations fail
+     */
+    public static int getTotalConflictChunks(Path repo, String parent1, String parent2) throws IOException {
+        try (Git git = getGit(repo)) {
+            Map<String, Integer> map = countConflictChunks(parent1, parent2, git);
+            return map.values().stream().mapToInt(Integer::intValue).sum();
+        }
+    }
+
     public static List<MergeInfo> getConflictCommits(int maxConflictingMergeCount, Git git) {
 
         int conflictingMergeCount = 0;
@@ -293,6 +310,15 @@ public class GitUtils {
         return mergeCommits;
     }
 
+    /**
+     * Get the total count of merge commits in the repository
+     * @param git the Git repository
+     * @return the total number of merge commits
+     */
+    public static int getTotalMergeCount(Git git) {
+        return getAllMergeCommits(git).size();
+    }
+
     public static Map<String, ObjectId> getObjectsFromCommit(String commitHash, Git git) throws IOException, GitAPIException {
         Repository repo = git.getRepository();
         RevWalk walk = new RevWalk(repo);
@@ -318,17 +344,17 @@ public class GitUtils {
         return map;
     }
 
-    public static void cloneRepo(Path folderToClone, String url) {
+    public static QuietProgressMonitor cloneRepo(Path folderToClone, String url) {
 
         // then clone
-        System.out.printf("Cloning from %s to %s %n", url, folderToClone);
+        QuietProgressMonitor monitor = new QuietProgressMonitor();
         try (Git result = Git.cloneRepository()
                 .setURI(url)
                 .setDirectory(folderToClone.toFile())
-                .setProgressMonitor(new SimpleProgressMonitor())
+                .setProgressMonitor(monitor)
                 .call()) {
             // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
-            System.out.println("Having repository: " + result.getRepository().getDirectory());
+            // Repository info available via result.getRepository().getDirectory() if needed
 
         } catch (GitAPIException e) {
             throw new RuntimeException(e);
@@ -336,5 +362,6 @@ public class GitUtils {
         RepositoryCache.clear();
         WindowCache.reconfigure(new WindowCacheConfig());
 
+        return monitor;
     }
 }

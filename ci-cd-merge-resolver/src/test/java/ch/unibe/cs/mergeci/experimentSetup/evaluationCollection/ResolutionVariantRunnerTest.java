@@ -18,12 +18,16 @@ public class ResolutionVariantRunnerTest extends BaseTest {
         Path repoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind);
         Path output = AppConfig.TEST_EXPERIMENTS_DIR.resolve( AppConfig.jacksonDatabind + AppConfig.JSON);
 
-        ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, output,false, false);
-
-        // Verify output file was created (if dataset and repo exist)
+        // Only run the test if dataset and repo exist
         if (Files.exists(dataset) && Files.exists(repoPath)) {
-            assertTrue(Files.exists(output) || true,
+            ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, output,false, false);
+
+            // Verify output file was created
+            assertTrue(Files.exists(output),
                 "Output file should be created when inputs exist");
+        } else {
+            // Skip test if required files don't exist
+            System.out.println("Skipping makeAnalysisByDataset test - dataset or repo not found");
         }
     }
 

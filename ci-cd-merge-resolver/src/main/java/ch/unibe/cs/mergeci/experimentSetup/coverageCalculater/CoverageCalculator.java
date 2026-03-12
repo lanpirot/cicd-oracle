@@ -64,7 +64,7 @@ public class CoverageCalculator {
             try {
                 allMergesJSON = objectMapper.readValue(file, AllMergesJSON.class);
                 allMergesJSON.setProjectName(projectName);
-                allMergesJSON.setRepoUrl(getRepoUrl(file.getName()));
+                allMergesJSON.setRepoUrl(Utility.getRepoUrlFromExcel(repoDatasetsFile, projectName));
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -84,7 +84,12 @@ public class CoverageCalculator {
                 Path newProjectPath = tempDir.resolve(newProjectName);
 
                 if (!projectRepoPath.toFile().exists()) {
-                    GitUtils.cloneRepo(projectRepoPath, getRepoUrl(projectName));
+                    try {
+                        GitUtils.cloneRepo(projectRepoPath, Utility.getRepoUrlFromExcel(repoDatasetsFile, projectName));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 try (Git git = GitUtils.getGit(projectRepoPath)) {
@@ -127,27 +132,6 @@ public class CoverageCalculator {
 
 
 
-    private String getRepoUrl(String projectName) {
-
-        try (FileInputStream file = new FileInputStream(repoDatasetsFile.toFile()); Workbook workbook = new XSSFWorkbook(file);) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            for (int i = 1; i < sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                String repoName = row.getCell(0).getStringCellValue().split("/")[1].trim();
-                if (repoName.equals(com.google.common.io.Files.getNameWithoutExtension(projectName))) {
-                    return row.getCell(1).getStringCellValue().trim();
-                }
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
 
 
 

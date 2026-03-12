@@ -18,7 +18,7 @@ public class MavenExecutionFactory {
         return new IRunner() {
             @Override
             public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
-                MavenRunner mavenRunner = new MavenRunner(logDir, false);
+                MavenRunner mavenRunner = new MavenRunner(logDir);
                 RunExecutionTIme runExecutionTime = new RunExecutionTIme();
 
                 Instant start = Instant.now();

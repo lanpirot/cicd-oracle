@@ -78,11 +78,14 @@ public class RepositoryManager {
             }
 
             try {
-                System.out.printf("Cloning repository: %s%n", repoName);
-                GitUtils.cloneRepo(repoPath, repoUrl);
+                System.out.printf("  Cloning %s...", repoName);
+                System.out.flush();
+                QuietProgressMonitor monitor = GitUtils.cloneRepo(repoPath, repoUrl);
+                System.out.println(" " + monitor.getSummary());
                 setRepositoryStatus(repoName, RepositoryStatus.PROCESSING);
                 return repoPath;
             } catch (Exception e) {
+                System.out.println(" ✗ Clone failed");
                 // Mark as clone failed but create empty directory as marker
                 repoPath.toFile().mkdirs();
                 setRepositoryStatus(repoName, RepositoryStatus.REJECTED_CLONE_FAILED);

@@ -65,48 +65,82 @@ public class RepoCollector {
 
             Sheet sheet = workbook.getSheetAt(0);
 
+            // Count total repositories
+            int totalRepos = 0;
+            for (Row row : sheet) {
+                if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
+                String repoUrl = row.getCell(1) != null ? row.getCell(1).getStringCellValue().trim() : "";
+                if (!repoUrl.isEmpty() && !seen.contains(repoUrl)) {
+                    seen.add(repoUrl);
+                    totalRepos++;
+                }
+            }
+
+            // Print header
+            System.out.println("================================================================================");
+            System.out.println("CI/CD Merge Resolver - Collection Phase");
+            System.out.printf("Total repositories: %d | Fresh run: %s%n", totalRepos, AppConfig.isFreshRun());
+            System.out.println("================================================================================\n");
+
+            seen.clear();
+            int currentRepo = 0;
+
             for (Row row : sheet) {
                 if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
 
-                String repoName = receiveRepoName(row.getCell(0).getStringCellValue().trim());
+                String repoName = Utility.extractRepoName(row.getCell(0).getStringCellValue().trim());
                 String repoUrl = row.getCell(1).getStringCellValue().trim();
 
                 if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
                 if (seen.contains(repoUrl)) continue;
                 seen.add(repoUrl);
 
+                currentRepo++;
+
                 // Skip if already processed (unless FRESH_RUN)
-                if (!AppConfig.isFreshRun() && Files.exists(datasetDir.resolve(repoName + AppConfig.XLSX))) {
-                    System.out.println("\n\n=== Skipping repository (already processed): " + repoName + " ===");
+                RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
+                if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED) {
+                    System.out.printf("[%d/%d] %s - ⏩ Already processed (%s)\n\n", currentRepo, totalRepos, repoName, existingStatus);
                     continue;
                 }
 
-                System.out.println("\n\n=== Processing repository: " + repoName + " ===");
+                System.out.printf("[%d/%d] %s\n", currentRepo, totalRepos, repoName);
 
                 Path repoFolder;
                 try {
                     repoFolder = repoManager.getRepositoryPath(repoName, repoUrl);
                 } catch (IOException e) {
-                    System.out.println("Failed to clone: " + repoUrl + " - " + e.getMessage());
+                    System.out.printf("  ✗ Clone failed: %s\n\n", e.getMessage());
                     continue;
                 }
 
                 if (!isMavenProject(repoFolder)) {
-                    System.out.println("Not a Maven project, skipping.");
+                    System.out.println("  ✗ Not a Maven project → REJECTED_NO_POM\n");
                     repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
                     continue;
                 }
 
-                System.out.println("Valid Maven repository!");
+                System.out.println("  ✓ Maven project detected");
                 MergeConflictCollector conflictCollector = new MergeConflictCollector(
                         repoFolder,
                         tempDir.resolve(repoName),
                         AppConfig.MAX_CONFLICT_MERGES
                 );
 
-                conflictCollector.collectDataset(datasetDir.resolve(repoName + AppConfig.XLSX));
-                System.out.printf("Repository %s processed successfully%n", repoFolder);
-                repoManager.markRepositorySuccess(repoName);
+                CollectionResult result = conflictCollector.collectDataset(
+                        datasetDir.resolve(repoName + AppConfig.XLSX),
+                        repoName,
+                        repoUrl
+                );
+
+                // Log compact summary
+                System.out.println(formatResultSummary(result));
+
+                if (result.getStatus() == RepositoryStatus.SUCCESS) {
+                    repoManager.markRepositorySuccess(repoName);
+                } else {
+                    repoManager.markRepositoryRejected(repoName, result.getStatus());
+                }
                 RepositoryCache.clear();
                 WindowCache.reconfigure(new WindowCacheConfig());
                 // Clean up temp files but keep the repository
@@ -119,7 +153,25 @@ public class RepoCollector {
         return Files.exists(repo.resolve(AppConfig.POMXML));
     }
 
-    private String receiveRepoName(String repoUrl) {
-        return repoUrl.substring(repoUrl.lastIndexOf("/") + 1);
+    private String formatResultSummary(CollectionResult result) {
+        StringBuilder sb = new StringBuilder();
+
+        if (result.getStatus() == RepositoryStatus.SUCCESS) {
+            sb.append(String.format("  ✓ SUCCESS: %d/%d merges with Java conflicts → dataset created\n",
+                    result.getSuccessfulMerges(), result.getMergesWithJavaConflicts()));
+        } else {
+            sb.append(String.format("  ✗ %s: %s\n", result.getStatus(), result.getMessage()));
+        }
+
+        sb.append(String.format("     Total: %d merges | Conflicts: %d | Java conflicts: %d\n",
+                result.getTotalMerges(), result.getMergesWithConflicts(), result.getMergesWithJavaConflicts()));
+
+        if (result.getMergesWithNoTests() > 0 || result.getMergesTimedOut() > 0) {
+            sb.append(String.format("     No tests: %d | Timeouts: %d\n",
+                    result.getMergesWithNoTests(), result.getMergesTimedOut()));
+        }
+
+        sb.append("\n");
+        return sb.toString();
     }
 }

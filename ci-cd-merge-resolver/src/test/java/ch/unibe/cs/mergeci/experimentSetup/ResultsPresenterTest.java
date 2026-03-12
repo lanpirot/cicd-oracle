@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.experimentSetup;
 
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.experimentSetup.analysis.ExecutionTimeAnalyzer;
 import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.MergeOutputJSON;
 import ch.unibe.cs.mergeci.util.Utility;
 import org.junit.jupiter.api.Test;
@@ -42,10 +43,12 @@ public class ResultsPresenterTest extends BaseTest {
         assertNotNull(oneModuleMerges, "Single module merges should not be null");
         assertNotNull(multiModuleMerges, "Multi module merges should not be null");
 
-        Map<Integer, Double> map = ResultsPresenter.ratioInExecutionTimeDistribution(merges);
+        // Use ExecutionTimeAnalyzer instead of removed static method
+        ExecutionTimeAnalyzer timeAnalyzer = new ExecutionTimeAnalyzer();
+        Map<Integer, Double> map = timeAnalyzer.calculateExecutionTimeDistribution(merges);
         System.out.printf("Total: %s %n",map);
-        System.out.printf("OneModule: %s %n",ResultsPresenter.ratioInExecutionTimeDistribution(oneModuleMerges));
-        System.out.printf("MultiModule: %s %n",ResultsPresenter.ratioInExecutionTimeDistribution(multiModuleMerges));
+        System.out.printf("OneModule: %s %n", timeAnalyzer.calculateExecutionTimeDistribution(oneModuleMerges));
+        System.out.printf("MultiModule: %s %n", timeAnalyzer.calculateExecutionTimeDistribution(multiModuleMerges));
 
         assertNotNull(map, "Execution time distribution should not be null");
     }
@@ -58,7 +61,10 @@ public class ResultsPresenterTest extends BaseTest {
         assertNotNull(merges, "Merges list should not be null");
 
         System.out.printf(merges.size()+" %n");
-        Map<Integer, Double> map = ResultsPresenter.ratioInExecutionTimeDistribution(merges);
+
+        // Use ExecutionTimeAnalyzer instead of removed static method
+        ExecutionTimeAnalyzer timeAnalyzer = new ExecutionTimeAnalyzer();
+        Map<Integer, Double> map = timeAnalyzer.calculateExecutionTimeDistribution(merges);
         System.out.printf("Total: %s %n",map);
 
         assertNotNull(map, "Execution time distribution should not be null");

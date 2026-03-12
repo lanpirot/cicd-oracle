@@ -1,7 +1,14 @@
 package ch.unibe.cs.mergeci.util;
 
 import lombok.Getter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -77,5 +84,45 @@ public class Utility {
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
+    }
+
+    /**
+     * Extract repository name from a repository URL.
+     * Returns the last segment after the final slash.
+     *
+     * @param repoUrl The repository URL (e.g., "owner/repo" or "https://github.com/owner/repo")
+     * @return The repository name (e.g., "repo")
+     */
+    public static String extractRepoName(String repoUrl) {
+        return repoUrl.substring(repoUrl.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * Look up repository URL from an Excel file containing project information.
+     * Searches for a project by name and returns its URL.
+     *
+     * @param excelFile Path to the Excel file containing repository information
+     * @param projectName Name of the project to find (without extension)
+     * @return The repository URL, or null if not found
+     * @throws IOException if the Excel file cannot be read
+     */
+    public static String getRepoUrlFromExcel(Path excelFile, String projectName) throws IOException {
+        try (FileInputStream file = new FileInputStream(excelFile.toFile());
+             Workbook workbook = new XSSFWorkbook(file)) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+
+                String repoName = row.getCell(PROJECTCOLUMN.repoName.getColumnNumber())
+                        .getStringCellValue().split("/")[1].trim();
+                if (repoName.equals(projectName)) {
+                    return row.getCell(PROJECTCOLUMN.repoURL.getColumnNumber())
+                            .getStringCellValue().trim();
+                }
+            }
+        }
+        return null;
     }
 }

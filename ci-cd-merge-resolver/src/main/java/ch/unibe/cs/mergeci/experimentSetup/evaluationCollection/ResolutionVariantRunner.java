@@ -1,38 +1,20 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.service.MavenExecutionFactory;
-import ch.unibe.cs.mergeci.service.MergeAnalyzer;
-import ch.unibe.cs.mergeci.service.RunExecutionTIme;
-import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
-import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
-import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
-import ch.unibe.cs.mergeci.util.RepositoryStatus;
 import ch.unibe.cs.mergeci.util.Utility;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class ResolutionVariantRunner {
     private final Path datasetsDir;
@@ -58,12 +40,12 @@ public class ResolutionVariantRunner {
             outputDir.toFile().mkdirs();
         }
 
-        File[] xlsxDataset = getFilesFromDir(datasetsDir);
+        File[] xlsxDataset = datasetsDir.toFile().listFiles();
 
         if (xlsxDataset == null) {return;}
 
         for (File dataset : xlsxDataset) {
-            String repoUrl = getRepoUrl(dataset);
+            String repoUrl = Utility.getRepoUrlFromExcel(repoDatasetsFile, Files.getNameWithoutExtension(dataset.getName()));
             String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + AppConfig.JSON;
 
             // Skip if already processed (unless FRESH_RUN, which already cleaned the directory)
@@ -99,139 +81,85 @@ public class ResolutionVariantRunner {
         }
     }
 
-    private File[] getFilesFromDir(Path dir) {
-        return dir.toFile().listFiles();
-    }
-
-    private String getRepoUrl(File dataset) {
-
-        try (FileInputStream file = new FileInputStream(repoDatasetsFile.toFile()); Workbook workbook = new XSSFWorkbook(file);) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                String repoName = row.getCell(Utility.PROJECTCOLUMN.repoName.getColumnNumber()).getStringCellValue().split("/")[1].trim();
-                if (repoName.equals(Files.getNameWithoutExtension(dataset.getName()))) {
-                    return row.getCell(Utility.PROJECTCOLUMN.repoURL.getColumnNumber()).getStringCellValue().trim();
-                }
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
 
     public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path Output, boolean isParallel, boolean isCache) throws Exception {
-        List<MergeOutputJSON> merges = new ArrayList<>();
+        // Read dataset
+        DatasetReader reader = new DatasetReader();
+        List<DatasetReader.MergeInfo> mergeInfos = reader.readMergeDataset(dataset);
 
+        System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
 
-        try (FileInputStream file = new FileInputStream(dataset.toFile());
-             Workbook workbook = new XSSFWorkbook(file);) {
+        // Create processors
+        MergeProcessor processor = new MergeProcessor(repoPath, isParallel, isCache);
+        VariantResultCollector collector = new VariantResultCollector();
 
+        // Process each merge
+        List<MergeOutputJSON> results = new ArrayList<>();
+        int index = 1;
+        int skippedCount = 0;
+        long totalTime = 0;
 
-            Sheet sheet = workbook.getSheetAt(0);
-            int i = 0;
-            for (Row row : sheet) {
-                MergeOutputJSON mergeOutputJSON = new MergeOutputJSON();
-                if (i++ == 0) continue;
-                System.out.printf("Start processing %d/%d of %s \n", i - 1, sheet.getLastRowNum(), dataset.getFileName().toString());
+        for (DatasetReader.MergeInfo info : mergeInfos) {
+            int progress = (index * 100) / mergeInfos.size();
+            System.out.printf("  [%d/%d|%3d%%] %s... ", index++, mergeInfos.size(), progress, info.getShortCommit());
+            System.out.flush();
 
-                mergeOutputJSON.setMergeCommit(row.getCell(Utility.MERGECOLUMN.mergeCommit.getColumnNumber()).getStringCellValue());
-                mergeOutputJSON.setParent1(row.getCell(Utility.MERGECOLUMN.parent1.getColumnNumber()).getStringCellValue());
-                mergeOutputJSON.setParent2(row.getCell(Utility.MERGECOLUMN.parent2.getColumnNumber()).getStringCellValue());
+            MergeProcessor.ProcessedMerge processed = processor.processMerge(info);
 
-//                mergeOutputJSON.getTestResults().setRunNum((int) row.getCell(3).getNumericCellValue());
-
-                int numConflictChunks = countNumberOfConflictChunks(repoPath, mergeOutputJSON.getParent1(), mergeOutputJSON.getParent2());
-                if (numConflictChunks > AppConfig.MAX_CONFLICT_CHUNKS) {
-                    System.out.printf("Too many conflict chunks: %d > %d \n", numConflictChunks, AppConfig.MAX_CONFLICT_CHUNKS);
-                    continue;
-                }
-
-                mergeOutputJSON.setNumConflictChunks(numConflictChunks);
-                mergeOutputJSON.setNumConflictFiles((int) row.getCell(Utility.MERGECOLUMN.numConflictingFiles.getColumnNumber()).getNumericCellValue());
-                mergeOutputJSON.setNumJavaConflictFiles((int) row.getCell(Utility.MERGECOLUMN.numJavaFiles.getColumnNumber()).getNumericCellValue());
-
-
-//                mergeOutputJSON.getTestResults().setElapsedTime((float) row.getCell(8).getNumericCellValue());
-                mergeOutputJSON.setIsMultiModule(row.getCell(Utility.MERGECOLUMN.isMultiModule.getColumnNumber()).getBooleanCellValue());
-
-                ////////////RUN RESOLUTION////////////////////////
-
-                String mergeHash = mergeOutputJSON.getMergeCommit();
-                String parent1Hash = mergeOutputJSON.getParent1();
-                String parent2Hash = mergeOutputJSON.getParent2();
-
-                FileUtils.deleteDirectory(AppConfig.TMP_PROJECT_DIR.toFile());
-                Instant start = Instant.now();
-                MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
-                mergeAnalyzer.buildProjects(parent1Hash, parent2Hash, mergeHash);
-                RunExecutionTIme runExecutionTIme;
-
-                runExecutionTIme = mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunner(isParallel, isCache));
-
-                Instant finish = Instant.now();
-                long timeElapsed = Duration.between(start, finish).toSeconds();
-                mergeOutputJSON.setTotalExecutionTime(timeElapsed);
-
-                System.out.println("Compilation result:");
-                Map<String, CompilationResult> compilationResultMap = mergeAnalyzer.collectCompilationResults();
-//                compilationResultMap.forEach((k, v) -> {
-//                    System.out.println(k + ": " + v);
-//                });
-
-
-                System.out.println("\n\nTesting result:");
-                Map<String, TestTotal> testTotalMap = mergeAnalyzer.collectTestResults();
-                testTotalMap.forEach((k, v) -> {
-                    System.out.println(k + ": " + v);
-                });
-
-                String projectName = mergeAnalyzer.getProjectName();
-                mergeOutputJSON.setTestResults(testTotalMap.get(projectName));
-                mergeOutputJSON.setCompilationResult(compilationResultMap.get(projectName));
-
-                List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResultMap.size());
-                for (Map.Entry<String, CompilationResult> entry : compilationResultMap.entrySet()) {
-                    if (entry.getKey().equals(projectName)) continue;
-                    MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
-                    variant.setVariantName(entry.getKey());
-                    variant.setCompilationResult(entry.getValue());
-                    variant.setTestResults(testTotalMap.get(entry.getKey()));
-
-                    variant.setConflictPatterns(mergeAnalyzer.getConflictPatterns().get(variants.size()));
-
-                    variants.add(variant);
-                }
-
-                MergeOutputJSON.VariantsExecution variantsExecution = new MergeOutputJSON.VariantsExecution(variants);
-                variantsExecution.setExecutionTimeSeconds(runExecutionTIme.getVariantsExecutionTime().getSeconds());
-                mergeOutputJSON.setVariantsExecution(variantsExecution);
-                merges.add(mergeOutputJSON);
+            if (processed.wasSkipped()) {
+                System.out.println(processed.getSkipReason());
+                skippedCount++;
+                continue;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            MergeOutputJSON output = collector.collectResults(processed);
+            results.add(output);
+            totalTime += processed.getAnalysisResult().getExecutionTimeSeconds();
+
+            System.out.println(collector.getSuccessSummary(processed));
         }
 
-        AllMergesJSON allMergesJSON = new AllMergesJSON();
-        allMergesJSON.setProjectName(Files.getNameWithoutExtension(dataset.getFileName().toString()));
-        allMergesJSON.setMerges(merges);
+        // Print summary
+        System.out.println(formatSummary(mergeInfos.size(), results.size(), skippedCount, totalTime));
 
-        ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.writeValue(Output.toFile(), allMergesJSON);
+        // Write results
+        String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
+        JsonResultWriter writer = new JsonResultWriter();
+        writer.writeResults(projectName, results, Output);
     }
 
-    private static int countNumberOfConflictChunks(Path repo, String parent1, String parent2) {
-        try (Git git = GitUtils.getGit(repo);) {
-            Map<String, Integer> map = GitUtils.countConflictChunks(parent1, parent2, git);
-            return map.values().stream().mapToInt(Integer::intValue).sum();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+    /**
+     * Format a summary line for the dataset processing results.
+     */
+    private static String formatSummary(int total, int successful, int skipped, long totalTime) {
+        StringBuilder summary = new StringBuilder();
+        summary.append("\n  ════════════════════════════════════════\n");
+        summary.append(String.format("  Summary: %d tested", successful));
+
+        if (skipped > 0) {
+            summary.append(String.format(", %d skipped", skipped));
+        }
+
+        summary.append(String.format(" (%.1f%% success rate)", (successful * 100.0 / total)));
+        summary.append(String.format(" | Total: %s", formatTime(totalTime)));
+
+        return summary.toString();
+    }
+
+    /**
+     * Format time in a human-readable way (seconds, minutes, or hours).
+     */
+    private static String formatTime(long seconds) {
+        if (seconds < 60) {
+            return seconds + "s";
+        } else if (seconds < 3600) {
+            long mins = seconds / 60;
+            long secs = seconds % 60;
+            return String.format("%dm %ds", mins, secs);
+        } else {
+            long hours = seconds / 3600;
+            long mins = (seconds % 3600) / 60;
+            return String.format("%dh %dm", hours, mins);
         }
     }
 }

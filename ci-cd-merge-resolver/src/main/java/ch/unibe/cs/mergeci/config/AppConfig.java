@@ -5,8 +5,6 @@ import ch.unibe.cs.mergeci.model.patterns.OursPattern;
 import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
 import org.springframework.context.annotation.Configuration;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.nio.file.*;
 import java.util.List;
 
@@ -34,9 +32,9 @@ public class AppConfig {
 
     public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");
     public static final Path INPUT_PROJECT_XLSX = DATA_BASE_DIR.resolve("projects_Java_desc-stars-1000.xlsx"); // Excel Path with list of repositories  and their repo URL
-    public static final Path DATASET_DIR = DATA_BASE_DIR.resolve("datasets");       // directory with dataset that were collected by `RepoCollector`
+    public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");       // directory with dataset that were collected by `RepoCollector`
     public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                      // name of directory to clone projects
-    public static final Path EXPERIMENTS_DIR = DATA_BASE_DIR.resolve("experiments");
+    public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");
     public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");           // temporary working directory
     public static final Path TMP_PROJECT_DIR = TMP_DIR.resolve("projects");
 
@@ -135,12 +133,5 @@ public class AppConfig {
      * Lower timeout since we're just verifying the human-resolved merge compiles.
      * Builds exceeding this timeout are likely stuck and should be skipped.
      */
-    public static final int MAVEN_BUILD_TIMEOUT_CONFLICT_COLLECTION_MINUTES = 5;
-
-    /**
-     * Maven build timeout for variant testing.
-     * Higher timeout since we're testing multiple resolution strategies.
-     * Variants may take longer to compile due to conflict resolution attempts.
-     */
-    public static final int MAVEN_BUILD_TIMEOUT_VARIANT_TESTING_MINUTES = 20;
+    public static final int MAVEN_BUILD_TIMEOUT = 5;
 }
