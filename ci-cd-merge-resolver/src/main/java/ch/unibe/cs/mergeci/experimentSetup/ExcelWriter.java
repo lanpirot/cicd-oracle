@@ -44,6 +44,8 @@ public class ExcelWriter {
             row.createCell(Utility.MERGECOLUMN.compilationTime.getColumnNumber()).setCellValue(r.compilationTime());
             row.createCell(Utility.MERGECOLUMN.testTime.getColumnNumber()).setCellValue(r.testTime());
             row.createCell(Utility.MERGECOLUMN.normalizedElapsedTime.getColumnNumber()).setCellValue(r.normalizedElapsedTime());
+            row.createCell(Utility.MERGECOLUMN.numberOfModules.getColumnNumber()).setCellValue(r.numberOfModules());
+            row.createCell(Utility.MERGECOLUMN.modulesPassed.getColumnNumber()).setCellValue(r.modulesPassed());
         }
 
 
@@ -70,7 +72,9 @@ public class ExcelWriter {
             int numPassedTests,
             float compilationTime,
             float testTime,
-            float normalizedElapsedTime
+            float normalizedElapsedTime,
+            int numberOfModules,
+            int modulesPassed
     ) {
     }
 

@@ -45,6 +45,8 @@ public class DatasetRowBuilder {
                 .compilationTime(result.getCompilationTime())
                 .testTime(result.getElapsedTime())
                 .normalizedElapsedTime(result.getNormalizedElapsedTime())
+                .numberOfModules(result.getNumberOfModules())
+                .modulesPassed(result.getModulesPassed())
                 .build();
     }
 

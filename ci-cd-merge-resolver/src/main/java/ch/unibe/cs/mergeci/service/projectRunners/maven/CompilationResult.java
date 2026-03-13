@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -91,12 +92,13 @@ public class CompilationResult {
     }
 
 
-    private int getNumberOfModules() {
+    @JsonIgnore
+    public int getNumberOfModules() {
         return moduleResults.size();
     }
 
-
-    private int getNumberOfSuccessfulModules() {
+    @JsonIgnore
+    public int getNumberOfSuccessfulModules() {
         return (int) moduleResults.stream().filter(x -> x.status == Status.SUCCESS).count();
     }
 

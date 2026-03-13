@@ -30,7 +30,9 @@ public class Utility {
         numPassedTests(10, "Number of Passed Tests"),
         compilationTime(11, "Compilation Time"),
         testTime(12, "Test Time"),
-        normalizedElapsedTime(13, "Normalized Elapsed Time");
+        normalizedElapsedTime(13, "Normalized Elapsed Time"),
+        numberOfModules(14, "Number of Modules"),
+        modulesPassed(15, "Modules Passed");
 
         private final int columnNumber;
         private final String columnName;

@@ -1,0 +1,746 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< ch.unibe.cs:ci-cd-merge-resolver >------------------
+[INFO] Building ci-cd-merge-resolver 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ ci-cd-merge-resolver ---
+[INFO] Deleting /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/target
+[INFO] 
+[INFO] --- dependency:3.8.1:properties (default) @ ci-cd-merge-resolver ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ ci-cd-merge-resolver ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 5 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ ci-cd-merge-resolver ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 45 source files with javac [debug parameters release 21] to target/classes
+[INFO] /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/main/java/ch/unibe/cs/mergeci/experimentSetup/RepoCollector.java: Some input files use or override a deprecated API.
+[INFO] /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/main/java/ch/unibe/cs/mergeci/experimentSetup/RepoCollector.java: Recompile with -Xlint:deprecation for details.
+[INFO] /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/main/java/ch/unibe/cs/mergeci/util/ProjectBuilderUtils.java: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/main/java/ch/unibe/cs/mergeci/util/ProjectBuilderUtils.java uses unchecked or unsafe operations.
+[INFO] /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/main/java/ch/unibe/cs/mergeci/util/ProjectBuilderUtils.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ ci-cd-merge-resolver ---
+[INFO] Copying 15162 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ ci-cd-merge-resolver ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 21 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ ci-cd-merge-resolver ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running ch.unibe.cs.mergeci.util.ProjectBuilderUtilsTest
+conflicts :
+src/main/java/ch/unibe/cs/Calculator.java
+java.lang.IllegalStateException: Duplicate stages not allowed: 2 src/main/java/ch/unibe/cs/Calculator.java
+	at org.eclipse.jgit.dircache.DirCacheBuilder.bad(DirCacheBuilder.java:246)
+	at org.eclipse.jgit.dircache.DirCacheBuilder.resort(DirCacheBuilder.java:236)
+	at org.eclipse.jgit.dircache.DirCacheBuilder.finish(DirCacheBuilder.java:192)
+	at org.eclipse.jgit.dircache.DirCacheCheckout.doCheckout(DirCacheCheckout.java:535)
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkout(DirCacheCheckout.java:493)
+	at org.eclipse.jgit.api.CheckoutCommand.call(CheckoutCommand.java:247)
+	at ch.unibe.cs.mergeci.util.GitUtils.getNonConflictObjects(GitUtils.java:86)
+	at ch.unibe.cs.mergeci.util.ProjectBuilderUtilsTest.saveProjects(ProjectBuilderUtilsTest.java:105)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:194)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:150)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+✓ Successfully generated 4 project variants
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.244 s <<< FAILURE! -- in ch.unibe.cs.mergeci.util.ProjectBuilderUtilsTest
+[ERROR] ch.unibe.cs.mergeci.util.ProjectBuilderUtilsTest.saveProjects -- Time elapsed: 0.057 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should have some non-conflict objects to save ==> expected: <false> but was: <true>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertFalse.failNotFalse(AssertFalse.java:63)
+	at org.junit.jupiter.api.AssertFalse.assertFalse(AssertFalse.java:36)
+	at org.junit.jupiter.api.Assertions.assertFalse(Assertions.java:239)
+	at ch.unibe.cs.mergeci.util.ProjectBuilderUtilsTest.saveProjects(ProjectBuilderUtilsTest.java:109)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running ch.unibe.cs.mergeci.util.RepositoryManagerTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 s -- in ch.unibe.cs.mergeci.util.RepositoryManagerTest
+[INFO] Running ch.unibe.cs.mergeci.util.RepositoryManagerIntegrationTest
+=== Starting Repository Manager Integration Test ===
+
+=== FIRST RUN ===
+Created mock Maven repository: /tmp/junit-12795864585668175377/repos/test-maven-project
+Created mock non-Maven repository: /tmp/junit-12795864585668175377/repos/test-non-maven-project
+First run completed:
+- Maven repo created and marked as SUCCESS
+- Non-Maven repo created and marked as REJECTED_NO_POM
+Verifying first run results...
+Non-Maven repo file count after rejection: 0
+✓ First run verification passed
+
+=== SECOND RUN ===
+Verifying second run behavior...
+✓ Second run behavior verification passed
+
+=== FINAL VERIFICATION ===
+Verifying final directory structure...
+Final non-Maven repo file count: 0
+✓ Final directory structure verification passed
+Verifying status file contents...
+Status file content:
+{
+  "test-maven-project" : "SUCCESS",
+  "test-non-maven-project" : "REJECTED_NO_POM"
+}
+✓ Status file verification passed
+=== Test Completed Successfully ===
+=== Testing Repository Path Resolution ===
+✓ Repository path resolution test passed
+=== Testing Rejection Marking ===
+✓ Rejection marking test passed
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in ch.unibe.cs.mergeci.util.RepositoryManagerIntegrationTest
+[INFO] Running ch.unibe.cs.mergeci.util.FileUtilsTest
+Non Conflict Paths:
+.gitignore	5ff6309b7199129c1afe4f4ec1906e640bec48c6
+.idea/.gitignore	13566b81b018ad684f3a35fee301741b2734c8f4
+.idea/encodings.xml	aa00ffab7828f4818589659c804ec2cfd99baed3
+.idea/misc.xml	001e75669d39157ee7b858294d073bd07de4ffa9
+.idea/vcs.xml	94a25f7f4cb416c083d265558da75d457237d671
+pom.xml	390532dcd77adad661360009d2c204a160aba953
+src/main/java/ch/unibe/cs/A.java	d2e9228e715584a7cc9be48a51e5d56c09892781
+src/main/java/ch/unibe/cs/Calculator.java	a76a67afbfa6ac2885e5a5c64ec3a7a814bf8f4e
+src/main/java/ch/unibe/cs/Main.java	0a8304ba1f2c15b2d5d384a8a7eca10fd8326661
+src/test/java/ch/unibe/cs/CalculatorTest.java	64a8fffc3747b296b5755fde4afde10b21907dc7
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in ch.unibe.cs.mergeci.util.FileUtilsTest
+[INFO] Running ch.unibe.cs.mergeci.util.GitUtilsTest
+Non Conflict Paths:
+.gitignore	5ff6309b7199129c1afe4f4ec1906e640bec48c6
+.idea/.gitignore	13566b81b018ad684f3a35fee301741b2734c8f4
+.idea/encodings.xml	aa00ffab7828f4818589659c804ec2cfd99baed3
+.idea/misc.xml	001e75669d39157ee7b858294d073bd07de4ffa9
+.idea/vcs.xml	94a25f7f4cb416c083d265558da75d457237d671
+pom.xml	390532dcd77adad661360009d2c204a160aba953
+src/main/java/ch/unibe/cs/A.java	d2e9228e715584a7cc9be48a51e5d56c09892781
+src/main/java/ch/unibe/cs/Calculator.java	a76a67afbfa6ac2885e5a5c64ec3a7a814bf8f4e
+src/main/java/ch/unibe/cs/Main.java	0a8304ba1f2c15b2d5d384a8a7eca10fd8326661
+src/test/java/ch/unibe/cs/CalculatorTest.java	64a8fffc3747b296b5755fde4afde10b21907dc7
+Non Conflict Paths:
+.gitignore	5ff6309b7199129c1afe4f4ec1906e640bec48c6
+.idea/.gitignore	13566b81b018ad684f3a35fee301741b2734c8f4
+.idea/encodings.xml	aa00ffab7828f4818589659c804ec2cfd99baed3
+.idea/misc.xml	001e75669d39157ee7b858294d073bd07de4ffa9
+.idea/vcs.xml	94a25f7f4cb416c083d265558da75d457237d671
+pom.xml	390532dcd77adad661360009d2c204a160aba953
+src/main/java/ch/unibe/cs/A.java	d2e9228e715584a7cc9be48a51e5d56c09892781
+src/main/java/ch/unibe/cs/Calculator.java	a76a67afbfa6ac2885e5a5c64ec3a7a814bf8f4e
+src/main/java/ch/unibe/cs/Main.java	0a8304ba1f2c15b2d5d384a8a7eca10fd8326661
+src/test/java/ch/unibe/cs/CalculatorTest.java	64a8fffc3747b296b5755fde4afde10b21907dc7
+Checked out temp branch: Ref[refs/heads/temp_merge_branch=c1317ffdd3795f49ba2d0771464e5fec7b858f9d(-1)]
+Conflicts: [src/main/java/ch/unibe/cs/Calculator.java]
+{yudao-module-bpm/yudao-module-bpm-biz/src/main/java/cn/iocoder/yudao/module/bpm/service/task/BpmProcessInstanceServiceImpl.java=0, sql/mysql/bpm_update.sql=1}
+Total number of conflicts: 5
+Merge commit: f6317728f348aac562686c8b189f9f577e5261d0 (parents: e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b, 0094637252c6a0b56da4391942a0a02f41bace3a)
+	src/test/java/com/fasterxml/jackson/databind/ser/jdk/AtomicTypeSerializationTest.java: 1
+
+Merge commit: e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b (parents: 37f905828fe8c608a6a27e7784985557f8886b5a, 96f68c7e5581e993aa239e74f8c6ff3376790eb4)
+	src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java: 1
+	src/test/java/com/fasterxml/jackson/databind/ser/jdk/AtomicTypeSerializationTest.java: 1
+
+Merge commit: 96f68c7e5581e993aa239e74f8c6ff3376790eb4 (parents: 5fdd40cc1e91aabd09a39be7d958d94ffc2a0114, 944c77305c9bea17058e1f002feacf0aae4d5b4f)
+	release-notes/CREDITS-2.x: 1
+
+Merge commit: 5fdd40cc1e91aabd09a39be7d958d94ffc2a0114 (parents: e37ef5d6a0ca28434e04cb1d674065e33bcbd725, 8c8bd3dbc0ade33ed96b7432acdcdd150c793086)
+	release-notes/VERSION-2.x: 1
+
+Merge commit: 7b163fd721bfc5bce6688ef8124dd8a899610195 (parents: 6805db0c491da2b04c2629c1fcafca62b27d93d4, e37ef5d6a0ca28434e04cb1d674065e33bcbd725)
+	src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java: 1
+	pom.xml: 1
+	src/test/java/com/fasterxml/jackson/databind/node/ObjectNodeTest.java: 1
+
+Checked out temp branch: Ref[refs/heads/temp_merge_branch=26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61(-1)]
+Conflicts: [src/main/java/ch/unibe/cs/Calculator.java]
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.447 s -- in ch.unibe.cs.mergeci.util.GitUtilsTest
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.coverageCalculater.CoverageCalculatorTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in ch.unibe.cs.mergeci.experimentSetup.coverageCalculater.CoverageCalculatorTest
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.ExcelWriterTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in ch.unibe.cs.mergeci.experimentSetup.ExcelWriterTest
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.MetricsAnalyzerTest
+All Merges: 0
+No Impact Merges: 0
+Coverage no impact total merges 0.000000 % 
+Coverage no impact single module merges 0.000000 % 
+Coverage no impact multi module merges 0.000000 % 
+Coverage  impact single module merges 0.000000 % 
+Coverage  impact multi module merges 0.000000 % 
+
+
+Ranking
+Ratio of execution time between merge and variance: 0.000000 
+{}
+Merges with coverage: 0 
+
+Threshold: [0.00, 0.15) 
+
+Threshold: [0.15, 0.40) 
+
+Threshold: [0.40, 0.60) 
+
+Threshold: [0.60, 1.00) 
+
+
+0 
+Total: {} 
+OneModule: {} 
+MultiModule: {} 
+0 
+Total: {} 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in ch.unibe.cs.mergeci.experimentSetup.MetricsAnalyzerTest
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunnerTest
+java.io.FileNotFoundException: /home/lanpirot/data/bruteforcemerge/test/dataset_temp/jackson-databind.xlsx (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:213)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:152)
+	at ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunner.makeAnalysisByDataset(ExperimentRunner.java:132)
+	at ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunnerTest.makeAnalysisByDataset(ExperimentRunnerTest.java:17)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:194)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:150)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ExperimentRunnerTest
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.RepoCollectorTest
+
+
+=== Processing repository: myTest ===
+Cloning repository: myTest
+Cloning from file:///home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest to src/test/resources/test-merge-projects/myTest 
+Having repository: src/test/resources/test-merge-projects/myTest/.git
+Not a Maven project, skipping.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.393 s -- in ch.unibe.cs.mergeci.experimentSetup.RepoCollectorTest
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.FreshRunModeIntegrationTest
+
+=== FRESH_RUN Mode Integration Test ===
+
+=== First Run: FRESH_RUN = true ===
+FRESH_RUN enabled: Cleaning collection directories...
+
+
+=== Processing repository: jackson-databind ===
+Cloning repository: jackson-databind
+Cloning from file:///home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/jackson-databind to /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind 
+Starting work on 2 tasks
+Start remote: Counting objects: 0
+Start remote: Finding sources: 199221
+Start remote: Getting sizes: 78087
+Start Receiving objects: 199221
+Done
+Start Resolving deltas: 108619
+Done
+Start Checking out files: 1569
+Done
+Having repository: /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind/.git
+Valid Maven repository!
+Processing merge: Skip merge (no Java conflicts): 96f68c7e5581e993aa239e74f8c6ff3376790eb4
+Skip merge (no Java conflicts): 5fdd40cc1e91aabd09a39be7d958d94ffc2a0114
+commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 1/5 
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 2/5 
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 1/5 FINISH
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 2/5 FINISH
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 FINISH
+Repository /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind processed successfully
+Cloning repository: jackson-databind
+Cloning from null to /home/lanpirot/data/bruteforcemerge/test/temp/jackson-databind 
+Skipping repository jackson-databind: Failed to clone repository: null
+
+=== Testing FRESH_RUN Actually Deletes Data ===
+
+
+
+=== Processing repository: jackson-databind ===
+Cloning repository: jackson-databind
+Cloning from file:///home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/jackson-databind to /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind 
+Starting work on 2 tasks
+Start remote: Counting objects: 0
+Start remote: Finding sources: 199221
+Start remote: Getting sizes: 78087
+Start Receiving objects: 199221
+Done
+Start Resolving deltas: 108619
+Done
+Start Checking out files: 1569
+Done
+Having repository: /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind/.git
+Valid Maven repository!
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 1/5 
+Skip merge (no Java conflicts): 96f68c7e5581e993aa239e74f8c6ff3376790eb4
+Skip merge (no Java conflicts): 5fdd40cc1e91aabd09a39be7d958d94ffc2a0114
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 4/5 
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 1/5 FINISH
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 4/5 FINISH
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 FINISH
+Repository /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind processed successfully
+FRESH_RUN enabled: Cleaning collection directories...
+
+
+=== Processing repository: jackson-databind ===
+Cloning repository: jackson-databind
+Cloning from file:///home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/jackson-databind to /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind 
+Starting work on 2 tasks
+Start remote: Counting objects: 0
+Start remote: Finding sources: 199221
+Start remote: Getting sizes: 78087
+Start Receiving objects: 199221
+Done
+Start Resolving deltas: 108619
+Done
+Start Checking out files: 1569
+Done
+Having repository: /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind/.git
+Valid Maven repository!
+Skip merge (no Java conflicts): 96f68c7e5581e993aa239e74f8c6ff3376790eb4
+Skip merge (no Java conflicts): 5fdd40cc1e91aabd09a39be7d958d94ffc2a0114
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 3/5 
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 4/5 
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 3/5 FINISH
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 FINISH
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 4/5 FINISH
+Repository /home/lanpirot/data/bruteforcemerge/test/integration_test_repos/jackson-databind processed successfully
+✓ FRESH_RUN correctly deletes and recreates data
+[ERROR] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 187.4 s <<< FAILURE! -- in ch.unibe.cs.mergeci.experimentSetup.FreshRunModeIntegrationTest
+[ERROR] ch.unibe.cs.mergeci.experimentSetup.FreshRunModeIntegrationTest.testFreshRunMode_ProducesSameResults -- Time elapsed: 58.26 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: At least one result file should exist ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at ch.unibe.cs.mergeci.experimentSetup.FreshRunModeIntegrationTest.testFreshRunMode_ProducesSameResults(FreshRunModeIntegrationTest.java:130)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running ch.unibe.cs.mergeci.experimentSetup.DatasetCollectorTest
+Skip merge (no Java conflicts): 96f68c7e5581e993aa239e74f8c6ff3376790eb4
+Skip merge (no Java conflicts): 5fdd40cc1e91aabd09a39be7d958d94ffc2a0114
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 1/5 
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 4/5 
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [./mvnw, -fae, -Dmaven.test.failure.ignore=true, test]
+Processing merge: commit f6317728f348aac562686c8b189f9f577e5261d0 1769483867 -----sp 	 1/5 FINISH
+Processing merge: commit 7b163fd721bfc5bce6688ef8124dd8a899610195 1769394570 -----sp 	 5/5 FINISH
+Processing merge: commit e2a50fdad92f4567e3bf0865ba1eca4a6fd1598b 1769483740 -----sp 	 4/5 FINISH
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 62.28 s -- in ch.unibe.cs.mergeci.experimentSetup.DatasetCollectorTest
+[INFO] Running ch.unibe.cs.mergeci.service.MergeAnalyzerTest
+Checked out temp branch: Ref[refs/heads/temp_merge_branch=c10e035c4b36e0b4cd50e009fb94b67e8fc51a45(-1)]
+Conflicts: [core/src/main/java/zemberek/core/collections/IntIntMap.java]
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+Compilation result:
+zemberek-nlp: CompilationResult{moduleResults=
+	ModuleResult{moduleName=zemberek-nlp 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 0.413  }
+	ModuleResult{moduleName=zemberek-core 0.17.0-SNAPSHOT                         | status= SUCCESS     | timeElapsed= 10.642 }
+	ModuleResult{moduleName=zemberek-tokenization 0.17.0-SNAPSHOT                 | status= SUCCESS     | timeElapsed= 0.662  }
+	ModuleResult{moduleName=zemberek-lm 0.17.0-SNAPSHOT                           | status= SUCCESS     | timeElapsed= 0.202  }
+	ModuleResult{moduleName=zemberek-lang-id 0.17.0-SNAPSHOT                      | status= SUCCESS     | timeElapsed= 0.55   }
+	ModuleResult{moduleName=zemberek-morphology 0.17.0-SNAPSHOT                   | status= SUCCESS     | timeElapsed= 6.389  }
+	ModuleResult{moduleName=zemberek-normalization 0.17.0-SNAPSHOT                | status= SUCCESS     | timeElapsed= 2.226  }
+	ModuleResult{moduleName=zemberek-grpc-server 0.3.0-SNAPSHOT                   | status= SUCCESS     | timeElapsed= 0.552  }
+	ModuleResult{moduleName=zemberek-ner 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 0.498  }
+	ModuleResult{moduleName=zemberek-classification 0.17.0-SNAPSHOT               | status= SUCCESS     | timeElapsed= 0.052  }
+	ModuleResult{moduleName=zemberek-apps 0.17.0-SNAPSHOT                         | status= SUCCESS     | timeElapsed= 0.714  }
+	ModuleResult{moduleName=zemberek-all 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 0.075  }
+	ModuleResult{moduleName=zemberek-examples 0.17.0-SNAPSHOT                     | status= SUCCESS     | timeElapsed= 0.142  }
+	ModuleResult{moduleName=zemberek-experiment 0.17.0-SNAPSHOT                   | status= SUCCESS     | timeElapsed= 0.548  }
+, buildStatus=SUCCESS, totalTime=23.925}
+
+zemberek-nlp_0: CompilationResult{moduleResults=
+	ModuleResult{moduleName=zemberek-nlp 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 1.665  }
+	ModuleResult{moduleName=zemberek-core 0.17.0-SNAPSHOT                         | status= SUCCESS     | timeElapsed= 16.496 }
+	ModuleResult{moduleName=zemberek-tokenization 0.17.0-SNAPSHOT                 | status= SUCCESS     | timeElapsed= 0.495  }
+	ModuleResult{moduleName=zemberek-lm 0.17.0-SNAPSHOT                           | status= SUCCESS     | timeElapsed= 0.138  }
+	ModuleResult{moduleName=zemberek-lang-id 0.17.0-SNAPSHOT                      | status= SUCCESS     | timeElapsed= 0.391  }
+	ModuleResult{moduleName=zemberek-morphology 0.17.0-SNAPSHOT                   | status= SUCCESS     | timeElapsed= 4.384  }
+	ModuleResult{moduleName=zemberek-normalization 0.17.0-SNAPSHOT                | status= SUCCESS     | timeElapsed= 1.42   }
+	ModuleResult{moduleName=zemberek-grpc-server 0.3.0-SNAPSHOT                   | status= SUCCESS     | timeElapsed= 0.601  }
+	ModuleResult{moduleName=zemberek-ner 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 0.345  }
+	ModuleResult{moduleName=zemberek-classification 0.17.0-SNAPSHOT               | status= SUCCESS     | timeElapsed= 0.041  }
+	ModuleResult{moduleName=zemberek-apps 0.17.0-SNAPSHOT                         | status= SUCCESS     | timeElapsed= 0.397  }
+	ModuleResult{moduleName=zemberek-all 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 0.043  }
+	ModuleResult{moduleName=zemberek-examples 0.17.0-SNAPSHOT                     | status= SUCCESS     | timeElapsed= 0.091  }
+	ModuleResult{moduleName=zemberek-experiment 0.17.0-SNAPSHOT                   | status= SUCCESS     | timeElapsed= 0.357  }
+, buildStatus=SUCCESS, totalTime=27.797}
+
+zemberek-nlp_1: CompilationResult{moduleResults=
+	ModuleResult{moduleName=zemberek-nlp 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 1.507  }
+	ModuleResult{moduleName=zemberek-core 0.17.0-SNAPSHOT                         | status= FAILURE     | timeElapsed= 5.642  }
+	ModuleResult{moduleName=zemberek-tokenization 0.17.0-SNAPSHOT                 | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-lm 0.17.0-SNAPSHOT                           | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-lang-id 0.17.0-SNAPSHOT                      | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-morphology 0.17.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-normalization 0.17.0-SNAPSHOT                | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-grpc-server 0.3.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-ner 0.17.0-SNAPSHOT                          | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-classification 0.17.0-SNAPSHOT               | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-apps 0.17.0-SNAPSHOT                         | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-all 0.17.0-SNAPSHOT                          | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-examples 0.17.0-SNAPSHOT                     | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-experiment 0.17.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+, buildStatus=FAILURE, totalTime=8.062}
+
+zemberek-nlp_2: CompilationResult{moduleResults=
+	ModuleResult{moduleName=zemberek-nlp 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 1.619  }
+	ModuleResult{moduleName=zemberek-core 0.17.0-SNAPSHOT                         | status= FAILURE     | timeElapsed= 6.022  }
+	ModuleResult{moduleName=zemberek-tokenization 0.17.0-SNAPSHOT                 | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-lm 0.17.0-SNAPSHOT                           | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-lang-id 0.17.0-SNAPSHOT                      | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-morphology 0.17.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-normalization 0.17.0-SNAPSHOT                | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-grpc-server 0.3.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-ner 0.17.0-SNAPSHOT                          | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-classification 0.17.0-SNAPSHOT               | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-apps 0.17.0-SNAPSHOT                         | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-all 0.17.0-SNAPSHOT                          | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-examples 0.17.0-SNAPSHOT                     | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-experiment 0.17.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+, buildStatus=FAILURE, totalTime=8.541}
+
+zemberek-nlp_3: CompilationResult{moduleResults=
+	ModuleResult{moduleName=zemberek-nlp 0.17.0-SNAPSHOT                          | status= SUCCESS     | timeElapsed= 1.507  }
+	ModuleResult{moduleName=zemberek-core 0.17.0-SNAPSHOT                         | status= FAILURE     | timeElapsed= 5.733  }
+	ModuleResult{moduleName=zemberek-tokenization 0.17.0-SNAPSHOT                 | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-lm 0.17.0-SNAPSHOT                           | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-lang-id 0.17.0-SNAPSHOT                      | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-morphology 0.17.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-normalization 0.17.0-SNAPSHOT                | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-grpc-server 0.3.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-ner 0.17.0-SNAPSHOT                          | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-classification 0.17.0-SNAPSHOT               | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-apps 0.17.0-SNAPSHOT                         | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-all 0.17.0-SNAPSHOT                          | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-examples 0.17.0-SNAPSHOT                     | status= SKIPPED     | timeElapsed= 0.0    }
+	ModuleResult{moduleName=zemberek-experiment 0.17.0-SNAPSHOT                   | status= SKIPPED     | timeElapsed= 0.0    }
+, buildStatus=FAILURE, totalTime=8.203}
+
+
+
+Testing result:
+zemberek-nlp: TestTotal{runNum=575, failuresNum=0, errorsNum=0, skippedNum=32, elapsedTime=15.901999}
+zemberek-nlp_0: TestTotal{runNum=575, failuresNum=0, errorsNum=0, skippedNum=32, elapsedTime=14.188003}
+zemberek-nlp_1: TestTotal{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+zemberek-nlp_2: TestTotal{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+zemberek-nlp_3: TestTotal{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 55.93 s -- in ch.unibe.cs.mergeci.service.MergeAnalyzerTest
+[INFO] Running ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotalTest
+TestTotal{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+TestTotal{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+TestTotal{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotalTest
+[INFO] Running ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotalXmlTest
+XML files processed: 0
+TestTotalXml{runNum=0, failuresNum=0, errorsNum=0, skippedNum=0, elapsedTime=0.0}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotalXmlTest
+[INFO] Running ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResultTest
+CompilationResult{moduleResults=[], buildStatus=null, totalTime=0.0}
+
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResultTest
+[INFO] Running ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunnerTest
+Source project not found: 
+/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+Copying target folder: /home/lanpirot/tmp/bruteforce_tmp/jackson-databind_1->/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_1/target
+Copying target folder: /home/lanpirot/tmp/bruteforce_tmp/jackson-databind_3->/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_3/target
+Copying target folder: /home/lanpirot/tmp/bruteforce_tmp/jackson-databind_2->/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_2/target
+java.io.FileNotFoundException: /home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0/.cache (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:213)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:152)
+	at ch.unibe.cs.mergeci.util.FileUtils.copyFile(FileUtils.java:122)
+	at ch.unibe.cs.mergeci.util.FileUtils.copyDirectoryCompatibilityMode(FileUtils.java:114)
+	at ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner.lambda$run_cache_parallel$0(MavenRunner.java:68)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+java.io.FileNotFoundException: /home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0/.cache (No such file or directory)
+/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0/.cache
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:213)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:152)
+	at ch.unibe.cs.mergeci.util.FileUtils.copyFile(FileUtils.java:122)
+	at ch.unibe.cs.mergeci.util.FileUtils.copyDirectoryCompatibilityMode(FileUtils.java:114)
+	at ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner.lambda$run_cache_parallel$0(MavenRunner.java:68)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0/.cache
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+java.io.FileNotFoundException: /home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0/.cache (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:213)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:152)
+	at ch.unibe.cs.mergeci.util.FileUtils.copyFile(FileUtils.java:122)
+	at ch.unibe.cs.mergeci.util.FileUtils.copyDirectoryCompatibilityMode(FileUtils.java:114)
+	at ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner.lambda$run_cache_parallel$0(MavenRunner.java:68)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+/home/lanpirot/tmp/bruteforce_tmp/jackson-databind_0/.cache
+Executing: [mvn, -fae, -Dmaven.test.failure.ignore=true, test]
+[ERROR] Tests run: 4, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.211 s <<< FAILURE! -- in ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunnerTest
+[ERROR] ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunnerTest.run -- Time elapsed: 0.001 s <<< ERROR!
+org.eclipse.jgit.errors.RepositoryNotFoundException: repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+	at org.eclipse.jgit.lib.BaseRepositoryBuilder.build(BaseRepositoryBuilder.java:681)
+	at org.eclipse.jgit.api.Git.open(Git.java:95)
+	at org.eclipse.jgit.api.Git.open(Git.java:74)
+	at ch.unibe.cs.mergeci.util.GitUtils.getGit(GitUtils.java:206)
+	at ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunnerTest.run(MavenRunnerTest.java:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running ch.unibe.cs.mergeci.service.projectRunners.maven.TestResultTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in ch.unibe.cs.mergeci.service.projectRunners.maven.TestResultTest
+[INFO] Running ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests
+18:41:42.637 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests]: CiCdMergeResolverApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+18:41:42.692 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration ch.unibe.cs.mergeci.CiCdMergeResolverApplication for test class ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.5)
+
+2026-03-11T18:41:42.875+01:00  INFO 24626 --- [ci-cd-merge-resolver] [           main] .u.c.m.CiCdMergeResolverApplicationTests : Starting CiCdMergeResolverApplicationTests using Java 21.0.2 with PID 24626 (started by lanpirot in /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver)
+2026-03-11T18:41:42.876+01:00  INFO 24626 --- [ci-cd-merge-resolver] [           main] .u.c.m.CiCdMergeResolverApplicationTests : No active profile set, falling back to 1 default profile: "default"
+2026-03-11T18:41:43.317+01:00  INFO 24626 --- [ci-cd-merge-resolver] [           main] .u.c.m.CiCdMergeResolverApplicationTests : Started CiCdMergeResolverApplicationTests in 0.572 seconds (process running for 311.224)
+CiCdMergeResolverApplication
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.924 s <<< FAILURE! -- in ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests
+[ERROR] ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests.simpleMerge -- Time elapsed: 0.197 s <<< ERROR!
+org.eclipse.jgit.errors.RepositoryNotFoundException: repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+	at org.eclipse.jgit.lib.BaseRepositoryBuilder.build(BaseRepositoryBuilder.java:681)
+	at org.eclipse.jgit.api.Git.open(Git.java:95)
+	at org.eclipse.jgit.api.Git.open(Git.java:74)
+	at ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests.simpleMerge(CiCdMergeResolverApplicationTests.java:32)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests.gitMerge2 -- Time elapsed: 0.002 s <<< ERROR!
+org.eclipse.jgit.errors.RepositoryNotFoundException: repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+	at org.eclipse.jgit.lib.BaseRepositoryBuilder.build(BaseRepositoryBuilder.java:681)
+	at org.eclipse.jgit.api.Git.open(Git.java:95)
+	at org.eclipse.jgit.api.Git.open(Git.java:74)
+	at ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests.gitMerge2(CiCdMergeResolverApplicationTests.java:120)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests.gitMerge -- Time elapsed: 0.002 s <<< ERROR!
+org.eclipse.jgit.errors.RepositoryNotFoundException: repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+	at org.eclipse.jgit.lib.BaseRepositoryBuilder.build(BaseRepositoryBuilder.java:681)
+	at org.eclipse.jgit.api.Git.open(Git.java:95)
+	at org.eclipse.jgit.api.Git.open(Git.java:74)
+	at ch.unibe.cs.mergeci.CiCdMergeResolverApplicationTests.gitMerge(CiCdMergeResolverApplicationTests.java:69)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   FreshRunModeIntegrationTest.testFreshRunMode_ProducesSameResults:130 At least one result file should exist ==> expected: <true> but was: <false>
+[ERROR]   ProjectBuilderUtilsTest.saveProjects:109 Should have some non-conflict objects to save ==> expected: <false> but was: <true>
+[ERROR] Errors: 
+[ERROR]   CiCdMergeResolverApplicationTests.gitMerge:69 » RepositoryNotFound repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+[ERROR]   CiCdMergeResolverApplicationTests.gitMerge2:120 » RepositoryNotFound repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+[ERROR]   CiCdMergeResolverApplicationTests.simpleMerge:32 » RepositoryNotFound repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+[ERROR]   MavenRunnerTest.run:39 » RepositoryNotFound repository not found: /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/src/test/resources/test-merge-projects/myTest
+[INFO] 
+[ERROR] Tests run: 48, Failures: 2, Errors: 4, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:16 min
+[INFO] Finished at: 2026-03-11T18:41:43+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project ci-cd-merge-resolver: There are test failures.
+[ERROR] 
+[ERROR] See /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/ci-cd-merge-resolver/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

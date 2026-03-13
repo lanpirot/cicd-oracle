@@ -141,6 +141,10 @@ public class MergeCheckoutProcessor {
             normalizedElapsedTime = compilationTime + time * runTests / passedTests;
         }
 
+        // Extract module information
+        int numberOfModules = compilationResult.getNumberOfModules();
+        int modulesPassed = compilationResult.getNumberOfSuccessfulModules();
+
         return MergeProcessResult.builder()
                 .hadTests(true)
                 .timedOut(false)
@@ -154,6 +158,8 @@ public class MergeCheckoutProcessor {
                 .elapsedTime(time)
                 .compilationTime(compilationTime)
                 .normalizedElapsedTime(normalizedElapsedTime)
+                .numberOfModules(numberOfModules)
+                .modulesPassed(modulesPassed)
                 .build();
     }
 
@@ -175,6 +181,8 @@ public class MergeCheckoutProcessor {
         private final int numPassedTests;
         private final float compilationTime;
         private final float normalizedElapsedTime;
+        private final int numberOfModules;
+        private final int modulesPassed;
 
         /**
          * Check if this result represents a successful processing (has tests and didn't timeout).
