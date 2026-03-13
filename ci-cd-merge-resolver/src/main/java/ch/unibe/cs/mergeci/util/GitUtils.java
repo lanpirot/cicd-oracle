@@ -49,13 +49,26 @@ public class GitUtils {
         return Git.open(new File(file));
     }
 
+    /**
+     * Creates and executes a merge between two branches using the RECURSIVE strategy.
+     * The RECURSIVE strategy supports multiple merge bases (criss-cross merges) by
+     * recursively merging the merge bases into a virtual common ancestor.
+     *
+     * @param oursBranch The "ours" branch/commit identifier
+     * @param theirsBranch The "theirs" branch/commit identifier
+     * @param git The Git repository
+     * @return ResolveMerger instance with merge results
+     * @throws IOException If repository access fails
+     */
     public static ResolveMerger makeMerge(String oursBranch, String theirsBranch, Git git) throws IOException {
         Repository repo = git.getRepository();
 
         ObjectId oursObject = repo.resolve(oursBranch);
         ObjectId theirsObject = repo.resolve(theirsBranch);
 
-        ResolveMerger merger = (ResolveMerger) MergeStrategy.RESOLVE.newMerger(repo, true);
+        // Use RECURSIVE strategy to support multiple merge bases (criss-cross merges)
+        // RECURSIVE handles complex merge scenarios by recursively merging merge bases
+        ResolveMerger merger = (ResolveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);
 
         boolean isMergedWithoutConflicts = merger.merge(oursObject, theirsObject);
 
@@ -280,8 +293,10 @@ public class GitUtils {
                         conflictingMergeCount++;
                     }
                 } catch (NoMergeBaseException e) {
-                    // Expected: Skip criss-cross merges not supported by jGit
-                    // (cannot get base version or find auto-merges/conflicts)
+                    // Rare: Skip merges where even RECURSIVE strategy cannot find a merge base
+                    // This should be very uncommon now that we use RECURSIVE merge strategy
+                    System.err.println("Warning: No merge base found for commit " + revCommit.name() +
+                                       " (even with RECURSIVE strategy). Skipping.");
                 } catch (Exception e) {
                     System.err.println("Warning: Failed to analyze merge commit " + revCommit.name() + ": " + e.getMessage());
                     e.printStackTrace();

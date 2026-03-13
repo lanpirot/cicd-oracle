@@ -73,10 +73,9 @@ public class MavenExecutionFactory {
                 runExecutionTime.setMainExecutionTime(Duration.between(start, end));
 
                 // Collect main project results
-                CompilationResult mainCompResult = analyzer.collectCompilationResult(projectName);
-                if (mainCompResult != null) {
-                    compilationResults.put(projectName, mainCompResult);
-                }
+                analyzer.collectCompilationResult(projectName).ifPresent(result ->
+                    compilationResults.put(projectName, result)
+                );
                 TestTotal mainTestResult = analyzer.collectTestResult(projectName, mainProjectPath);
                 testResults.put(projectName, mainTestResult);
 
@@ -127,10 +126,9 @@ public class MavenExecutionFactory {
                     String projectName = context.getProjectName();
                     for (int i = 0; i < variantCount; i++) {
                         String variantKey = projectName + "_" + i;
-                        CompilationResult compResult = analyzer.collectCompilationResult(variantKey);
-                        if (compResult != null) {
-                            compilationResults.put(variantKey, compResult);
-                        }
+                        analyzer.collectCompilationResult(variantKey).ifPresent(result ->
+                            compilationResults.put(variantKey, result)
+                        );
                         TestTotal testResult = analyzer.collectTestResult(variantKey, variantPaths[i]);
                         testResults.put(variantKey, testResult);
                     }
@@ -170,10 +168,9 @@ public class MavenExecutionFactory {
                         variantRunner.run_no_optimization(variantPath);
 
                         // Collect results immediately
-                        CompilationResult compResult = analyzer.collectCompilationResult(variantKey);
-                        if (compResult != null) {
-                            compilationResults.put(variantKey, compResult);
-                        }
+                        analyzer.collectCompilationResult(variantKey).ifPresent(result ->
+                            compilationResults.put(variantKey, result)
+                        );
                         TestTotal testResult = analyzer.collectTestResult(variantKey, variantPath);
                         testResults.put(variantKey, testResult);
                     } finally {
@@ -187,134 +184,4 @@ public class MavenExecutionFactory {
         };
     }
 
-    /**
-     * Create a Maven runner with a total timeout budget.
-     * Each variant run gets the remaining time from the budget.
-     *
-     * @param isParallel Whether to run variants in parallel
-     * @param isCache Whether to use cache optimization
-     * @param totalBudgetSeconds Total time budget in seconds for all variants
-     * @return IRunner that manages timeout budget
-     * @deprecated Use createJustInTimeRunner for better disk usage
-     */
-    @Deprecated
-    public IRunner createMavenRunnerWithBudget(boolean isParallel, boolean isCache, float totalBudgetSeconds) {
-        return new IRunner() {
-            @Override
-            public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
-                RunExecutionTIme runExecutionTime = new RunExecutionTIme();
-                Instant overallStart = Instant.now();
-
-                // Run main project with full budget
-                float remainingSeconds = totalBudgetSeconds;
-                int timeoutMinutes = Math.max(AppConfig.MAVEN_BUILD_TIMEOUT, (int) Math.ceil(remainingSeconds / 60.0f));
-                MavenRunner mainRunner = new MavenRunner(logDir, false, timeoutMinutes);
-
-                Instant start = Instant.now();
-                mainRunner.run_no_optimization(mainProject);
-                Instant end = Instant.now();
-                runExecutionTime.setMainExecutionTime(Duration.between(start, end));
-
-                // Calculate remaining time after main project
-                float elapsed = Duration.between(overallStart, Instant.now()).toSeconds();
-                remainingSeconds = totalBudgetSeconds - elapsed;
-
-                if (remainingSeconds <= 0) {
-                    // Budget exhausted, skip variants
-                    System.out.println("⚠ Timeout budget exhausted after main project");
-                    return runExecutionTime;
-                }
-
-                // Run variants with remaining budget
-                start = Instant.now();
-                if (isParallel && isCache) {
-                    // All variants start in parallel, get same remaining time
-                    timeoutMinutes = Math.max(AppConfig.MAVEN_BUILD_TIMEOUT, (int) Math.ceil(remainingSeconds / 60.0f));
-                    MavenRunner variantRunner = new MavenRunner(logDir, false, timeoutMinutes);
-                    variantRunner.run_cache_parallel(variants.toArray(new Path[0]));
-                } else if (isParallel) {
-                    // All variants start in parallel, get same remaining time
-                    timeoutMinutes = Math.max(AppConfig.MAVEN_BUILD_TIMEOUT, (int) Math.ceil(remainingSeconds / 60.0f));
-                    MavenRunner variantRunner = new MavenRunner(logDir, false, timeoutMinutes);
-                    variantRunner.run_parallel(variants.toArray(new Path[0]));
-                } else {
-                    // Sequential: each variant gets remaining time
-                    for (Path variant : variants) {
-                        elapsed = Duration.between(overallStart, Instant.now()).toSeconds();
-                        remainingSeconds = totalBudgetSeconds - elapsed;
-
-                        if (remainingSeconds <= 0) {
-                            // Budget exhausted, skip remaining variants
-                            System.out.println("⚠ Timeout budget exhausted, skipping remaining variants");
-                            break;
-                        }
-
-                        timeoutMinutes = Math.max(AppConfig.MAVEN_BUILD_TIMEOUT, (int) Math.ceil(remainingSeconds / 60.0f));
-                        MavenRunner variantRunner = new MavenRunner(logDir, false, timeoutMinutes);
-                        variantRunner.run_no_optimization(variant);
-                    }
-                }
-                end = Instant.now();
-                runExecutionTime.setVariantsExecutionTime(Duration.between(start, end));
-
-                return runExecutionTime;
-            }
-        };
-    }
-
-    public IRunner createMavenRunner(boolean isParallel, boolean isCache, int timeoutMinutes) {
-        return new IRunner() {
-            @Override
-            public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
-                MavenRunner mavenRunner = new MavenRunner(logDir, false, timeoutMinutes);
-                RunExecutionTIme runExecutionTime = new RunExecutionTIme();
-
-                Instant start = Instant.now();
-                mavenRunner.run_no_optimization(mainProject);
-                Instant end = Instant.now();
-                runExecutionTime.setMainExecutionTime(Duration.between(start, end));
-
-                start = Instant.now();
-                if (isParallel && isCache)
-                    mavenRunner.run_cache_parallel(variants.toArray(new Path[0]));
-                else if (isParallel)
-                    mavenRunner.run_parallel(variants.toArray(new Path[0]));
-                else if (!isCache)
-                    mavenRunner.run_no_optimization(variants.toArray(new Path[0]));
-                else System.out.println("ERROR in createMavenRunner!");
-                end = Instant.now();
-                runExecutionTime.setVariantsExecutionTime(Duration.between(start, end));
-
-                return runExecutionTime;
-            }
-        };
-    }
-
-    public IRunner createMavenRunner(boolean isParallel, boolean isCache) {
-        return new IRunner() {
-            @Override
-            public RunExecutionTIme run(Path mainProject, List<Path> variants, Boolean useMvnDaemon) {
-                MavenRunner mavenRunner = new MavenRunner(logDir);
-                RunExecutionTIme runExecutionTime = new RunExecutionTIme();
-
-                Instant start = Instant.now();
-                mavenRunner.run_no_optimization(mainProject);
-                Instant end = Instant.now();
-                runExecutionTime.setMainExecutionTime(Duration.between(start, end));
-
-                start = Instant.now();
-                if (isParallel && isCache)
-                    mavenRunner.run_cache_parallel(variants.toArray(new Path[0]));
-                else if (isParallel)
-                    mavenRunner.run_parallel(variants.toArray(new Path[0]));
-                else if (!isCache)
-                    mavenRunner.run_no_optimization(variants.toArray(new Path[0]));
-                else System.out.println("ERROR in createMavenRunner!");
-                end = Instant.now();
-                runExecutionTime.setVariantsExecutionTime(Duration.between(start, end));
-
-                return runExecutionTime;
-            }
-        };
-    }
 }

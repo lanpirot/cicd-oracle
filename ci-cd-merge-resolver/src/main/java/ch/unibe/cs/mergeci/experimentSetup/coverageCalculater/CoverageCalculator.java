@@ -23,6 +23,7 @@ import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Optional;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -61,10 +62,18 @@ public class CoverageCalculator {
             }
 
             AllMergesJSON allMergesJSON;
+            String repoUrl;
             try {
                 allMergesJSON = objectMapper.readValue(file, AllMergesJSON.class);
                 allMergesJSON.setProjectName(projectName);
-                allMergesJSON.setRepoUrl(Utility.getRepoUrlFromExcel(repoDatasetsFile, projectName));
+
+                Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, projectName);
+                if (repoUrlOpt.isEmpty()) {
+                    System.err.println("Repository URL not found in Excel for: " + projectName + ". Skipping...");
+                    continue;
+                }
+                repoUrl = repoUrlOpt.get();
+                allMergesJSON.setRepoUrl(repoUrl);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -84,12 +93,7 @@ public class CoverageCalculator {
                 Path newProjectPath = tempDir.resolve(newProjectName);
 
                 if (!projectRepoPath.toFile().exists()) {
-                    try {
-                        GitUtils.cloneRepo(projectRepoPath, Utility.getRepoUrlFromExcel(repoDatasetsFile, projectName));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
+                    GitUtils.cloneRepo(projectRepoPath, repoUrl);
                 }
 
                 try (Git git = GitUtils.getGit(projectRepoPath)) {

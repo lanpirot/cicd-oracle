@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -107,10 +108,10 @@ public class Utility {
      *
      * @param excelFile Path to the Excel file containing repository information
      * @param projectName Name of the project to find (without extension)
-     * @return The repository URL, or null if not found
+     * @return Optional containing the repository URL, or empty if not found
      * @throws IOException if the Excel file cannot be read
      */
-    public static String getRepoUrlFromExcel(Path excelFile, String projectName) throws IOException {
+    public static Optional<String> getRepoUrlFromExcel(Path excelFile, String projectName) throws IOException {
         try (FileInputStream file = new FileInputStream(excelFile.toFile());
              Workbook workbook = new XSSFWorkbook(file)) {
             Sheet sheet = workbook.getSheetAt(0);
@@ -122,11 +123,12 @@ public class Utility {
                 String repoName = row.getCell(PROJECTCOLUMN.repoName.getColumnNumber())
                         .getStringCellValue().split("/")[1].trim();
                 if (repoName.equals(projectName)) {
-                    return row.getCell(PROJECTCOLUMN.repoURL.getColumnNumber())
+                    String url = row.getCell(PROJECTCOLUMN.repoURL.getColumnNumber())
                             .getStringCellValue().trim();
+                    return Optional.of(url);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

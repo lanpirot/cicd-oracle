@@ -13,13 +13,29 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MergeAnalyzerTest extends BaseTest {
 
     @Test
-    void buildProjects() throws Exception {
-        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(AppConfig.TEST_REPO_DIR.resolve(AppConfig.zembereknlp), AppConfig.TEST_TMP_DIR, AppConfig.TEST_EXPERIMENTS_TEMP_DIR);
-        mergeAnalyzer.buildProjects("c10e035c4b36e0b4cd50e009fb94b67e8fc51a45", "356fa0178ca851a1ccee41c7a1846a1a19abbd6b", "4b39a3ee35ffcf61f66a783dde2af1d9fbd9c12a");
-        mergeAnalyzer.runTests(new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunner(true,false));
+    void buildProjectsAndRunTests() throws Exception {
+        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(
+                AppConfig.TEST_REPO_DIR.resolve(AppConfig.zembereknlp),
+                AppConfig.TEST_TMP_DIR,
+                AppConfig.TEST_EXPERIMENTS_TEMP_DIR
+        );
+
+        // Prepare variants using new API
+        VariantBuildContext context = mergeAnalyzer.prepareVariants(
+                "c10e035c4b36e0b4cd50e009fb94b67e8fc51a45",
+                "356fa0178ca851a1ccee41c7a1846a1a19abbd6b",
+                "4b39a3ee35ffcf61f66a783dde2af1d9fbd9c12a"
+        );
+
+        // Create just-in-time runner with 10 minute budget
+        MavenExecutionFactory factory = new MavenExecutionFactory(mergeAnalyzer.getLogDir());
+        IJustInTimeRunner runner = factory.createJustInTimeRunner(true, false, 600f);
+
+        // Run tests using just-in-time runner
+        mergeAnalyzer.runTestsJustInTime(context, runner);
 
         System.out.println("Compilation result:");
-        Map<String, CompilationResult> compilationResultMap = mergeAnalyzer.collectCompilationResults();
+        Map<String, CompilationResult> compilationResultMap = factory.getCompilationResults();
         compilationResultMap.forEach((k, v) -> {
             System.out.println(k + ": " + v);
         });
@@ -33,7 +49,7 @@ public class MergeAnalyzerTest extends BaseTest {
         }
 
         System.out.println("\n\nTesting result:");
-        Map<String, TestTotal> testTotalMap = mergeAnalyzer.collectTestResults();
+        Map<String, TestTotal> testTotalMap = factory.getTestResults();
         testTotalMap.forEach((k, v) -> {
             System.out.println(k + ": " + v);
         });

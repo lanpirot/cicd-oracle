@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 @Getter
@@ -195,14 +196,14 @@ public class MergeAnalyzer {
      * Collect compilation result from a single project directory.
      *
      * @param projectKey Project key (e.g., "projectName" or "projectName_0")
-     * @return CompilationResult or null if log doesn't exist
+     * @return CompilationResult, or empty Optional if log doesn't exist
      */
-    public CompilationResult collectCompilationResult(String projectKey) throws IOException {
+    public Optional<CompilationResult> collectCompilationResult(String projectKey) throws IOException {
         Path logPath = logDir.resolve(projectKey + "_compilation");
         if (logPath.toFile().exists()) {
-            return new CompilationResult(logPath);
+            return Optional.of(new CompilationResult(logPath));
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

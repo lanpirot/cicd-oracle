@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class ResolutionVariantRunner {
     private final Path datasetsDir;
@@ -45,8 +46,16 @@ public class ResolutionVariantRunner {
         if (xlsxDataset == null) {return;}
 
         for (File dataset : xlsxDataset) {
-            String repoUrl = Utility.getRepoUrlFromExcel(repoDatasetsFile, Files.getNameWithoutExtension(dataset.getName()));
-            String nameOfOutputFIle = Files.getNameWithoutExtension(dataset.getName()) + AppConfig.JSON;
+            String repoName = Files.getNameWithoutExtension(dataset.getName());
+            Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, repoName);
+
+            if (repoUrlOpt.isEmpty()) {
+                System.err.println("Repository URL not found in Excel for: " + repoName + ". Skipping...");
+                continue;
+            }
+
+            String repoUrl = repoUrlOpt.get();
+            String nameOfOutputFIle = repoName + AppConfig.JSON;
 
             // Skip if already processed (unless FRESH_RUN, which already cleaned the directory)
             if (!AppConfig.isFreshRun() &&
@@ -55,7 +64,6 @@ public class ResolutionVariantRunner {
                 System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
                 continue;
             }
-            String repoName = Files.getNameWithoutExtension(dataset.getName());
 
             Path repoPath;
             try {
