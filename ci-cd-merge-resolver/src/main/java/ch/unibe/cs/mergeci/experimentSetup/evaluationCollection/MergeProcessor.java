@@ -7,6 +7,7 @@ import ch.unibe.cs.mergeci.service.MergeAnalyzer;
 import ch.unibe.cs.mergeci.service.RunExecutionTIme;
 import ch.unibe.cs.mergeci.service.VariantBuildContext;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
+import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import lombok.Getter;
@@ -97,13 +98,15 @@ public class MergeProcessor {
         // Collect results (already collected during just-in-time execution)
         Map<String, CompilationResult> compilationResults = factory.getCompilationResults();
         Map<String, TestTotal> testResults = factory.getTestResults();
+        JacocoReportFinder.CoverageDTO coverageResult = factory.getCoverageResult();
 
         return new MergeAnalysisResult(
                 mergeAnalyzer,
                 compilationResults,
                 testResults,
                 timeElapsed,
-                runExecutionTime
+                runExecutionTime,
+                coverageResult
         );
     }
 
@@ -154,18 +157,21 @@ public class MergeProcessor {
         private final Map<String, TestTotal> testResults;
         private final long executionTimeSeconds;
         private final RunExecutionTIme runExecutionTime;
+        private final JacocoReportFinder.CoverageDTO coverageResult;
 
         public MergeAnalysisResult(
                 MergeAnalyzer analyzer,
                 Map<String, CompilationResult> compilationResults,
                 Map<String, TestTotal> testResults,
                 long executionTimeSeconds,
-                RunExecutionTIme runExecutionTime) {
+                RunExecutionTIme runExecutionTime,
+                JacocoReportFinder.CoverageDTO coverageResult) {
             this.analyzer = analyzer;
             this.compilationResults = compilationResults;
             this.testResults = testResults;
             this.executionTimeSeconds = executionTimeSeconds;
             this.runExecutionTime = runExecutionTime;
+            this.coverageResult = coverageResult;
         }
 
         public String getProjectName() {

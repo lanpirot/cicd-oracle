@@ -1,6 +1,5 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
-import ch.unibe.cs.mergeci.experimentSetup.coverageCalculater.CoverageCalculator;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;

@@ -59,6 +59,7 @@ public class VariantResultCollector {
 
         output.setTestResults(result.getTestResults().get(projectName));
         output.setCompilationResult(result.getCompilationResults().get(projectName));
+        output.setCoverage(result.getCoverageResult());
     }
 
     /**

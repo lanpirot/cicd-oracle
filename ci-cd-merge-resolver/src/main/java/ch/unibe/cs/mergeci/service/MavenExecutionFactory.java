@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.service;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
+import ch.unibe.cs.mergeci.service.projectRunners.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenRunner;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import org.apache.commons.io.FileUtils;
@@ -18,6 +19,7 @@ public class MavenExecutionFactory {
     private final Path logDir;
     private Map<String, CompilationResult> compilationResults;
     private Map<String, TestTotal> testResults;
+    private JacocoReportFinder.CoverageDTO coverageResult;
 
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
@@ -40,6 +42,13 @@ public class MavenExecutionFactory {
     }
 
     /**
+     * Get coverage result for the main project, or null if coverage was disabled or failed.
+     */
+    public JacocoReportFinder.CoverageDTO getCoverageResult() {
+        return coverageResult;
+    }
+
+    /**
      * Create a just-in-time runner with timeout budget.
      * Builds variant directories on-demand, runs Maven, collects results, and deletes immediately.
      * This dramatically reduces disk usage by only keeping 1-5 variant directories at a time.
@@ -52,6 +61,7 @@ public class MavenExecutionFactory {
     public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, float totalBudgetSeconds) {
         compilationResults = new TreeMap<>();
         testResults = new TreeMap<>();
+        coverageResult = null;
 
         return new IJustInTimeRunner() {
             @Override
@@ -68,7 +78,16 @@ public class MavenExecutionFactory {
                 MavenRunner mainRunner = new MavenRunner(logDir, false, timeoutMinutes);
 
                 Instant start = Instant.now();
-                mainRunner.run_no_optimization(mainProjectPath);
+                if (AppConfig.COVERAGE_ACTIVATED) {
+                    mainRunner.runWithCoverage(mainProjectPath);
+                    try {
+                        coverageResult = JacocoReportFinder.getCoverageResults(mainProjectPath, List.of());
+                    } catch (Exception e) {
+                        System.err.println("Coverage collection failed for " + projectName + ": " + e.getMessage());
+                    }
+                } else {
+                    mainRunner.run_no_optimization(mainProjectPath);
+                }
                 Instant end = Instant.now();
                 runExecutionTime.setMainExecutionTime(Duration.between(start, end));
 

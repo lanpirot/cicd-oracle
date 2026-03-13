@@ -41,62 +41,27 @@ public class MavenRunner {
         this(AppConfig.TMP_DIR, false, AppConfig.MAVEN_BUILD_TIMEOUT);
     }
 
-    /**
-     * Execute Maven builds using cache-enabled parallel strategy.
-     * Builds first project normally, then remaining projects in parallel using cached artifacts.
-     */
+    /** Execute Maven builds using cache-enabled parallel strategy. */
     public void run_cache_parallel(Path... projects) {
-        MavenExecutionStrategy strategy = new CacheParallelStrategy(
-                commandResolver,
-                processExecutor,
-                cacheManager,
-                logDir);
-
-        strategy.execute(projects);
+        execute(new CacheParallelStrategy(commandResolver, processExecutor, cacheManager, logDir), projects);
     }
 
-    /**
-     * Execute Maven builds sequentially without optimizations.
-     */
+    /** Execute Maven builds sequentially without optimizations. */
     public void run_no_optimization(Path... projects) {
-        MavenExecutionStrategy strategy = new SequentialStrategy(
-                commandResolver,
-                processExecutor,
-                logDir);
-
-        strategy.execute(projects);
+        execute(new SequentialStrategy(commandResolver, processExecutor, logDir), projects);
     }
 
-    /**
-     * Execute Maven builds in parallel.
-     */
+    /** Execute Maven builds in parallel. */
     public void run_parallel(Path... projects) {
-        MavenExecutionStrategy strategy = new ParallelStrategy(
-                commandResolver,
-                processExecutor,
-                logDir);
-
-        strategy.execute(projects);
+        execute(new ParallelStrategy(commandResolver, processExecutor, logDir), projects);
     }
 
-    /**
-     * Execute Maven builds with Jacoco code coverage in parallel.
-     */
+    /** Execute Maven builds with Jacoco code coverage in parallel. */
     public void runWithCoverage(Path... projects) {
-        MavenExecutionStrategy strategy = new CoverageStrategy(
-                commandResolver,
-                processExecutor,
-                logDir);
-
-        strategy.execute(projects);
+        execute(new CoverageStrategy(commandResolver, processExecutor, logDir), projects);
     }
 
-    /**
-     * Execute Maven builds using a custom strategy.
-     *
-     * @param strategy The execution strategy to use
-     * @param projects Projects to build
-     */
+    /** Execute Maven builds using a custom strategy. */
     public void execute(MavenExecutionStrategy strategy, Path... projects) {
         strategy.execute(projects);
     }

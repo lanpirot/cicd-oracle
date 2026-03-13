@@ -1,6 +1,5 @@
 package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
-import ch.unibe.cs.mergeci.experimentSetup.coverageCalculater.CoverageCalculator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;

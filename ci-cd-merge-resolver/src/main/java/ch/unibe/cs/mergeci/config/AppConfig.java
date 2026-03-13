@@ -20,6 +20,13 @@ public class AppConfig {
     private static final boolean FRESH_RUN_DEFAULT = false;
 
     /**
+     * When true, the main project (human-resolved merge) is built with JaCoCo coverage
+     * instrumentation and the coverage report is stored in the experiment output JSON.
+     * Disable to skip coverage measurement and speed up runs.
+     */
+    public static final boolean COVERAGE_ACTIVATED = true;
+
+    /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
      * @return true if FRESH_RUN mode is enabled
      */
