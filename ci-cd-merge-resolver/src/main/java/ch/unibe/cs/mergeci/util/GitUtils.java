@@ -338,6 +338,20 @@ public class GitUtils {
         return getAllMergeCommits(git).size();
     }
 
+    /**
+     * Get the total number of commits reachable from HEAD.
+     */
+    public static int getTotalCommitCount(Git git) {
+        try {
+            int count = 0;
+            for (RevCommit ignored : git.log().call()) count++;
+            return count;
+        } catch (GitAPIException e) {
+            System.err.println("Warning: Failed to count commits: " + e.getMessage());
+            return -1;
+        }
+    }
+
     public static Map<String, ObjectId> getObjectsFromCommit(String commitHash, Git git) throws IOException, GitAPIException {
         Repository repo = git.getRepository();
         RevWalk walk = new RevWalk(repo);

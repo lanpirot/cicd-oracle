@@ -65,6 +65,16 @@ public class CollectionResult {
     private final int mergesTimedOut;
 
     /**
+     * Total number of commits in the repository (reachable from HEAD)
+     */
+    private final int totalCommits;
+
+    /**
+     * Maximum number of Maven modules seen across all processed merges
+     */
+    private final int maxModules;
+
+    /**
      * Human-readable explanation of the result
      */
     private final String message;

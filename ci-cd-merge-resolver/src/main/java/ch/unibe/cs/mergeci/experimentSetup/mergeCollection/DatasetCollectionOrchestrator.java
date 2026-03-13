@@ -61,6 +61,7 @@ public class DatasetCollectionOrchestrator {
         MergeLoadResult loadResult = loadMerges(projectPath, maxConflictMerges);
         List<MergeInfo> allMerges = loadResult.mergesWithConflicts;
         int totalMergeCount = loadResult.totalMergeCount;
+        int totalCommitCount = loadResult.totalCommitCount;
 
         // Filter to Java conflicts only
         int javaConflictCount = mergeFilter.countJavaConflicts(allMerges);
@@ -69,7 +70,7 @@ public class DatasetCollectionOrchestrator {
             return buildRejectionResult(
                     RepositoryStatus.REJECTED_NO_JAVA_CONFLICTS,
                     "No merges with Java file conflicts found",
-                    repoName, repoUrl, totalMergeCount, allMerges.size(), 0, 0, 0);
+                    repoName, repoUrl, totalCommitCount, totalMergeCount, allMerges.size(), 0, 0, 0, 0);
         }
 
         System.out.printf("  → Processing %d merges with Java conflicts (out of %d total merges)\n",
@@ -92,6 +93,7 @@ public class DatasetCollectionOrchestrator {
                 excelOutFile,
                 repoName,
                 repoUrl,
+                totalCommitCount,
                 totalMergeCount,
                 allMerges.size(),
                 javaConflictCount);
@@ -104,8 +106,9 @@ public class DatasetCollectionOrchestrator {
     private MergeLoadResult loadMerges(Path projectPath, int maxConflictMerges) {
         try (Git git = GitUtils.getGit(projectPath)) {
             int totalMergeCount = GitUtils.getTotalMergeCount(git);
+            int totalCommitCount = GitUtils.getTotalCommitCount(git);
             List<MergeInfo> mergesWithConflicts = GitUtils.getConflictCommits(maxConflictMerges, git);
-            return new MergeLoadResult(mergesWithConflicts, totalMergeCount);
+            return new MergeLoadResult(mergesWithConflicts, totalMergeCount, totalCommitCount);
         } catch (Exception e) {
             System.err.println("Failed to load merges from " + projectPath + ": " + e.getMessage());
             throw new RuntimeException("Failed to load merges from repository", e);
@@ -126,6 +129,7 @@ public class DatasetCollectionOrchestrator {
         AtomicInteger processedCount = new AtomicInteger(0);
         AtomicInteger noTestCount = new AtomicInteger(0);
         AtomicInteger timeoutCount = new AtomicInteger(0);
+        AtomicInteger maxModules = new AtomicInteger(0);
 
         ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
@@ -143,12 +147,13 @@ public class DatasetCollectionOrchestrator {
                     processedCount,
                     noTestCount,
                     timeoutCount,
+                    maxModules,
                     javaConflictCount));
         }
 
         Utility.shutdownAndAwaitTermination(pool);
 
-        return new ProcessingStatistics(rows, noTestCount.get(), timeoutCount.get());
+        return new ProcessingStatistics(rows, noTestCount.get(), timeoutCount.get(), maxModules.get());
     }
 
     /**
@@ -163,6 +168,7 @@ public class DatasetCollectionOrchestrator {
             AtomicInteger processedCount,
             AtomicInteger noTestCount,
             AtomicInteger timeoutCount,
+            AtomicInteger maxModules,
             int totalJavaCount) {
 
         int taskID = processedCount.incrementAndGet();
@@ -174,6 +180,10 @@ public class DatasetCollectionOrchestrator {
 
             MergeProcessResult result = mergeProcessor.processMerge(
                     merge, projectPath, tempPath, projectName);
+
+            if (result.getNumberOfModules() > 0) {
+                maxModules.updateAndGet(current -> Math.max(current, result.getNumberOfModules()));
+            }
 
             if (!result.isHadTests()) {
                 noTestCount.incrementAndGet();
@@ -201,6 +211,7 @@ public class DatasetCollectionOrchestrator {
             Path excelOutFile,
             String repoName,
             String repoUrl,
+            int totalCommits,
             int totalMerges,
             int mergesWithConflicts,
             int javaConflictCount) throws Exception {
@@ -211,15 +222,15 @@ public class DatasetCollectionOrchestrator {
                 return buildRejectionResult(
                         RepositoryStatus.REJECTED_NO_TESTS,
                         String.format("All %d merges with Java conflicts had no tests", javaConflictCount),
-                        repoName, repoUrl, totalMerges, mergesWithConflicts, javaConflictCount,
-                        stats.noTestCount, stats.timeoutCount);
+                        repoName, repoUrl, totalCommits, totalMerges, mergesWithConflicts, javaConflictCount,
+                        stats.noTestCount, stats.timeoutCount, stats.maxModules);
             } else {
                 return buildRejectionResult(
                         RepositoryStatus.REJECTED_OTHER,
                         String.format("No successful merges (timeouts: %d, no tests: %d)",
                                 stats.timeoutCount, stats.noTestCount),
-                        repoName, repoUrl, totalMerges, mergesWithConflicts, javaConflictCount,
-                        stats.noTestCount, stats.timeoutCount);
+                        repoName, repoUrl, totalCommits, totalMerges, mergesWithConflicts, javaConflictCount,
+                        stats.noTestCount, stats.timeoutCount, stats.maxModules);
             }
         }
 
@@ -231,12 +242,14 @@ public class DatasetCollectionOrchestrator {
                 .repoName(repoName)
                 .repoUrl(repoUrl)
                 .isMaven(true)
+                .totalCommits(totalCommits)
                 .totalMerges(totalMerges)
                 .mergesWithConflicts(mergesWithConflicts)
                 .mergesWithJavaConflicts(javaConflictCount)
                 .successfulMerges(stats.rows.size())
                 .mergesWithNoTests(stats.noTestCount)
                 .mergesTimedOut(stats.timeoutCount)
+                .maxModules(stats.maxModules)
                 .message(String.format("Dataset created with %d compilable and testable merges", stats.rows.size()))
                 .build();
     }
@@ -246,23 +259,27 @@ public class DatasetCollectionOrchestrator {
             String message,
             String repoName,
             String repoUrl,
+            int totalCommits,
             int totalMerges,
             int mergesWithConflicts,
             int javaConflictCount,
             int noTestCount,
-            int timeoutCount) {
+            int timeoutCount,
+            int maxModules) {
 
         return CollectionResult.builder()
                 .status(status)
                 .repoName(repoName)
                 .repoUrl(repoUrl)
                 .isMaven(true)
+                .totalCommits(totalCommits)
                 .totalMerges(totalMerges)
                 .mergesWithConflicts(mergesWithConflicts)
                 .mergesWithJavaConflicts(javaConflictCount)
                 .successfulMerges(0)
                 .mergesWithNoTests(noTestCount)
                 .mergesTimedOut(timeoutCount)
+                .maxModules(maxModules)
                 .message(message)
                 .build();
     }
@@ -273,10 +290,12 @@ public class DatasetCollectionOrchestrator {
     private static class MergeLoadResult {
         final List<MergeInfo> mergesWithConflicts;
         final int totalMergeCount;
+        final int totalCommitCount;
 
-        MergeLoadResult(List<MergeInfo> mergesWithConflicts, int totalMergeCount) {
+        MergeLoadResult(List<MergeInfo> mergesWithConflicts, int totalMergeCount, int totalCommitCount) {
             this.mergesWithConflicts = mergesWithConflicts;
             this.totalMergeCount = totalMergeCount;
+            this.totalCommitCount = totalCommitCount;
         }
     }
 
@@ -287,11 +306,13 @@ public class DatasetCollectionOrchestrator {
         final List<ExcelWriter.DatasetRow> rows;
         final int noTestCount;
         final int timeoutCount;
+        final int maxModules;
 
-        ProcessingStatistics(List<ExcelWriter.DatasetRow> rows, int noTestCount, int timeoutCount) {
+        ProcessingStatistics(List<ExcelWriter.DatasetRow> rows, int noTestCount, int timeoutCount, int maxModules) {
             this.rows = rows;
             this.noTestCount = noTestCount;
             this.timeoutCount = timeoutCount;
+            this.maxModules = maxModules;
         }
     }
 }

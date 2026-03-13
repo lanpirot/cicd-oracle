@@ -46,7 +46,17 @@ public class Utility {
     @Getter
     public enum PROJECTCOLUMN {
         repoName(0, "Repository Name"),
-        repoURL(1, "Repository URL");
+        repoURL(1, "Repository URL"),
+        buildTool(2, "Build Tool"),
+        totalCommits(3, "#Commits"),
+        totalMerges(4, "#Merges"),
+        conflictMerges(5, "#Conflict Merges"),
+        javaConflictMerges(6, "#Java Conflict Merges"),
+        analyzableMerges(7, "#Analyzable Merges"),
+        maxModules(8, "#Max Modules"),
+        timedOut(9, "#Timed Out"),
+        noTests(10, "#No Tests"),
+        status(11, "Status");
 
         private final int columnNumber;
         private final String columnName;

@@ -6,12 +6,12 @@ import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.RepositoryStatus;
 import ch.unibe.cs.mergeci.util.Utility;
+import ch.unibe.cs.mergeci.util.Utility.PROJECTCOLUMN;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
@@ -19,10 +19,13 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RepoCollector {
@@ -58,14 +61,21 @@ public class RepoCollector {
         // Always clean temp directory
         FileUtils.deleteDirectory(tempDir.toFile());
 
-        Set<String> seen = new HashSet<>();
+        // Load workbook into memory (close stream immediately so we can write back later)
+        Workbook workbook;
+        try (FileInputStream fis = new FileInputStream(excelFile.toFile())) {
+            workbook = WorkbookFactory.create(fis);
+        }
 
-        try (FileInputStream fis = new FileInputStream(excelFile.toFile());
-             Workbook workbook = WorkbookFactory.create(fis)) {
-
+        try {
             Sheet sheet = workbook.getSheetAt(0);
 
-            // Count total repositories
+            // Write new column headers (idempotent)
+            ensureHeaders(sheet);
+            flushWorkbook(workbook, excelFile);
+
+            // Count total unique repositories
+            Set<String> seen = new HashSet<>();
             int totalRepos = 0;
             for (Row row : sheet) {
                 if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
@@ -76,7 +86,6 @@ public class RepoCollector {
                 }
             }
 
-            // Print header
             System.out.println("================================================================================");
             System.out.println("CI/CD Merge Resolver - Collection Phase");
             System.out.printf("Total repositories: %d | Fresh run: %s%n", totalRepos, AppConfig.isFreshRun());
@@ -111,12 +120,18 @@ public class RepoCollector {
                     repoFolder = repoManager.getRepositoryPath(repoName, repoUrl);
                 } catch (IOException e) {
                     System.out.printf("  ✗ Clone failed: %s\n\n", e.getMessage());
+                    writeRepoRow(row, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
+                    flushWorkbook(workbook, excelFile);
                     continue;
                 }
 
-                if (!isMavenProject(repoFolder)) {
-                    System.out.println("  ✗ Not a Maven project → REJECTED_NO_POM\n");
+                String buildTool = detectBuildTool(repoFolder);
+
+                if (!buildTool.contains("maven")) {
+                    System.out.printf("  ✗ Not a Maven project (build tool: %s) → REJECTED_NO_POM\n\n", buildTool);
                     repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
+                    writeRepoRow(row, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
+                    flushWorkbook(workbook, excelFile);
                     continue;
                 }
 
@@ -141,16 +156,78 @@ public class RepoCollector {
                 } else {
                     repoManager.markRepositoryRejected(repoName, result.getStatus());
                 }
+
+                writeRepoRow(row, buildTool, result.getStatus(), result);
+                flushWorkbook(workbook, excelFile);
+
                 RepositoryCache.clear();
                 WindowCache.reconfigure(new WindowCacheConfig());
                 // Clean up temp files but keep the repository
                 FileUtils.deleteDirectory(tempDir.resolve(repoName).toFile());
             }
+        } finally {
+            workbook.close();
         }
     }
 
-    private boolean isMavenProject(Path repo) {
-        return Files.exists(repo.resolve(AppConfig.POMXML));
+    private String detectBuildTool(Path repoFolder) {
+        List<String> found = new ArrayList<>();
+        if (Files.exists(repoFolder.resolve("pom.xml"))) found.add("maven");
+        if (Files.exists(repoFolder.resolve("build.gradle"))
+                || Files.exists(repoFolder.resolve("build.gradle.kts"))
+                || Files.exists(repoFolder.resolve("settings.gradle"))
+                || Files.exists(repoFolder.resolve("settings.gradle.kts"))) found.add("gradle");
+        if (Files.exists(repoFolder.resolve("build.xml"))) found.add("ant");
+        if (Files.exists(repoFolder.resolve("build.sbt"))) found.add("sbt");
+        if (Files.exists(repoFolder.resolve("BUILD")) || Files.exists(repoFolder.resolve("BUILD.bazel"))) found.add("bazel");
+        if (found.isEmpty()) return "none";
+        return String.join(",", found);
+    }
+
+    /** Write the new-column headers into row 0 if not already present. */
+    private void ensureHeaders(Sheet sheet) {
+        Row headerRow = sheet.getRow(0);
+        if (headerRow == null) headerRow = sheet.createRow(0);
+        for (PROJECTCOLUMN col : PROJECTCOLUMN.values()) {
+            if (col.getColumnNumber() < 2) continue; // leave existing name/url headers as-is
+            Cell cell = headerRow.getCell(col.getColumnNumber());
+            if (cell == null) cell = headerRow.createCell(col.getColumnNumber());
+            cell.setCellValue(col.getColumnName());
+        }
+    }
+
+    /** Populate the stats columns for a processed (or rejected) repository row. */
+    private void writeRepoRow(Row row, String buildTool, RepositoryStatus status, CollectionResult result) {
+        setCell(row, PROJECTCOLUMN.buildTool, buildTool);
+        setCell(row, PROJECTCOLUMN.status, status.name());
+        if (result != null) {
+            setCell(row, PROJECTCOLUMN.totalCommits,      result.getTotalCommits());
+            setCell(row, PROJECTCOLUMN.totalMerges,       result.getTotalMerges());
+            setCell(row, PROJECTCOLUMN.conflictMerges,    result.getMergesWithConflicts());
+            setCell(row, PROJECTCOLUMN.javaConflictMerges,result.getMergesWithJavaConflicts());
+            setCell(row, PROJECTCOLUMN.analyzableMerges,  result.getSuccessfulMerges());
+            setCell(row, PROJECTCOLUMN.maxModules,        result.getMaxModules());
+            setCell(row, PROJECTCOLUMN.timedOut,          result.getMergesTimedOut());
+            setCell(row, PROJECTCOLUMN.noTests,           result.getMergesWithNoTests());
+        }
+    }
+
+    private void setCell(Row row, PROJECTCOLUMN col, String value) {
+        Cell cell = row.getCell(col.getColumnNumber());
+        if (cell == null) cell = row.createCell(col.getColumnNumber());
+        cell.setCellValue(value);
+    }
+
+    private void setCell(Row row, PROJECTCOLUMN col, int value) {
+        Cell cell = row.getCell(col.getColumnNumber());
+        if (cell == null) cell = row.createCell(col.getColumnNumber());
+        cell.setCellValue(value);
+    }
+
+    private void flushWorkbook(Workbook workbook, Path excelFile) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(excelFile.toFile())) {
+            workbook.write(fos);
+        }
     }
 
     private String formatResultSummary(CollectionResult result) {
