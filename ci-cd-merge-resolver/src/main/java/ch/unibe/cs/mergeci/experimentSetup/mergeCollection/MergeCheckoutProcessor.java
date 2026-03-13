@@ -113,6 +113,10 @@ public class MergeCheckoutProcessor {
         boolean testSuccess = passedTests > 0;
         float time = testTotal.getElapsedTime();
 
+        // Extract module information early (needed for decision logic)
+        int numberOfModules = compilationResult.getNumberOfModules();
+        int modulesPassed = compilationResult.getNumberOfSuccessfulModules();
+
         // Calculate pure compilation time (total build time - test time)
         float compilationTime;
         if (compilationSuccess) {
@@ -121,9 +125,11 @@ public class MergeCheckoutProcessor {
             compilationTime = 0;
         }
 
-        // If compilation failed, test results are stale from a previous build
-        // Maven doesn't run tests when compilation fails, so any surefire-reports found are old
-        if (!compilationSuccess) {
+        // With -fae (fail-at-end), tests can run if at least some modules compiled successfully
+        // Only reset test results if NO modules passed (complete compilation failure)
+        if (modulesPassed == 0) {
+            // Complete compilation failure - no modules compiled, tests couldn't run
+            // Any surefire-reports found are stale from a previous build
             testSuccess = false;
             passedTests = 0;
             runTests = 0;
@@ -140,10 +146,6 @@ public class MergeCheckoutProcessor {
         } else {
             normalizedElapsedTime = compilationTime + time * runTests / passedTests;
         }
-
-        // Extract module information
-        int numberOfModules = compilationResult.getNumberOfModules();
-        int modulesPassed = compilationResult.getNumberOfSuccessfulModules();
 
         return MergeProcessResult.builder()
                 .hadTests(true)
@@ -185,10 +187,14 @@ public class MergeCheckoutProcessor {
         private final int modulesPassed;
 
         /**
-         * Check if this result represents a successful processing (has tests and didn't timeout).
+         * Check if this result represents a successful processing.
+         * With -fae flag, we accept partial compilation if:
+         * - At least some modules compiled (modulesPassed > 0)
+         * - At least some tests passed (numPassedTests > 0)
+         * - Build didn't timeout
          */
         public boolean isSuccessful() {
-            return hadTests && !timedOut;
+            return hadTests && !timedOut && modulesPassed > 0 && numPassedTests > 0;
         }
     }
 }

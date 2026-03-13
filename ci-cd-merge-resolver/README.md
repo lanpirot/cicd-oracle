@@ -23,6 +23,12 @@ Research tool for analyzing Git merge conflicts by generating resolution variant
   - Analysis tests (VariantRanking, VariantResolution)
 - **Details**: See `COVERAGE_ANALYSIS.md`
 
+### ✅ `-fae` (Fail-at-End) Aware Test Evaluation
+- **Changed**: Test results are only discarded when zero modules compiled (`modulesPassed == 0`)
+- **Impact**: Partial compilation (some modules pass) no longer invalidates test results
+- **Success criteria**: `isSuccessful()` requires `modulesPassed > 0 && numPassedTests > 0`
+- **Dataset**: `numberOfModules` and `modulesPassed` recorded per merge
+
 ## Quick Start
 
 ```bash
@@ -190,8 +196,9 @@ Implement `IPattern` interface to create custom patterns:
 ## Success Criteria
 
 A variant is successful if:
-- ✅ Compilation succeeds (all modules)
-- ✅ All tests pass (0 failures, 0 errors)
+- ✅ At least one module compiled successfully (`modulesPassed > 0`)
+- ✅ At least one test passed (`numPassedTests > 0`)
+- ✅ Build did not time out
 
 ## Research Questions
 

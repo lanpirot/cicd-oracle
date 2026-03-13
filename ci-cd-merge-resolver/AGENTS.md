@@ -15,6 +15,12 @@
 - **Focus areas**: Execution time analysis, XML parsing, Maven cache, Jacoco reports, coverage strategies
 - **Quality**: All edge cases covered (timeouts, invalid data, multi-module projects)
 
+### ✅ `-fae` (Fail-at-End) Aware Test Evaluation
+- **Changed**: `MergeCheckoutProcessor` now uses `modulesPassed > 0` (not `compilationSuccess`) to decide if test results are valid
+- **Impact**: With Maven `-fae`, tests can run even when some modules fail; results are only discarded on complete compilation failure (`modulesPassed == 0`)
+- **Success criteria tightened**: `isSuccessful()` now requires `modulesPassed > 0 && numPassedTests > 0`
+- **Dataset expanded**: `numberOfModules` and `modulesPassed` are now recorded per merge
+
 ## Purpose
 
 Research pipeline to evaluate **brute-force merge conflict resolution** in Java projects. Tests all pattern combinations (OURS, THEIRS) to find successful automated resolutions.
@@ -76,7 +82,7 @@ Excel Input → RepoCollector → MergeConflictCollector → ResolutionVariantRu
 
 **Dataset Format**:
 ```
-| Merge Commit | Parent1 | Parent2 | # Tests | Conflict Files | Java Files | Compiled | Tests Pass | Time | Multi-Module |
+| Merge Commit | Parent1 | Parent2 | # Tests | Conflict Files | Java Files | Compiled | Tests Pass | Time | Multi-Module | # Modules | Modules Passed |
 ```
 
 ---
@@ -144,11 +150,9 @@ Excel Input → RepoCollector → MergeConflictCollector → ResolutionVariantRu
 **Current Patterns**:
 - `OursPattern`: Take "ours" side
 - `TheirsPattern`: Take "theirs" side
-
-**Planned**:
 - `BasePattern`: Use base version
 - `EmptyPattern`: Remove conflict
-- `CompoundPattern`: Combine sides
+- `CompoundPattern`: Combine multiple patterns dynamically
 
 ### Brute-Force Strategy
 
@@ -252,8 +256,9 @@ mvn spring-boot:run
 ## Success Criteria
 
 Variant is **successful** if:
-1. ✅ Compilation succeeds (all modules)
-2. ✅ All tests pass (0 failures, 0 errors)
+1. ✅ At least one module compiled successfully (`modulesPassed > 0`)
+2. ✅ At least one test passed (`numPassedTests > 0`)
+3. ✅ Build did not time out
 
 Variant is **better than baseline** if:
 - Variant succeeds AND baseline succeeds
