@@ -133,5 +133,12 @@ public class AppConfig {
      * Lower timeout since we're just verifying the human-resolved merge compiles.
      * Builds exceeding this timeout are likely stuck and should be skipped.
      */
-    public static final int MAVEN_BUILD_TIMEOUT = 5;
+    public static final int MAVEN_BUILD_TIMEOUT = 10;
+
+    /**
+     * Timeout multiplier for variant testing in ResolutionVariantRunner.
+     * Timeout is calculated as: TIMEOUT_MULTIPLIER * normalizedElapsedTime
+     * This allows dynamic timeouts based on the expected build time from the dataset.
+     */
+    public static final int TIMEOUT_MULTIPLIER = 10;
 }

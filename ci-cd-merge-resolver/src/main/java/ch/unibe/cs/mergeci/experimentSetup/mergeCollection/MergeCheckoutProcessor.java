@@ -108,8 +108,38 @@ public class MergeCheckoutProcessor {
                     .build();
         }
 
-        boolean testSuccess = runTests > 0;
+        // Calculate passed tests
+        int passedTests = runTests - testTotal.getFailuresNum() - testTotal.getErrorsNum();
+        boolean testSuccess = passedTests > 0;
         float time = testTotal.getElapsedTime();
+
+        // Calculate pure compilation time (total build time - test time)
+        float compilationTime;
+        if (compilationSuccess) {
+            compilationTime = compilationResult.getTotalTime() - time;
+        } else {
+            compilationTime = 0;
+        }
+
+        // If compilation failed, test results are stale from a previous build
+        // Maven doesn't run tests when compilation fails, so any surefire-reports found are old
+        if (!compilationSuccess) {
+            testSuccess = false;
+            passedTests = 0;
+            runTests = 0;
+            time = 0;
+            compilationTime = 0;
+        }
+
+        // Calculate normalized elapsed time
+        // Formula: compilationTime + testTime * numTests / numPassedTests
+        // If numPassedTests == 0, result is NaN
+        float normalizedElapsedTime;
+        if (passedTests == 0) {
+            normalizedElapsedTime = Float.NaN;
+        } else {
+            normalizedElapsedTime = compilationTime + time * runTests / passedTests;
+        }
 
         return MergeProcessResult.builder()
                 .hadTests(true)
@@ -120,7 +150,10 @@ public class MergeCheckoutProcessor {
                 .testTotal(testTotal)
                 .merge(merge)
                 .numTests(runTests)
+                .numPassedTests(passedTests)
                 .elapsedTime(time)
+                .compilationTime(compilationTime)
+                .normalizedElapsedTime(normalizedElapsedTime)
                 .build();
     }
 
@@ -139,6 +172,9 @@ public class MergeCheckoutProcessor {
         private final MergeInfo merge;
         private final int numTests;
         private final float elapsedTime;
+        private final int numPassedTests;
+        private final float compilationTime;
+        private final float normalizedElapsedTime;
 
         /**
          * Check if this result represents a successful processing (has tests and didn't timeout).

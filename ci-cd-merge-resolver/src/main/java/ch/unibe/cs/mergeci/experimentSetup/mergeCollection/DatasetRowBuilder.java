@@ -41,6 +41,10 @@ public class DatasetRowBuilder {
                 .testSuccess(result.isTestSuccess())
                 .elapsedTestTime(result.getElapsedTime())
                 .isMultiModule(isMultiModule)
+                .numPassedTests(result.getNumPassedTests())
+                .compilationTime(result.getCompilationTime())
+                .testTime(result.getElapsedTime())
+                .normalizedElapsedTime(result.getNormalizedElapsedTime())
                 .build();
     }
 

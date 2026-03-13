@@ -1,9 +1,11 @@
 package ch.unibe.cs.mergeci.experimentSetup.evaluationCollection;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.service.IJustInTimeRunner;
 import ch.unibe.cs.mergeci.service.MavenExecutionFactory;
 import ch.unibe.cs.mergeci.service.MergeAnalyzer;
 import ch.unibe.cs.mergeci.service.RunExecutionTIme;
+import ch.unibe.cs.mergeci.service.VariantBuildContext;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.CompilationResult;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
@@ -64,7 +66,9 @@ public class MergeProcessor {
     }
 
     /**
-     * Run the full merge analysis including building projects and running tests.
+     * Run the full merge analysis with just-in-time variant building.
+     * Variants are built on-demand and deleted immediately after testing,
+     * dramatically reducing disk usage.
      */
     private MergeAnalysisResult runMergeAnalysis(DatasetReader.MergeInfo info) throws Exception {
         // Clean up before starting
@@ -73,21 +77,26 @@ public class MergeProcessor {
         // Time the analysis
         Instant start = Instant.now();
 
-        // Build merge variants
+        // Prepare variant metadata (no disk writes yet)
         MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
-        mergeAnalyzer.buildProjects(info.getParent1(), info.getParent2(), info.getMergeCommit());
+        VariantBuildContext context = mergeAnalyzer.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit());
 
-        // Run tests on all variants
-        RunExecutionTIme runExecutionTime = mergeAnalyzer.runTests(
-                new MavenExecutionFactory(mergeAnalyzer.getLogDir()).createMavenRunner(isParallel, isCache)
-        );
+        // Calculate total timeout budget: TIMEOUT_MULTIPLIER * normalizedElapsedTime
+        float totalBudgetSeconds = AppConfig.TIMEOUT_MULTIPLIER * info.getNormalizedElapsedTime();
+
+        // Create factory and run tests with just-in-time building
+        MavenExecutionFactory factory = new MavenExecutionFactory(mergeAnalyzer.getLogDir());
+        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache, totalBudgetSeconds);
+
+        // Run tests (builds variants on-demand, deletes immediately after)
+        RunExecutionTIme runExecutionTime = mergeAnalyzer.runTestsJustInTime(context, runner);
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
 
-        // Collect results
-        Map<String, CompilationResult> compilationResults = mergeAnalyzer.collectCompilationResults();
-        Map<String, TestTotal> testResults = mergeAnalyzer.collectTestResults();
+        // Collect results (already collected during just-in-time execution)
+        Map<String, CompilationResult> compilationResults = factory.getCompilationResults();
+        Map<String, TestTotal> testResults = factory.getTestResults();
 
         return new MergeAnalysisResult(
                 mergeAnalyzer,

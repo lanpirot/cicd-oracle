@@ -25,7 +25,11 @@ public class Utility {
         compilationSuccess(6, "Compilation Success"),
         testSuccess(7, "Test Success"),
         elapsedTestTime(8, "Elapsed Time"),
-        isMultiModule(9, "Multi Module");
+        isMultiModule(9, "Multi Module"),
+        numPassedTests(10, "Number of Passed Tests"),
+        compilationTime(11, "Compilation Time"),
+        testTime(12, "Test Time"),
+        normalizedElapsedTime(13, "Normalized Elapsed Time");
 
         private final int columnNumber;
         private final String columnName;

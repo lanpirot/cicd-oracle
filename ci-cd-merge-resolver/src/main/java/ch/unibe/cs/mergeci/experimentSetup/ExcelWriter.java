@@ -40,6 +40,10 @@ public class ExcelWriter {
             row.createCell(Utility.MERGECOLUMN.testSuccess.getColumnNumber()).setCellValue(r.testSuccess());
             row.createCell(Utility.MERGECOLUMN.elapsedTestTime.getColumnNumber()).setCellValue(r.elapsedTestTime());
             row.createCell(Utility.MERGECOLUMN.isMultiModule.getColumnNumber()).setCellValue(r.isMultiModule());
+            row.createCell(Utility.MERGECOLUMN.numPassedTests.getColumnNumber()).setCellValue(r.numPassedTests());
+            row.createCell(Utility.MERGECOLUMN.compilationTime.getColumnNumber()).setCellValue(r.compilationTime());
+            row.createCell(Utility.MERGECOLUMN.testTime.getColumnNumber()).setCellValue(r.testTime());
+            row.createCell(Utility.MERGECOLUMN.normalizedElapsedTime.getColumnNumber()).setCellValue(r.normalizedElapsedTime());
         }
 
 
@@ -62,7 +66,11 @@ public class ExcelWriter {
             boolean compilationSuccess,
             boolean testSuccess,
             float elapsedTestTime,
-            boolean isMultiModule
+            boolean isMultiModule,
+            int numPassedTests,
+            float compilationTime,
+            float testTime,
+            float normalizedElapsedTime
     ) {
     }
 

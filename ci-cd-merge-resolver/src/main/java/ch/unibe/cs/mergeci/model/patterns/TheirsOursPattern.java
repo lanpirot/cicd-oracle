@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class CombinePattern2 implements IPattern {
+public class TheirsOursPattern implements IPattern {
     @Override
     public List<String> apply(MergeResult<RawText> mergeResult, Map<CheckoutCommand.Stage, MergeChunk> chunks) {
         List<String> list = new LinkedList<>();
@@ -17,10 +17,10 @@ public class CombinePattern2 implements IPattern {
         MergeChunk oursChunk = chunks.get(CheckoutCommand.Stage.OURS);
         int seqIndex = oursChunk.getSequenceIndex();
         RawText rawText = mergeResult.getSequences().get(seqIndex);
-        for (int i = oursChunk.getBegin(); i < oursChunk.getEnd(); i++) {
+        for (int i = theirsChunk.getBegin(); i < theirsChunk.getEnd(); i++) {
             list.add(rawText.getString(i));
         }
-        for (int i = theirsChunk.getBegin(); i < theirsChunk.getEnd(); i++) {
+        for (int i = oursChunk.getBegin(); i < oursChunk.getEnd(); i++) {
             list.add(rawText.getString(i));
         }
         return list;

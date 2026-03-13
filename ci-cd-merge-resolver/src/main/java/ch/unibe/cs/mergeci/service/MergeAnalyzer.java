@@ -18,7 +18,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.ResolveMerger;
 
-
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -49,7 +49,16 @@ public class MergeAnalyzer {
         conflictPatterns = new ArrayList<>();
     }
 
-    public void buildProjects(String commit1, String commit2, String mergeCommit) throws Exception {
+    /**
+     * Prepare variant metadata without writing to disk.
+     * Returns a context that can be used to build variants on demand.
+     *
+     * @param commit1 First parent commit
+     * @param commit2 Second parent commit
+     * @param mergeCommit The merge commit (human resolution)
+     * @return VariantBuildContext containing all data needed to build variants
+     */
+    public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit) throws Exception {
         Git git = GitUtils.getGit(repositoryPath);
         ResolveMerger merger = GitUtils.makeMerge(commit1, commit2, git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
@@ -70,19 +79,104 @@ public class MergeAnalyzer {
         ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(repositoryPath, projectTempDir);
         List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
 
-        projects.forEach(x -> conflictPatterns.add(x.extractPatterns()));
+        List<Map<String, List<String>>> patterns = new ArrayList<>();
+        projects.forEach(x -> patterns.add(x.extractPatterns()));
 
         ObjectId branch1 = git.getRepository().resolve(commit1);
         ObjectId branch2 = git.getRepository().resolve(commit2);
         Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects(git, branch1, branch2);
-        projectBuilderUtils.saveProjects(projects, nonConflictObjects);
 
+        Map<String, ObjectId> mergeCommitObjects = GitUtils.getObjectsFromCommit(mergeCommit, git);
 
-        ///////COPY MERGE COMMIT/////////
-        Map<String, ObjectId> objectsFromMergeCommit = GitUtils.getObjectsFromCommit(mergeCommit, git);
-        FileUtils.saveFilesFromObjectId(projectTempDir.resolve(projectName), objectsFromMergeCommit, git);
+        return new VariantBuildContext(
+                repositoryPath,
+                projectTempDir,
+                projectName,
+                projects,
+                nonConflictObjects,
+                mergeCommitObjects,
+                patterns
+        );
     }
 
+    /**
+     * Build the main project directory (human-resolved merge).
+     *
+     * @param context Variant build context
+     * @return Path to the main project directory
+     */
+    public Path buildMainProject(VariantBuildContext context) throws IOException {
+        Path mainProjectPath = projectTempDir.resolve(projectName);
+        Git git = GitUtils.getGit(repositoryPath);
+        FileUtils.saveFilesFromObjectId(mainProjectPath, context.getMergeCommitObjects(), git);
+        return mainProjectPath;
+    }
+
+    /**
+     * Build a specific variant directory.
+     *
+     * @param context Variant build context
+     * @param variantIndex Index of the variant to build (0-based)
+     * @return Path to the variant directory
+     */
+    public Path buildVariant(VariantBuildContext context, int variantIndex) throws IOException {
+        if (variantIndex < 0 || variantIndex >= context.getVariantCount()) {
+            throw new IllegalArgumentException("Invalid variant index: " + variantIndex);
+        }
+
+        Path variantPath = projectTempDir.resolve(projectName + "_" + variantIndex);
+        Project project = context.getVariant(variantIndex);
+
+        Git git = GitUtils.getGit(repositoryPath);
+        FileUtils.saveFilesFromObjectId(variantPath, context.getNonConflictObjects(), git);
+
+        for (ProjectClass projectClass : project.getClasses()) {
+            File filepath = variantPath.resolve(projectClass.getClassPath().toString()).toFile();
+            if (filepath.getParentFile() != null) {
+                filepath.getParentFile().mkdirs();
+            }
+            try (java.io.OutputStream out = new java.io.FileOutputStream(filepath)) {
+                out.write(projectClass.toString().getBytes());
+            }
+        }
+
+        return variantPath;
+    }
+
+    /**
+     * Legacy method for backward compatibility.
+     * Builds all projects at once (old behavior).
+     */
+    @Deprecated
+    public void buildProjects(String commit1, String commit2, String mergeCommit) throws Exception {
+        VariantBuildContext context = prepareVariants(commit1, commit2, mergeCommit);
+        conflictPatterns = new ArrayList<>(context.getConflictPatterns());
+
+        // Build main project
+        buildMainProject(context);
+
+        // Build all variants
+        for (int i = 0; i < context.getVariantCount(); i++) {
+            buildVariant(context, i);
+        }
+    }
+
+    /**
+     * Run tests with just-in-time directory creation and immediate cleanup.
+     * Variant directories are built on-demand and deleted immediately after testing.
+     *
+     * @param context Variant build context
+     * @param runner Just-in-time runner
+     * @return Execution time statistics
+     */
+    public RunExecutionTIme runTestsJustInTime(VariantBuildContext context, IJustInTimeRunner runner) throws Exception {
+        return runner.run(context, this);
+    }
+
+    /**
+     * Legacy method: Run tests on pre-existing directories.
+     * Used when all directories are built upfront (old behavior).
+     */
     public RunExecutionTIme runTests(IRunner runner) {
         MavenRunner mavenRunner = new MavenRunner(logDir);
 
@@ -93,6 +187,31 @@ public class MergeAnalyzer {
         }
 
         return runner.run(projectTempDir.resolve(projectName), args, false);
+    }
+
+    /**
+     * Collect compilation result from a single project directory.
+     *
+     * @param projectKey Project key (e.g., "projectName" or "projectName_0")
+     * @return CompilationResult or null if log doesn't exist
+     */
+    public CompilationResult collectCompilationResult(String projectKey) throws IOException {
+        Path logPath = logDir.resolve(projectKey + "_compilation");
+        if (logPath.toFile().exists()) {
+            return new CompilationResult(logPath);
+        }
+        return null;
+    }
+
+    /**
+     * Collect test result from a single project directory.
+     *
+     * @param projectKey Project key (e.g., "projectName" or "projectName_0")
+     * @param projectPath Path to the project directory
+     * @return TestTotal for the project
+     */
+    public TestTotal collectTestResult(String projectKey, Path projectPath) {
+        return new TestTotal(projectPath.toFile());
     }
 
     public Map<String, CompilationResult> collectCompilationResults() throws IOException {
