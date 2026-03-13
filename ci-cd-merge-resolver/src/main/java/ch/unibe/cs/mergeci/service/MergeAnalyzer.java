@@ -170,6 +170,8 @@ public class MergeAnalyzer {
      * @return Execution time statistics
      */
     public RunExecutionTIme runTestsJustInTime(VariantBuildContext context, IJustInTimeRunner runner) throws Exception {
+        // Populate conflictPatterns for backward compatibility with result collectors
+        this.conflictPatterns = new ArrayList<>(context.getConflictPatterns());
         return runner.run(context, this);
     }
 
