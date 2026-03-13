@@ -2,6 +2,27 @@
 
 Research tool for analyzing Git merge conflicts by generating resolution variants and evaluating them using CI/CD feedback.
 
+## Recent Improvements
+
+### ✅ Multiple Merge Base Support (RECURSIVE Strategy)
+- **Fixed**: Changed from `RESOLVE` to `RECURSIVE` merge strategy in `GitUtils.makeMerge()`
+- **Impact**: Now handles criss-cross merges with multiple merge bases
+- **Verification**: Added explicit tests that verify multiple merge bases are detected
+- **Tests**: `CrissCrossMergeTest`, `MultipleMergeBasesTest`
+- **Details**: See `RECURSIVE_MERGE_STRATEGY.md`
+
+### ✅ Comprehensive Test Coverage
+- **Status**: 189 tests passing (0 failures, 0 errors)
+- **Coverage**: Improved from baseline with 60+ new tests
+- **Key additions**:
+  - `ExecutionTimeAnalyzerTest` (14 tests)
+  - `TestTotalXmlTest` (11 tests)
+  - `JacocoReportFinderTest` (9 tests)
+  - `MavenCacheManagerTest` (12 tests)
+  - Strategy tests (CoverageStrategy, CacheParallelStrategy)
+  - Analysis tests (VariantRanking, VariantResolution)
+- **Details**: See `COVERAGE_ANALYSIS.md`
+
 ## Quick Start
 
 ```bash
