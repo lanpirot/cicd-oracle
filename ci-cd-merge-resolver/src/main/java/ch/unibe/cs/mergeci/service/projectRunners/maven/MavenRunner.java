@@ -2,7 +2,6 @@ package ch.unibe.cs.mergeci.service.projectRunners.maven;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.strategy.CacheParallelStrategy;
-import ch.unibe.cs.mergeci.service.projectRunners.maven.strategy.CoverageStrategy;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.strategy.MavenExecutionStrategy;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.strategy.ParallelStrategy;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.strategy.SequentialStrategy;
@@ -54,11 +53,6 @@ public class MavenRunner {
     /** Execute Maven builds in parallel. */
     public void run_parallel(Path... projects) {
         execute(new ParallelStrategy(commandResolver, processExecutor, logDir), projects);
-    }
-
-    /** Execute Maven builds with Jacoco code coverage in parallel. */
-    public void runWithCoverage(Path... projects) {
-        execute(new CoverageStrategy(commandResolver, processExecutor, logDir), projects);
     }
 
     /** Execute Maven builds using a custom strategy. */

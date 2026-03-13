@@ -78,15 +78,13 @@ public class MavenExecutionFactory {
                 MavenRunner mainRunner = new MavenRunner(logDir, false, timeoutMinutes);
 
                 Instant start = Instant.now();
-                if (AppConfig.COVERAGE_ACTIVATED) {
-                    mainRunner.runWithCoverage(mainProjectPath);
+                mainRunner.run_no_optimization(mainProjectPath);
+                if (AppConfig.isCoverageActivated()) {
                     try {
                         coverageResult = JacocoReportFinder.getCoverageResults(mainProjectPath, List.of());
                     } catch (Exception e) {
                         System.err.println("Coverage collection failed for " + projectName + ": " + e.getMessage());
                     }
-                } else {
-                    mainRunner.run_no_optimization(mainProjectPath);
                 }
                 Instant end = Instant.now();
                 runExecutionTime.setMainExecutionTime(Duration.between(start, end));

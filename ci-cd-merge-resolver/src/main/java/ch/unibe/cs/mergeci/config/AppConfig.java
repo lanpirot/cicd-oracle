@@ -20,11 +20,37 @@ public class AppConfig {
     private static final boolean FRESH_RUN_DEFAULT = false;
 
     /**
-     * When true, the main project (human-resolved merge) is built with JaCoCo coverage
-     * instrumentation and the coverage report is stored in the experiment output JSON.
-     * Disable to skip coverage measurement and speed up runs.
+     * Whether JaCoCo coverage measurement is enabled.
+     * When true, Jacoco goals are added to every Maven build and the coverage report
+     * for the main (human-resolved) project is stored in the experiment output JSON.
+     * Can be overridden via system property "coverageActivated" for testing.
      */
-    public static final boolean COVERAGE_ACTIVATED = true;
+    public static boolean isCoverageActivated() {
+        return Boolean.parseBoolean(System.getProperty("coverageActivated", "true"));
+    }
+
+    /**
+     * Build the full Maven command array for a normal build.
+     * JaCoCo goals are included when coverage is active.
+     */
+    public static String[] buildCommand(String mavenExecutable) {
+        if (isCoverageActivated()) {
+            return new String[]{mavenExecutable, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                    JACOCO_FULL + ":prepare-agent", "test", JACOCO_FULL + ":report"};
+        }
+        return new String[]{mavenExecutable, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE, "test"};
+    }
+
+    /**
+     * Same as {@link #buildCommand} but with {@code -o} (offline) prepended, for cache builds.
+     */
+    public static String[] buildCommandOffline(String mavenExecutable) {
+        if (isCoverageActivated()) {
+            return new String[]{mavenExecutable, "-o", MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                    JACOCO_FULL + ":prepare-agent", "test", JACOCO_FULL + ":report"};
+        }
+        return new String[]{mavenExecutable, "-o", MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE, "test"};
+    }
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
