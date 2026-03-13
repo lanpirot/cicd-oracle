@@ -99,19 +99,17 @@ public class DatasetCollectionOrchestrator {
 
     /**
      * Load merges from repository.
+     * @throws RuntimeException if Git operations fail
      */
     private MergeLoadResult loadMerges(Path projectPath, int maxConflictMerges) {
-        List<MergeInfo> mergesWithConflicts = Collections.emptyList();
-        int totalMergeCount = 0;
-
         try (Git git = GitUtils.getGit(projectPath)) {
-            totalMergeCount = GitUtils.getTotalMergeCount(git);
-            mergesWithConflicts = GitUtils.getConflictCommits(maxConflictMerges, git);
+            int totalMergeCount = GitUtils.getTotalMergeCount(git);
+            List<MergeInfo> mergesWithConflicts = GitUtils.getConflictCommits(maxConflictMerges, git);
+            return new MergeLoadResult(mergesWithConflicts, totalMergeCount);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Failed to load merges from " + projectPath + ": " + e.getMessage());
+            throw new RuntimeException("Failed to load merges from repository", e);
         }
-
-        return new MergeLoadResult(mergesWithConflicts, totalMergeCount);
     }
 
     /**

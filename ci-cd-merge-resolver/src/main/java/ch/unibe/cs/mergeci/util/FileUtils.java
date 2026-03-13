@@ -45,10 +45,13 @@ public class FileUtils {
         try {
             ObjectLoader objectLoader = git.getRepository().open(objectId);
             return objectLoader.openStream();
-        }catch (Exception e){
-            System.out.println();
+        } catch (IOException e) {
+            System.err.println("Failed to load object " + objectId.name() + ": " + e.getMessage());
+            throw e;  // Re-throw to let caller handle
+        } catch (Exception e) {
+            System.err.println("Unexpected error loading object " + objectId.name() + ": " + e.getMessage());
+            throw new IOException("Failed to load git object", e);
         }
-        return null;
     }
 
     public static Map<String, String> objectIdToStringMap(Map<String, ObjectId> map, Git git) throws IOException {

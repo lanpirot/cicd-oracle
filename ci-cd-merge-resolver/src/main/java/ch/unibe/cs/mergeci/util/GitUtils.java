@@ -279,9 +279,13 @@ public class GitUtils {
                         mergeInfos.add(mergeInfo);
                         conflictingMergeCount++;
                     }
+                } catch (NoMergeBaseException e) {
+                    // Expected: Skip criss-cross merges not supported by jGit
+                    // (cannot get base version or find auto-merges/conflicts)
                 } catch (Exception e) {
-                    if (!(e instanceof NoMergeBaseException)) //we skip criss-cross merges that are not supported by jGit: we could not get base version or find auto-merges/conflicts etc.
-                        e.printStackTrace();
+                    System.err.println("Warning: Failed to analyze merge commit " + revCommit.name() + ": " + e.getMessage());
+                    e.printStackTrace();
+                    // Continue processing other commits
                 }
             }
         }

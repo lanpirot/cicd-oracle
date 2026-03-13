@@ -78,7 +78,9 @@ public class MavenCommandResolver {
             content = content.replace("\r\n", "\n").replace("\r", "\n");
             Files.write(mvnw.toPath(), content.getBytes());
         } catch (IOException e) {
-            // Silently fail - wrapper will still work in most cases
+            System.err.println("Warning: Failed to fix Unix line endings in mvnw: " + e.getMessage());
+            System.err.println("  Wrapper may fail on Unix systems. Consider fixing manually.");
+            // Non-fatal: wrapper might still work, or fallback to system Maven will be used
         }
     }
 }
