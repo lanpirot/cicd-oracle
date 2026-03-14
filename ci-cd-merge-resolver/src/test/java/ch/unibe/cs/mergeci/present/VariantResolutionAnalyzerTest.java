@@ -296,8 +296,12 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     private MergeOutputJSON createMerge(String commitHash, int runNum, int failuresNum, int errorsNum) {
         MergeOutputJSON merge = new MergeOutputJSON();
         merge.setMergeCommit(commitHash);
-        merge.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
-        merge.setVariantsExecution(new MergeOutputJSON.VariantsExecution());
+        MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
+        baselineVariant.setVariantName("human_baseline");
+        baselineVariant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
+        List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
+        allVariants.add(baselineVariant);
+        merge.setVariantsExecution(new MergeOutputJSON.VariantsExecution(allVariants));
         return merge;
     }
 

@@ -250,8 +250,12 @@ class VariantRankingAnalyzerTest extends BaseTest {
     private MergeOutputJSON createMerge(String commitHash, int runNum, int failuresNum, int errorsNum, int conflictChunks) {
         MergeOutputJSON merge = new MergeOutputJSON();
         merge.setMergeCommit(commitHash);
-        merge.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
-        merge.setVariantsExecution(new MergeOutputJSON.VariantsExecution());
+        MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
+        baselineVariant.setVariantName("human_baseline");
+        baselineVariant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
+        List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
+        allVariants.add(baselineVariant);
+        merge.setVariantsExecution(new MergeOutputJSON.VariantsExecution(allVariants));
         merge.setNumConflictChunks(conflictChunks);
         return merge;
     }

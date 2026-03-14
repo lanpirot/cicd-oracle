@@ -27,6 +27,7 @@ public class VariantResolutionAnalyzer {
             int baselineSuccesses = countSuccessfulTests(merge.getTestResults());
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
+                if ("human_baseline".equals(variant.getVariantName())) continue;
                 int variantSuccesses = countSuccessfulTests(variant.getTestResults());
 
                 if (baselineSuccesses <= variantSuccesses) {
@@ -49,6 +50,7 @@ public class VariantResolutionAnalyzer {
             int baselineSuccesses = countSuccessfulTests(merge.getTestResults());
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
+                if ("human_baseline".equals(variant.getVariantName())) continue;
                 int variantSuccesses = countSuccessfulTests(variant.getTestResults());
 
                 if (baselineSuccesses < variantSuccesses) {
@@ -74,6 +76,7 @@ public class VariantResolutionAnalyzer {
             int baselineSuccesses = countSuccessfulTests(merge.getTestResults());
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
+                if ("human_baseline".equals(variant.getVariantName())) continue;
                 int variantSuccesses = countSuccessfulTests(variant.getTestResults());
 
                 if (baselineSuccesses <= variantSuccesses) {

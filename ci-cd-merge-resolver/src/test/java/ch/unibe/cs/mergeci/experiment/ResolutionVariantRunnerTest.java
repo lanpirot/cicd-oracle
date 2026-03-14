@@ -20,7 +20,8 @@ public class ResolutionVariantRunnerTest extends BaseTest {
 
         // Only run the test if dataset and repo exist
         if (Files.exists(dataset) && Files.exists(repoPath)) {
-            ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, output,false, false);
+            Path humanBaselineOutput = AppConfig.TEST_EXPERIMENTS_TEMP_DIR.resolve("human_baseline_test.json");
+            ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, false, false);
 
             // Verify output file was created
             assertTrue(Files.exists(output),

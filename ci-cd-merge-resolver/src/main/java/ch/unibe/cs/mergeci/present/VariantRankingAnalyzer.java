@@ -68,6 +68,7 @@ public class VariantRankingAnalyzer {
         List<String> bestResolutions = new ArrayList<>(List.of("Human"));
 
         for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
+            if ("human_baseline".equals(variant.getVariantName())) continue;
             int variantBest = resolutionAnalyzer.countSuccessfulTests(variant.getTestResults());
             String pattern = resolutionAnalyzer.identifyUniformPattern(variant.getConflictPatterns());
 

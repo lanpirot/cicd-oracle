@@ -221,17 +221,19 @@ public class ExecutionTimeAnalyzerTest extends BaseTest {
                     """, baselineTime);
             Files.writeString(logFile, mavenLog);
 
-            // Create CompilationResult from the log file
+            // Create CompilationResult from the log file and store in human_baseline variant
             CompilationResult compilationResult = new CompilationResult(logFile);
-            merge.setCompilationResult(compilationResult);
+            MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
+            baselineVariant.setVariantName("human_baseline");
+            baselineVariant.setCompilationResult(compilationResult);
+            List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
+            allVariants.add(baselineVariant);
+            MergeOutputJSON.VariantsExecution variantsExecution = new MergeOutputJSON.VariantsExecution(allVariants);
+            variantsExecution.setExecutionTimeSeconds((long) variantTime);
+            merge.setVariantsExecution(variantsExecution);
         } catch (IOException e) {
             throw new RuntimeException("Failed to create test CompilationResult", e);
         }
-
-        // Set variants execution with variant time
-        MergeOutputJSON.VariantsExecution variantsExecution = new MergeOutputJSON.VariantsExecution();
-        variantsExecution.setExecutionTimeSeconds((long) variantTime);
-        merge.setVariantsExecution(variantsExecution);
 
         // Set conflict chunks
         merge.setNumConflictChunks(conflictChunks);

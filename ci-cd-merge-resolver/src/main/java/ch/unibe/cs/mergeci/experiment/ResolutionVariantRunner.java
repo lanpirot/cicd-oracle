@@ -44,7 +44,7 @@ public class ResolutionVariantRunner {
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
         prepareOutputDir(outputDir);
 
-        Path humanBaselineDir = AppConfig.VARIANT_EXPERIMENT_DIR.resolve("human_baseline");
+        Path humanBaselineDir = outputDir.getParent().resolve("human_baseline");
         if (!humanBaselineDir.toFile().exists()) humanBaselineDir.toFile().mkdirs();
 
         File[] xlsxDataset = datasetsDir.toFile().listFiles();
