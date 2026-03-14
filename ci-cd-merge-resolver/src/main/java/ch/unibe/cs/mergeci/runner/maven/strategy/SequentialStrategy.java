@@ -14,24 +14,36 @@ public class SequentialStrategy implements MavenExecutionStrategy {
     private final MavenCommandResolver commandResolver;
     private final MavenProcessExecutor processExecutor;
     private final Path logDir;
+    private final String javaHome;  // null = use system default
 
-    public SequentialStrategy(
-            MavenCommandResolver commandResolver,
-            MavenProcessExecutor processExecutor,
-            Path logDir) {
+    public SequentialStrategy(MavenCommandResolver commandResolver,
+                               MavenProcessExecutor processExecutor,
+                               Path logDir) {
+        this(commandResolver, processExecutor, logDir, null);
+    }
+
+    public SequentialStrategy(MavenCommandResolver commandResolver,
+                               MavenProcessExecutor processExecutor,
+                               Path logDir,
+                               String javaHome) {
         this.commandResolver = commandResolver;
         this.processExecutor = processExecutor;
         this.logDir = logDir;
+        this.javaHome = javaHome;
     }
 
     @Override
     public void execute(Path... projects) {
         for (Path project : projects) {
             String mavenCommand = commandResolver.resolveMavenCommand(project);
-            String projectName = project.getFileName().toString();
-            Path logFile = logDir.resolve(projectName + "_compilation");
+            Path logFile = logDir.resolve(project.getFileName().toString() + "_compilation");
 
-            processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand));
+            if (javaHome != null) {
+                processExecutor.executeCommandWithJavaHome(project, logFile, javaHome,
+                        AppConfig.buildCommand(mavenCommand));
+            } else {
+                processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand));
+            }
         }
     }
 

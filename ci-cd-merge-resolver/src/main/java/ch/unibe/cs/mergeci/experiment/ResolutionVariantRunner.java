@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +22,23 @@ public class ResolutionVariantRunner {
     private final Path tempDir;
     private final RepositoryManager repoManager;
 
+    public ResolutionVariantRunner() {
+        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.INPUT_PROJECT_XLSX, AppConfig.REPO_DIR);
+    }
+
     public ResolutionVariantRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
         this.datasetsDir = datasetsDir;
         this.repoDatasetsFile = repoDatasetsFile;
         this.tempDir = tempDir;
         this.repoManager = new RepositoryManager(tempDir);
+    }
+
+    public void runTests(Utility.Experiments ex) {
+        try {
+            runTests(AppConfig.VARIANT_EXPERIMENT_DIR.resolve(ex.getName()), ex.isParallel(), ex.isCache());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
@@ -58,9 +69,8 @@ public class ResolutionVariantRunner {
             String nameOfOutputFIle = repoName + AppConfig.JSON;
 
             // Skip if already processed (unless FRESH_RUN, which already cleaned the directory)
-            if (!AppConfig.isFreshRun() &&
-                outputDir.toFile().listFiles() != null &&
-                Arrays.stream(outputDir.toFile().listFiles()).anyMatch(f -> f.getName().equals(nameOfOutputFIle))) {
+            Path jsonOutputPath = outputDir.resolve(nameOfOutputFIle);
+            if (!AppConfig.isFreshRun() && jsonOutputPath.toFile().exists()) {
                 System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
                 continue;
             }

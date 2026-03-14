@@ -16,7 +16,6 @@ import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.merge.RecursiveMerger;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SpringBootTest
 class CiCdMergeResolverApplicationTests extends BaseTest {
 
     @Test
@@ -51,7 +49,6 @@ class CiCdMergeResolverApplicationTests extends BaseTest {
                 include(mergeBase).
                 setCommit(true).
                 setFastForward(MergeCommand.FastForwardMode.NO_FF).
-                //setSquash(false).
                         setMessage("Merged changes").
                 call();
 
@@ -79,14 +76,11 @@ class CiCdMergeResolverApplicationTests extends BaseTest {
         Repository repo = git.getRepository();
         git.checkout().setName("master").call();
 
-//        ObjectId feature = repo.resolve("feature");
-//        ObjectId head = repo.resolve("master");
         ObjectId feature = repo.resolve("ed4809f");
         ObjectId head = repo.resolve("26fcd8a");
 
         System.out.println(MergeStrategy.RECURSIVE.newMerger(repo, true));
         RecursiveMerger merger = (RecursiveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);
-//        merger.setWorkingTreeIterator(new FileTreeIterator(repo));
 
         boolean isMergedWithoutConflicts = merger.merge(head, feature);
 
@@ -107,11 +101,6 @@ class CiCdMergeResolverApplicationTests extends BaseTest {
                 assertNotNull(result, "Merge result should not be null");
                 assertNotNull(result.getSequences(), "Sequences should not be null");
 
-//                for (Sequence rawText : result.getSequences()) {
-//                    for (int i = 0; i < rawText.size(); i++) {
-//                        System.out.println(((RawText) rawText).getString(i));
-//                    }
-//                }
                 for (MergeChunk chunk : result) {
                     System.out.println("  State: " + chunk.getConflictState());
                     assertNotNull(chunk.getConflictState(), "Chunk state should not be null");

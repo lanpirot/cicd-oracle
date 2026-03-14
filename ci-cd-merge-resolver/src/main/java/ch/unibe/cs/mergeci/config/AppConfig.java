@@ -3,13 +3,11 @@ package ch.unibe.cs.mergeci.config;
 import ch.unibe.cs.mergeci.model.patterns.IPattern;
 import ch.unibe.cs.mergeci.model.patterns.OursPattern;
 import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
-import org.springframework.context.annotation.Configuration;
-
 import java.nio.file.*;
 import java.util.List;
+import java.util.Map;
 
 
-@Configuration
 public class AppConfig {
 
     // ========== EXECUTION MODE ==========
@@ -60,6 +58,15 @@ public class AppConfig {
         }
         return new String[]{mavenExecutable, "-o", MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE, "test"};
     }
+
+    // ========== JAVA INSTALLATIONS ==========
+    public static final Map<Integer, Path> JAVA_HOMES = Map.of(
+            8,  Paths.get("/usr/lib/jvm/openlogic-openjdk-8u462-b08-linux-x64"),
+            11, Paths.get("/usr/lib/jvm/jdk-11.0.2"),
+            17, Paths.get("/usr/lib/jvm/java-17-openjdk-amd64"),
+            21, Paths.get("/usr/lib/jvm/jdk-21.0.2"),
+            25, Paths.get("/usr/lib/jvm/jdk-25.0.1")
+    );
 
     // ========== PHASE 1: REPO COLLECTOR ==========
     public static final Path BASE_DIR = Paths.get("/home/lanpirot");

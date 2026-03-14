@@ -50,6 +50,11 @@ public class MavenRunner {
         execute(new SequentialStrategy(commandResolver, processExecutor, logDir), projects);
     }
 
+    /** Execute Maven builds sequentially, overriding JAVA_HOME for all builds. */
+    public void run_no_optimization(String javaHome, Path... projects) {
+        execute(new SequentialStrategy(commandResolver, processExecutor, logDir, javaHome), projects);
+    }
+
     /** Execute Maven builds in parallel. */
     public void run_parallel(Path... projects) {
         execute(new ParallelStrategy(commandResolver, processExecutor, logDir), projects);

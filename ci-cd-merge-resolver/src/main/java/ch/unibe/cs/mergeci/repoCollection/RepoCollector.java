@@ -36,6 +36,10 @@ public class RepoCollector {
     private final Path datasetDir;
     private final RepositoryManager repoManager;
 
+    public RepoCollector() {
+        this(AppConfig.REPO_DIR, AppConfig.TMP_DIR, AppConfig.CONFLICT_DATASET_DIR);
+    }
+
     public RepoCollector(Path cloneDir, Path tempDir, Path datasetDir) {
         this.cloneDir = cloneDir;
         this.tempDir = tempDir;
@@ -44,6 +48,14 @@ public class RepoCollector {
     }
 
     int headerLine = 1;
+
+    public void processExcel() {
+        try {
+            processExcel(AppConfig.INPUT_PROJECT_XLSX);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void processExcel(Path excelFile) throws Exception {
         // Handle FRESH_RUN mode
@@ -61,6 +73,9 @@ public class RepoCollector {
 
         // Always clean temp directory
         FileUtils.deleteDirectory(tempDir.toFile());
+
+        BuildFailureLog failureLog = BuildFailureLog.createOrNull(
+                AppConfig.DATA_BASE_DIR.resolve("build_failures.log"));
 
         // Load workbook into memory (close stream immediately so we can write back later)
         Workbook workbook;
@@ -110,8 +125,13 @@ public class RepoCollector {
                 // Skip if already processed (unless FRESH_RUN)
                 RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
                 if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED) {
-                    System.out.printf("[%d/%d] %s - ⏩ Already processed (%s)\n\n", currentRepo, totalRepos, repoName, existingStatus);
-                    continue;
+                    Path excelOutFile = datasetDir.resolve(repoName + AppConfig.XLSX);
+                    if (existingStatus == RepositoryStatus.SUCCESS && (!Files.exists(datasetDir) || !Files.exists(excelOutFile))) {
+                        System.out.printf("[%d/%d] %s - ⚠ Marked SUCCESS but excel missing, reprocessing...\n\n", currentRepo, totalRepos, repoName);
+                    } else {
+                        System.out.printf("[%d/%d] %s - ⏩ Already processed (%s)\n\n", currentRepo, totalRepos, repoName, existingStatus);
+                        continue;
+                    }
                 }
 
                 System.out.printf("[%d/%d] %s\n", currentRepo, totalRepos, repoName);
@@ -121,6 +141,7 @@ public class RepoCollector {
                     repoFolder = repoManager.getRepositoryPath(repoName, repoUrl);
                 } catch (IOException e) {
                     System.out.printf("  ✗ Clone failed: %s\n\n", e.getMessage());
+                    if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_CLONE_FAILED", e.getMessage());
                     writeRepoRow(row, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
                     flushWorkbook(workbook, excelFile);
                     continue;
@@ -130,6 +151,7 @@ public class RepoCollector {
 
                 if (!buildTool.contains("maven")) {
                     System.out.printf("  ✗ Not a Maven project (build tool: %s) → REJECTED_NO_POM\n\n", buildTool);
+                    if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_NO_POM", "build tool: " + buildTool);
                     repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
                     writeRepoRow(row, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
                     flushWorkbook(workbook, excelFile);
@@ -140,7 +162,8 @@ public class RepoCollector {
                 MergeConflictCollector conflictCollector = new MergeConflictCollector(
                         repoFolder,
                         tempDir.resolve(repoName),
-                        AppConfig.MAX_CONFLICT_MERGES
+                        AppConfig.MAX_CONFLICT_MERGES,
+                        failureLog
                 );
 
                 CollectionResult result = conflictCollector.collectDataset(
@@ -155,6 +178,7 @@ public class RepoCollector {
                 if (result.getStatus() == RepositoryStatus.SUCCESS) {
                     repoManager.markRepositorySuccess(repoName);
                 } else {
+                    if (failureLog != null) failureLog.logRepoFailure(repoName, result.getStatus().name(), result.getMessage());
                     repoManager.markRepositoryRejected(repoName, result.getStatus());
                 }
 
@@ -168,6 +192,7 @@ public class RepoCollector {
             }
         } finally {
             workbook.close();
+            if (failureLog != null) failureLog.close();
         }
     }
 

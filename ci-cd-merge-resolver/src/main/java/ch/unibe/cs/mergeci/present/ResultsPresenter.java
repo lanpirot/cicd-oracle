@@ -1,9 +1,11 @@
 package ch.unibe.cs.mergeci.present;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.conflict.MergeStatistics;
 import ch.unibe.cs.mergeci.experiment.AllMergesJSON;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
+import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 
@@ -18,6 +20,10 @@ public class ResultsPresenter {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final MergeStatistics statistics;
     private final Path dir;
+
+    public ResultsPresenter(Utility.Experiments ex) {
+        this(AppConfig.VARIANT_EXPERIMENT_DIR.resolve(ex.getName()));
+    }
 
     public ResultsPresenter(Path dir) {
         this.dir = dir;

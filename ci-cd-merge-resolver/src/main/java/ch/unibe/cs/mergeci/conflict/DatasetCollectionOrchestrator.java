@@ -1,6 +1,8 @@
 package ch.unibe.cs.mergeci.conflict;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog;
+import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog.MergeFailureType;
 import ch.unibe.cs.mergeci.repoCollection.CollectionResult;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
@@ -24,14 +26,24 @@ public class DatasetCollectionOrchestrator {
     private final MergeFilter mergeFilter;
     private final MergeCheckoutProcessor mergeProcessor;
     private final DatasetRowBuilder rowBuilder;
+    private final BuildFailureLog failureLog;  // nullable
 
     public DatasetCollectionOrchestrator(
             MergeFilter mergeFilter,
             MergeCheckoutProcessor mergeProcessor,
             DatasetRowBuilder rowBuilder) {
+        this(mergeFilter, mergeProcessor, rowBuilder, null);
+    }
+
+    public DatasetCollectionOrchestrator(
+            MergeFilter mergeFilter,
+            MergeCheckoutProcessor mergeProcessor,
+            DatasetRowBuilder rowBuilder,
+            BuildFailureLog failureLog) {
         this.mergeFilter = mergeFilter;
         this.mergeProcessor = mergeProcessor;
         this.rowBuilder = rowBuilder;
+        this.failureLog = failureLog;
     }
 
     /**
@@ -185,16 +197,21 @@ public class DatasetCollectionOrchestrator {
 
             if (!result.isHadTests()) {
                 noTestCount.incrementAndGet();
+                logMergeFailure(projectName, commitShort, MergeFailureType.NO_TESTS, "");
                 System.out.println("✗ No tests");
             } else if (result.isTimedOut()) {
                 timeoutCount.incrementAndGet();
+                logMergeFailure(projectName, commitShort, MergeFailureType.TIMEOUT, "");
                 System.out.println("⏱ Timeout");
             } else {
                 ExcelWriter.DatasetRow row = rowBuilder.buildRow(result);
                 if (row != null) {
                     rows.add(row);
+                    System.out.println("✓ Success");
+                } else {
+                    logCompileFailure(projectName, commitShort, result);
+                    System.out.println("✗ Build/test failure");
                 }
-                System.out.println("✓ Success");
             }
         } catch (Exception e) {
             System.out.println("✗ Error: " + e.getMessage());
@@ -280,6 +297,27 @@ public class DatasetCollectionOrchestrator {
                 .maxModules(maxModules)
                 .message(message)
                 .build();
+    }
+
+    private void logMergeFailure(String repoName, String shortCommit,
+                                  MergeFailureType type, String detail) {
+        if (failureLog != null) failureLog.logMergeFailure(repoName, shortCommit, type, detail);
+    }
+
+    private void logCompileFailure(String repoName, String shortCommit,
+                                    MergeCheckoutProcessor.MergeProcessResult result) {
+        if (failureLog == null) return;
+        if (result.isJavaVersionError()) {
+            String detail = String.format("pom.xml requires Java %d, ran with Java %s",
+                    result.getRequiredJavaVersion(),
+                    result.getUsedJavaVersion() > 0 ? result.getUsedJavaVersion() : "system default");
+            failureLog.logMergeFailure(repoName, shortCommit, MergeFailureType.JAVA_VERSION, detail);
+        } else {
+            String detail = result.getNumberOfModules() > 1
+                    ? result.getModulesPassed() + "/" + result.getNumberOfModules() + " modules compiled"
+                    : "";
+            failureLog.logMergeFailure(repoName, shortCommit, MergeFailureType.COMPILE_FAILURE, detail);
+        }
     }
 
     /**

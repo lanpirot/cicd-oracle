@@ -16,17 +16,38 @@ public class MavenProcessExecutor {
         this.timeoutMinutes = timeoutMinutes;
     }
 
-    /**
-     * Execute a command with timeout.
-     * If the command exceeds the timeout, the process will be forcibly terminated.
-     *
-     * @param workingDirectory Working directory for the command
-     * @param outputFile Output file for command output (null for inherited IO)
-     * @param command Command and arguments to execute
-     */
+    /** Execute a command with timeout. */
     public void executeCommand(Path workingDirectory, Path outputFile, String... command) {
-        ProcessBuilder pb = createProcessBuilder(workingDirectory, outputFile, command);
+        run(createProcessBuilder(workingDirectory, outputFile, null, command), command);
+    }
 
+    /** Execute a command with timeout, overriding JAVA_HOME in the process environment. */
+    public void executeCommandWithJavaHome(Path workingDirectory, Path outputFile,
+                                           String javaHome, String... command) {
+        run(createProcessBuilder(workingDirectory, outputFile, javaHome, command), command);
+    }
+
+    private ProcessBuilder createProcessBuilder(Path workingDirectory, Path outputFile,
+                                                String javaHome, String... command) {
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(workingDirectory.toFile());
+        pb.redirectErrorStream(true);
+
+        if (javaHome != null) {
+            pb.environment().put("JAVA_HOME", javaHome);
+            pb.environment().put("PATH", javaHome + "/bin:" + pb.environment().getOrDefault("PATH", ""));
+        }
+
+        if (outputFile != null) {
+            pb.redirectOutput(outputFile.toFile());
+        } else {
+            pb.inheritIO();
+        }
+
+        return pb;
+    }
+
+    private void run(ProcessBuilder pb, String... command) {
         Process process = null;
         try {
             process = pb.start();
@@ -40,20 +61,6 @@ public class MavenProcessExecutor {
         }
     }
 
-    private ProcessBuilder createProcessBuilder(Path workingDirectory, Path outputFile, String... command) {
-        ProcessBuilder pb = new ProcessBuilder(command);
-        pb.directory(workingDirectory.toFile());
-        pb.redirectErrorStream(true);
-
-        if (outputFile != null) {
-            pb.redirectOutput(outputFile.toFile());
-        } else {
-            pb.inheritIO();
-        }
-
-        return pb;
-    }
-
     private void handleTimeout(Process process, String... command) {
         System.err.println("TIMEOUT: Build exceeded " + timeoutMinutes +
                 " minutes. Killing process: " + Arrays.toString(command));
@@ -61,7 +68,7 @@ public class MavenProcessExecutor {
         process.destroyForcibly();
 
         try {
-            process.waitFor(); // Wait for forced termination to complete
+            process.waitFor();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
