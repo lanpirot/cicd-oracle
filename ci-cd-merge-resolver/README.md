@@ -138,6 +138,14 @@ python3 complete_workflow.py
 **Input**: `Java_chunks_original.csv` (conflict chunk data)
 **Output**: `relative_numbers_summary.csv` (pattern frequency analysis)
 
+**Features**:
+- **In-memory processing**: No intermediate files written to disk
+- **Log-bucket concatenation**: Strategies grouped by number_of_chunks ranges (2-3, 4-7, 8-15, etc.)
+- **Row-wise unification**: Identical strategies unified within each row
+- **Relativized factors**: Strategy counts normalized to sum to 100 within each row
+- **9-digit precision**: All percentage calculations use high precision formatting
+- **NON strategy filtering**: NON entries removed from global overview row
+
 ## Execution Modes
 
 Two modes control behavior:
