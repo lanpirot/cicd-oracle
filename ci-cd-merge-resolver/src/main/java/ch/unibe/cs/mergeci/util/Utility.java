@@ -17,22 +17,27 @@ public class Utility {
 
     @Getter
     public enum MERGECOLUMN {
+        // Identifiers
         mergeCommit(0, "Merge Commit"),
         parent1(1, "Parent1"),
         parent2(2, "Parent2"),
-        numTests(3, "Number of Tests"),
-        numConflictingFiles(4, "Number of Conflicting Files"),
-        numJavaFiles(5, "Number of Java Files"),
-        compilationSuccess(6, "Compilation Success"),
-        testSuccess(7, "Test Success"),
-        elapsedTestTime(8, "Elapsed Time"),
-        isMultiModule(9, "Multi Module"),
-        numPassedTests(10, "Number of Passed Tests"),
-        compilationTime(11, "Compilation Time"),
-        testTime(12, "Test Time"),
-        normalizedElapsedTime(13, "Normalized Elapsed Time"),
-        numberOfModules(14, "Number of Modules"),
-        modulesPassed(15, "Modules Passed");
+        // Conflict structure
+        numConflictingFiles(3, "Number of Conflicting Files"),
+        numJavaFiles(4, "Number of Java Files"),
+        // Project structure
+        isMultiModule(5, "Multi Module"),
+        numberOfModules(6, "Number of Modules"),
+        // Compilation results
+        compilationSuccess(7, "Compilation Success"),
+        compilationTime(8, "Compilation Time"),
+        modulesPassed(9, "Modules Passed"),
+        // Test results
+        numTests(10, "Number of Tests"),
+        numPassedTests(11, "Number of Passed Tests"),
+        testSuccess(12, "Test Success"),
+        testTime(13, "Test Time"),
+        elapsedTestTime(14, "Elapsed Time"),
+        normalizedElapsedTime(15, "Normalized Elapsed Time");
 
         private final int columnNumber;
         private final String columnName;
@@ -45,17 +50,23 @@ public class Utility {
 
     @Getter
     public enum PROJECTCOLUMN {
+        // Identity
         repoName(0, "Repository Name"),
         repoURL(1, "Repository URL"),
         buildTool(2, "Build Tool"),
+        // Repository scale
         totalCommits(3, "#Commits"),
         totalMerges(4, "#Merges"),
+        // Conflict funnel
         conflictMerges(5, "#Conflict Merges"),
         javaConflictMerges(6, "#Java Conflict Merges"),
         analyzableMerges(7, "#Analyzable Merges"),
+        // Build structure
         maxModules(8, "#Max Modules"),
+        // Issues
         timedOut(9, "#Timed Out"),
         noTests(10, "#No Tests"),
+        // Outcome
         status(11, "Status");
 
         private final int columnNumber;
