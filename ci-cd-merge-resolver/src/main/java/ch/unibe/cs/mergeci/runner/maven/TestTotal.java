@@ -55,6 +55,19 @@ public class TestTotal {
         }
     }
 
+    /**
+     * Normalize elapsed time to account for mass test failures.
+     * If tests fail, elapsed time is shorter than a fully-green run would be.
+     * Scaling by runTests/passedTests estimates the equivalent full-pass duration.
+     *
+     * @return NaN when no tests passed (budget caller should fall back to raw time)
+     */
+    public static float normalizeElapsedTime(float compilationTime, float testElapsed,
+                                             int runTests, int passedTests) {
+        if (passedTests <= 0) return Float.NaN;
+        return compilationTime + testElapsed * runTests / passedTests;
+    }
+
     @Override
     public String toString() {
         return "TestTotal{" +

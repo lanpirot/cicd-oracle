@@ -3,6 +3,7 @@ package ch.unibe.cs.mergeci.experiment;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class VariantResultCollector {
      * @param processed The processed merge containing analysis results
      * @return Complete merge output with all variant results
      */
-    public MergeOutputJSON collectResults(MergeProcessor.ProcessedMerge processed) {
+    public MergeOutputJSON collectResults(MergeExperimentRunner.ProcessedMerge processed) {
         MergeOutputJSON output = new MergeOutputJSON();
 
         // Set basic merge information
@@ -38,7 +39,7 @@ public class VariantResultCollector {
     /**
      * Populate basic merge information from dataset.
      */
-    private void populateBasicInfo(MergeOutputJSON output, MergeProcessor.ProcessedMerge processed) {
+    private void populateBasicInfo(MergeOutputJSON output, MergeExperimentRunner.ProcessedMerge processed) {
         DatasetReader.MergeInfo info = processed.getInfo();
 
         output.setMergeCommit(info.getMergeCommit());
@@ -54,7 +55,7 @@ public class VariantResultCollector {
     /**
      * Populate baseline (original merge) compilation and test results.
      */
-    private void populateBaselineResults(MergeOutputJSON output, MergeProcessor.MergeAnalysisResult result) {
+    private void populateBaselineResults(MergeOutputJSON output, MergeExperimentRunner.MergeAnalysisResult result) {
         String projectName = result.getProjectName();
 
         output.setTestResults(result.getTestResults().get(projectName));
@@ -65,7 +66,7 @@ public class VariantResultCollector {
     /**
      * Build complete variant summary including all variants and success metrics.
      */
-    private VariantSummary buildVariantSummary(MergeProcessor.MergeAnalysisResult result) {
+    private VariantSummary buildVariantSummary(MergeExperimentRunner.MergeAnalysisResult result) {
         String projectName = result.getProjectName();
         Map<String, CompilationResult> compilationResults = result.getCompilationResults();
         Map<String, TestTotal> testResults = result.getTestResults();
@@ -84,7 +85,8 @@ public class VariantResultCollector {
 
         // Create variants execution wrapper
         MergeOutputJSON.VariantsExecution variantsExecution = new MergeOutputJSON.VariantsExecution(variants);
-        variantsExecution.setExecutionTimeSeconds(result.getRunExecutionTime().getVariantsExecutionTime().getSeconds());
+        Duration variantsTime = result.getRunExecutionTime().getVariantsExecutionTime();
+        variantsExecution.setExecutionTimeSeconds(variantsTime != null ? variantsTime.getSeconds() : 0);
 
         return new VariantSummary(variantsExecution, successfulVariants, totalVariants);
     }
@@ -130,7 +132,7 @@ public class VariantResultCollector {
     private List<MergeOutputJSON.Variant> buildVariants(
             Map<String, CompilationResult> compilationResults,
             Map<String, TestTotal> testResults,
-            ch.unibe.cs.mergeci.runner.MergeAnalyzer analyzer,
+            ch.unibe.cs.mergeci.runner.VariantProjectBuilder builder,
             String projectName) {
 
         List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResults.size());
@@ -144,7 +146,7 @@ public class VariantResultCollector {
             variant.setVariantName(entry.getKey());
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(entry.getKey()));
-            variant.setConflictPatterns(analyzer.getConflictPatterns().get(variants.size()));
+            variant.setConflictPatterns(builder.getConflictPatterns().get(variants.size()));
 
             variants.add(variant);
         }
@@ -185,7 +187,7 @@ public class VariantResultCollector {
     /**
      * Get a formatted summary string for logging.
      */
-    public String getSuccessSummary(MergeProcessor.ProcessedMerge processed) {
+    public String getSuccessSummary(MergeExperimentRunner.ProcessedMerge processed) {
         if (processed.wasSkipped()) {
             return processed.getSkipReason();
         }

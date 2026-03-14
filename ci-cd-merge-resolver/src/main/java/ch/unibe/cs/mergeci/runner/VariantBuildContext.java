@@ -1,6 +1,6 @@
 package ch.unibe.cs.mergeci.runner;
 
-import ch.unibe.cs.mergeci.model.Project;
+import ch.unibe.cs.mergeci.model.VariantProject;
 import lombok.Getter;
 import org.eclipse.jgit.lib.ObjectId;
 
@@ -17,7 +17,7 @@ public class VariantBuildContext {
     private final Path repositoryPath;
     private final Path projectTempDir;
     private final String projectName;
-    private final List<Project> projects;
+    private final List<VariantProject> projects;
     private final Map<String, ObjectId> nonConflictObjects;
     private final Map<String, ObjectId> mergeCommitObjects;
     private final List<Map<String, List<String>>> conflictPatterns;
@@ -26,7 +26,7 @@ public class VariantBuildContext {
             Path repositoryPath,
             Path projectTempDir,
             String projectName,
-            List<Project> projects,
+            List<VariantProject> projects,
             Map<String, ObjectId> nonConflictObjects,
             Map<String, ObjectId> mergeCommitObjects,
             List<Map<String, List<String>>> conflictPatterns) {
@@ -49,7 +49,7 @@ public class VariantBuildContext {
     /**
      * Get a specific variant project by index.
      */
-    public Project getVariant(int index) {
+    public VariantProject getVariant(int index) {
         if (index < 0 || index >= projects.size()) {
             throw new IndexOutOfBoundsException("Variant index out of bounds: " + index);
         }

@@ -129,7 +129,7 @@ public class ResolutionVariantRunner {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
 
-        MergeProcessor processor = new MergeProcessor(repoPath, isParallel, isCache);
+        MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, isParallel, isCache);
         VariantResultCollector collector = new VariantResultCollector();
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector);
@@ -141,7 +141,7 @@ public class ResolutionVariantRunner {
     }
 
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
-                                               MergeProcessor processor,
+                                               MergeExperimentRunner processor,
                                                VariantResultCollector collector) throws Exception {
         List<MergeOutputJSON> results = new ArrayList<>();
         int skippedCount = 0;
@@ -153,7 +153,7 @@ public class ResolutionVariantRunner {
             System.out.printf("  [%d/%d|%3d%%] %s... ", index, mergeInfos.size(), progress, info.getShortCommit());
             System.out.flush();
 
-            MergeProcessor.ProcessedMerge processed = processor.processMerge(info);
+            MergeExperimentRunner.ProcessedMerge processed = processor.processMerge(info);
 
             if (processed.wasSkipped()) {
                 System.out.println(processed.getSkipReason());

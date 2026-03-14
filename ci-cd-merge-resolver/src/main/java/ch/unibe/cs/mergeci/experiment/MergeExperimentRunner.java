@@ -3,8 +3,8 @@ package ch.unibe.cs.mergeci.experiment;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.runner.IJustInTimeRunner;
 import ch.unibe.cs.mergeci.runner.MavenExecutionFactory;
-import ch.unibe.cs.mergeci.runner.MergeAnalyzer;
-import ch.unibe.cs.mergeci.runner.RunExecutionTIme;
+import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
+import ch.unibe.cs.mergeci.runner.ExperimentTiming;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
@@ -23,12 +23,12 @@ import java.util.Map;
  * Processes individual merge commits for variant testing.
  * Encapsulates the logic for running merge analysis and collecting execution metrics.
  */
-public class MergeProcessor {
+public class MergeExperimentRunner {
     private final Path repoPath;
     private final boolean isParallel;
     private final boolean isCache;
 
-    public MergeProcessor(Path repoPath, boolean isParallel, boolean isCache) {
+    public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache) {
         this.repoPath = repoPath;
         this.isParallel = isParallel;
         this.isCache = isCache;
@@ -63,18 +63,15 @@ public class MergeProcessor {
         Instant start = Instant.now();
 
         // Prepare variant metadata (no disk writes yet)
-        MergeAnalyzer mergeAnalyzer = new MergeAnalyzer(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
-        VariantBuildContext context = mergeAnalyzer.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit());
-
-        // Calculate total timeout budget: TIMEOUT_MULTIPLIER * normalizedElapsedTime
-        float totalBudgetSeconds = AppConfig.TIMEOUT_MULTIPLIER * info.getNormalizedElapsedTime();
+        VariantProjectBuilder variantProjectBuilder = new VariantProjectBuilder(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
+        VariantBuildContext context = variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit());
 
         // Create factory and run tests with just-in-time building
-        MavenExecutionFactory factory = new MavenExecutionFactory(mergeAnalyzer.getLogDir());
-        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache, totalBudgetSeconds);
+        MavenExecutionFactory factory = new MavenExecutionFactory(variantProjectBuilder.getLogDir());
+        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache);
 
         // Run tests (builds variants on-demand, deletes immediately after)
-        RunExecutionTIme runExecutionTime = mergeAnalyzer.runTestsJustInTime(context, runner);
+        ExperimentTiming experimentTiming = variantProjectBuilder.runTestsJustInTime(context, runner);
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
@@ -85,11 +82,11 @@ public class MergeProcessor {
         JacocoReportFinder.CoverageDTO coverageResult = factory.getCoverageResult();
 
         return new MergeAnalysisResult(
-                mergeAnalyzer,
+                variantProjectBuilder,
                 compilationResults,
                 testResults,
                 timeElapsed,
-                runExecutionTime,
+                experimentTiming,
                 coverageResult
         );
     }
@@ -136,19 +133,19 @@ public class MergeProcessor {
      */
     @Getter
     public static class MergeAnalysisResult {
-        private final MergeAnalyzer analyzer;
+        private final VariantProjectBuilder analyzer;
         private final Map<String, CompilationResult> compilationResults;
         private final Map<String, TestTotal> testResults;
         private final long executionTimeSeconds;
-        private final RunExecutionTIme runExecutionTime;
+        private final ExperimentTiming runExecutionTime;
         private final JacocoReportFinder.CoverageDTO coverageResult;
 
         public MergeAnalysisResult(
-                MergeAnalyzer analyzer,
+                VariantProjectBuilder analyzer,
                 Map<String, CompilationResult> compilationResults,
                 Map<String, TestTotal> testResults,
                 long executionTimeSeconds,
-                RunExecutionTIme runExecutionTime,
+                ExperimentTiming runExecutionTime,
                 JacocoReportFinder.CoverageDTO coverageResult) {
             this.analyzer = analyzer;
             this.compilationResults = compilationResults;

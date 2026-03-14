@@ -155,12 +155,7 @@ public class MergeCheckoutProcessor {
             compilationTime = 0;
         }
 
-        float normalizedElapsedTime;
-        if (passedTests == 0) {
-            normalizedElapsedTime = Float.NaN;
-        } else {
-            normalizedElapsedTime = compilationTime + time * runTests / passedTests;
-        }
+        float normalizedElapsedTime = TestTotal.normalizeElapsedTime(compilationTime, time, runTests, passedTests);
 
         return MergeProcessResult.builder()
                 .hadTests(true)

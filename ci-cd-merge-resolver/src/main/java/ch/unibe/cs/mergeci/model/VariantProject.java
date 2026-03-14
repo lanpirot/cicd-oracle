@@ -12,18 +12,18 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class Project implements Cloneable {
+public class VariantProject implements Cloneable {
     private Path projectPath;
-    private List<ProjectClass> classes;
+    private List<ConflictFile> classes;
 
 
     @Override
-    public Project clone() {
+    public VariantProject clone() {
         try {
-            Project clone = (Project) super.clone();
-            List<ProjectClass> clonedClasses = new ArrayList<>();
-            for (ProjectClass projectClass : classes) {
-                clonedClasses.add(projectClass.clone());
+            VariantProject clone = (VariantProject) super.clone();
+            List<ConflictFile> clonedClasses = new ArrayList<>();
+            for (ConflictFile conflictFile : classes) {
+                clonedClasses.add(conflictFile.clone());
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -34,7 +34,7 @@ public class Project implements Cloneable {
     public Map<String, List<String>> extractPatterns() {
         Map<String, List<String>> result = new HashMap<>();
 
-        for (ProjectClass cls : classes) {
+        for (ConflictFile cls : classes) {
             List<String> patternNames = new ArrayList<>();
 
             if (cls.getMergeBlocks() != null) {

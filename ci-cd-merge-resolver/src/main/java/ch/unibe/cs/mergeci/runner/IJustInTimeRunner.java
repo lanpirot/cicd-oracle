@@ -9,8 +9,8 @@ public interface IJustInTimeRunner {
      * Run tests on variants with just-in-time directory creation and immediate cleanup.
      *
      * @param context Variant build context containing metadata for all variants
-     * @param analyzer MergeAnalyzer for building directories and collecting results
+     * @param builder VariantProjectBuilder for building directories and collecting results
      * @return Execution time statistics
      */
-    RunExecutionTIme run(VariantBuildContext context, MergeAnalyzer analyzer) throws Exception;
+    ExperimentTiming run(VariantBuildContext context, VariantProjectBuilder builder) throws Exception;
 }

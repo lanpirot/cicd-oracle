@@ -3,8 +3,8 @@ package ch.unibe.cs.mergeci.runner;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
-import ch.unibe.cs.mergeci.model.Project;
-import ch.unibe.cs.mergeci.model.ProjectClass;
+import ch.unibe.cs.mergeci.model.VariantProject;
+import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
 import ch.unibe.cs.mergeci.model.patterns.PatternHeuristics;
 import ch.unibe.cs.mergeci.model.patterns.PatternStrategy;
@@ -34,7 +34,7 @@ import java.util.Random;
 
 @Getter
 @Setter
-public class MergeAnalyzer {
+public class VariantProjectBuilder {
     private final Path repositoryPath;
     private final Path tempDir;
     private final Path projectTempDir;
@@ -45,7 +45,7 @@ public class MergeAnalyzer {
     private final PatternHeuristics heuristics;
     private final Random random;
 
-    public MergeAnalyzer(Path repoPath, Path tempDir, Path projectTempDir) {
+    public VariantProjectBuilder(Path repoPath, Path tempDir, Path projectTempDir) {
         this.repositoryPath = repoPath;
         this.tempDir = tempDir;
         this.projectName = repositoryPath.toFile().getName();
@@ -80,13 +80,13 @@ public class MergeAnalyzer {
             mergeResultMap.keySet().forEach(System.out::println);
         }
 
-        Map<String, ProjectClass> projectClassMap = new LinkedHashMap<>();
+        Map<String, ConflictFile> conflictFileMap = new LinkedHashMap<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
-            projectClassMap.put(entry.getKey(), ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey()));
+            conflictFileMap.put(entry.getKey(), ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey()));
         }
 
-        int totalChunks = countConflictChunks(projectClassMap);
-        List<Project> projects = sampleVariants(projectClassMap, totalChunks);
+        int totalChunks = countConflictChunks(conflictFileMap);
+        List<VariantProject> projects = sampleVariants(conflictFileMap, totalChunks);
 
         List<Map<String, List<String>>> patterns = new ArrayList<>();
         projects.forEach(x -> patterns.add(x.extractPatterns()));
@@ -108,10 +108,10 @@ public class MergeAnalyzer {
         );
     }
 
-    private static int countConflictChunks(Map<String, ProjectClass> projectClassMap) {
+    private static int countConflictChunks(Map<String, ConflictFile> conflictFileMap) {
         int count = 0;
-        for (ProjectClass pc : projectClassMap.values()) {
-            for (IMergeBlock block : pc.getMergeBlocks()) {
+        for (ConflictFile cf : conflictFileMap.values()) {
+            for (IMergeBlock block : cf.getMergeBlocks()) {
                 if (block instanceof ConflictBlock) {
                     count++;
                 }
@@ -120,8 +120,8 @@ public class MergeAnalyzer {
         return count;
     }
 
-    private List<Project> sampleVariants(Map<String, ProjectClass> projectClassMap, int totalChunks) {
-        List<Project> projects = new ArrayList<>();
+    private List<VariantProject> sampleVariants(Map<String, ConflictFile> conflictFileMap, int totalChunks) {
+        List<VariantProject> projects = new ArrayList<>();
         StrategySelector selector = new StrategySelector(heuristics, random);
 
         while (projects.size() < AppConfig.MAX_VARIANTS
@@ -133,7 +133,7 @@ public class MergeAnalyzer {
             List<String> assignment = selector.generateAssignment(strategy, totalChunks);
 
             if (assignment != null) {
-                projects.add(buildProjectFromAssignment(projectClassMap, assignment));
+                projects.add(buildProjectFromAssignment(conflictFileMap, assignment));
             } else {
                 selector.recordOuterFailure();
             }
@@ -142,15 +142,15 @@ public class MergeAnalyzer {
         return projects;
     }
 
-    private Project buildProjectFromAssignment(Map<String, ProjectClass> projectClassMap, List<String> assignment) {
-        List<ProjectClass> resolvedClasses = new ArrayList<>();
+    private VariantProject buildProjectFromAssignment(Map<String, ConflictFile> conflictFileMap, List<String> assignment) {
+        List<ConflictFile> resolvedClasses = new ArrayList<>();
         int chunkIndex = 0;
 
-        for (Map.Entry<String, ProjectClass> entry : projectClassMap.entrySet()) {
-            ProjectClass pc = entry.getValue();
+        for (Map.Entry<String, ConflictFile> entry : conflictFileMap.entrySet()) {
+            ConflictFile cf = entry.getValue();
             List<IMergeBlock> resolvedBlocks = new ArrayList<>();
 
-            for (IMergeBlock block : pc.getMergeBlocks()) {
+            for (IMergeBlock block : cf.getMergeBlocks()) {
                 if (block instanceof ConflictBlock cb) {
                     ConflictBlock clone = cb.clone();
                     clone.setPattern(PatternFactory.fromName(assignment.get(chunkIndex++)));
@@ -160,13 +160,13 @@ public class MergeAnalyzer {
                 }
             }
 
-            ProjectClass resolvedPc = new ProjectClass();
-            resolvedPc.setClassPath(pc.getClassPath());
-            resolvedPc.setMergeBlocks(resolvedBlocks);
-            resolvedClasses.add(resolvedPc);
+            ConflictFile resolvedCf = new ConflictFile();
+            resolvedCf.setClassPath(cf.getClassPath());
+            resolvedCf.setMergeBlocks(resolvedBlocks);
+            resolvedClasses.add(resolvedCf);
         }
 
-        Project project = new Project();
+        VariantProject project = new VariantProject();
         project.setProjectPath(repositoryPath);
         project.setClasses(resolvedClasses);
         return project;
@@ -198,18 +198,18 @@ public class MergeAnalyzer {
         }
 
         Path variantPath = projectTempDir.resolve(projectName + "_" + variantIndex);
-        Project project = context.getVariant(variantIndex);
+        VariantProject project = context.getVariant(variantIndex);
 
         Git git = GitUtils.getGit(repositoryPath);
         FileUtils.saveFilesFromObjectId(variantPath, context.getNonConflictObjects(), git);
 
-        for (ProjectClass projectClass : project.getClasses()) {
-            File filepath = variantPath.resolve(projectClass.getClassPath().toString()).toFile();
+        for (ConflictFile conflictFile : project.getClasses()) {
+            File filepath = variantPath.resolve(conflictFile.getClassPath().toString()).toFile();
             if (filepath.getParentFile() != null) {
                 filepath.getParentFile().mkdirs();
             }
             try (java.io.OutputStream out = new java.io.FileOutputStream(filepath)) {
-                out.write(projectClass.toString().getBytes());
+                out.write(conflictFile.toString().getBytes());
             }
         }
 
@@ -224,7 +224,7 @@ public class MergeAnalyzer {
      * @param runner Just-in-time runner
      * @return Execution time statistics
      */
-    public RunExecutionTIme runTestsJustInTime(VariantBuildContext context, IJustInTimeRunner runner) throws Exception {
+    public ExperimentTiming runTestsJustInTime(VariantBuildContext context, IJustInTimeRunner runner) throws Exception {
         // Populate conflictPatterns for backward compatibility with result collectors
         this.conflictPatterns = new ArrayList<>(context.getConflictPatterns());
         return runner.run(context, this);

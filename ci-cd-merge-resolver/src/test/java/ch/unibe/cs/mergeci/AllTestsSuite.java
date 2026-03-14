@@ -6,7 +6,7 @@ import ch.unibe.cs.mergeci.present.ResultsPresenterTest;
 import ch.unibe.cs.mergeci.repoCollection.RepoCollectorTest;
 import ch.unibe.cs.mergeci.runner.maven.strategy.CoverageStrategyTest;
 import ch.unibe.cs.mergeci.experiment.ResolutionVariantRunnerTest;
-import ch.unibe.cs.mergeci.runner.MergeAnalyzerTest;
+import ch.unibe.cs.mergeci.runner.VariantProjectBuilderTest;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResultTest;
 import ch.unibe.cs.mergeci.runner.maven.MavenRunnerTest;
 import ch.unibe.cs.mergeci.runner.maven.TestResultTest;
@@ -38,7 +38,7 @@ import org.junit.platform.suite.api.Suite;
     TestTotalXmlTest.class,
 
     // Service tests
-    MergeAnalyzerTest.class,
+    VariantProjectBuilderTest.class,
 
     // Experiment setup tests
     ExcelWriterTest.class,

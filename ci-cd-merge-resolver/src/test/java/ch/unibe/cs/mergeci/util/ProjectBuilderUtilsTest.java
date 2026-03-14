@@ -4,8 +4,8 @@ import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
-import ch.unibe.cs.mergeci.model.Project;
-import ch.unibe.cs.mergeci.model.ProjectClass;
+import ch.unibe.cs.mergeci.model.VariantProject;
+import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -40,11 +40,11 @@ public class ProjectBuilderUtilsTest extends BaseTest {
 
         // Build one variant manually: apply OURS to all conflict blocks
         Random random = new Random(42);
-        List<ProjectClass> resolvedClasses = new ArrayList<>();
+        List<ConflictFile> resolvedClasses = new ArrayList<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
-            ProjectClass pc = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
+            ConflictFile cf = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
             List<IMergeBlock> resolvedBlocks = new ArrayList<>();
-            for (IMergeBlock block : pc.getMergeBlocks()) {
+            for (IMergeBlock block : cf.getMergeBlocks()) {
                 if (block instanceof ConflictBlock cb) {
                     ConflictBlock clone = cb.clone();
                     clone.setPattern(PatternFactory.fromName("OURS"));
@@ -53,16 +53,16 @@ public class ProjectBuilderUtilsTest extends BaseTest {
                     resolvedBlocks.add(block);
                 }
             }
-            ProjectClass resolvedPc = new ProjectClass();
-            resolvedPc.setClassPath(pc.getClassPath());
-            resolvedPc.setMergeBlocks(resolvedBlocks);
-            resolvedClasses.add(resolvedPc);
+            ConflictFile resolvedCf = new ConflictFile();
+            resolvedCf.setClassPath(cf.getClassPath());
+            resolvedCf.setMergeBlocks(resolvedBlocks);
+            resolvedClasses.add(resolvedCf);
         }
 
-        Project project = new Project();
+        VariantProject project = new VariantProject();
         project.setClasses(resolvedClasses);
         project.setProjectPath(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
-        List<Project> projects = List.of(project);
+        List<VariantProject> projects = List.of(project);
 
         ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
         ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");

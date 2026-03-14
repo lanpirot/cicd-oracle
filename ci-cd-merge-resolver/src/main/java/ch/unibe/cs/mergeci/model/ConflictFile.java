@@ -9,14 +9,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ProjectClass{
+public class ConflictFile{
     private Path classPath;
     private List<IMergeBlock> mergeBlocks;
 
     @Override
-    public ProjectClass clone() {
+    public ConflictFile clone() {
         try {
-            ProjectClass clone = (ProjectClass) super.clone();
+            ConflictFile clone = (ConflictFile) super.clone();
             List<IMergeBlock> newMergeBlocks = new ArrayList<>();
             for (IMergeBlock block : mergeBlocks) {
                 newMergeBlocks.add(block.clone());

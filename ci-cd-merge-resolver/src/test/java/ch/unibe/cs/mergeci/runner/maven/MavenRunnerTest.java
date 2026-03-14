@@ -2,7 +2,7 @@ package ch.unibe.cs.mergeci.runner.maven;
 
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.model.ProjectClass;
+import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.ProjectBuilderUtils;
 import org.eclipse.jgit.api.Git;
@@ -38,7 +38,7 @@ public class MavenRunnerTest extends BaseTest {
 
         // Build project classes from merge results (may be empty if no conflicts)
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
-            ProjectClass projectClass = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
+            ConflictFile projectClass = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
             assertNotNull(projectClass, "ProjectClass should be created for each conflict");
         }
 

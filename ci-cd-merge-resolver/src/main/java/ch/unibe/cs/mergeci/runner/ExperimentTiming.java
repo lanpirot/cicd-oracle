@@ -7,7 +7,7 @@ import java.time.Duration;
 
 @Getter
 @Setter
-public class RunExecutionTIme {
-    private Duration mainExecutionTime;
+public class ExperimentTiming {
+    private Duration humanBaselineExecutionTime;
     private Duration variantsExecutionTime;
 }
