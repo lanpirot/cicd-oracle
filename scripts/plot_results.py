@@ -296,12 +296,29 @@ def make_plots(variant_dir: Path, output_pdf: Path):
     print("Done.")
 
 
-# ── Mockup data generation (mirrors test_plot_results.py) ─────────────────────
+# ── Mockup data generation ─────────────────────────────────────────────────────
+
+# Three merges with different project sizes / build times.
+# human_tests / human_modules represent a good-but-not-perfect resolution.
+_MOCKUP_MERGES = [
+    # Small single-module project, fast build
+    dict(commit="aa"*20, human_secs=45,  total_tests=90,  total_modules=1,
+         human_tests=88,  human_modules=1),
+    # Medium multi-module project
+    dict(commit="bb"*20, human_secs=120, total_tests=200, total_modules=15,
+         human_tests=150, human_modules=12),
+    # Large multi-module project, slow build
+    dict(commit="cc"*20, human_secs=280, total_tests=400, total_modules=10,
+         human_tests=320, human_modules=8),
+]
+
+_MOCKUP_VARIANT_COUNTS = {"cache_parallel": 100, "parallel": 20, "no_optimization": 6}
+
 
 def _mockup_module_results(passed: int, total: int, rng) -> list:
     return [{"moduleName": f"module-{i}",
              "status": "SUCCESS" if i < passed else "FAILURE",
-             "timeElapsed": round(0.5 + rng.random() * 0.5, 3)}
+             "timeElapsed": round(0.3 + rng.random() * 0.4, 2)}
             for i in range(total)]
 
 
@@ -312,61 +329,112 @@ def _mockup_variant(name, tests_passed, modules_passed, finish_secs,
         "compilationResult": {
             "moduleResults": _mockup_module_results(modules_passed, total_modules, rng),
             "buildStatus":   "SUCCESS" if modules_passed > 0 else "FAILURE",
-            "totalTime":     round(finish_secs, 3),
+            "totalTime":     round(finish_secs, 2),
         },
         "testResults": {
             "runNum":      total_tests,
             "failuresNum": total_tests - tests_passed,
             "errorsNum":   0, "skippedNum": 0,
-            "elapsedTime": round(finish_secs * 0.4, 3),
+            "elapsedTime": round(finish_secs * 0.4, 2),
         },
-        "finishedAfterFirstVariantStartSeconds": round(finish_secs, 3),
+        "finishedAfterFirstVariantStartSeconds": round(finish_secs, 2),
     }
+
+
+def _plausible_results(total_tests, total_modules, human_tests, human_modules, rng):
+    """
+    Returns (tests_passed, modules_passed) for a variant.
+    ~35 % of variants fail to compile (0, 0).
+    The rest cluster around the human-resolution level with Gaussian variance,
+    so occasionally a variant beats the human and occasionally it does much worse.
+    """
+    if rng.random() < 0.35:           # compile failure
+        return 0, 0
+    mf = min(1.0, max(0.0, rng.gauss(human_modules / total_modules, 0.25)))
+    mp = round(mf * total_modules)
+    if mp == 0:
+        return 0, 0
+    tf = min(1.0, max(0.0, rng.gauss(human_tests / total_tests, 0.20)))
+    return round(tf * total_tests), mp
+
+
+def _plausible_finish(mode, human_secs, cumulative, rng):
+    """
+    Returns (finish_time_for_this_variant, updated_cumulative).
+
+    no_optimization  – sequential: each variant adds to a running total,
+                       so finish times grow linearly.
+    parallel         – each variant's own build time (they all start at t=0);
+                       variance ≈ ±12 % of the human baseline.
+    cache_parallel   – like parallel but ~45 % faster on average due to
+                       Maven's local-repository cache being warm.
+    """
+    if mode == "cache_parallel":
+        t = max(5.0, rng.gauss(human_secs * 0.55, human_secs * 0.08))
+        return round(t, 2), cumulative
+    elif mode == "parallel":
+        t = max(5.0, rng.gauss(human_secs, human_secs * 0.12))
+        return round(t, 2), cumulative
+    else:   # no_optimization
+        t = max(5.0, rng.gauss(human_secs, human_secs * 0.12))
+        cumulative += t
+        return round(cumulative, 2), cumulative
 
 
 def generate_mockup(output_dir: Path, output_pdf: Path):
     """
-    Generate mock JSON data (one merge, 4 modes) and produce the PDF.
-    Mirrors the scenario from test_plot_results.py.
+    Generate mock JSON data (3 merges × 4 modes) and produce the PDF.
+    The single-merge scenario from test_plot_results.py is preserved as the
+    first merge; two additional merges with different sizes are added.
     """
-    import json, random, tempfile, shutil
+    import json, random
     rng = random.Random(42)
+    PROJECT = "mock-project"
 
-    HUMAN_SECS    = 17
-    TOTAL_MODULES = 92
-    TOTAL_TESTS   = 90
-    PROJECT       = "mock-project"
-    COMMIT        = "deadbeef" * 5
-    VARIANT_COUNTS = {"cache_parallel": 100, "parallel": 20, "no_optimization": 6}
+    # mode -> list of per-merge dicts (all merges land in the same JSON file)
+    mode_merges: dict = {m: [] for m in ["human_baseline"] + list(_MOCKUP_VARIANT_COUNTS)}
 
-    def write_mode(mode, variants, exec_secs):
+    for sc in _MOCKUP_MERGES:
+        commit        = sc["commit"]
+        human_secs    = sc["human_secs"]
+        total_tests   = sc["total_tests"]
+        total_modules = sc["total_modules"]
+        human_tests   = sc["human_tests"]
+        human_modules = sc["human_modules"]
+
+        def merge_dict(exec_secs, variants):
+            return {
+                "mergeCommit":          commit,
+                "humanBaselineSeconds": human_secs,
+                "totalExecutionTime":   human_secs + exec_secs,
+                "variantsExecution":    {"executionTimeSeconds": exec_secs,
+                                         "variants": variants},
+            }
+
+        # human_baseline: one perfect-resolution variant per merge
+        hb = _mockup_variant("human_baseline", human_tests, human_modules,
+                             human_secs, total_tests, total_modules, rng)
+        mode_merges["human_baseline"].append(merge_dict(human_secs, [hb]))
+
+        # variant modes
+        for mode, count in _MOCKUP_VARIANT_COUNTS.items():
+            variants, cum = [], 0.0
+            for i in range(count):
+                tp, mp   = _plausible_results(total_tests, total_modules,
+                                               human_tests, human_modules, rng)
+                finish, cum = _plausible_finish(mode, human_secs, cum, rng)
+                variants.append(_mockup_variant(f"{PROJECT}_{i}", tp, mp, finish,
+                                                total_tests, total_modules, rng))
+            exec_secs = round(max(v["finishedAfterFirstVariantStartSeconds"]
+                                  for v in variants))
+            mode_merges[mode].append(merge_dict(exec_secs, variants))
+
+    # Write one JSON file per mode
+    for mode, merges in mode_merges.items():
         d = output_dir / mode
         d.mkdir(parents=True, exist_ok=True)
-        data = {"projectName": PROJECT, "merges": [{
-            "mergeCommit": COMMIT, "humanBaselineSeconds": HUMAN_SECS,
-            "totalExecutionTime": HUMAN_SECS + exec_secs,
-            "variantsExecution": {"executionTimeSeconds": exec_secs, "variants": variants},
-        }]}
-        (d / f"{PROJECT}.json").write_text(json.dumps(data, indent=2))
-
-    # human_baseline
-    hb = _mockup_variant("human_baseline", 77, 79, HUMAN_SECS,
-                         TOTAL_TESTS, TOTAL_MODULES, rng)
-    write_mode("human_baseline", [hb], HUMAN_SECS)
-
-    # variant modes
-    for mode, count in VARIANT_COUNTS.items():
-        variants, min_t, max_t = [], 0.9 * HUMAN_SECS, 3.0 * HUMAN_SECS
-        for i in range(count):
-            variants.append(_mockup_variant(
-                f"{PROJECT}_{i}",
-                rng.randint(0, TOTAL_TESTS),
-                rng.randint(0, TOTAL_MODULES),
-                rng.uniform(min_t, max_t),
-                TOTAL_TESTS, TOTAL_MODULES, rng,
-            ))
-        exec_secs = int(max(v["finishedAfterFirstVariantStartSeconds"] for v in variants))
-        write_mode(mode, variants, exec_secs)
+        (d / f"{PROJECT}.json").write_text(
+            json.dumps({"projectName": PROJECT, "merges": merges}, indent=2))
 
     make_plots(output_dir, output_pdf)
 
