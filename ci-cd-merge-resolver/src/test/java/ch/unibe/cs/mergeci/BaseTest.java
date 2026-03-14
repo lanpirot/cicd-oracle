@@ -30,6 +30,7 @@ public abstract class BaseTest {
      */
     @BeforeEach
     void setUpBase() throws IOException {
+        System.setProperty("coverageActivated", "false");
         cleanTestDirectories();
     }
 
@@ -39,6 +40,7 @@ public abstract class BaseTest {
      */
     @AfterEach
     void tearDownBase() throws IOException {
+        System.clearProperty("coverageActivated");
         cleanTestDirectories();
     }
 

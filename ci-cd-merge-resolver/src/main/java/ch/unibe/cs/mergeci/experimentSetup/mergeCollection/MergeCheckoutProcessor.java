@@ -114,8 +114,14 @@ public class MergeCheckoutProcessor {
         float time = testTotal.getElapsedTime();
 
         // Extract module information early (needed for decision logic)
+        // For single-module projects there is no Reactor Summary, so moduleResults is empty.
+        // Treat the project itself as 1 module in that case, succeeded iff build succeeded.
         int numberOfModules = compilationResult.getNumberOfModules();
         int modulesPassed = compilationResult.getNumberOfSuccessfulModules();
+        if (numberOfModules == 0) {
+            numberOfModules = 1;
+            modulesPassed = compilationSuccess ? 1 : 0;
+        }
 
         // Calculate pure compilation time (total build time - test time)
         float compilationTime;

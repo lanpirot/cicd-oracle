@@ -5,6 +5,7 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenCacheManager;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenCommandResolver;
 import ch.unibe.cs.mergeci.service.projectRunners.maven.MavenProcessExecutor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -29,6 +30,7 @@ class CacheParallelStrategyTest extends BaseTest {
 
     @BeforeEach
     void setUp(@TempDir Path tempDir) {
+        System.setProperty("coverageActivated", "false");
         mockCommandResolver = mock(MavenCommandResolver.class);
         mockProcessExecutor = mock(MavenProcessExecutor.class);
         mockCacheManager = mock(MavenCacheManager.class);
@@ -40,6 +42,11 @@ class CacheParallelStrategyTest extends BaseTest {
                 mockCacheManager,
                 logDir
         );
+    }
+
+    @AfterEach
+    void resetCoverageFlag() {
+        System.clearProperty("coverageActivated");
     }
 
     @Test
@@ -67,14 +74,10 @@ class CacheParallelStrategyTest extends BaseTest {
         // Verify first project is built normally
         verify(mockCacheManager).injectCacheArtifacts(project);
         verify(mockCommandResolver).resolveMavenCommand(project);
-        verify(mockProcessExecutor).executeCommand(
-                eq(project),
-                any(Path.class),
-                eq("mvn"),
-                eq(AppConfig.MAVEN_FAIL_MODE),
-                eq(AppConfig.MAVEN_TEST_FAILURE_IGNORE),
-                eq("test")
-        );
+
+        ArgumentCaptor<String[]> cmdCaptor = ArgumentCaptor.forClass(String[].class);
+        verify(mockProcessExecutor).executeCommand(eq(project), any(Path.class), cmdCaptor.capture());
+        assertArrayEquals(AppConfig.buildCommand("mvn"), cmdCaptor.getValue());
 
         // No parallel execution should happen
         verify(mockCacheManager, times(1)).injectCacheArtifacts(any());
@@ -100,41 +103,27 @@ class CacheParallelStrategyTest extends BaseTest {
 
         // Verify first project built normally (with cache injection)
         verify(mockCacheManager, atLeastOnce()).injectCacheArtifacts(project1);
-        verify(mockProcessExecutor).executeCommand(
-                eq(project1),
-                any(Path.class),
-                eq("mvn"),
-                eq(AppConfig.MAVEN_FAIL_MODE),
-                eq(AppConfig.MAVEN_TEST_FAILURE_IGNORE),
-                eq("test")
-        );
+
+        ArgumentCaptor<String[]> cmdCaptor1 = ArgumentCaptor.forClass(String[].class);
+        verify(mockProcessExecutor).executeCommand(eq(project1), any(Path.class), cmdCaptor1.capture());
+        assertArrayEquals(AppConfig.buildCommand("mvn"), cmdCaptor1.getValue());
 
         // Verify remaining projects built in parallel with offline mode
         verify(mockCacheManager, atLeastOnce()).injectCacheArtifacts(project2);
         verify(mockCacheManager).copyTargetDirectories(project1.toFile(), project2.toFile());
         verify(mockCacheManager).copyCacheDirectory(project1, project2);
-        verify(mockProcessExecutor).executeCommand(
-                eq(project2),
-                any(Path.class),
-                eq("mvn"),
-                eq("-o"),  // Offline mode
-                eq(AppConfig.MAVEN_FAIL_MODE),
-                eq(AppConfig.MAVEN_TEST_FAILURE_IGNORE),
-                eq("test")
-        );
+
+        ArgumentCaptor<String[]> cmdCaptor2 = ArgumentCaptor.forClass(String[].class);
+        verify(mockProcessExecutor).executeCommand(eq(project2), any(Path.class), cmdCaptor2.capture());
+        assertArrayEquals(AppConfig.buildCommandOffline("mvn"), cmdCaptor2.getValue());
 
         verify(mockCacheManager, atLeastOnce()).injectCacheArtifacts(project3);
         verify(mockCacheManager).copyTargetDirectories(project1.toFile(), project3.toFile());
         verify(mockCacheManager).copyCacheDirectory(project1, project3);
-        verify(mockProcessExecutor).executeCommand(
-                eq(project3),
-                any(Path.class),
-                eq("mvn"),
-                eq("-o"),  // Offline mode
-                eq(AppConfig.MAVEN_FAIL_MODE),
-                eq(AppConfig.MAVEN_TEST_FAILURE_IGNORE),
-                eq("test")
-        );
+
+        ArgumentCaptor<String[]> cmdCaptor3 = ArgumentCaptor.forClass(String[].class);
+        verify(mockProcessExecutor).executeCommand(eq(project3), any(Path.class), cmdCaptor3.capture());
+        assertArrayEquals(AppConfig.buildCommandOffline("mvn"), cmdCaptor3.getValue());
     }
 
     @Test
@@ -159,10 +148,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockProcessExecutor, atLeastOnce()).executeCommand(
                 any(Path.class),
                 logFileCaptor.capture(),
-                anyString(),
-                anyString(),
-                anyString(),
-                anyString()
+                any(String[].class)
         );
 
         // Check that log files follow naming pattern: projectName_compilation
@@ -192,10 +178,7 @@ class CacheParallelStrategyTest extends BaseTest {
                 .when(mockProcessExecutor).executeCommand(
                         eq(project1),
                         any(),
-                        anyString(),
-                        anyString(),
-                        anyString(),
-                        anyString()
+                        any(String[].class)
                 );
 
         // Execute - first project failure should propagate (not caught in buildFirstProject)
@@ -205,10 +188,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockProcessExecutor).executeCommand(
                 eq(project1),
                 any(),
-                anyString(),
-                anyString(),
-                anyString(),
-                anyString()
+                any(String[].class)
         );
 
         // Second project should NOT be attempted (execution stopped after first project failure)
@@ -230,24 +210,13 @@ class CacheParallelStrategyTest extends BaseTest {
         Thread.sleep(100);
 
         // Verify first project does NOT use offline mode
-        verify(mockProcessExecutor).executeCommand(
-                eq(project1),
-                any(),
-                eq("mvn"),
-                eq(AppConfig.MAVEN_FAIL_MODE),
-                eq(AppConfig.MAVEN_TEST_FAILURE_IGNORE),
-                eq("test")
-        );
+        ArgumentCaptor<String[]> cmdCaptor1 = ArgumentCaptor.forClass(String[].class);
+        verify(mockProcessExecutor).executeCommand(eq(project1), any(), cmdCaptor1.capture());
+        assertArrayEquals(AppConfig.buildCommand("mvn"), cmdCaptor1.getValue());
 
         // Verify second project DOES use offline mode
-        verify(mockProcessExecutor).executeCommand(
-                eq(project2),
-                any(),
-                eq("mvn"),
-                eq("-o"),  // Important: offline mode
-                eq(AppConfig.MAVEN_FAIL_MODE),
-                eq(AppConfig.MAVEN_TEST_FAILURE_IGNORE),
-                eq("test")
-        );
+        ArgumentCaptor<String[]> cmdCaptor2 = ArgumentCaptor.forClass(String[].class);
+        verify(mockProcessExecutor).executeCommand(eq(project2), any(), cmdCaptor2.capture());
+        assertArrayEquals(AppConfig.buildCommandOffline("mvn"), cmdCaptor2.getValue());
     }
 }
