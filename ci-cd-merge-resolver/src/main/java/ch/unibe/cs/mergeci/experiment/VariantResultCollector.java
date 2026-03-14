@@ -1,0 +1,228 @@
+package ch.unibe.cs.mergeci.experiment;
+
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
+import ch.unibe.cs.mergeci.runner.maven.TestTotal;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Collects and aggregates variant testing results into a structured output format.
+ * Handles counting successful variants and building variant objects with their metrics.
+ */
+public class VariantResultCollector {
+
+    /**
+     * Collect all results from a processed merge into a MergeOutputJSON object.
+     *
+     * @param processed The processed merge containing analysis results
+     * @return Complete merge output with all variant results
+     */
+    public MergeOutputJSON collectResults(MergeProcessor.ProcessedMerge processed) {
+        MergeOutputJSON output = new MergeOutputJSON();
+
+        // Set basic merge information
+        populateBasicInfo(output, processed);
+
+        // Set baseline (original merge) results
+        populateBaselineResults(output, processed.getAnalysisResult());
+
+        // Build and set variant results
+        VariantSummary variantSummary = buildVariantSummary(processed.getAnalysisResult());
+        output.setVariantsExecution(variantSummary.getVariantsExecution());
+
+        return output;
+    }
+
+    /**
+     * Populate basic merge information from dataset.
+     */
+    private void populateBasicInfo(MergeOutputJSON output, MergeProcessor.ProcessedMerge processed) {
+        DatasetReader.MergeInfo info = processed.getInfo();
+
+        output.setMergeCommit(info.getMergeCommit());
+        output.setParent1(info.getParent1());
+        output.setParent2(info.getParent2());
+        output.setNumConflictChunks(processed.getNumConflictChunks());
+        output.setNumConflictFiles(info.getNumConflictFiles());
+        output.setNumJavaConflictFiles(info.getNumJavaFiles());
+        output.setIsMultiModule(info.isMultiModule());
+        output.setTotalExecutionTime(processed.getAnalysisResult().getExecutionTimeSeconds());
+    }
+
+    /**
+     * Populate baseline (original merge) compilation and test results.
+     */
+    private void populateBaselineResults(MergeOutputJSON output, MergeProcessor.MergeAnalysisResult result) {
+        String projectName = result.getProjectName();
+
+        output.setTestResults(result.getTestResults().get(projectName));
+        output.setCompilationResult(result.getCompilationResults().get(projectName));
+        output.setCoverage(result.getCoverageResult());
+    }
+
+    /**
+     * Build complete variant summary including all variants and success metrics.
+     */
+    private VariantSummary buildVariantSummary(MergeProcessor.MergeAnalysisResult result) {
+        String projectName = result.getProjectName();
+        Map<String, CompilationResult> compilationResults = result.getCompilationResults();
+        Map<String, TestTotal> testResults = result.getTestResults();
+
+        // Count successful variants
+        int totalVariants = compilationResults.size() - 1; // Exclude baseline
+        int successfulVariants = countSuccessfulVariants(compilationResults, testResults, projectName);
+
+        // Build variant objects
+        List<MergeOutputJSON.Variant> variants = buildVariants(
+                compilationResults,
+                testResults,
+                result.getAnalyzer(),
+                projectName
+        );
+
+        // Create variants execution wrapper
+        MergeOutputJSON.VariantsExecution variantsExecution = new MergeOutputJSON.VariantsExecution(variants);
+        variantsExecution.setExecutionTimeSeconds(result.getRunExecutionTime().getVariantsExecutionTime().getSeconds());
+
+        return new VariantSummary(variantsExecution, successfulVariants, totalVariants);
+    }
+
+    /**
+     * Count how many variants succeeded (compiled successfully and all tests passed).
+     */
+    private int countSuccessfulVariants(
+            Map<String, CompilationResult> compilationResults,
+            Map<String, TestTotal> testResults,
+            String projectName) {
+
+        int successCount = 0;
+
+        for (Map.Entry<String, CompilationResult> entry : compilationResults.entrySet()) {
+            if (entry.getKey().equals(projectName)) {
+                continue; // Skip baseline
+            }
+
+            if (isVariantSuccessful(entry.getValue(), testResults.get(entry.getKey()))) {
+                successCount++;
+            }
+        }
+
+        return successCount;
+    }
+
+    /**
+     * Check if a single variant was successful.
+     */
+    private boolean isVariantSuccessful(CompilationResult compilationResult, TestTotal testTotal) {
+        return compilationResult != null
+                && compilationResult.getBuildStatus() == CompilationResult.Status.SUCCESS
+                && testTotal != null
+                && testTotal.getRunNum() > 0
+                && testTotal.getFailuresNum() == 0
+                && testTotal.getErrorsNum() == 0;
+    }
+
+    /**
+     * Build variant objects with their compilation results, test results, and conflict patterns.
+     */
+    private List<MergeOutputJSON.Variant> buildVariants(
+            Map<String, CompilationResult> compilationResults,
+            Map<String, TestTotal> testResults,
+            ch.unibe.cs.mergeci.runner.MergeAnalyzer analyzer,
+            String projectName) {
+
+        List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResults.size());
+
+        for (Map.Entry<String, CompilationResult> entry : compilationResults.entrySet()) {
+            if (entry.getKey().equals(projectName)) {
+                continue; // Skip baseline
+            }
+
+            MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
+            variant.setVariantName(entry.getKey());
+            variant.setCompilationResult(entry.getValue());
+            variant.setTestResults(testResults.get(entry.getKey()));
+            variant.setConflictPatterns(analyzer.getConflictPatterns().get(variants.size()));
+
+            variants.add(variant);
+        }
+
+        return variants;
+    }
+
+    /**
+     * Summary of variant execution results.
+     */
+    private static class VariantSummary {
+        private final MergeOutputJSON.VariantsExecution variantsExecution;
+        private final int successfulVariants;
+        private final int totalVariants;
+
+        public VariantSummary(
+                MergeOutputJSON.VariantsExecution variantsExecution,
+                int successfulVariants,
+                int totalVariants) {
+            this.variantsExecution = variantsExecution;
+            this.successfulVariants = successfulVariants;
+            this.totalVariants = totalVariants;
+        }
+
+        public MergeOutputJSON.VariantsExecution getVariantsExecution() {
+            return variantsExecution;
+        }
+
+        public int getSuccessfulVariants() {
+            return successfulVariants;
+        }
+
+        public int getTotalVariants() {
+            return totalVariants;
+        }
+    }
+
+    /**
+     * Get a formatted summary string for logging.
+     */
+    public String getSuccessSummary(MergeProcessor.ProcessedMerge processed) {
+        if (processed.wasSkipped()) {
+            return processed.getSkipReason();
+        }
+
+        VariantSummary summary = buildVariantSummary(processed.getAnalysisResult());
+        int successful = summary.getSuccessfulVariants();
+        int total = summary.getTotalVariants();
+        long executionTime = processed.getAnalysisResult().getExecutionTimeSeconds();
+
+        // Calculate success rate
+        double successRate = total > 0 ? (successful * 100.0 / total) : 0;
+
+        // Format with success indicator
+        String indicator = (successful == total) ? "✓" : (successful > 0 ? "◐" : "✗");
+
+        return String.format("%s %d/%d (%.0f%%) | %s",
+                indicator,
+                successful,
+                total,
+                successRate,
+                formatTime(executionTime));
+    }
+
+    /**
+     * Format time in a human-readable way.
+     */
+    private String formatTime(long seconds) {
+        if (seconds < 60) {
+            return seconds + "s";
+        } else if (seconds < 3600) {
+            long mins = seconds / 60;
+            long secs = seconds % 60;
+            return String.format("%dm%ds", mins, secs);
+        } else {
+            long hours = seconds / 3600;
+            long mins = (seconds % 3600) / 60;
+            return String.format("%dh%dm", hours, mins);
+        }
+    }
+}

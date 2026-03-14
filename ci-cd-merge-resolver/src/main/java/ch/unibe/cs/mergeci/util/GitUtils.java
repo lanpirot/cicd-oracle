@@ -1,6 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
-import ch.unibe.cs.mergeci.experimentSetup.SimpleProgressMonitor;
+import ch.unibe.cs.mergeci.repoCollection.SimpleProgressMonitor;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
 import org.eclipse.jgit.api.Git;

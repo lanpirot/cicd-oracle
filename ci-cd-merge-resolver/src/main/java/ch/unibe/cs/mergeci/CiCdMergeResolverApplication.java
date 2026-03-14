@@ -1,9 +1,9 @@
 package ch.unibe.cs.mergeci;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.experimentSetup.ResultsPresenter;
-import ch.unibe.cs.mergeci.experimentSetup.RepoCollector;
-import ch.unibe.cs.mergeci.experimentSetup.evaluationCollection.ResolutionVariantRunner;
+import ch.unibe.cs.mergeci.present.ResultsPresenter;
+import ch.unibe.cs.mergeci.repoCollection.RepoCollector;
+import ch.unibe.cs.mergeci.experiment.ResolutionVariantRunner;
 import ch.unibe.cs.mergeci.util.Utility;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
