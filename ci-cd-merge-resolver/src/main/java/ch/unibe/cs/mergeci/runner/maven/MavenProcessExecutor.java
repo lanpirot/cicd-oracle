@@ -1,5 +1,7 @@
 package ch.unibe.cs.mergeci.runner.maven;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -37,6 +39,11 @@ public class MavenProcessExecutor {
             pb.environment().put("JAVA_HOME", javaHome);
             pb.environment().put("PATH", javaHome + "/bin:" + pb.environment().getOrDefault("PATH", ""));
         }
+
+        // Ensure spawned Maven processes have enough heap for large projects.
+        // Prepend our setting so any user-defined MAVEN_OPTS still takes effect afterwards.
+        String existingOpts = pb.environment().getOrDefault("MAVEN_OPTS", "");
+        pb.environment().put("MAVEN_OPTS", AppConfig.MAVEN_SUBPROCESS_HEAP + " " + existingOpts);
 
         if (outputFile != null) {
             pb.redirectOutput(outputFile.toFile());

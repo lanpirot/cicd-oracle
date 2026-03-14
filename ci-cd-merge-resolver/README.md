@@ -60,8 +60,29 @@ For each merge commit with conflicts, the tool:
 Key settings in `AppConfig.java`:
 - `BASE_DIR`: Base directory for operations
 - `MAX_CONFLICT_MERGES`: Maximum merges per repository (default: 10 production, 5 test)
-- `MAX_CONFLICT_CHUNKS`: Maximum conflict chunks to process (default: 6)
 - `MAX_THREADS`: Parallel execution threads
+
+### Java installations (machine-specific — update before first run)
+
+`JAVA_HOMES` in `AppConfig.java` is hardcoded to the paths on the original development machine.
+You **must** update it to reflect the JDKs installed on your system before running:
+
+```java
+public static final Map<Integer, Path> JAVA_HOMES = Map.of(
+    8,  Paths.get("/usr/lib/jvm/<your-jdk-8-dir>"),
+    17, Paths.get("/usr/lib/jvm/<your-jdk-17-dir>"),
+    21, Paths.get("/usr/lib/jvm/<your-jdk-21-dir>")
+    // add/remove entries to match what is actually installed
+);
+```
+
+Find available JDKs with:
+```bash
+ls /usr/lib/jvm/          # Linux
+ls /Library/Java/JavaVirtualMachines/  # macOS
+```
+
+The tool uses this map to automatically switch `JAVA_HOME` when a repository's `pom.xml` requires a specific Java version. Only include versions that are actually present on disk.
 
 ## Complete Workflow
 

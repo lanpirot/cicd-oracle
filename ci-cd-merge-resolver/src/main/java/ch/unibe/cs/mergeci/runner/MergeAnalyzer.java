@@ -1,15 +1,19 @@
 package ch.unibe.cs.mergeci.runner;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.model.ConflictBlock;
+import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.Project;
 import ch.unibe.cs.mergeci.model.ProjectClass;
-import ch.unibe.cs.mergeci.model.patterns.IPattern;
-import ch.unibe.cs.mergeci.runner.maven.MavenRunner;
+import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
+import ch.unibe.cs.mergeci.model.patterns.PatternHeuristics;
+import ch.unibe.cs.mergeci.model.patterns.PatternStrategy;
+import ch.unibe.cs.mergeci.model.patterns.StrategySelector;
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.ProjectBuilderUtils;
-import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.jgit.api.Git;
@@ -22,11 +26,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
+import java.util.Random;
 
 @Getter
 @Setter
@@ -34,25 +38,32 @@ public class MergeAnalyzer {
     private final Path repositoryPath;
     private final Path tempDir;
     private final Path projectTempDir;
-    private final MavenRunner mavenRunner;
     private final String projectName;
     private final Path logDir;
     private List<Map<String, List<String>>> conflictPatterns;
     private boolean isVerbose = false;
+    private final PatternHeuristics heuristics;
+    private final Random random;
 
     public MergeAnalyzer(Path repoPath, Path tempDir, Path projectTempDir) {
         this.repositoryPath = repoPath;
         this.tempDir = tempDir;
-        this.mavenRunner = new MavenRunner(this.tempDir);
         this.projectName = repositoryPath.toFile().getName();
         this.projectTempDir = projectTempDir;
         this.logDir = tempDir.resolve("log");
-        conflictPatterns = new ArrayList<>();
+        this.conflictPatterns = new ArrayList<>();
+        try {
+            this.heuristics = PatternHeuristics.loadFromResource("pattern-heuristics/relative_numbers_summary.csv");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load pattern heuristics", e);
+        }
+        this.random = new Random();
     }
 
     /**
      * Prepare variant metadata without writing to disk.
      * Returns a context that can be used to build variants on demand.
+     * Uses heuristic-weighted sampling (StrategySelector) capped at MAX_VARIANTS.
      *
      * @param commit1 First parent commit
      * @param commit2 Second parent commit
@@ -69,16 +80,13 @@ public class MergeAnalyzer {
             mergeResultMap.keySet().forEach(System.out::println);
         }
 
-        Map<String, List<ProjectClass>> mapClasses = new HashMap<>();
+        Map<String, ProjectClass> projectClassMap = new LinkedHashMap<>();
         for (Map.Entry<String, MergeResult<? extends Sequence>> entry : mergeResultMap.entrySet()) {
-            ProjectClass projectClass = ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey());
-            List<IPattern> patterns = AppConfig.patterns;
-            List<ProjectClass> projectClasses = ProjectBuilderUtils.getAllPossibleConflictResolution(projectClass, patterns);
-            mapClasses.put(entry.getKey(), projectClasses);
+            projectClassMap.put(entry.getKey(), ProjectBuilderUtils.getProjectClass(entry.getValue(), entry.getKey()));
         }
 
-        ProjectBuilderUtils projectBuilderUtils = new ProjectBuilderUtils(repositoryPath, projectTempDir);
-        List<Project> projects = projectBuilderUtils.getProjects(mapClasses);
+        int totalChunks = countConflictChunks(projectClassMap);
+        List<Project> projects = sampleVariants(projectClassMap, totalChunks);
 
         List<Map<String, List<String>>> patterns = new ArrayList<>();
         projects.forEach(x -> patterns.add(x.extractPatterns()));
@@ -98,6 +106,70 @@ public class MergeAnalyzer {
                 mergeCommitObjects,
                 patterns
         );
+    }
+
+    private static int countConflictChunks(Map<String, ProjectClass> projectClassMap) {
+        int count = 0;
+        for (ProjectClass pc : projectClassMap.values()) {
+            for (IMergeBlock block : pc.getMergeBlocks()) {
+                if (block instanceof ConflictBlock) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private List<Project> sampleVariants(Map<String, ProjectClass> projectClassMap, int totalChunks) {
+        List<Project> projects = new ArrayList<>();
+        StrategySelector selector = new StrategySelector(heuristics, random);
+
+        while (projects.size() < AppConfig.MAX_VARIANTS
+                && !selector.allStrategiesExhausted(totalChunks)) {
+
+            PatternStrategy strategy = selector.selectStrategy(totalChunks);
+            if (strategy == null) break;
+
+            List<String> assignment = selector.generateAssignment(strategy, totalChunks);
+
+            if (assignment != null) {
+                projects.add(buildProjectFromAssignment(projectClassMap, assignment));
+            } else {
+                selector.recordOuterFailure();
+            }
+        }
+
+        return projects;
+    }
+
+    private Project buildProjectFromAssignment(Map<String, ProjectClass> projectClassMap, List<String> assignment) {
+        List<ProjectClass> resolvedClasses = new ArrayList<>();
+        int chunkIndex = 0;
+
+        for (Map.Entry<String, ProjectClass> entry : projectClassMap.entrySet()) {
+            ProjectClass pc = entry.getValue();
+            List<IMergeBlock> resolvedBlocks = new ArrayList<>();
+
+            for (IMergeBlock block : pc.getMergeBlocks()) {
+                if (block instanceof ConflictBlock cb) {
+                    ConflictBlock clone = cb.clone();
+                    clone.setPattern(PatternFactory.fromName(assignment.get(chunkIndex++)));
+                    resolvedBlocks.add(clone);
+                } else {
+                    resolvedBlocks.add(block);
+                }
+            }
+
+            ProjectClass resolvedPc = new ProjectClass();
+            resolvedPc.setClassPath(pc.getClassPath());
+            resolvedPc.setMergeBlocks(resolvedBlocks);
+            resolvedClasses.add(resolvedPc);
+        }
+
+        Project project = new Project();
+        project.setProjectPath(repositoryPath);
+        project.setClasses(resolvedClasses);
+        return project;
     }
 
     /**
@@ -145,24 +217,6 @@ public class MergeAnalyzer {
     }
 
     /**
-     * Legacy method for backward compatibility.
-     * Builds all projects at once (old behavior).
-     */
-    @Deprecated
-    public void buildProjects(String commit1, String commit2, String mergeCommit) throws Exception {
-        VariantBuildContext context = prepareVariants(commit1, commit2, mergeCommit);
-        conflictPatterns = new ArrayList<>(context.getConflictPatterns());
-
-        // Build main project
-        buildMainProject(context);
-
-        // Build all variants
-        for (int i = 0; i < context.getVariantCount(); i++) {
-            buildVariant(context, i);
-        }
-    }
-
-    /**
      * Run tests with just-in-time directory creation and immediate cleanup.
      * Variant directories are built on-demand and deleted immediately after testing.
      *
@@ -174,22 +228,6 @@ public class MergeAnalyzer {
         // Populate conflictPatterns for backward compatibility with result collectors
         this.conflictPatterns = new ArrayList<>(context.getConflictPatterns());
         return runner.run(context, this);
-    }
-
-    /**
-     * Legacy method: Run tests on pre-existing directories.
-     * Used when all directories are built upfront (old behavior).
-     */
-    public RunExecutionTIme runTests(IRunner runner) {
-        MavenRunner mavenRunner = new MavenRunner(logDir);
-
-        int numProjects = countProjects();
-        List<Path> args = new ArrayList<>(numProjects);
-        for (int i = 0; i < numProjects - 1; i++) {
-            args.add(projectTempDir.resolve(projectName + "_" + i));
-        }
-
-        return runner.run(projectTempDir.resolve(projectName), args, false);
     }
 
     /**
@@ -215,42 +253,5 @@ public class MergeAnalyzer {
      */
     public TestTotal collectTestResult(String projectKey, Path projectPath) {
         return new TestTotal(projectPath.toFile());
-    }
-
-    public Map<String, CompilationResult> collectCompilationResults() throws IOException {
-        Map<String, CompilationResult> statistics = new TreeMap<>();
-        int numProjects = countProjects();
-
-        Path mainLogPath = logDir.resolve(projectName + "_compilation");
-        if (mainLogPath.toFile().exists()) {
-            CompilationResult compResult = new CompilationResult(mainLogPath);
-            statistics.put(projectName, compResult);
-        }
-
-        for (int i = 0; i < numProjects - 1; i++) {
-            Path path = logDir.resolve(projectName + "_" + i + "_compilation");
-            if (path.toFile().exists()) {
-                CompilationResult compResult = new CompilationResult(path);
-                statistics.put(projectName + "_" + i, compResult);
-            }
-        }
-        return statistics;
-    }
-
-    public Map<String, TestTotal> collectTestResults() {
-        Map<String, TestTotal> statistics = new TreeMap<>();
-        int numProjects = countProjects();
-        TestTotal testTotal = new TestTotal(projectTempDir.resolve(projectName).toFile());
-        statistics.put(projectName, testTotal);
-        for (int i = 0; i < numProjects - 1; i++) {
-            Path path = projectTempDir.resolve(projectName + "_" + i);
-            testTotal = new TestTotal(path.toFile());
-            statistics.put(projectName + "_" + i, testTotal);
-        }
-        return statistics;
-    }
-
-    public int countProjects() {
-        return projectTempDir.toFile().list().length;
     }
 }

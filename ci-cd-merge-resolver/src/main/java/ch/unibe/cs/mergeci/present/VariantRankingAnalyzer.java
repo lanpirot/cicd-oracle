@@ -33,48 +33,17 @@ public class VariantRankingAnalyzer {
         int numberAtLeastOneNonHuman = 0;
 
         for (MergeOutputJSON merge : merges) {
-            int baselineBest = resolutionAnalyzer.countSuccessfulTests(merge.getTestResults());
-            List<String> bestResolutions = new ArrayList<>(List.of("Human"));
+            List<String> bestResolutions = findBestResolutions(merge);
 
-            // Find best variant(s)
-            for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-                int variantBest = resolutionAnalyzer.countSuccessfulTests(variant.getTestResults());
-
-                if (variantBest > baselineBest) {
-                    // New best found
-                    baselineBest = variantBest;
-                    String pattern = resolutionAnalyzer.identifyUniformPattern(variant.getConflictPatterns());
-                    bestResolutions = new ArrayList<>(List.of(pattern));
-                } else if (variantBest == baselineBest) {
-                    // Tied for best
-                    String pattern = resolutionAnalyzer.identifyUniformPattern(variant.getConflictPatterns());
-                    if (!bestResolutions.contains(pattern)) {
-                        bestResolutions.add(pattern);
-                    }
-                }
-            }
-
-            // Count each best resolution
             for (String resolution : bestResolutions) {
                 switch (resolution) {
-                    case "Human":
-                        numberOfHumanBest++;
-                        break;
-                    case "OursPattern":
-                        numberOfOursBest++;
-                        break;
-                    case "TheirsPattern":
-                        numberOfTheirsBest++;
-                        break;
-                    case "Mixed":
-                        numberOfMixedBest++;
-                        break;
-                    default:
-                        // Unknown pattern type
+                    case "Human"        -> numberOfHumanBest++;
+                    case "OursPattern"  -> numberOfOursBest++;
+                    case "TheirsPattern"-> numberOfTheirsBest++;
+                    case "Mixed"        -> numberOfMixedBest++;
                 }
             }
 
-            // Check if any non-human resolution was among the best
             if (bestResolutions.stream().anyMatch(x -> !x.equals("Human"))) {
                 numberAtLeastOneNonHuman++;
             }
@@ -88,6 +57,29 @@ public class VariantRankingAnalyzer {
         ranking.put("AtLeastOneNonHuman", numberAtLeastOneNonHuman);
 
         return ranking;
+    }
+
+    /**
+     * Find the best-performing resolution strategies for a single merge.
+     * Returns "Human" as baseline, replaced or extended by any variant that ties or beats it.
+     */
+    private List<String> findBestResolutions(MergeOutputJSON merge) {
+        int baselineBest = resolutionAnalyzer.countSuccessfulTests(merge.getTestResults());
+        List<String> bestResolutions = new ArrayList<>(List.of("Human"));
+
+        for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
+            int variantBest = resolutionAnalyzer.countSuccessfulTests(variant.getTestResults());
+            String pattern = resolutionAnalyzer.identifyUniformPattern(variant.getConflictPatterns());
+
+            if (variantBest > baselineBest) {
+                baselineBest = variantBest;
+                bestResolutions = new ArrayList<>(List.of(pattern));
+            } else if (variantBest == baselineBest && !bestResolutions.contains(pattern)) {
+                bestResolutions.add(pattern);
+            }
+        }
+
+        return bestResolutions;
     }
 
     /**

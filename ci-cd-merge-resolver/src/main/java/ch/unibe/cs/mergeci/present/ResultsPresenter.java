@@ -54,6 +54,10 @@ public class ResultsPresenter {
      * Delegates to StatisticsReporter for all presentation logic.
      */
     public void presentFullResults() {
+        System.out.println("================================================================================");
+        System.out.println("CI/CD Merge Resolver - Presentation Phase");
+        System.out.println("================================================================================\n");
+
         String experimentName = dir.getFileName().toString();
         StatisticsReporter reporter = new StatisticsReporter(statistics, experimentName);
         reporter.presentFullResults();

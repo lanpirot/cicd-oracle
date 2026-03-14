@@ -110,7 +110,7 @@ public class GitUtilsTest extends BaseTest {
         RevWalk walk = new RevWalk(git.getRepository());
 
 
-        List<MergeInfo> list = GitUtils.getConflictCommits(AppConfig.MAX_CONFLICT_MERGES, git);
+        List<MergeInfo> list = GitUtils.getConflictCommits(AppConfig.getMaxConflictMerges(), git);
 
         System.out.printf("Total number of conflicts: %d", list.size());
         System.out.println();
@@ -119,7 +119,7 @@ public class GitUtilsTest extends BaseTest {
         }
 
         assertNotNull(list, "Conflict commits list should not be null");
-        assertTrue(list.size() <= AppConfig.MAX_CONFLICT_MERGES,
+        assertTrue(list.size() <= AppConfig.getMaxConflictMerges(),
             "Should not exceed max conflict merges limit");
         for (MergeInfo mergeInfo : list) {
             assertNotNull(mergeInfo, "MergeInfo should not be null");

@@ -1,6 +1,8 @@
 package ch.unibe.cs.mergeci.model.patterns;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.List;
 import java.util.Random;
@@ -50,11 +52,15 @@ class PatternHeuristicsTest {
             StrategySelector selector = new StrategySelector(heuristics, new Random(42));
 
             for (int i = 0; i < 5; i++) {
+                if (selector.allStrategiesExhausted(chunkCount)) {
+                    System.out.println("  All strategies exhausted after " + i + " iterations");
+                    break;
+                }
+
                 PatternStrategy strategy = selector.selectStrategy(chunkCount);
-                assertNotNull(strategy);
+                assertNotNull(strategy, "selectStrategy should not return null when strategies remain");
                 System.out.println("Selected: " + strategy);
 
-                // Generate assignment
                 List<String> assignment = selector.generateAssignment(strategy, chunkCount);
 
                 if (assignment != null) {
@@ -85,7 +91,10 @@ class PatternHeuristicsTest {
         int successful = 0;
 
         for (int i = 0; i < attempts; i++) {
+            if (selector.allStrategiesExhausted(chunkCount)) break;
+
             PatternStrategy strategy = selector.selectStrategy(chunkCount);
+            assertNotNull(strategy);
             List<String> assignment = selector.generateAssignment(strategy, chunkCount);
 
             if (assignment != null) {
@@ -139,6 +148,35 @@ class PatternHeuristicsTest {
     }
 
     @Test
+    @Timeout(5)
+    void testSingleChunkVariantCount() throws Exception {
+        PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
+                "pattern-heuristics/relative_numbers_summary.csv"
+        );
+
+        StrategySelector selector = new StrategySelector(heuristics, new Random(42));
+        int chunkCount = 1;
+        int variantCount = 0;
+
+        while (!selector.allStrategiesExhausted(chunkCount)
+                && variantCount < AppConfig.MAX_VARIANTS) {
+            PatternStrategy strategy = selector.selectStrategy(chunkCount);
+            if (strategy == null) break;
+
+            List<String> assignment = selector.generateAssignment(strategy, chunkCount);
+            if (assignment != null) {
+                variantCount++;
+                assertEquals(1, assignment.size(), "Single-chunk assignment must have exactly one entry");
+            } else {
+                selector.recordOuterFailure();
+            }
+        }
+
+        System.out.println("Variants generated for 1 conflict chunk: " + variantCount);
+        assertEquals(16, variantCount, "All 16 distinct orderings should be generated for a single chunk");
+    }
+
+    @Test
     void testOuterRetryWarning() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
                 "pattern-heuristics/relative_numbers_summary.csv"
@@ -156,27 +194,25 @@ class PatternHeuristicsTest {
         System.out.println("\n=== Testing Outer Retry Warning System ===");
 
         for (int i = 0; i < maxAttempts; i++) {
+            if (selector.allStrategiesExhausted(chunkCount)) {
+                System.out.println("✓ All strategies exhausted after " + i + " iterations");
+                break;
+            }
+
             PatternStrategy strategy = selector.selectStrategy(chunkCount);
+            assertNotNull(strategy);
             List<String> assignment = selector.generateAssignment(strategy, chunkCount);
 
             if (assignment == null) {
-                // Inner retries exhausted - record outer failure
                 selector.recordOuterFailure();
                 consecutiveFailures++;
-
-                if (consecutiveFailures >= 10) {
-                    System.out.println("✓ Warning system triggered after " + consecutiveFailures + " failures");
-                    break;
-                }
             } else {
-                // Reset on success
                 consecutiveFailures = 0;
             }
         }
 
-        // Verify that we hit saturation and warning was triggered
-        assertTrue(consecutiveFailures >= 10 || selector.getTriedAssignmentsCount() >= 9,
-                "Should either trigger warning or exhaust assignment space for 1-chunk strategies");
+        assertTrue(selector.allStrategiesExhausted(chunkCount) || consecutiveFailures >= 10,
+                "Should either exhaust all strategies or trigger the warning threshold");
         System.out.println("Total unique assignments: " + selector.getTriedAssignmentsCount());
         System.out.println("Consecutive failures at end: " + consecutiveFailures);
     }

@@ -113,11 +113,6 @@ public class ExcelWriter {
                 for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                     Row row = sheet.getRow(i);
 
-                    int numConflictingFiles = (int) row.getCell(4).getNumericCellValue();
-                    if (numConflictingFiles > AppConfig.MAX_CONFLICT_CHUNKS) {
-                        continue;
-                    }
-
                     Row newRow = newSheet.createRow(newRowIdx++);
                     copyRow(row, newRow);
                 }

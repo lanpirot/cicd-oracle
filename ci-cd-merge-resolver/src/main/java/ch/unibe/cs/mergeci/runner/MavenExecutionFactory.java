@@ -69,12 +69,31 @@ public class MavenExecutionFactory {
                 RunExecutionTIme runExecutionTime = new RunExecutionTIme();
                 Instant overallStart = Instant.now();
 
-                // Build and run main project (human resolution)
+                float remainingSeconds = executeMainProject(context, analyzer, totalBudgetSeconds, overallStart, runExecutionTime);
+
+                if (remainingSeconds <= 0) {
+                    System.out.println("⚠ Timeout budget exhausted after main project");
+                    return runExecutionTime;
+                }
+
+                Instant start = Instant.now();
+                if (isParallel) {
+                    runVariantsParallel(context, analyzer, remainingSeconds, overallStart, totalBudgetSeconds);
+                } else {
+                    runVariantsSequential(context, analyzer, overallStart, totalBudgetSeconds);
+                }
+                runExecutionTime.setVariantsExecutionTime(Duration.between(start, Instant.now()));
+
+                return runExecutionTime;
+            }
+
+            private float executeMainProject(VariantBuildContext context, MergeAnalyzer analyzer,
+                                             float totalBudgetSeconds, Instant overallStart,
+                                             RunExecutionTIme runExecutionTime) throws Exception {
                 Path mainProjectPath = analyzer.buildMainProject(context);
                 String projectName = context.getProjectName();
 
-                float remainingSeconds = totalBudgetSeconds;
-                int timeoutMinutes = Math.max(AppConfig.MAVEN_BUILD_TIMEOUT, (int) Math.ceil(remainingSeconds / 60.0f));
+                int timeoutMinutes = Math.max(AppConfig.MAVEN_BUILD_TIMEOUT, (int) Math.ceil(totalBudgetSeconds / 60.0f));
                 MavenRunner mainRunner = new MavenRunner(logDir, false, timeoutMinutes);
 
                 Instant start = Instant.now();
@@ -86,36 +105,14 @@ public class MavenExecutionFactory {
                         System.err.println("Coverage collection failed for " + projectName + ": " + e.getMessage());
                     }
                 }
-                Instant end = Instant.now();
-                runExecutionTime.setMainExecutionTime(Duration.between(start, end));
+                runExecutionTime.setMainExecutionTime(Duration.between(start, Instant.now()));
 
-                // Collect main project results
                 analyzer.collectCompilationResult(projectName).ifPresent(result ->
                     compilationResults.put(projectName, result)
                 );
-                TestTotal mainTestResult = analyzer.collectTestResult(projectName, mainProjectPath);
-                testResults.put(projectName, mainTestResult);
+                testResults.put(projectName, analyzer.collectTestResult(projectName, mainProjectPath));
 
-                // Calculate remaining time
-                float elapsed = Duration.between(overallStart, Instant.now()).toSeconds();
-                remainingSeconds = totalBudgetSeconds - elapsed;
-
-                if (remainingSeconds <= 0) {
-                    System.out.println("⚠ Timeout budget exhausted after main project");
-                    return runExecutionTime;
-                }
-
-                // Run variants with just-in-time building and immediate cleanup
-                start = Instant.now();
-                if (isParallel) {
-                    runVariantsParallel(context, analyzer, remainingSeconds, overallStart, totalBudgetSeconds);
-                } else {
-                    runVariantsSequential(context, analyzer, overallStart, totalBudgetSeconds);
-                }
-                end = Instant.now();
-                runExecutionTime.setVariantsExecutionTime(Duration.between(start, end));
-
-                return runExecutionTime;
+                return totalBudgetSeconds - Duration.between(overallStart, Instant.now()).toSeconds();
             }
 
             private void runVariantsParallel(VariantBuildContext context, MergeAnalyzer analyzer,

@@ -42,28 +42,12 @@ public class MergeProcessor {
      * @throws Exception if merge processing fails
      */
     public ProcessedMerge processMerge(DatasetReader.MergeInfo info) throws Exception {
-        // Check conflict chunk limit
         int numConflictChunks = GitUtils.getTotalConflictChunks(repoPath, info.getParent1(), info.getParent2());
-
-        if (!shouldProcess(numConflictChunks)) {
-            return ProcessedMerge.skipped(
-                info,
-                numConflictChunks,
-                String.format("⏭ Skipped (%d chunks > %d limit)", numConflictChunks, AppConfig.MAX_CONFLICT_CHUNKS)
-            );
-        }
 
         // Run merge analysis
         MergeAnalysisResult result = runMergeAnalysis(info);
 
         return ProcessedMerge.completed(info, numConflictChunks, result);
-    }
-
-    /**
-     * Check if merge should be processed based on conflict chunk count.
-     */
-    private boolean shouldProcess(int numConflictChunks) {
-        return numConflictChunks <= AppConfig.MAX_CONFLICT_CHUNKS;
     }
 
     /**

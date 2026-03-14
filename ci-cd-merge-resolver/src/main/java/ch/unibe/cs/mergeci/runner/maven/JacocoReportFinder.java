@@ -23,34 +23,9 @@ public class JacocoReportFinder {
             "**/target/site/jacoco/jacoco.xml");
 
     public static CoverageDTO getCoverageResults(Path projectPath, List<String> conflictJavaFiles) {
-        List<Path> jacocoReports = new ArrayList<>();
-        try {
-            Files.walkFileTree(projectPath, new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    if (PATH_MATCHER.matches(file)) {
-                        System.out.println("Found jacoco report: " + file);
-                        jacocoReports.add(file);
-                    }
+        List<Path> jacocoReports = findJacocoReports(projectPath);
+        DocumentBuilderFactory factory = createXmlDocumentBuilderFactory();
 
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setValidating(false);
-        documentBuilderFactory.setNamespaceAware(true);
-        try {
-            documentBuilderFactory.setFeature("http://xml.org/sax/features/namespaces", false);
-            documentBuilderFactory.setFeature("http://xml.org/sax/features/validation", false);
-            documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
         int coveredLines = 0;
         int missedLines = 0;
         int coveredInstructions = 0;
@@ -58,29 +33,13 @@ public class JacocoReportFinder {
 
         try {
             for (Path path : jacocoReports) {
-                DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-
-                Document doc = builder.parse(path.toFile());
+                Document doc = factory.newDocumentBuilder().parse(path.toFile());
                 doc.getDocumentElement().normalize();
-                NodeList nodeList = doc.getDocumentElement().getElementsByTagName("class");
-                for (int i = 0; i < nodeList.getLength(); i++) {
-                    NodeList methods = nodeList.item(i).getChildNodes();
-                    for (int j = 0; j < methods.getLength(); j++) {
-                        NodeList counters = methods.item(j).getChildNodes();
-                        for (int k = 0; k < counters.getLength(); k++) {
-                            switch (counters.item(k).getAttributes().getNamedItem("type").getNodeValue()) {
-                                case "INSTRUCTION" -> {
-                                    coveredInstructions += Integer.parseInt(counters.item(k).getAttributes().getNamedItem("covered").getNodeValue());
-                                    missedInstructions += Integer.parseInt(counters.item(k).getAttributes().getNamedItem("missed").getNodeValue());
-                                }
-                                case "LINE" -> {
-                                    coveredLines += Integer.parseInt(counters.item(k).getAttributes().getNamedItem("covered").getNodeValue());
-                                    missedLines += Integer.parseInt(counters.item(k).getAttributes().getNamedItem("missed").getNodeValue());
-                                }
-                            }
-                        }
-                    }
-                }
+                int[] counts = accumulateCountsFromDocument(doc);
+                coveredInstructions += counts[0];
+                missedInstructions  += counts[1];
+                coveredLines        += counts[2];
+                missedLines         += counts[3];
             }
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -92,6 +51,62 @@ public class JacocoReportFinder {
         return new CoverageDTO(
                 (float) coveredInstructions / (coveredInstructions + missedInstructions),
                 (float) coveredLines / (coveredLines + missedLines));
+    }
+
+    private static List<Path> findJacocoReports(Path projectPath) {
+        List<Path> reports = new ArrayList<>();
+        try {
+            Files.walkFileTree(projectPath, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (PATH_MATCHER.matches(file)) {
+                        reports.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return reports;
+    }
+
+    private static DocumentBuilderFactory createXmlDocumentBuilderFactory() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        factory.setNamespaceAware(true);
+        try {
+            factory.setFeature("http://xml.org/sax/features/namespaces", false);
+            factory.setFeature("http://xml.org/sax/features/validation", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        return factory;
+    }
+
+    /** Returns [coveredInstructions, missedInstructions, coveredLines, missedLines]. */
+    private static int[] accumulateCountsFromDocument(Document doc) {
+        int[] counts = new int[4];
+        NodeList nodeList = doc.getDocumentElement().getElementsByTagName("class");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            NodeList methods = nodeList.item(i).getChildNodes();
+            for (int j = 0; j < methods.getLength(); j++) {
+                NodeList counters = methods.item(j).getChildNodes();
+                for (int k = 0; k < counters.getLength(); k++) {
+                    var attrs = counters.item(k).getAttributes();
+                    if (attrs == null || attrs.getNamedItem("type") == null) continue;
+                    int covered = Integer.parseInt(attrs.getNamedItem("covered").getNodeValue());
+                    int missed  = Integer.parseInt(attrs.getNamedItem("missed").getNodeValue());
+                    switch (attrs.getNamedItem("type").getNodeValue()) {
+                        case "INSTRUCTION" -> { counts[0] += covered; counts[1] += missed; }
+                        case "LINE"        -> { counts[2] += covered; counts[3] += missed; }
+                    }
+                }
+            }
+        }
+        return counts;
     }
 
     public static record CoverageDTO(float instructionCoverage, float lineCoverage) {

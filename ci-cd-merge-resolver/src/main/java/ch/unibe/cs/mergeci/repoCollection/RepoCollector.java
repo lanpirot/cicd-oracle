@@ -3,7 +3,6 @@ package ch.unibe.cs.mergeci.repoCollection;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.conflict.MergeConflictCollector;
 import ch.unibe.cs.mergeci.util.FileUtils;
-import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.RepositoryStatus;
 import ch.unibe.cs.mergeci.util.Utility;
@@ -16,7 +15,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,20 +56,7 @@ public class RepoCollector {
     }
 
     public void processExcel(Path excelFile) throws Exception {
-        // Handle FRESH_RUN mode
-        if (AppConfig.isFreshRun()) {
-            System.out.println("FRESH_RUN enabled: Cleaning collection directories...");
-            if (Files.exists(cloneDir)) {
-                FileUtils.deleteDirectory(cloneDir.toFile());
-            }
-            if (Files.exists(datasetDir)) {
-                FileUtils.deleteDirectory(datasetDir.toFile());
-            }
-            // Reset RepositoryManager cache after deleting directories
-            repoManager.resetCache();
-        }
-
-        // Always clean temp directory
+        cleanForFreshRun();
         FileUtils.deleteDirectory(tempDir.toFile());
 
         BuildFailureLog failureLog = BuildFailureLog.createOrNull(
@@ -85,29 +70,13 @@ public class RepoCollector {
 
         try {
             Sheet sheet = workbook.getSheetAt(0);
-
-            // Write new column headers (idempotent)
             ensureHeaders(sheet);
             flushWorkbook(workbook, excelFile);
 
-            // Count total unique repositories
+            int totalRepos = countUniqueRepos(sheet);
+            printHeader(totalRepos);
+
             Set<String> seen = new HashSet<>();
-            int totalRepos = 0;
-            for (Row row : sheet) {
-                if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
-                String repoUrl = row.getCell(1) != null ? row.getCell(1).getStringCellValue().trim() : "";
-                if (!repoUrl.isEmpty() && !seen.contains(repoUrl)) {
-                    seen.add(repoUrl);
-                    totalRepos++;
-                }
-            }
-
-            System.out.println("================================================================================");
-            System.out.println("CI/CD Merge Resolver - Collection Phase");
-            System.out.printf("Total repositories: %d | Fresh run: %s%n", totalRepos, AppConfig.isFreshRun());
-            System.out.println("================================================================================\n");
-
-            seen.clear();
             int currentRepo = 0;
 
             for (Row row : sheet) {
@@ -117,83 +86,101 @@ public class RepoCollector {
                 String repoUrl = row.getCell(1).getStringCellValue().trim();
 
                 if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
-                if (seen.contains(repoUrl)) continue;
-                seen.add(repoUrl);
+                if (!seen.add(repoUrl)) continue;
 
                 currentRepo++;
-
-                // Skip if already processed (unless FRESH_RUN)
-                RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
-                if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED) {
-                    Path excelOutFile = datasetDir.resolve(repoName + AppConfig.XLSX);
-                    if (existingStatus == RepositoryStatus.SUCCESS && (!Files.exists(datasetDir) || !Files.exists(excelOutFile))) {
-                        System.out.printf("[%d/%d] %s - ⚠ Marked SUCCESS but excel missing, reprocessing...\n\n", currentRepo, totalRepos, repoName);
-                    } else {
-                        System.out.printf("[%d/%d] %s - ⏩ Already processed (%s)\n\n", currentRepo, totalRepos, repoName, existingStatus);
-                        continue;
-                    }
-                }
-
-                System.out.printf("[%d/%d] %s\n", currentRepo, totalRepos, repoName);
-
-                Path repoFolder;
-                try {
-                    repoFolder = repoManager.getRepositoryPath(repoName, repoUrl);
-                } catch (IOException e) {
-                    System.out.printf("  ✗ Clone failed: %s\n\n", e.getMessage());
-                    if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_CLONE_FAILED", e.getMessage());
-                    writeRepoRow(row, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
-                    flushWorkbook(workbook, excelFile);
-                    continue;
-                }
-
-                String buildTool = detectBuildTool(repoFolder);
-
-                if (!buildTool.contains("maven")) {
-                    System.out.printf("  ✗ Not a Maven project (build tool: %s) → REJECTED_NO_POM\n\n", buildTool);
-                    if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_NO_POM", "build tool: " + buildTool);
-                    repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
-                    writeRepoRow(row, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
-                    flushWorkbook(workbook, excelFile);
-                    continue;
-                }
-
-                System.out.println("  ✓ Maven project detected");
-                MergeConflictCollector conflictCollector = new MergeConflictCollector(
-                        repoFolder,
-                        tempDir.resolve(repoName),
-                        AppConfig.MAX_CONFLICT_MERGES,
-                        failureLog
-                );
-
-                CollectionResult result = conflictCollector.collectDataset(
-                        datasetDir.resolve(repoName + AppConfig.XLSX),
-                        repoName,
-                        repoUrl
-                );
-
-                // Log compact summary
-                System.out.println(formatResultSummary(result));
-
-                if (result.getStatus() == RepositoryStatus.SUCCESS) {
-                    repoManager.markRepositorySuccess(repoName);
-                } else {
-                    if (failureLog != null) failureLog.logRepoFailure(repoName, result.getStatus().name(), result.getMessage());
-                    repoManager.markRepositoryRejected(repoName, result.getStatus());
-                }
-
-                writeRepoRow(row, buildTool, result.getStatus(), result);
-                flushWorkbook(workbook, excelFile);
-
-                RepositoryCache.clear();
-                WindowCache.reconfigure(new WindowCacheConfig());
-                // Clean up temp files but keep the repository
-                FileUtils.deleteDirectory(tempDir.resolve(repoName).toFile());
+                processRepo(row, repoName, repoUrl, currentRepo, totalRepos, workbook, excelFile, failureLog);
             }
         } finally {
             workbook.close();
             if (failureLog != null) failureLog.close();
         }
+    }
+
+    private void cleanForFreshRun() throws IOException {
+        if (!AppConfig.isFreshRun()) return;
+        System.out.println("FRESH_RUN enabled: Cleaning collection directories...");
+        if (Files.exists(cloneDir)) FileUtils.deleteDirectory(cloneDir.toFile());
+        if (Files.exists(datasetDir)) FileUtils.deleteDirectory(datasetDir.toFile());
+        repoManager.resetCache();
+    }
+
+    private int countUniqueRepos(Sheet sheet) {
+        Set<String> seen = new HashSet<>();
+        int total = 0;
+        for (Row row : sheet) {
+            if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
+            String repoUrl = row.getCell(1) != null ? row.getCell(1).getStringCellValue().trim() : "";
+            if (!repoUrl.isEmpty() && seen.add(repoUrl)) total++;
+        }
+        return total;
+    }
+
+    private void printHeader(int totalRepos) {
+        System.out.println("================================================================================");
+        System.out.println("CI/CD Merge Resolver - Collection Phase");
+        System.out.printf("Total repositories: %d | Fresh run: %s%n", totalRepos, AppConfig.isFreshRun());
+        System.out.println("================================================================================\n");
+    }
+
+    private void processRepo(Row row, String repoName, String repoUrl, int currentRepo, int totalRepos,
+                              Workbook workbook, Path excelFile, BuildFailureLog failureLog) throws Exception {
+        RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
+        if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED) {
+            Path excelOutFile = datasetDir.resolve(repoName + AppConfig.XLSX);
+            if (existingStatus == RepositoryStatus.SUCCESS && (!Files.exists(datasetDir) || !Files.exists(excelOutFile))) {
+                System.out.printf("[%d/%d] %s - ⚠ Marked SUCCESS but excel missing, reprocessing...\n", currentRepo, totalRepos, repoName);
+            } else {
+                System.out.printf("[%d/%d] %s - ⏩ Already processed (%s)\n", currentRepo, totalRepos, repoName, existingStatus);
+                return;
+            }
+        }
+
+        System.out.printf("[%d/%d] %s\n", currentRepo, totalRepos, repoName);
+
+        Path repoFolder;
+        try {
+            repoFolder = repoManager.getRepositoryPath(repoName, repoUrl);
+        } catch (IOException e) {
+            System.out.printf("  ✗ Clone failed: %s\n", e.getMessage());
+            if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_CLONE_FAILED", e.getMessage());
+            writeRepoRow(row, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
+            flushWorkbook(workbook, excelFile);
+            return;
+        }
+
+        String buildTool = detectBuildTool(repoFolder);
+        if (!buildTool.contains("maven")) {
+            System.out.printf("  ✗ Not a Maven project (build tool: %s) → REJECTED_NO_POM\n", buildTool);
+            if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_NO_POM", "build tool: " + buildTool);
+            repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
+            writeRepoRow(row, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
+            flushWorkbook(workbook, excelFile);
+            return;
+        }
+
+        System.out.println("  ✓ Maven project detected");
+        MergeConflictCollector conflictCollector = new MergeConflictCollector(
+                repoFolder, tempDir.resolve(repoName), AppConfig.getMaxConflictMerges(), failureLog);
+
+        CollectionResult result = conflictCollector.collectDataset(
+                datasetDir.resolve(repoName + AppConfig.XLSX), repoName, repoUrl);
+
+        System.out.println(formatResultSummary(result));
+
+        if (result.getStatus() == RepositoryStatus.SUCCESS) {
+            repoManager.markRepositorySuccess(repoName);
+        } else {
+            if (failureLog != null) failureLog.logRepoFailure(repoName, result.getStatus().name(), result.getMessage());
+            repoManager.markRepositoryRejected(repoName, result.getStatus());
+        }
+
+        writeRepoRow(row, buildTool, result.getStatus(), result);
+        flushWorkbook(workbook, excelFile);
+
+        RepositoryCache.clear();
+        WindowCache.reconfigure(new WindowCacheConfig());
+        FileUtils.deleteDirectory(tempDir.resolve(repoName).toFile());
     }
 
     private String detectBuildTool(Path repoFolder) {

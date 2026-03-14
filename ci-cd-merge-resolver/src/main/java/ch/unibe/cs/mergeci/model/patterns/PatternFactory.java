@@ -7,8 +7,10 @@ import java.util.function.Supplier;
  * Factory for creating pattern instances from pattern names.
  * Supports atomic patterns (OURS, THEIRS, BASE, EMPTY) and compound patterns (OURSTHEIRS, etc.).
  *
- * Compound patterns are parsed into atomic components and randomly shuffled to explore
- * different resolution orders.
+ * Compound pattern names encode a specific ordering of atomic components.
+ * Use {@link #sampleOrdering(String, Random)} to randomly pick one ordering before calling
+ * {@link #fromName(String)}, so that deduplication in StrategySelector operates on the
+ * actual ordering rather than the unordered pattern name from the CSV.
  */
 public class PatternFactory {
 
@@ -20,14 +22,15 @@ public class PatternFactory {
     );
 
     /**
-     * Create a pattern instance from a pattern name.
+     * Create a pattern instance from an (already-ordered) pattern name.
+     * The name encodes the exact component order — no shuffling is applied.
+     * Call {@link #sampleOrdering(String, Random)} first to pick a random ordering.
      *
-     * @param patternName Pattern name (e.g., "OURS", "OURSTHEIRS", "OURSTHEIRSBASE")
-     * @param random Random instance for shuffling compound patterns
-     * @return Pattern instance (atomic or compound with randomized order)
+     * @param patternName Pattern name encoding specific order (e.g., "THEIRSOURS")
+     * @return Pattern instance (atomic or compound in the specified order)
      * @throws IllegalArgumentException if pattern name is invalid or EMPTY appears in compound
      */
-    public static IPattern fromName(String patternName, Random random) {
+    public static IPattern fromName(String patternName) {
         if (patternName == null || patternName.isEmpty()) {
             throw new IllegalArgumentException("Pattern name cannot be null or empty");
         }
@@ -47,7 +50,7 @@ public class PatternFactory {
             throw new IllegalArgumentException("NON is not a valid pattern (should be replaced by StrategySelector): " + patternName);
         }
 
-        // Parse compound pattern
+        // Parse compound pattern — order in the name is preserved as-is
         List<IPattern> components = parseCompound(patternName);
 
         // Single component doesn't need CompoundPattern wrapper
@@ -55,51 +58,70 @@ public class PatternFactory {
             return components.get(0);
         }
 
-        // Randomly shuffle components to explore different orders
-        Collections.shuffle(components, random);
-
         return new CompoundPattern(components);
     }
 
     /**
-     * Parse a compound pattern name into atomic pattern instances.
-     * Uses greedy matching to handle pattern names like "THEIRS" that contain "THEIRS".
+     * Sample a random ordering for a compound pattern name.
+     * For atomic patterns the name is returned unchanged (only one ordering exists).
+     * For compound patterns, the atomic components are randomly permuted and
+     * the result is returned as a new name string (e.g., "OURSTHEIRS" → "THEIRSOURS").
      *
-     * @param patternName Compound pattern name (e.g., "OURSTHEIRS", "THEIRSBASE")
-     * @return List of atomic pattern instances (not yet shuffled)
-     * @throws IllegalArgumentException if pattern name cannot be parsed
+     * The returned name can be used as a deduplication key and passed to {@link #fromName(String)}.
+     *
+     * @param patternName Pattern name from the heuristics CSV (e.g., "OURSTHEIRS")
+     * @param random      Random instance for permutation selection
+     * @return A specific ordering of the pattern's components as a name string
+     */
+    public static String sampleOrdering(String patternName, Random random) {
+        if (ATOMIC_PATTERNS.containsKey(patternName)) {
+            return patternName;
+        }
+        List<String> components = parseToAtomicNames(patternName);
+        Collections.shuffle(components, random);
+        return String.join("", components);
+    }
+
+    /**
+     * Parse a compound pattern name into atomic pattern instances in the order given.
      */
     private static List<IPattern> parseCompound(String patternName) {
-        List<IPattern> components = new ArrayList<>();
-        String remaining = patternName;
+        return parseToAtomicNames(patternName).stream()
+                .map(name -> ATOMIC_PATTERNS.get(name).get())
+                .toList();
+    }
 
-        // Greedy matching: try longest pattern names first to avoid ambiguity
-        // "THEIRS" (6 chars) must be tried before "OURS" (4 chars) to avoid matching "THE" + "IRS"
-        List<String> atomicNames = List.of("THEIRS", "OURS", "BASE"); // Sorted by length descending
+    /**
+     * Parse a compound pattern name into its atomic component names in order.
+     * Uses greedy matching to avoid ambiguity (e.g., "THEIRS" before "OURS").
+     */
+    private static List<String> parseToAtomicNames(String patternName) {
+        List<String> names = new ArrayList<>();
+        String remaining = patternName;
+        // Sorted by length descending so "THEIRS" is tried before "OURS"
+        List<String> atomicNames = List.of("THEIRS", "OURS", "BASE");
 
         while (!remaining.isEmpty()) {
             boolean matched = false;
-
             for (String atomicName : atomicNames) {
                 if (remaining.startsWith(atomicName)) {
-                    components.add(ATOMIC_PATTERNS.get(atomicName).get());
+                    names.add(atomicName);
                     remaining = remaining.substring(atomicName.length());
                     matched = true;
                     break;
                 }
             }
-
             if (!matched) {
                 throw new IllegalArgumentException("Cannot parse pattern name: " + patternName +
                     " (remaining: " + remaining + ")");
             }
         }
 
-        if (components.isEmpty()) {
+        if (names.isEmpty()) {
             throw new IllegalArgumentException("Pattern name resulted in no components: " + patternName);
         }
 
-        return components;
+        return names;
     }
 
     /**

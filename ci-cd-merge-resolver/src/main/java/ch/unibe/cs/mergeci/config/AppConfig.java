@@ -1,10 +1,6 @@
 package ch.unibe.cs.mergeci.config;
 
-import ch.unibe.cs.mergeci.model.patterns.IPattern;
-import ch.unibe.cs.mergeci.model.patterns.OursPattern;
-import ch.unibe.cs.mergeci.model.patterns.TheirsPattern;
 import java.nio.file.*;
-import java.util.List;
 import java.util.Map;
 
 
@@ -60,6 +56,12 @@ public class AppConfig {
     }
 
     // ========== JAVA INSTALLATIONS ==========
+    // NOTE: These paths are hardcoded for the development machine and MUST be updated
+    // to match the Java installations available on your system.
+    // Run `ls /usr/lib/jvm/` (Linux) or `ls /Library/Java/JavaVirtualMachines/` (macOS)
+    // to find installed JDKs. Only include versions that are actually present.
+    // Used by JavaVersionResolver to switch to the closest compatible JDK when a
+    // repository requires a specific Java version.
     public static final Map<Integer, Path> JAVA_HOMES = Map.of(
             8,  Paths.get("/usr/lib/jvm/openlogic-openjdk-8u462-b08-linux-x64"),
             11, Paths.get("/usr/lib/jvm/jdk-11.0.2"),
@@ -78,30 +80,14 @@ public class AppConfig {
     public static final Path TMP_PROJECT_DIR = TMP_DIR.resolve("projects");
 
     // ========== PHASE 2: CONFLICT COLLECTION ==========
-    public static int MAX_CONFLICT_MERGES = determineMaxConflictMerges();
-    private static final int MAX_CONFLICT_MERGES_PRODUCTION = 10;  // sample maximally this many merges per project to avoid bias towards giant projects
-    private static final int MAX_CONFLICT_MERGES_TEST = 5;         // reduced limit for unit tests to improve test performance
+    private static final int MAX_CONFLICT_MERGES_DEFAULT = 10;  // sample maximally this many merges per project to avoid bias towards giant projects
 
     /**
-     * Determine the maximum number of conflict merges based on execution mode.
-     * This is called once at class loading time.
+     * Maximum number of conflict merges to collect per project.
+     * Can be overridden via system property "maxConflictMerges" for testing (e.g., set to 5).
      */
-    private static int determineMaxConflictMerges() {
-        try {
-            // Check if we're running in a test environment
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            for (StackTraceElement element : stackTrace) {
-                if (element.getClassName().contains("org.junit") ||
-                    element.getClassName().contains("junit") ||
-                    element.getMethodName().contains("test")) {
-                    return MAX_CONFLICT_MERGES_TEST;
-                }
-            }
-        } catch (Exception e) {
-            // If we can't determine, default to production limit
-            System.err.println("Could not determine execution mode, using production limit: " + e.getMessage());
-        }
-        return MAX_CONFLICT_MERGES_PRODUCTION;
+    public static int getMaxConflictMerges() {
+        return Integer.parseInt(System.getProperty("maxConflictMerges", String.valueOf(MAX_CONFLICT_MERGES_DEFAULT)));
     }
 
     public static final int HASH_PREFIX_LENGTH = 8;     // this many chars ensure uniqueness when saving paths using commit hash ids
@@ -115,8 +101,7 @@ public class AppConfig {
 
     // ========== PHASE 3: VARIANT EXPERIMENTS ==========
     public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");
-    public static final List<IPattern> patterns = List.of(new OursPattern(), new TheirsPattern()); // patterns we check in experiments
-    public static final int MAX_CONFLICT_CHUNKS = 6;    // if a merge has more chunks than this, we don't attempt resolutions
+    public static final int MAX_VARIANTS = 100; // max number of sampled resolution variants per merge
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     static Runtime runtime = Runtime.getRuntime();
@@ -143,6 +128,13 @@ public class AppConfig {
      * This allows dynamic timeouts based on the expected build time from the dataset.
      */
     public static final int TIMEOUT_MULTIPLIER = 10;
+
+    /**
+     * JVM heap size passed to spawned Maven processes via MAVEN_OPTS.
+     * Large projects (e.g. BroadleafCommerce) exhaust the default heap during compilation/testing.
+     * Increase this if you see "OutOfMemoryError: Java heap space" in Maven subprocess output.
+     */
+    public static final String MAVEN_SUBPROCESS_HEAP = "-Xmx4g";
 
     // Maven / JaCoCo plugin coordinates
     public static final String JACOCO_PLUGIN = "org.jacoco:jacoco-maven-plugin";

@@ -18,7 +18,7 @@ public class MergeConflictCollectorTest extends BaseTest {
         MergeConflictCollector collector = new MergeConflictCollector(
                 AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind),
                 AppConfig.TMP_DIR,
-                AppConfig.MAX_CONFLICT_MERGES
+                AppConfig.getMaxConflictMerges()
         );
 
         Path outputPath = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.XLSX);

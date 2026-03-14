@@ -42,84 +42,115 @@ public class ResolutionVariantRunner {
     }
 
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
-        // Handle FRESH_RUN mode - clean experiment output directory
+        prepareOutputDir(outputDir);
+
+        File[] xlsxDataset = datasetsDir.toFile().listFiles();
+        if (xlsxDataset == null) return;
+
+        printHeader(xlsxDataset, outputDir);
+
+        for (File dataset : xlsxDataset) {
+            processDataset(dataset, outputDir, isParallel, isCache);
+        }
+    }
+
+    private void printHeader(File[] datasets, Path outputDir) {
+        int totalProjects = datasets.length;
+        int pendingProjects = 0;
+        int totalMerges = 0;
+
+        for (File dataset : datasets) {
+            String repoName = Files.getNameWithoutExtension(dataset.getName());
+            Path jsonOutputPath = outputDir.resolve(repoName + AppConfig.JSON);
+            boolean pending = AppConfig.isFreshRun() || !jsonOutputPath.toFile().exists();
+            if (pending) pendingProjects++;
+
+            try {
+                totalMerges += new DatasetReader().readMergeDataset(dataset.toPath()).size();
+            } catch (Exception e) {
+                // skip unreadable dataset
+            }
+        }
+
+        System.out.println("================================================================================");
+        System.out.println("CI/CD Merge Resolver - Variant Experiment Phase");
+        System.out.printf("Total projects: %d | Pending: %d | Total merges: %d | Fresh run: %s%n",
+                totalProjects, pendingProjects, totalMerges, AppConfig.isFreshRun());
+        System.out.println("================================================================================\n");
+    }
+
+    private void prepareOutputDir(Path outputDir) throws IOException {
         if (AppConfig.isFreshRun() && outputDir.toFile().exists()) {
             System.out.println("FRESH_RUN enabled: Cleaning experiment directory: " + outputDir);
             FileUtils.deleteDirectory(outputDir.toFile());
         }
-
         if (!outputDir.toFile().exists()) {
             outputDir.toFile().mkdirs();
         }
+    }
 
-        File[] xlsxDataset = datasetsDir.toFile().listFiles();
+    private void processDataset(File dataset, Path outputDir, boolean isParallel, boolean isCache) throws Exception {
+        String repoName = Files.getNameWithoutExtension(dataset.getName());
+        Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, repoName);
 
-        if (xlsxDataset == null) {return;}
+        if (repoUrlOpt.isEmpty()) {
+            System.err.println("Repository URL not found in Excel for: " + repoName + ". Skipping...");
+            return;
+        }
 
-        for (File dataset : xlsxDataset) {
-            String repoName = Files.getNameWithoutExtension(dataset.getName());
-            Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, repoName);
+        Path jsonOutputPath = outputDir.resolve(repoName + AppConfig.JSON);
+        if (!AppConfig.isFreshRun() && jsonOutputPath.toFile().exists()) {
+            System.out.printf("File %s already exists. Skipping...\n", jsonOutputPath.getFileName());
+            return;
+        }
 
-            if (repoUrlOpt.isEmpty()) {
-                System.err.println("Repository URL not found in Excel for: " + repoName + ". Skipping...");
-                continue;
-            }
+        Path repoPath;
+        try {
+            repoPath = repoManager.getRepositoryPath(repoName, repoUrlOpt.get());
+        } catch (IOException e) {
+            System.err.println("Skipping repository " + repoName + ": " + e.getMessage());
+            return;
+        }
 
-            String repoUrl = repoUrlOpt.get();
-            String nameOfOutputFIle = repoName + AppConfig.JSON;
-
-            // Skip if already processed (unless FRESH_RUN, which already cleaned the directory)
-            Path jsonOutputPath = outputDir.resolve(nameOfOutputFIle);
-            if (!AppConfig.isFreshRun() && jsonOutputPath.toFile().exists()) {
-                System.out.printf("File %s already exists. Skipping...\n", nameOfOutputFIle);
-                continue;
-            }
-
-            Path repoPath;
-            try {
-                repoPath = repoManager.getRepositoryPath(repoName, repoUrl);
-            } catch (IOException e) {
-                System.err.println("Skipping repository " + repoName + ": " + e.getMessage());
-                continue;
-            }
-
-            try {
-                makeAnalysisByDataset(dataset.toPath(), repoPath, outputDir.resolve(nameOfOutputFIle), isParallel, isCache);
-                // Mark as successful only if analysis completes without major issues
-                repoManager.markRepositorySuccess(repoName);
-            } catch (Exception e) {
-                System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
-                // Don't mark as rejected - we might want to retry later
-                throw e;
-            } finally {
-                RepositoryCache.clear();
-                WindowCache.reconfigure(new WindowCacheConfig());
-                // NOTE: No longer delete the repository directory!
-            }
+        try {
+            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, isParallel, isCache);
+            repoManager.markRepositorySuccess(repoName);
+        } catch (Exception e) {
+            System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
+            // Don't mark as rejected - we might want to retry later
+            throw e;
+        } finally {
+            RepositoryCache.clear();
+            WindowCache.reconfigure(new WindowCacheConfig());
         }
     }
 
-
-    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path Output, boolean isParallel, boolean isCache) throws Exception {
-        // Read dataset
-        DatasetReader reader = new DatasetReader();
-        List<DatasetReader.MergeInfo> mergeInfos = reader.readMergeDataset(dataset);
-
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, boolean isParallel, boolean isCache) throws Exception {
+        List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
 
-        // Create processors
         MergeProcessor processor = new MergeProcessor(repoPath, isParallel, isCache);
         VariantResultCollector collector = new VariantResultCollector();
 
-        // Process each merge
+        MergeRunStats stats = processMerges(mergeInfos, processor, collector);
+
+        System.out.println(formatSummary(mergeInfos.size(), stats.results().size(), stats.skippedCount(), stats.totalTime()));
+
+        String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
+        new JsonResultWriter().writeResults(projectName, stats.results(), output);
+    }
+
+    private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
+                                               MergeProcessor processor,
+                                               VariantResultCollector collector) throws Exception {
         List<MergeOutputJSON> results = new ArrayList<>();
-        int index = 1;
         int skippedCount = 0;
         long totalTime = 0;
 
-        for (DatasetReader.MergeInfo info : mergeInfos) {
+        for (int index = 1; index <= mergeInfos.size(); index++) {
+            DatasetReader.MergeInfo info = mergeInfos.get(index - 1);
             int progress = (index * 100) / mergeInfos.size();
-            System.out.printf("  [%d/%d|%3d%%] %s... ", index++, mergeInfos.size(), progress, info.getShortCommit());
+            System.out.printf("  [%d/%d|%3d%%] %s... ", index, mergeInfos.size(), progress, info.getShortCommit());
             System.out.flush();
 
             MergeProcessor.ProcessedMerge processed = processor.processMerge(info);
@@ -130,21 +161,16 @@ public class ResolutionVariantRunner {
                 continue;
             }
 
-            MergeOutputJSON output = collector.collectResults(processed);
-            results.add(output);
+            MergeOutputJSON result = collector.collectResults(processed);
+            results.add(result);
             totalTime += processed.getAnalysisResult().getExecutionTimeSeconds();
-
             System.out.println(collector.getSuccessSummary(processed));
         }
 
-        // Print summary
-        System.out.println(formatSummary(mergeInfos.size(), results.size(), skippedCount, totalTime));
-
-        // Write results
-        String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
-        JsonResultWriter writer = new JsonResultWriter();
-        writer.writeResults(projectName, results, Output);
+        return new MergeRunStats(results, skippedCount, totalTime);
     }
+
+    private record MergeRunStats(List<MergeOutputJSON> results, int skippedCount, long totalTime) {}
 
     /**
      * Format a summary line for the dataset processing results.

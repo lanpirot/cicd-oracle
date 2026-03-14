@@ -10,6 +10,7 @@ public class StrategySelector {
     private final PatternHeuristics heuristics;
     private final Random random;
     private final Set<String> triedAssignments;
+    private final Set<String> exhaustedStrategyKeys;
     private int consecutiveOuterFails;
 
     private static final int MAX_INNER_RETRIES = 10;
@@ -23,21 +24,24 @@ public class StrategySelector {
         this.heuristics = heuristics;
         this.random = random;
         this.triedAssignments = new HashSet<>();
+        this.exhaustedStrategyKeys = new HashSet<>();
         this.consecutiveOuterFails = 0;
     }
 
     /**
-     * Select a strategy using weighted random selection.
-     * Strategies are selected based on their success rate weights.
+     * Select a strategy using weighted random selection, skipping exhausted ones.
+     * Returns null if all strategies for this chunk count are exhausted.
      *
      * @param chunkCount Number of conflict chunks in the merge
-     * @return Selected strategy
+     * @return Selected strategy, or null if all strategies are exhausted
      */
     public PatternStrategy selectStrategy(int chunkCount) {
-        List<PatternStrategy> strategies = heuristics.getStrategies(chunkCount);
+        List<PatternStrategy> strategies = heuristics.getStrategies(chunkCount).stream()
+                .filter(s -> !exhaustedStrategyKeys.contains(s.toString()))
+                .toList();
 
         if (strategies.isEmpty()) {
-            throw new IllegalStateException("No strategies available for chunk count: " + chunkCount);
+            return null; // All strategies exhausted for this chunk count
         }
 
         // Weighted random selection using cumulative probabilities
@@ -80,7 +84,9 @@ public class StrategySelector {
             }
         }
 
-        // Inner retries exhausted - this assignment space is saturated
+        // Inner retries exhausted - this strategy's assignment space is saturated.
+        // Remove it from the pool so selectStrategy never picks it again.
+        exhaustedStrategyKeys.add(strategy.toString());
         return null;
     }
 
@@ -107,11 +113,11 @@ public class StrategySelector {
             // NON pattern: fall back to global distribution
             if ("NON".equals(pattern)) {
                 for (int i = 0; i < numChunks; i++) {
-                    assignment.add(selectFromGlobalDistribution());
+                    assignment.add(PatternFactory.sampleOrdering(selectFromGlobalDistribution(), random));
                 }
             } else {
                 for (int i = 0; i < numChunks; i++) {
-                    assignment.add(pattern);
+                    assignment.add(PatternFactory.sampleOrdering(pattern, random));
                 }
             }
             return assignment;
@@ -132,9 +138,9 @@ public class StrategySelector {
 
             // NON pattern: fall back to global distribution for this sub-pattern
             if ("NON".equals(selectedPattern)) {
-                assignment.add(selectFromGlobalDistribution());
+                assignment.add(PatternFactory.sampleOrdering(selectFromGlobalDistribution(), random));
             } else {
-                assignment.add(selectedPattern);
+                assignment.add(PatternFactory.sampleOrdering(selectedPattern, random));
             }
 
             // Adjust probabilities for next selection (sampling without replacement)
@@ -290,11 +296,21 @@ public class StrategySelector {
     }
 
     /**
-     * Reset the set of tried assignments (e.g., when starting a new merge).
+     * Reset the set of tried assignments and exhausted strategies (e.g., when starting a new merge).
      */
     public void reset() {
         triedAssignments.clear();
+        exhaustedStrategyKeys.clear();
         consecutiveOuterFails = 0;
+    }
+
+    /**
+     * Check if all strategies are exhausted for a given chunk count.
+     * Callers can use this to stop the outer retry loop early.
+     */
+    public boolean allStrategiesExhausted(int chunkCount) {
+        return heuristics.getStrategies(chunkCount).stream()
+                .allMatch(s -> exhaustedStrategyKeys.contains(s.toString()));
     }
 
     /**
