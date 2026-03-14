@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experiment;
 
+import ch.unibe.cs.mergeci.runner.ExperimentTiming;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
@@ -26,9 +27,6 @@ public class VariantResultCollector {
         // Set basic merge information
         populateBasicInfo(output, processed);
 
-        // Set baseline (original merge) results
-        populateBaselineResults(output, processed.getAnalysisResult());
-
         // Build and set variant results
         VariantSummary variantSummary = buildVariantSummary(processed.getAnalysisResult());
         output.setVariantsExecution(variantSummary.getVariantsExecution());
@@ -50,17 +48,11 @@ public class VariantResultCollector {
         output.setNumJavaConflictFiles(info.getNumJavaFiles());
         output.setIsMultiModule(info.isMultiModule());
         output.setTotalExecutionTime(processed.getAnalysisResult().getExecutionTimeSeconds());
-    }
-
-    /**
-     * Populate baseline (original merge) compilation and test results.
-     */
-    private void populateBaselineResults(MergeOutputJSON output, MergeExperimentRunner.MergeAnalysisResult result) {
-        String projectName = result.getProjectName();
-
-        output.setTestResults(result.getTestResults().get(projectName));
-        output.setCompilationResult(result.getCompilationResults().get(projectName));
-        output.setCoverage(result.getCoverageResult());
+        ExperimentTiming timing = processed.getAnalysisResult().getRunExecutionTime();
+        long baselineSeconds = (timing != null && timing.getHumanBaselineExecutionTime() != null)
+                ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
+        output.setHumanBaselineSeconds(baselineSeconds);
+        output.setCoverage(processed.getAnalysisResult().getCoverageResult());
     }
 
     /**
@@ -70,6 +62,7 @@ public class VariantResultCollector {
         String projectName = result.getProjectName();
         Map<String, CompilationResult> compilationResults = result.getCompilationResults();
         Map<String, TestTotal> testResults = result.getTestResults();
+        Map<String, Double> variantFinishSeconds = result.getVariantFinishSeconds();
 
         // Count successful variants
         int totalVariants = compilationResults.size() - 1; // Exclude baseline
@@ -80,7 +73,8 @@ public class VariantResultCollector {
                 compilationResults,
                 testResults,
                 result.getAnalyzer(),
-                projectName
+                projectName,
+                variantFinishSeconds
         );
 
         // Create variants execution wrapper
@@ -133,7 +127,8 @@ public class VariantResultCollector {
             Map<String, CompilationResult> compilationResults,
             Map<String, TestTotal> testResults,
             ch.unibe.cs.mergeci.runner.VariantProjectBuilder builder,
-            String projectName) {
+            String projectName,
+            Map<String, Double> variantFinishSeconds) {
 
         List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResults.size());
 
@@ -147,11 +142,37 @@ public class VariantResultCollector {
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(entry.getKey()));
             variant.setConflictPatterns(builder.getConflictPatterns().get(variants.size()));
+            Double finishTime = variantFinishSeconds != null ? variantFinishSeconds.get(entry.getKey()) : null;
+            variant.setFinishedAfterFirstVariantStartSeconds(finishTime);
 
             variants.add(variant);
         }
 
         return variants;
+    }
+
+    /**
+     * Collect baseline result for the human_baseline output file.
+     */
+    public MergeOutputJSON collectBaselineResult(MergeExperimentRunner.ProcessedMerge processed) {
+        MergeOutputJSON output = new MergeOutputJSON();
+        populateBasicInfo(output, processed);
+
+        MergeExperimentRunner.MergeAnalysisResult result = processed.getAnalysisResult();
+        String projectName = result.getProjectName();
+
+        MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
+        variant.setVariantName("human_baseline");
+        variant.setCompilationResult(result.getCompilationResults().get(projectName));
+        variant.setTestResults(result.getTestResults().get(projectName));
+        variant.setFinishedAfterFirstVariantStartSeconds((double) output.getHumanBaselineSeconds());
+
+        MergeOutputJSON.VariantsExecution variantsExecution =
+                new MergeOutputJSON.VariantsExecution(List.of(variant));
+        variantsExecution.setExecutionTimeSeconds(output.getHumanBaselineSeconds());
+        output.setVariantsExecution(variantsExecution);
+
+        return output;
     }
 
     /**

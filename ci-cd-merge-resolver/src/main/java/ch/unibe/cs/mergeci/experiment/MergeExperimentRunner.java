@@ -80,6 +80,7 @@ public class MergeExperimentRunner {
         Map<String, CompilationResult> compilationResults = factory.getCompilationResults();
         Map<String, TestTotal> testResults = factory.getTestResults();
         JacocoReportFinder.CoverageDTO coverageResult = factory.getCoverageResult();
+        Map<String, Double> variantFinishSeconds = factory.getVariantFinishSeconds();
 
         return new MergeAnalysisResult(
                 variantProjectBuilder,
@@ -87,7 +88,8 @@ public class MergeExperimentRunner {
                 testResults,
                 timeElapsed,
                 experimentTiming,
-                coverageResult
+                coverageResult,
+                variantFinishSeconds
         );
     }
 
@@ -139,6 +141,7 @@ public class MergeExperimentRunner {
         private final long executionTimeSeconds;
         private final ExperimentTiming runExecutionTime;
         private final JacocoReportFinder.CoverageDTO coverageResult;
+        private final Map<String, Double> variantFinishSeconds;
 
         public MergeAnalysisResult(
                 VariantProjectBuilder analyzer,
@@ -146,13 +149,15 @@ public class MergeExperimentRunner {
                 Map<String, TestTotal> testResults,
                 long executionTimeSeconds,
                 ExperimentTiming runExecutionTime,
-                JacocoReportFinder.CoverageDTO coverageResult) {
+                JacocoReportFinder.CoverageDTO coverageResult,
+                Map<String, Double> variantFinishSeconds) {
             this.analyzer = analyzer;
             this.compilationResults = compilationResults;
             this.testResults = testResults;
             this.executionTimeSeconds = executionTimeSeconds;
             this.runExecutionTime = runExecutionTime;
             this.coverageResult = coverageResult;
+            this.variantFinishSeconds = variantFinishSeconds;
         }
 
         public String getProjectName() {

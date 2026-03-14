@@ -23,6 +23,8 @@ public class MavenExecutionFactory {
     private Map<String, TestTotal> testResults;
     @Getter
     private JacocoReportFinder.CoverageDTO coverageResult;
+    @Getter
+    private Map<String, Double> variantFinishSeconds;
 
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
@@ -40,6 +42,7 @@ public class MavenExecutionFactory {
         compilationResults = new TreeMap<>();
         testResults = new TreeMap<>();
         coverageResult = null;
+        variantFinishSeconds = new TreeMap<>();
 
         return new IJustInTimeRunner() {
             @Override
@@ -116,6 +119,12 @@ public class MavenExecutionFactory {
                         );
                         testResults.put(variantKey, builder.collectTestResult(variantKey, variantPaths[i]));
                     }
+                    for (int i = 0; i < variantCount; i++) {
+                        String variantKey = projectName + "_" + i;
+                        CompilationResult cr = compilationResults.get(variantKey);
+                        double finish = (cr != null) ? (double) cr.getTotalTime() : 0.0;
+                        variantFinishSeconds.put(variantKey, finish);
+                    }
                 } finally {
                     for (Path variantPath : variantPaths) {
                         if (variantPath != null && variantPath.toFile().exists()) {
@@ -129,6 +138,7 @@ public class MavenExecutionFactory {
                                                Instant deadline) throws Exception {
                 int variantCount = context.getVariantCount();
                 String projectName = context.getProjectName();
+                double cumulativeSeconds = 0;
 
                 for (int i = 0; i < variantCount; i++) {
                     if (Instant.now().isAfter(deadline)) {
@@ -141,12 +151,15 @@ public class MavenExecutionFactory {
 
                     try {
                         MavenRunner variantRunner = new MavenRunner(logDir, false, remainingMinutes(deadline));
+                        Instant variantStart = Instant.now();
                         variantRunner.run_no_optimization(variantPath);
+                        cumulativeSeconds += Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
 
                         builder.collectCompilationResult(variantKey).ifPresent(result ->
                             compilationResults.put(variantKey, result)
                         );
                         testResults.put(variantKey, builder.collectTestResult(variantKey, variantPath));
+                        variantFinishSeconds.put(variantKey, cumulativeSeconds);
                     } finally {
                         if (variantPath.toFile().exists()) {
                             FileUtils.deleteDirectory(variantPath.toFile());

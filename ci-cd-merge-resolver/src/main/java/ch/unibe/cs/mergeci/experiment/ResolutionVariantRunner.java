@@ -44,13 +44,16 @@ public class ResolutionVariantRunner {
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
         prepareOutputDir(outputDir);
 
+        Path humanBaselineDir = AppConfig.VARIANT_EXPERIMENT_DIR.resolve("human_baseline");
+        if (!humanBaselineDir.toFile().exists()) humanBaselineDir.toFile().mkdirs();
+
         File[] xlsxDataset = datasetsDir.toFile().listFiles();
         if (xlsxDataset == null) return;
 
         printHeader(xlsxDataset, outputDir);
 
         for (File dataset : xlsxDataset) {
-            processDataset(dataset, outputDir, isParallel, isCache);
+            processDataset(dataset, outputDir, humanBaselineDir, isParallel, isCache);
         }
     }
 
@@ -89,7 +92,7 @@ public class ResolutionVariantRunner {
         }
     }
 
-    private void processDataset(File dataset, Path outputDir, boolean isParallel, boolean isCache) throws Exception {
+    private void processDataset(File dataset, Path outputDir, Path humanBaselineDir, boolean isParallel, boolean isCache) throws Exception {
         String repoName = Files.getNameWithoutExtension(dataset.getName());
         Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, repoName);
 
@@ -104,6 +107,8 @@ public class ResolutionVariantRunner {
             return;
         }
 
+        Path humanBaselineOutputPath = humanBaselineDir.resolve(repoName + AppConfig.JSON);
+
         Path repoPath;
         try {
             repoPath = repoManager.getRepositoryPath(repoName, repoUrlOpt.get());
@@ -113,7 +118,7 @@ public class ResolutionVariantRunner {
         }
 
         try {
-            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, isParallel, isCache);
+            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache);
             repoManager.markRepositorySuccess(repoName);
         } catch (Exception e) {
             System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
@@ -125,7 +130,7 @@ public class ResolutionVariantRunner {
         }
     }
 
-    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, boolean isParallel, boolean isCache) throws Exception {
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache) throws Exception {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
 
@@ -137,6 +142,7 @@ public class ResolutionVariantRunner {
         System.out.println(formatSummary(mergeInfos.size(), stats.results().size(), stats.skippedCount(), stats.totalTime()));
 
         String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
+        new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
         new JsonResultWriter().writeResults(projectName, stats.results(), output);
     }
 
@@ -144,6 +150,7 @@ public class ResolutionVariantRunner {
                                                MergeExperimentRunner processor,
                                                VariantResultCollector collector) throws Exception {
         List<MergeOutputJSON> results = new ArrayList<>();
+        List<MergeOutputJSON> baselineResults = new ArrayList<>();
         int skippedCount = 0;
         long totalTime = 0;
 
@@ -163,14 +170,16 @@ public class ResolutionVariantRunner {
 
             MergeOutputJSON result = collector.collectResults(processed);
             results.add(result);
+            MergeOutputJSON baselineResult = collector.collectBaselineResult(processed);
+            baselineResults.add(baselineResult);
             totalTime += processed.getAnalysisResult().getExecutionTimeSeconds();
             System.out.println(collector.getSuccessSummary(processed));
         }
 
-        return new MergeRunStats(results, skippedCount, totalTime);
+        return new MergeRunStats(results, baselineResults, skippedCount, totalTime);
     }
 
-    private record MergeRunStats(List<MergeOutputJSON> results, int skippedCount, long totalTime) {}
+    private record MergeRunStats(List<MergeOutputJSON> results, List<MergeOutputJSON> baselineResults, int skippedCount, long totalTime) {}
 
     /**
      * Format a summary line for the dataset processing results.

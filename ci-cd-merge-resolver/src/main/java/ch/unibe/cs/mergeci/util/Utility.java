@@ -69,6 +69,7 @@ public class Utility {
 
     @Getter
     public enum Experiments {
+        human_baseline(false, false, "human_baseline"),
         no_cache_no_parallel(false, false, "no_optimization"),
         //cache_no_parallel(true, false),       //doesn't really make sense
         no_cache_parallel(false, true, "parallel"),
