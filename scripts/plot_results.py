@@ -296,9 +296,94 @@ def make_plots(variant_dir: Path, output_pdf: Path):
     print("Done.")
 
 
+# ── Mockup data generation (mirrors test_plot_results.py) ─────────────────────
+
+def _mockup_module_results(passed: int, total: int, rng) -> list:
+    return [{"moduleName": f"module-{i}",
+             "status": "SUCCESS" if i < passed else "FAILURE",
+             "timeElapsed": round(0.5 + rng.random() * 0.5, 3)}
+            for i in range(total)]
+
+
+def _mockup_variant(name, tests_passed, modules_passed, finish_secs,
+                    total_tests, total_modules, rng) -> dict:
+    return {
+        "variantName": name,
+        "compilationResult": {
+            "moduleResults": _mockup_module_results(modules_passed, total_modules, rng),
+            "buildStatus":   "SUCCESS" if modules_passed > 0 else "FAILURE",
+            "totalTime":     round(finish_secs, 3),
+        },
+        "testResults": {
+            "runNum":      total_tests,
+            "failuresNum": total_tests - tests_passed,
+            "errorsNum":   0, "skippedNum": 0,
+            "elapsedTime": round(finish_secs * 0.4, 3),
+        },
+        "finishedAfterFirstVariantStartSeconds": round(finish_secs, 3),
+    }
+
+
+def generate_mockup(output_dir: Path, output_pdf: Path):
+    """
+    Generate mock JSON data (one merge, 4 modes) and produce the PDF.
+    Mirrors the scenario from test_plot_results.py.
+    """
+    import json, random, tempfile, shutil
+    rng = random.Random(42)
+
+    HUMAN_SECS    = 17
+    TOTAL_MODULES = 92
+    TOTAL_TESTS   = 90
+    PROJECT       = "mock-project"
+    COMMIT        = "deadbeef" * 5
+    VARIANT_COUNTS = {"cache_parallel": 100, "parallel": 20, "no_optimization": 6}
+
+    def write_mode(mode, variants, exec_secs):
+        d = output_dir / mode
+        d.mkdir(parents=True, exist_ok=True)
+        data = {"projectName": PROJECT, "merges": [{
+            "mergeCommit": COMMIT, "humanBaselineSeconds": HUMAN_SECS,
+            "totalExecutionTime": HUMAN_SECS + exec_secs,
+            "variantsExecution": {"executionTimeSeconds": exec_secs, "variants": variants},
+        }]}
+        (d / f"{PROJECT}.json").write_text(json.dumps(data, indent=2))
+
+    # human_baseline
+    hb = _mockup_variant("human_baseline", 77, 79, HUMAN_SECS,
+                         TOTAL_TESTS, TOTAL_MODULES, rng)
+    write_mode("human_baseline", [hb], HUMAN_SECS)
+
+    # variant modes
+    for mode, count in VARIANT_COUNTS.items():
+        variants, min_t, max_t = [], 0.9 * HUMAN_SECS, 3.0 * HUMAN_SECS
+        for i in range(count):
+            variants.append(_mockup_variant(
+                f"{PROJECT}_{i}",
+                rng.randint(0, TOTAL_TESTS),
+                rng.randint(0, TOTAL_MODULES),
+                rng.uniform(min_t, max_t),
+                TOTAL_TESTS, TOTAL_MODULES, rng,
+            ))
+        exec_secs = int(max(v["finishedAfterFirstVariantStartSeconds"] for v in variants))
+        write_mode(mode, variants, exec_secs)
+
+    make_plots(output_dir, output_pdf)
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    variant_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_VARIANT_DIR
-    output_pdf  = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUTPUT_PDF
-    make_plots(variant_dir, output_pdf)
+    if len(sys.argv) > 1 and sys.argv[1] == "--mockup":
+        _out_pdf = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("mockup_plots.pdf")
+        import tempfile, shutil
+        _tmp = tempfile.mkdtemp(prefix="plot_mockup_")
+        try:
+            generate_mockup(Path(_tmp), _out_pdf)
+            print(f"PDF written to: {_out_pdf.resolve()}")
+        finally:
+            shutil.rmtree(_tmp)
+    else:
+        variant_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_VARIANT_DIR
+        output_pdf  = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUTPUT_PDF
+        make_plots(variant_dir, output_pdf)
