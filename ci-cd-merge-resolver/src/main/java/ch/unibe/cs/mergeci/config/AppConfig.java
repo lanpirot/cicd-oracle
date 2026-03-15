@@ -93,15 +93,14 @@ public class AppConfig {
     public static final int HASH_PREFIX_LENGTH = 8;     // this many chars ensure uniqueness when saving paths using commit hash ids
 
     /**
-     * Maven build timeout for conflict collection (baseline checking).
+     * Maven build timeout in seconds for conflict collection (baseline checking).
      * Lower timeout since we're just verifying the human-resolved merge compiles.
      * Builds exceeding this timeout are likely stuck and should be skipped.
      */
-    public static final int MAVEN_BUILD_TIMEOUT = 10;
+    public static final int MAVEN_BUILD_TIMEOUT = 600;
 
     // ========== PHASE 3: VARIANT EXPERIMENTS ==========
     public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");
-    public static final int MAX_VARIANTS = 100; // max number of sampled resolution variants per merge
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     static Runtime runtime = Runtime.getRuntime();

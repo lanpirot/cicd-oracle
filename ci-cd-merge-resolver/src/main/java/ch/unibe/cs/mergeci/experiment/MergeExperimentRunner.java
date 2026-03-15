@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -27,11 +28,23 @@ public class MergeExperimentRunner {
     private final Path repoPath;
     private final boolean isParallel;
     private final boolean isCache;
+    private final boolean skipVariants;
+    private final Map<String, Long> storedBaselines;
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache) {
+        this(repoPath, isParallel, isCache, false);
+    }
+
+    public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants) {
+        this(repoPath, isParallel, isCache, skipVariants, Collections.emptyMap());
+    }
+
+    public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants, Map<String, Long> storedBaselines) {
         this.repoPath = repoPath;
         this.isParallel = isParallel;
         this.isCache = isCache;
+        this.skipVariants = skipVariants;
+        this.storedBaselines = storedBaselines;
     }
 
     /**
@@ -67,8 +80,9 @@ public class MergeExperimentRunner {
         VariantBuildContext context = variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit());
 
         // Create factory and run tests with just-in-time building
+        long storedBaseline = storedBaselines.getOrDefault(info.getMergeCommit(), 0L);
         MavenExecutionFactory factory = new MavenExecutionFactory(variantProjectBuilder.getLogDir());
-        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache);
+        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaseline);
 
         // Run tests (builds variants on-demand, deletes immediately after)
         ExperimentTiming experimentTiming = variantProjectBuilder.runTestsJustInTime(context, runner);

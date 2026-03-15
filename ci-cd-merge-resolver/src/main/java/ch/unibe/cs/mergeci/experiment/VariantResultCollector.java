@@ -218,8 +218,12 @@ public class VariantResultCollector {
         int total = summary.getTotalVariants();
         long executionTime = processed.getAnalysisResult().getExecutionTimeSeconds();
 
+        if (total == 0) {
+            return formatBaselineSummary(processed.getAnalysisResult(), executionTime);
+        }
+
         // Calculate success rate
-        double successRate = total > 0 ? (successful * 100.0 / total) : 0;
+        double successRate = successful * 100.0 / total;
 
         // Format with success indicator
         String indicator = (successful == total) ? "✓" : (successful > 0 ? "◐" : "✗");
@@ -230,6 +234,23 @@ public class VariantResultCollector {
                 total,
                 successRate,
                 formatTime(executionTime));
+    }
+
+    private String formatBaselineSummary(MergeExperimentRunner.MergeAnalysisResult result, long executionTime) {
+        String projectName = result.getProjectName();
+        CompilationResult compilation = result.getCompilationResults().get(projectName);
+        TestTotal tests = result.getTestResults().get(projectName);
+
+        boolean compiled = compilation != null
+                && compilation.getBuildStatus() == CompilationResult.Status.SUCCESS;
+        String indicator = compiled ? "✓" : "✗";
+
+        if (tests != null && tests.getRunNum() > 0) {
+            int passed = tests.getRunNum() - tests.getFailuresNum() - tests.getErrorsNum();
+            return String.format("%s baseline %d/%d tests | %s",
+                    indicator, passed, tests.getRunNum(), formatTime(executionTime));
+        }
+        return String.format("%s baseline | %s", indicator, formatTime(executionTime));
     }
 
     /**

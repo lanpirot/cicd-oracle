@@ -32,6 +32,7 @@ public class JsonResultWriter {
         allMerges.setProjectName(projectName);
         allMerges.setMerges(merges);
 
+        outputPath.getParent().toFile().mkdirs();
         objectMapper.writeValue(outputPath.toFile(), allMerges);
     }
 }

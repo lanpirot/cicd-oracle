@@ -80,19 +80,21 @@ public class Utility {
 
     @Getter
     public enum Experiments {
-        human_baseline(false, false, "human_baseline"),
-        no_cache_no_parallel(false, false, "no_optimization"),
+        human_baseline(false, false, true,  "human_baseline"),
+        cache_parallel(true,  true,  false, "cache_parallel"),
+        no_cache_parallel(false, true,  false, "parallel"),
         //cache_no_parallel(true, false),       //doesn't really make sense
-        no_cache_parallel(false, true, "parallel"),
-        cache_parallel(true, true, "cache_parallel");
+        no_cache_no_parallel(false, false, false, "no_optimization");
 
         private final boolean cache;
         private final boolean parallel;
+        private final boolean skipVariants;
         private final String name;
 
-        Experiments(boolean cache, boolean parallel, String name){
+        Experiments(boolean cache, boolean parallel, boolean skipVariants, String name){
             this.cache = cache;
             this.parallel = parallel;
+            this.skipVariants = skipVariants;
             this.name = name;
         }
     }

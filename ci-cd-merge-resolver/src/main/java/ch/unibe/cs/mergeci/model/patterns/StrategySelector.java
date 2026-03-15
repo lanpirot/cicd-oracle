@@ -74,7 +74,7 @@ public class StrategySelector {
     public List<String> generateAssignment(PatternStrategy strategy, int numChunks) {
         // Try up to MAX_INNER_RETRIES times to generate a unique assignment
         for (int innerRetry = 0; innerRetry < MAX_INNER_RETRIES; innerRetry++) {
-            List<String> assignment = sampleWithoutReplacement(strategy, numChunks);
+            List<String> assignment = sampleMultinomial(strategy, numChunks);
             String assignmentKey = assignmentToString(assignment);
 
             if (!triedAssignments.contains(assignmentKey)) {
@@ -91,65 +91,46 @@ public class StrategySelector {
     }
 
     /**
-     * Sample patterns for chunks using weighted random selection without replacement.
-     * Implements true sequential sampling with dynamic probability adjustment.
-     * After each selection, the selected pattern's probability is reduced and
-     * redistributed proportionally to remaining patterns.
+     * Sample N meso-patterns independently (multinomial) from the macro-pattern's
+     * sub-pattern percentages, then shuffle the resulting list.
      *
-     * Special handling for NON pattern: falls back to global distribution.
+     * Each chunk's meso-pattern is drawn independently — no probability adjustment
+     * between draws. After all N draws the list is randomly permuted so that chunk
+     * position is unrelated to draw order.
      *
-     * @param strategy Strategy containing sub-patterns with percentages
-     * @param numChunks Number of chunks to assign
-     * @return List of pattern names (one per chunk)
+     * NON meso-patterns are replaced by sampling from the full global row (row 0).
+     * Compound meso-patterns get a random internal component ordering via
+     * {@link PatternFactory#sampleOrdering}.
      */
-    private List<String> sampleWithoutReplacement(PatternStrategy strategy, int numChunks) {
+    private List<String> sampleMultinomial(PatternStrategy strategy, int numChunks) {
         List<PatternStrategy.SubPattern> subPatterns = strategy.getSubPatterns();
-
-        // If only one pattern, check for NON fallback or just repeat it
-        if (subPatterns.size() == 1) {
-            List<String> assignment = new ArrayList<>();
-            String pattern = subPatterns.get(0).getPattern();
-
-            // NON pattern: fall back to global distribution
-            if ("NON".equals(pattern)) {
-                for (int i = 0; i < numChunks; i++) {
-                    assignment.add(PatternFactory.sampleOrdering(selectFromGlobalDistribution(), random));
-                }
-            } else {
-                for (int i = 0; i < numChunks; i++) {
-                    assignment.add(PatternFactory.sampleOrdering(pattern, random));
-                }
-            }
-            return assignment;
-        }
-
-        // Create mutable probability distribution
-        Map<String, Double> probabilities = new HashMap<>();
-        for (PatternStrategy.SubPattern sp : subPatterns) {
-            probabilities.put(sp.getPattern(), sp.getPercentage());
-        }
-
         List<String> assignment = new ArrayList<>();
 
-        // Sequential sampling with probability adjustment
         for (int i = 0; i < numChunks; i++) {
-            // Select pattern using weighted random selection
-            String selectedPattern = selectPatternWeighted(probabilities);
-
-            // NON pattern: fall back to global distribution for this sub-pattern
-            if ("NON".equals(selectedPattern)) {
+            String meso = sampleFromSubPatterns(subPatterns);
+            if ("NON".equals(meso)) {
                 assignment.add(PatternFactory.sampleOrdering(selectFromGlobalDistribution(), random));
             } else {
-                assignment.add(PatternFactory.sampleOrdering(selectedPattern, random));
-            }
-
-            // Adjust probabilities for next selection (sampling without replacement)
-            if (i < numChunks - 1) { // Don't adjust after last selection
-                adjustProbabilities(probabilities, selectedPattern, numChunks - i);
+                assignment.add(PatternFactory.sampleOrdering(meso, random));
             }
         }
 
+        Collections.shuffle(assignment, random);
         return assignment;
+    }
+
+    /**
+     * Weighted random draw from a list of sub-patterns using their percentages.
+     */
+    private String sampleFromSubPatterns(List<PatternStrategy.SubPattern> subPatterns) {
+        double total = subPatterns.stream().mapToDouble(PatternStrategy.SubPattern::getPercentage).sum();
+        double r = random.nextDouble() * total;
+        double cumulative = 0.0;
+        for (PatternStrategy.SubPattern sp : subPatterns) {
+            cumulative += sp.getPercentage();
+            if (r < cumulative) return sp.getPattern();
+        }
+        return subPatterns.get(subPatterns.size() - 1).getPattern();
     }
 
     /**
@@ -218,74 +199,6 @@ public class StrategySelector {
 
         // Fallback to last strategy
         return strategies.get(strategies.size() - 1);
-    }
-
-    /**
-     * Select a pattern using weighted random selection from current probability distribution.
-     *
-     * @param probabilities Current probability distribution (percentages that sum to 100)
-     * @return Selected pattern name
-     */
-    private String selectPatternWeighted(Map<String, Double> probabilities) {
-        double totalWeight = probabilities.values().stream().mapToDouble(Double::doubleValue).sum();
-        double randomValue = random.nextDouble() * totalWeight;
-        double cumulative = 0.0;
-
-        for (Map.Entry<String, Double> entry : probabilities.entrySet()) {
-            cumulative += entry.getValue();
-            if (randomValue < cumulative) {
-                return entry.getKey();
-            }
-        }
-
-        // Fallback to last pattern (should rarely happen due to floating point precision)
-        return probabilities.keySet().iterator().next();
-    }
-
-    /**
-     * Adjust probabilities after selecting a pattern.
-     * The selected pattern's share decreases, and the difference is redistributed
-     * proportionally to other patterns.
-     *
-     * @param probabilities Mutable probability map
-     * @param selectedPattern Pattern that was just selected
-     * @param remainingChunks Number of chunks still to be assigned (including current)
-     */
-    private void adjustProbabilities(Map<String, Double> probabilities, String selectedPattern, int remainingChunks) {
-        double selectedProb = probabilities.get(selectedPattern);
-
-        // Calculate how much to reduce from selected pattern
-        // After selecting once, this pattern should appear in (original% - 1/numChunks) of remaining slots
-        double reductionAmount = 100.0 / remainingChunks;
-        double newSelectedProb = Math.max(0, selectedProb - reductionAmount);
-
-        // Calculate redistribution amount
-        double redistribution = selectedProb - newSelectedProb;
-
-        // Get total weight of other patterns for proportional redistribution
-        double otherPatternsTotal = 0;
-        for (Map.Entry<String, Double> entry : probabilities.entrySet()) {
-            if (!entry.getKey().equals(selectedPattern)) {
-                otherPatternsTotal += entry.getValue();
-            }
-        }
-
-        // Redistribute proportionally to other patterns
-        if (otherPatternsTotal > 0) {
-            for (Map.Entry<String, Double> entry : probabilities.entrySet()) {
-                String pattern = entry.getKey();
-                if (pattern.equals(selectedPattern)) {
-                    probabilities.put(pattern, newSelectedProb);
-                } else {
-                    double currentProb = entry.getValue();
-                    double share = currentProb / otherPatternsTotal;
-                    probabilities.put(pattern, currentProb + redistribution * share);
-                }
-            }
-        } else {
-            // Only one pattern remains - set it to 100%
-            probabilities.put(selectedPattern, 100.0);
-        }
     }
 
     /**

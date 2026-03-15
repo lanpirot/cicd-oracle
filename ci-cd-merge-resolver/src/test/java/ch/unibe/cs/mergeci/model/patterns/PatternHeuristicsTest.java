@@ -1,6 +1,5 @@
 package ch.unibe.cs.mergeci.model.patterns;
 
-import ch.unibe.cs.mergeci.config.AppConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -158,8 +157,7 @@ class PatternHeuristicsTest {
         int chunkCount = 1;
         int variantCount = 0;
 
-        while (!selector.allStrategiesExhausted(chunkCount)
-                && variantCount < AppConfig.MAX_VARIANTS) {
+        while (!selector.allStrategiesExhausted(chunkCount)) {
             PatternStrategy strategy = selector.selectStrategy(chunkCount);
             if (strategy == null) break;
 

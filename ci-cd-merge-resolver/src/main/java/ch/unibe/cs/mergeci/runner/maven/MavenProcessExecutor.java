@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
  * Handles process lifecycle, timeouts, and forced termination.
  */
 public class MavenProcessExecutor {
-    private final int timeoutMinutes;
+    private final int timeoutSeconds;
 
-    public MavenProcessExecutor(int timeoutMinutes) {
-        this.timeoutMinutes = timeoutMinutes;
+    public MavenProcessExecutor(int timeoutSeconds) {
+        this.timeoutSeconds = timeoutSeconds;
     }
 
     /** Execute a command with timeout. */
@@ -58,10 +58,13 @@ public class MavenProcessExecutor {
         Process process = null;
         try {
             process = pb.start();
-            boolean completed = process.waitFor(timeoutMinutes, TimeUnit.MINUTES);
-
-            if (!completed) {
-                handleTimeout(process, command);
+            if (timeoutSeconds <= 0) {
+                process.waitFor(); // no timeout — run to completion
+            } else {
+                boolean completed = process.waitFor(timeoutSeconds, TimeUnit.SECONDS);
+                if (!completed) {
+                    handleTimeout(process, command);
+                }
             }
         } catch (IOException | InterruptedException e) {
             handleExecutionError(process, e);
@@ -69,8 +72,8 @@ public class MavenProcessExecutor {
     }
 
     private void handleTimeout(Process process, String... command) {
-        System.err.println("TIMEOUT: Build exceeded " + timeoutMinutes +
-                " minutes. Killing process: " + Arrays.toString(command));
+        System.err.println("TIMEOUT: Build exceeded " + timeoutSeconds +
+                " seconds. Killing process: " + Arrays.toString(command));
 
         process.destroyForcibly();
 

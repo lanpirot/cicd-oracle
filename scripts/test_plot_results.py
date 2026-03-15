@@ -243,8 +243,8 @@ class TestPlotResultsMockup(unittest.TestCase):
         rel_t, rate = hb_markers[0]
         self.assertAlmostEqual(rel_t, 1.0, places=3,
                                msg="human_baseline marker must be at relative time 1.0")
-        expected_rate = 100.0 * HUMAN_MODULES_PASSED / TOTAL_MODULES
-        self.assertAlmostEqual(rate, expected_rate, places=2)
+        self.assertAlmostEqual(rate, 1.0, places=3,
+                               msg="human_baseline marker must be at relative score 1.0")
 
     def test_improvement_markers_monotonically_increasing(self):
         """Each mode's markers must be strictly increasing in success rate."""

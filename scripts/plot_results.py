@@ -10,7 +10,7 @@ Graph 1: Module build success rate over relative time
 Graph 2: Test success rate over relative time
 
 X-axis: relative time (1.0 = human baseline duration)
-Y-axis: success rate as % of best possible for this merge
+Y-axis: success relative to human baseline (1.0 = human baseline score)
 
 Usage:
   python plot_results.py [variant_experiments_dir] [output_pdf]
@@ -128,35 +128,28 @@ def get_finish_time(variant: dict, fallback_seconds: float = 0.0) -> float:
 
 # ── Per-merge improvement markers ─────────────────────────────────────────────
 
-def improvement_markers(variants: list, metric_fn, human_baseline_secs: float) -> list[tuple[float, float]]:
+def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
+                        hb_num: float) -> list[tuple[float, float]]:
     """
-    For a list of variant dicts, returns (relativeTime, successRate%) markers
-    where relativeTime = finishedAfterFirstVariantStartSeconds / human_baseline_secs,
-    keeping only those variants that strictly improve on all previous variants.
-    metric_fn(variant) -> (numerator, denominator)  [e.g. modulesPassed, totalModules]
+    For a list of variant dicts, returns (relativeTime, relativeScore) markers
+    where relativeTime  = finishedAfterFirstVariantStartSeconds / human_baseline_secs
+          relativeScore = metric_fn(v)[0] / hb_num  (1.0 = human baseline quality)
+    Only variants that strictly improve on all previous variants are kept.
+    metric_fn(variant) -> (numerator, denominator)
     """
-    if human_baseline_secs <= 0:
+    if human_baseline_secs <= 0 or hb_num <= 0:
         return []
 
-    # Sort by finish time
-    timed = []
-    for v in variants:
-        finish = get_finish_time(v)
-        num, denom = metric_fn(v)
-        timed.append((finish, num, denom))
+    timed = [(get_finish_time(v), metric_fn(v)[0]) for v in variants]
     timed.sort(key=lambda x: x[0])
 
     markers = []
     best_rate = -1.0
-    for finish, num, denom in timed:
-        if denom <= 0:
-            rate = 0.0
-        else:
-            rate = 100.0 * num / denom
+    for finish, num in timed:
+        rate = num / hb_num
         if rate > best_rate:
             best_rate = rate
-            rel_t = finish / human_baseline_secs
-            markers.append((rel_t, rate))
+            markers.append((finish / human_baseline_secs, rate))
     return markers
 
 
@@ -164,15 +157,14 @@ def improvement_markers(variants: list, metric_fn, human_baseline_secs: float) -
 
 def assemble_plot_data(all_data: dict, metric_fn):
     """
-    Returns dict: mode -> list of (relativeTime, successRate%) improvement markers,
-    one pair per (merge, improvement-point).
+    Returns dict: mode -> list of (relativeTime, relativeScore) improvement markers,
+    where relativeScore is normalised so that 1.0 = human baseline score for that merge.
     Also returns dict: mode -> list of step-function series (each a list of (x,y) for one merge).
     """
-    # Find all merges with both human_baseline data and at least one variant mode
     all_commits = set(all_data["human_baseline"].keys())
 
     mode_markers = defaultdict(list)
-    mode_steps = defaultdict(list)  # per-merge step series
+    mode_steps   = defaultdict(list)
 
     for commit in all_commits:
         baseline_merge = all_data["human_baseline"].get(commit)
@@ -182,23 +174,13 @@ def assemble_plot_data(all_data: dict, metric_fn):
         if hb_secs <= 0:
             continue
 
-        # Compute max denominator across ALL modes for this merge (normalisation)
-        all_variants_for_merge = []
-        for mode in MODES:
-            merge = all_data[mode].get(commit)
-            if merge:
-                variants = (merge.get("variantsExecution") or {}).get("variants") or []
-                all_variants_for_merge.extend(variants)
-
-        # Max denominator for this merge
-        max_denom = max((metric_fn(v)[1] for v in all_variants_for_merge), default=0)
-        if max_denom <= 0:
+        # Human baseline score = numerator of the single human_baseline variant
+        hb_variants = (baseline_merge.get("variantsExecution") or {}).get("variants") or []
+        if not hb_variants:
             continue
-
-        # Normalised metric: use max_denom as common denominator
-        def normalised_metric(v):
-            num, _ = metric_fn(v)
-            return num, max_denom
+        hb_num, _ = metric_fn(hb_variants[0])
+        if hb_num <= 0:
+            continue  # can't normalise against zero
 
         for mode in MODES:
             merge = all_data[mode].get(commit)
@@ -209,20 +191,14 @@ def assemble_plot_data(all_data: dict, metric_fn):
                 continue
 
             if mode == "human_baseline":
-                # Special: single step at t=1
-                v = variants[0]  # only one variant
-                num, denom = normalised_metric(v)
-                rate = 100.0 * num / max_denom if max_denom > 0 else 0.0
-                # Step: (0, 0), (1.0, 0), (1.0, rate)
-                mode_steps[mode].append([(0.0, 0.0), (1.0, 0.0), (1.0, rate)])
-                mode_markers[mode].append((1.0, rate))
+                # Always lands at (t=1.0, score=1.0) by definition
+                mode_steps[mode].append([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0)])
+                mode_markers[mode].append((1.0, 1.0))
             else:
-                markers = improvement_markers(variants, normalised_metric, hb_secs)
+                markers = improvement_markers(variants, metric_fn, hb_secs, hb_num)
                 if markers:
                     mode_markers[mode].extend(markers)
-                    # Build step series for this merge: prepend (0, 0) for visual clarity
-                    steps = [(0.0, 0.0)] + markers
-                    mode_steps[mode].append(steps)
+                    mode_steps[mode].append([(0.0, 0.0)] + markers)
 
     return mode_markers, mode_steps
 
@@ -250,14 +226,15 @@ def draw_graph(ax, mode_markers, mode_steps, title, ylabel):
             ax.scatter(xs, ys, c=color, marker=marker, s=25, zorder=5,
                        label=label, alpha=0.75, edgecolors="none")
 
-    # Vertical line at t=1 (human baseline reference)
+    # Reference lines at the human baseline point
     ax.axvline(x=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
+    ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
 
-    ax.set_xlabel("Relative time  (1 = human baseline duration)", fontsize=10)
+    ax.set_xlabel("Relative time  (1.0 = human baseline duration)", fontsize=10)
     ax.set_ylabel(ylabel, fontsize=10)
     ax.set_title(title, fontsize=12)
     ax.set_xlim(left=0)
-    ax.set_ylim(0, 105)
+    ax.set_ylim(bottom=0)
     ax.legend(loc="lower right", fontsize=8)
     ax.grid(True, alpha=0.3)
 
@@ -281,7 +258,7 @@ def make_plots(variant_dir: Path, output_pdf: Path):
         fig, ax = plt.subplots(figsize=(10, 6))
         draw_graph(ax, module_mode_markers, module_mode_steps,
                    title="Module Build Success Rate vs. Relative Time",
-                   ylabel="Module success rate  (% of max modules for merge)")
+                   ylabel="Modules built  (relative to human baseline = 1.0)")
         pdf.savefig(fig, bbox_inches="tight")
         plt.close(fig)
 
@@ -289,7 +266,7 @@ def make_plots(variant_dir: Path, output_pdf: Path):
         fig, ax = plt.subplots(figsize=(10, 6))
         draw_graph(ax, test_mode_markers, test_mode_steps,
                    title="Test Success Rate vs. Relative Time",
-                   ylabel="Test success rate  (% of max tests run for merge)")
+                   ylabel="Tests passed  (relative to human baseline = 1.0)")
         pdf.savefig(fig, bbox_inches="tight")
         plt.close(fig)
 

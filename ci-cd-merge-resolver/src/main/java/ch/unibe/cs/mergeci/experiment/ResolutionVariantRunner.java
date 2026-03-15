@@ -9,11 +9,16 @@ import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ResolutionVariantRunner {
@@ -35,13 +40,17 @@ public class ResolutionVariantRunner {
 
     public void runTests(Utility.Experiments ex) {
         try {
-            runTests(AppConfig.VARIANT_EXPERIMENT_DIR.resolve(ex.getName()), ex.isParallel(), ex.isCache());
+            runTests(AppConfig.VARIANT_EXPERIMENT_DIR.resolve(ex.getName()), ex.isParallel(), ex.isCache(), ex.isSkipVariants());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public void runTests(Path outputDir, boolean isParallel, boolean isCache) throws Exception {
+        runTests(outputDir, isParallel, isCache, false);
+    }
+
+    public void runTests(Path outputDir, boolean isParallel, boolean isCache, boolean skipVariants) throws Exception {
         prepareOutputDir(outputDir);
 
         Path humanBaselineDir = outputDir.getParent().resolve("human_baseline");
@@ -50,14 +59,14 @@ public class ResolutionVariantRunner {
         File[] xlsxDataset = datasetsDir.toFile().listFiles();
         if (xlsxDataset == null) return;
 
-        printHeader(xlsxDataset, outputDir);
+        printHeader(xlsxDataset, outputDir, outputDir.getFileName().toString());
 
         for (File dataset : xlsxDataset) {
-            processDataset(dataset, outputDir, humanBaselineDir, isParallel, isCache);
+            processDataset(dataset, outputDir, humanBaselineDir, isParallel, isCache, skipVariants);
         }
     }
 
-    private void printHeader(File[] datasets, Path outputDir) {
+    private void printHeader(File[] datasets, Path outputDir, String modeName) {
         int totalProjects = datasets.length;
         int pendingProjects = 0;
         int totalMerges = 0;
@@ -77,6 +86,7 @@ public class ResolutionVariantRunner {
 
         System.out.println("================================================================================");
         System.out.println("CI/CD Merge Resolver - Variant Experiment Phase");
+        System.out.printf("Mode: %s%n", modeName);
         System.out.printf("Total projects: %d | Pending: %d | Total merges: %d | Fresh run: %s%n",
                 totalProjects, pendingProjects, totalMerges, AppConfig.isFreshRun());
         System.out.println("================================================================================\n");
@@ -92,7 +102,7 @@ public class ResolutionVariantRunner {
         }
     }
 
-    private void processDataset(File dataset, Path outputDir, Path humanBaselineDir, boolean isParallel, boolean isCache) throws Exception {
+    private void processDataset(File dataset, Path outputDir, Path humanBaselineDir, boolean isParallel, boolean isCache, boolean skipVariants) throws Exception {
         String repoName = Files.getNameWithoutExtension(dataset.getName());
         Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, repoName);
 
@@ -118,7 +128,7 @@ public class ResolutionVariantRunner {
         }
 
         try {
-            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache);
+            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache, skipVariants);
             repoManager.markRepositorySuccess(repoName);
         } catch (Exception e) {
             System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
@@ -131,10 +141,19 @@ public class ResolutionVariantRunner {
     }
 
     public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache) throws Exception {
+        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, false);
+    }
+
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants) throws Exception {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
 
-        MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, isParallel, isCache);
+        // For non-baseline modes, read stored baseline durations to skip re-running the baseline build.
+        Map<String, Long> storedBaselines = skipVariants ? Collections.emptyMap()
+                : loadStoredBaselines(humanBaselineOutput);
+        boolean hasStoredBaselines = !storedBaselines.isEmpty();
+
+        MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, isParallel, isCache, skipVariants, storedBaselines);
         VariantResultCollector collector = new VariantResultCollector();
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector);
@@ -142,8 +161,35 @@ public class ResolutionVariantRunner {
         System.out.println(formatSummary(mergeInfos.size(), stats.results().size(), stats.skippedCount(), stats.totalTime()));
 
         String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
-        new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
+        // Only write the baseline JSON if we actually ran the baseline (i.e., it wasn't stored already).
+        if (!hasStoredBaselines) {
+            new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
+        }
         new JsonResultWriter().writeResults(projectName, stats.results(), output);
+    }
+
+    /**
+     * Load per-merge humanBaselineSeconds from an existing human_baseline JSON file.
+     * Returns an empty map if the file does not exist or cannot be read.
+     */
+    private static Map<String, Long> loadStoredBaselines(Path humanBaselineOutput) {
+        if (humanBaselineOutput == null || !humanBaselineOutput.toFile().exists()) {
+            return Collections.emptyMap();
+        }
+        try {
+            AllMergesJSON allMerges = new ObjectMapper().readValue(humanBaselineOutput.toFile(), AllMergesJSON.class);
+            if (allMerges.getMerges() == null) return Collections.emptyMap();
+            Map<String, Long> map = new HashMap<>();
+            for (MergeOutputJSON merge : allMerges.getMerges()) {
+                if (merge.getMergeCommit() != null && merge.getHumanBaselineSeconds() > 0) {
+                    map.put(merge.getMergeCommit(), merge.getHumanBaselineSeconds());
+                }
+            }
+            return map;
+        } catch (IOException e) {
+            System.err.println("Warning: could not read stored baselines from " + humanBaselineOutput + ": " + e.getMessage());
+            return Collections.emptyMap();
+        }
     }
 
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,

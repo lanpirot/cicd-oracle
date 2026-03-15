@@ -20,16 +20,16 @@ public class MavenRunner {
     private final MavenProcessExecutor processExecutor;
     private final MavenCacheManager cacheManager;
 
-    public MavenRunner(Path logDir, boolean isUseMavenDaemon, int timeoutMinutes) {
+    public MavenRunner(Path logDir, boolean isUseMavenDaemon, int timeoutSeconds) {
         this.logDir = logDir;
         this.logDir.toFile().mkdirs();
         this.commandResolver = new MavenCommandResolver(isUseMavenDaemon);
-        this.processExecutor = new MavenProcessExecutor(timeoutMinutes);
+        this.processExecutor = new MavenProcessExecutor(timeoutSeconds);
         this.cacheManager = new MavenCacheManager();
     }
 
-    public MavenRunner(Path tempDir, int timeoutMinutes) {
-        this(tempDir, false, timeoutMinutes);
+    public MavenRunner(Path tempDir, int timeoutSeconds) {
+        this(tempDir, false, timeoutSeconds);
     }
 
     public MavenRunner(Path tempDir) {

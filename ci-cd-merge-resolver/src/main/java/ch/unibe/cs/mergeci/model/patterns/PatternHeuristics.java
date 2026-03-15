@@ -56,7 +56,7 @@ public class PatternHeuristics {
             throw new IllegalArgumentException("Invalid CSV line format: " + line);
         }
 
-        int chunkCount = Integer.parseInt(parts[0].trim());
+        String chunkCountStr = parts[0].trim();
         String strategiesStr = parts[1].trim();
 
         // Parse strategies separated by |
@@ -65,7 +65,7 @@ public class PatternHeuristics {
 
         for (String token : strategyTokens) {
             try {
-                PatternStrategy strategy = PatternStrategy.parse(token.trim());
+                PatternStrategy strategy = PatternStrategy.parse(balanceParens(token.trim()));
                 strategies.add(strategy);
             } catch (Exception e) {
                 System.err.println("Warning: Failed to parse strategy: " + token);
@@ -73,12 +73,31 @@ public class PatternHeuristics {
             }
         }
 
-        // Row 0 is global statistics
-        if (chunkCount == 0) {
-            heuristics.globalStrategies = strategies;
+        // Chunk count may be a single integer or a range like "2-3"
+        if (chunkCountStr.contains("-")) {
+            String[] rangeParts = chunkCountStr.split("-", 2);
+            int from = Integer.parseInt(rangeParts[0].trim());
+            int to = Integer.parseInt(rangeParts[1].trim());
+            for (int i = from; i <= to; i++) {
+                heuristics.strategiesByChunkCount.put(i, strategies);
+            }
         } else {
-            heuristics.strategiesByChunkCount.put(chunkCount, strategies);
+            int chunkCount = Integer.parseInt(chunkCountStr);
+            // Row 0 is global statistics
+            if (chunkCount == 0) {
+                heuristics.globalStrategies = strategies;
+            } else {
+                heuristics.strategiesByChunkCount.put(chunkCount, strategies);
+            }
         }
+    }
+
+    /** Strip trailing ')' characters until open and close parens are balanced. */
+    private static String balanceParens(String s) {
+        long open  = s.chars().filter(c -> c == '(').count();
+        long close = s.chars().filter(c -> c == ')').count();
+        int extra  = (int) (close - open);
+        return extra > 0 ? s.substring(0, s.length() - extra) : s;
     }
 
     /**

@@ -1,13 +1,10 @@
 package ch.unibe.cs.mergeci.runner;
 
-import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.model.ConflictFile;
-import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
 import ch.unibe.cs.mergeci.model.patterns.PatternHeuristics;
-import ch.unibe.cs.mergeci.model.patterns.PatternStrategy;
 import ch.unibe.cs.mergeci.model.patterns.StrategySelector;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
@@ -61,14 +58,9 @@ public class VariantProjectBuilder {
     }
 
     /**
-     * Prepare variant metadata without writing to disk.
-     * Returns a context that can be used to build variants on demand.
-     * Uses heuristic-weighted sampling (StrategySelector) capped at MAX_VARIANTS.
-     *
-     * @param commit1 First parent commit
-     * @param commit2 Second parent commit
-     * @param mergeCommit The merge commit (human resolution)
-     * @return VariantBuildContext containing all data needed to build variants
+     * Prepare the variant generation context without writing anything to disk.
+     * Variants are generated lazily (one at a time) during execution via
+     * {@link VariantBuildContext#nextVariant()}, so no fixed cap is needed.
      */
     public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit) throws Exception {
         Git git = GitUtils.getGit(repositoryPath);
@@ -86,25 +78,22 @@ public class VariantProjectBuilder {
         }
 
         int totalChunks = countConflictChunks(conflictFileMap);
-        List<VariantProject> projects = sampleVariants(conflictFileMap, totalChunks);
-
-        List<Map<String, List<String>>> patterns = new ArrayList<>();
-        projects.forEach(x -> patterns.add(x.extractPatterns()));
+        StrategySelector selector = new StrategySelector(heuristics, random);
 
         ObjectId branch1 = git.getRepository().resolve(commit1);
         ObjectId branch2 = git.getRepository().resolve(commit2);
         Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects(git, branch1, branch2);
-
         Map<String, ObjectId> mergeCommitObjects = GitUtils.getObjectsFromCommit(mergeCommit, git);
 
         return new VariantBuildContext(
                 repositoryPath,
                 projectTempDir,
                 projectName,
-                projects,
+                conflictFileMap,
+                totalChunks,
+                selector,
                 nonConflictObjects,
-                mergeCommitObjects,
-                patterns
+                mergeCommitObjects
         );
     }
 
@@ -120,63 +109,8 @@ public class VariantProjectBuilder {
         return count;
     }
 
-    private List<VariantProject> sampleVariants(Map<String, ConflictFile> conflictFileMap, int totalChunks) {
-        List<VariantProject> projects = new ArrayList<>();
-        StrategySelector selector = new StrategySelector(heuristics, random);
-
-        while (projects.size() < AppConfig.MAX_VARIANTS
-                && !selector.allStrategiesExhausted(totalChunks)) {
-
-            PatternStrategy strategy = selector.selectStrategy(totalChunks);
-            if (strategy == null) break;
-
-            List<String> assignment = selector.generateAssignment(strategy, totalChunks);
-
-            if (assignment != null) {
-                projects.add(buildProjectFromAssignment(conflictFileMap, assignment));
-            } else {
-                selector.recordOuterFailure();
-            }
-        }
-
-        return projects;
-    }
-
-    private VariantProject buildProjectFromAssignment(Map<String, ConflictFile> conflictFileMap, List<String> assignment) {
-        List<ConflictFile> resolvedClasses = new ArrayList<>();
-        int chunkIndex = 0;
-
-        for (Map.Entry<String, ConflictFile> entry : conflictFileMap.entrySet()) {
-            ConflictFile cf = entry.getValue();
-            List<IMergeBlock> resolvedBlocks = new ArrayList<>();
-
-            for (IMergeBlock block : cf.getMergeBlocks()) {
-                if (block instanceof ConflictBlock cb) {
-                    ConflictBlock clone = cb.clone();
-                    clone.setPattern(PatternFactory.fromName(assignment.get(chunkIndex++)));
-                    resolvedBlocks.add(clone);
-                } else {
-                    resolvedBlocks.add(block);
-                }
-            }
-
-            ConflictFile resolvedCf = new ConflictFile();
-            resolvedCf.setClassPath(cf.getClassPath());
-            resolvedCf.setMergeBlocks(resolvedBlocks);
-            resolvedClasses.add(resolvedCf);
-        }
-
-        VariantProject project = new VariantProject();
-        project.setProjectPath(repositoryPath);
-        project.setClasses(resolvedClasses);
-        return project;
-    }
-
     /**
      * Build the main project directory (human-resolved merge).
-     *
-     * @param context Variant build context
-     * @return Path to the main project directory
      */
     public Path buildMainProject(VariantBuildContext context) throws IOException {
         Path mainProjectPath = projectTempDir.resolve(projectName);
@@ -186,24 +120,20 @@ public class VariantProjectBuilder {
     }
 
     /**
-     * Build a specific variant directory.
+     * Build the directory for a given variant.
      *
-     * @param context Variant build context
-     * @param variantIndex Index of the variant to build (0-based)
-     * @return Path to the variant directory
+     * @param context      Variant build context (provides non-conflict objects)
+     * @param variant      The variant project (conflict file resolutions)
+     * @param variantIndex Numeric index used to name the directory
+     * @return Path to the created variant directory
      */
-    public Path buildVariant(VariantBuildContext context, int variantIndex) throws IOException {
-        if (variantIndex < 0 || variantIndex >= context.getVariantCount()) {
-            throw new IllegalArgumentException("Invalid variant index: " + variantIndex);
-        }
-
+    public Path buildVariant(VariantBuildContext context, VariantProject variant, int variantIndex) throws IOException {
         Path variantPath = projectTempDir.resolve(projectName + "_" + variantIndex);
-        VariantProject project = context.getVariant(variantIndex);
 
         Git git = GitUtils.getGit(repositoryPath);
         FileUtils.saveFilesFromObjectId(variantPath, context.getNonConflictObjects(), git);
 
-        for (ConflictFile conflictFile : project.getClasses()) {
+        for (ConflictFile conflictFile : variant.getClasses()) {
             File filepath = variantPath.resolve(conflictFile.getClassPath().toString()).toFile();
             if (filepath.getParentFile() != null) {
                 filepath.getParentFile().mkdirs();
@@ -219,22 +149,16 @@ public class VariantProjectBuilder {
     /**
      * Run tests with just-in-time directory creation and immediate cleanup.
      * Variant directories are built on-demand and deleted immediately after testing.
-     *
-     * @param context Variant build context
-     * @param runner Just-in-time runner
-     * @return Execution time statistics
      */
     public ExperimentTiming runTestsJustInTime(VariantBuildContext context, IJustInTimeRunner runner) throws Exception {
-        // Populate conflictPatterns for backward compatibility with result collectors
-        this.conflictPatterns = new ArrayList<>(context.getConflictPatterns());
+        // Point conflictPatterns at the context's live list — it grows as variants are
+        // generated lazily during execution, so result collectors see the full set.
+        this.conflictPatterns = context.getConflictPatterns();
         return runner.run(context, this);
     }
 
     /**
      * Collect compilation result from a single project directory.
-     *
-     * @param projectKey Project key (e.g., "projectName" or "projectName_0")
-     * @return CompilationResult, or empty Optional if log doesn't exist
      */
     public Optional<CompilationResult> collectCompilationResult(String projectKey) throws IOException {
         Path logPath = logDir.resolve(projectKey + "_compilation");
@@ -246,10 +170,6 @@ public class VariantProjectBuilder {
 
     /**
      * Collect test result from a single project directory.
-     *
-     * @param projectKey Project key (e.g., "projectName" or "projectName_0")
-     * @param projectPath Path to the project directory
-     * @return TestTotal for the project
      */
     public TestTotal collectTestResult(String projectKey, Path projectPath) {
         return new TestTotal(projectPath.toFile());

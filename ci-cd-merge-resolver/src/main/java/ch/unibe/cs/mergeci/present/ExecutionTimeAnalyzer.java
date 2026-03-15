@@ -23,6 +23,7 @@ public class ExecutionTimeAnalyzer {
         List<Double> ratios = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
+            if (merge.getCompilationResult() == null || merge.getVariantsExecution() == null) continue;
             double baselineTime = merge.getCompilationResult().getTotalTime();
             double variantTime = merge.getVariantsExecution().getExecutionTimeSeconds();
 
