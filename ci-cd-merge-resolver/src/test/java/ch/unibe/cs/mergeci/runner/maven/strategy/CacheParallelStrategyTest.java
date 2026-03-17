@@ -34,6 +34,7 @@ class CacheParallelStrategyTest extends BaseTest {
         mockCommandResolver = mock(MavenCommandResolver.class);
         mockProcessExecutor = mock(MavenProcessExecutor.class);
         mockCacheManager = mock(MavenCacheManager.class);
+        when(mockCommandResolver.resolveMavenGoal(any())).thenReturn("test");
         logDir = tempDir.resolve("logs");
 
         strategy = new CacheParallelStrategy(

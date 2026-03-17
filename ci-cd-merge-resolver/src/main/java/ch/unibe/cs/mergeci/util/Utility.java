@@ -84,7 +84,7 @@ public class Utility {
         human_baseline(false, false, true,  "human_baseline"),
         cache_parallel(true,  true,  false, "cache_parallel"),
         no_cache_parallel(false, true,  false, "parallel"),
-        //cache_no_parallel(true, false),       //doesn't really make sense
+        cache_no_parallel(true,  false, false, "cache_sequential"),
         no_cache_no_parallel(false, false, false, "no_optimization");
 
         private final boolean cache;

@@ -128,7 +128,7 @@ public class ResolutionVariantRunner {
         }
 
         try {
-            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache, skipVariants);
+            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache, skipVariants, tempDir);
             repoManager.markRepositorySuccess(repoName);
         } catch (Exception e) {
             System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
@@ -141,10 +141,14 @@ public class ResolutionVariantRunner {
     }
 
     public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache) throws Exception {
-        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, false);
+        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, false, AppConfig.TMP_DIR);
     }
 
     public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants) throws Exception {
+        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, skipVariants, AppConfig.TMP_DIR);
+    }
+
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir) throws Exception {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
 
@@ -153,7 +157,7 @@ public class ResolutionVariantRunner {
                 : loadStoredBaselines(humanBaselineOutput);
         boolean hasStoredBaselines = !storedBaselines.isEmpty();
 
-        MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, isParallel, isCache, skipVariants, storedBaselines);
+        MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines);
         VariantResultCollector collector = new VariantResultCollector();
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector);

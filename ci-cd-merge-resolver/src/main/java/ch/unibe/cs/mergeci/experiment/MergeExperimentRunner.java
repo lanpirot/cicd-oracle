@@ -26,21 +26,27 @@ import java.util.Map;
  */
 public class MergeExperimentRunner {
     private final Path repoPath;
+    private final Path tmpDir;
     private final boolean isParallel;
     private final boolean isCache;
     private final boolean skipVariants;
     private final Map<String, Long> storedBaselines;
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache) {
-        this(repoPath, isParallel, isCache, false);
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap());
     }
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants) {
-        this(repoPath, isParallel, isCache, skipVariants, Collections.emptyMap());
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap());
     }
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants, Map<String, Long> storedBaselines) {
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, storedBaselines);
+    }
+
+    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache, boolean skipVariants, Map<String, Long> storedBaselines) {
         this.repoPath = repoPath;
+        this.tmpDir = tmpDir;
         this.isParallel = isParallel;
         this.isCache = isCache;
         this.skipVariants = skipVariants;
@@ -70,13 +76,14 @@ public class MergeExperimentRunner {
      */
     private MergeAnalysisResult runMergeAnalysis(DatasetReader.MergeInfo info) throws Exception {
         // Clean up before starting
-        FileUtils.deleteDirectory(AppConfig.TMP_PROJECT_DIR.toFile());
+        Path tmpProjectDir = tmpDir.resolve("projects");
+        FileUtils.deleteDirectory(tmpProjectDir.toFile());
 
         // Time the analysis
         Instant start = Instant.now();
 
         // Prepare variant metadata (no disk writes yet)
-        VariantProjectBuilder variantProjectBuilder = new VariantProjectBuilder(repoPath, AppConfig.TMP_DIR, AppConfig.TMP_PROJECT_DIR);
+        VariantProjectBuilder variantProjectBuilder = new VariantProjectBuilder(repoPath, tmpDir, tmpProjectDir);
         VariantBuildContext context = variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit());
 
         // Create factory and run tests with just-in-time building

@@ -33,6 +33,7 @@ public class CoverageStrategyTest extends BaseTest {
     void setUp(@TempDir Path tempDir) {
         mockCommandResolver = mock(MavenCommandResolver.class);
         mockProcessExecutor = mock(MavenProcessExecutor.class);
+        when(mockCommandResolver.resolveMavenGoal(any())).thenReturn("test");
         strategy = new SequentialStrategy(mockCommandResolver, mockProcessExecutor, tempDir.resolve("logs"));
     }
 

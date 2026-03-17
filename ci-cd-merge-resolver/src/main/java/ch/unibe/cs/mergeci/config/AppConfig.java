@@ -28,7 +28,7 @@ public class AppConfig {
      * Repos with any other status are left untouched.
      * Can be overridden via system property "reanalyzeSuccess".
      */
-    private static final boolean REANALYZE_SUCCESS = true;
+    private static final boolean REANALYZE_SUCCESS = false;
 
     public static boolean isReanalyzeSuccess() {
         return Boolean.parseBoolean(System.getProperty("reanalyzeSuccess", String.valueOf(REANALYZE_SUCCESS)));
