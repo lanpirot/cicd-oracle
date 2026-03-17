@@ -195,7 +195,7 @@ python3 learn_historical_pattern_distribution.py
 10. Relativize factors
 
 **Input**: `Java_chunks_original.csv` (or any conflict chunks CSV)
-**Output**: `relative_numbers_summary.csv` (used at runtime by `PatternHeuristics`)
+**Output**: `learnt_historical_pattern_distribution.csv` (used at runtime by `PatternHeuristics`)
 
 **Key Improvements**:
 - Removed Java-only filtering to analyze all file types

@@ -724,10 +724,10 @@ def main():
         relativized_data.append([number_of_chunks, '|'.join(relativized_strategies)])
     
     # Write the final output
-    with open('relative_numbers_summary.csv', 'w', newline='') as outfile:
+    with open('learnt_historical_pattern_distribution.csv', 'w', newline='') as outfile:
         writer = csv.writer(outfile)
         writer.writerows(relativized_data)
-    print("\nFinal output: relative_numbers_summary.csv")
+    print("\nFinal output: learnt_historical_pattern_distribution.csv")
 
 if __name__ == '__main__':
     main()
