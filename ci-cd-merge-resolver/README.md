@@ -175,12 +175,31 @@ A variant is successful when:
 
 ## Pattern Heuristics (optional)
 
-Regenerate the pattern frequency table from raw conflict data:
+Analyze historical pattern distribution from conflict data:
 
 ```bash
 cd src/main/resources/pattern-heuristics
-python3 complete_workflow.py
+python3 learn_historical_pattern_distribution.py
 ```
 
-**Input**: `Java_chunks_original.csv`
+**Pipeline**:
+1. Merge chunks by merge ID (all file types)
+2. Clean pattern names (NONCANONICAL → NON)
+3. Remove prefixes (CANONICAL_, CHUNK_, etc.)
+4. Group by chunk count
+5. Sort substrategies
+6. Count and rank patterns
+7. Summarize strategies
+8. Compute relative frequencies
+9. Unify similar patterns
+10. Relativize factors
+
+**Input**: `Java_chunks_original.csv` (or any conflict chunks CSV)
 **Output**: `relative_numbers_summary.csv` (used at runtime by `PatternHeuristics`)
+
+**Key Improvements**:
+- Removed Java-only filtering to analyze all file types
+- Enhanced pattern unification across similar strategies
+- Improved bucketing with single-number ranges
+- Better handling of NON patterns
+- More accurate relativization calculations

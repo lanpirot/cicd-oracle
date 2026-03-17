@@ -35,6 +35,17 @@ public class CompilationResult {
 
 
 
+    /** Test factory — avoids writing log files to disk. */
+    public static CompilationResult forTest(Status buildStatus, List<ModuleResult> moduleResults) {
+        return new CompilationResult(buildStatus, moduleResults, 0f);
+    }
+
+    private CompilationResult(Status buildStatus, List<ModuleResult> moduleResults, float totalTime) {
+        this.buildStatus = buildStatus;
+        this.moduleResults = moduleResults != null ? moduleResults : new ArrayList<>();
+        this.totalTime = totalTime;
+    }
+
     public CompilationResult(Path testResultFile) throws IOException {
         moduleResults = new ArrayList<>();
 

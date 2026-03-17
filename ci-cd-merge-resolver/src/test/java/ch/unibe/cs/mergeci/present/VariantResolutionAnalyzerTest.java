@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.present;
 
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,33 +21,6 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     @BeforeEach
     void setUp() {
         analyzer = new VariantResolutionAnalyzer();
-    }
-
-    @Test
-    void testCountSuccessfulTests() {
-        TestTotal testTotal = createTestTotal(100, 10, 5);
-
-        int successful = analyzer.countSuccessfulTests(testTotal);
-
-        assertEquals(85, successful, "Should be 100 - 10 - 5 = 85 successful tests");
-    }
-
-    @Test
-    void testCountSuccessfulTests_AllPass() {
-        TestTotal testTotal = createTestTotal(50, 0, 0);
-
-        int successful = analyzer.countSuccessfulTests(testTotal);
-
-        assertEquals(50, successful, "All tests should be successful");
-    }
-
-    @Test
-    void testCountSuccessfulTests_AllFail() {
-        TestTotal testTotal = createTestTotal(50, 25, 25);
-
-        int successful = analyzer.countSuccessfulTests(testTotal);
-
-        assertEquals(0, successful, "No tests should be successful");
     }
 
     @Test
@@ -290,7 +264,12 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         testTotal.setErrorsNum(errorsNum);
         testTotal.setSkippedNum(0);
         testTotal.setElapsedTime(0.0f);
+        testTotal.setHasData(true);
         return testTotal;
+    }
+
+    private static CompilationResult successCR() {
+        return CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
     }
 
     private MergeOutputJSON createMerge(String commitHash, int runNum, int failuresNum, int errorsNum) {
@@ -298,6 +277,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         merge.setMergeCommit(commitHash);
         MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
         baselineVariant.setVariantName("human_baseline");
+        baselineVariant.setCompilationResult(successCR());
         baselineVariant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
         allVariants.add(baselineVariant);
@@ -308,6 +288,8 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     private void addVariant(MergeOutputJSON merge, String variantName, int runNum, int failuresNum, int errorsNum,
                            Map<String, List<String>> conflictPatterns) {
         MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
+        variant.setVariantName(variantName);
+        variant.setCompilationResult(successCR());
         variant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         variant.setConflictPatterns(conflictPatterns);
 

@@ -37,14 +37,12 @@ public class StatisticsReporter {
      */
     public void presentFullResults() {
         List<MergeOutputJSON> allMerges = statistics.getAllMerges();
-        List<MergeOutputJSON> testImpactMerges = statistics.getTestImpactMerges();
-        List<MergeOutputJSON> buildImpactMerges = statistics.getBuildImpactMerges();
         List<MergeOutputJSON> impactMerges = statistics.getImpactMerges();
         List<MergeOutputJSON> noImpactMerges = statistics.getNoImpactMerges();
 
         printHeader();
-        printOverviewStatistics(allMerges, testImpactMerges, buildImpactMerges, impactMerges, noImpactMerges);
-        printModuleBreakdown(allMerges, testImpactMerges, buildImpactMerges, impactMerges, noImpactMerges);
+        printOverviewStatistics(allMerges, impactMerges, noImpactMerges);
+        printModuleBreakdown(allMerges, impactMerges, noImpactMerges);
         printCoverageStatistics();
         printResolutionAnalysis(impactMerges);
         printRankings(impactMerges);
@@ -82,8 +80,6 @@ public class StatisticsReporter {
 
     private void printOverviewStatistics(
             List<MergeOutputJSON> allMerges,
-            List<MergeOutputJSON> testImpactMerges,
-            List<MergeOutputJSON> buildImpactMerges,
             List<MergeOutputJSON> impactMerges,
             List<MergeOutputJSON> noImpactMerges) {
 
@@ -98,24 +94,16 @@ public class StatisticsReporter {
                 countPercent(allMerges.size(), allMerges.size() - statistics.getMultiModuleCount()));
 
         System.out.printf("  Impact Analysis:\n");
-        System.out.printf("  ├─ Impact:          %4d (%3d%%) ← Test-impact or build-impact\n",
+        System.out.printf("  ├─ Impact:          %4d (%3d%%) ← Any variant has a different score\n",
                 impactMerges.size(),
                 countPercent(allMerges.size(), impactMerges.size()));
-        System.out.printf("  │  ├─ Test-impact:  %4d (%3d%%) ← Variants change test results\n",
-                testImpactMerges.size(),
-                countPercent(allMerges.size(), testImpactMerges.size()));
-        System.out.printf("  │  └─ Build-impact: %4d (%3d%%) ← Variants change build results\n",
-                buildImpactMerges.size(),
-                countPercent(allMerges.size(), buildImpactMerges.size()));
-        System.out.printf("  └─ No Impact:       %4d (%3d%%) ← All variants same results\n",
+        System.out.printf("  └─ No Impact:       %4d (%3d%%) ← All variants have the same score\n",
                 noImpactMerges.size(),
                 countPercent(allMerges.size(), noImpactMerges.size()));
     }
 
     private void printModuleBreakdown(
             List<MergeOutputJSON> allMerges,
-            List<MergeOutputJSON> testImpactMerges,
-            List<MergeOutputJSON> buildImpactMerges,
             List<MergeOutputJSON> impactMerges,
             List<MergeOutputJSON> noImpactMerges) {
 
@@ -125,10 +113,6 @@ public class StatisticsReporter {
         List<MergeOutputJSON> noImpactMultiModule = statistics.getMultiModule().getNoImpact();
         List<MergeOutputJSON> impactSingleModule = statistics.getSingleModule().getImpact();
         List<MergeOutputJSON> impactMultiModule = statistics.getMultiModule().getImpact();
-        List<MergeOutputJSON> testImpactSingleModule = statistics.getSingleModule().getTestImpact();
-        List<MergeOutputJSON> testImpactMultiModule = statistics.getMultiModule().getTestImpact();
-        List<MergeOutputJSON> buildImpactSingleModule = statistics.getSingleModule().getBuildImpact();
-        List<MergeOutputJSON> buildImpactMultiModule = statistics.getMultiModule().getBuildImpact();
 
         System.out.println("  No Impact Merges:");
         System.out.printf("  ├─ Single-module:   %4d (%3d%% of all)\n",
@@ -143,29 +127,9 @@ public class StatisticsReporter {
             System.out.printf("  ├─ Single-module:   %4d (%3d%% of impact)\n",
                     impactSingleModule.size(),
                     countPercent(impactMerges.size(), impactSingleModule.size()));
-            System.out.printf("  └─ Multi-module:    %4d (%3d%% of impact)\n\n",
+            System.out.printf("  └─ Multi-module:    %4d (%3d%% of impact)\n",
                     impactMultiModule.size(),
                     countPercent(impactMerges.size(), impactMultiModule.size()));
-        }
-
-        if (!testImpactMerges.isEmpty()) {
-            System.out.println("  Test-Impact Merges:");
-            System.out.printf("  ├─ Single-module:   %4d (%3d%% of test-impact)\n",
-                    testImpactSingleModule.size(),
-                    countPercent(testImpactMerges.size(), testImpactSingleModule.size()));
-            System.out.printf("  └─ Multi-module:    %4d (%3d%% of test-impact)\n\n",
-                    testImpactMultiModule.size(),
-                    countPercent(testImpactMerges.size(), testImpactMultiModule.size()));
-        }
-
-        if (!buildImpactMerges.isEmpty()) {
-            System.out.println("  Build-Impact Merges:");
-            System.out.printf("  ├─ Single-module:   %4d (%3d%% of build-impact)\n",
-                    buildImpactSingleModule.size(),
-                    countPercent(buildImpactMerges.size(), buildImpactSingleModule.size()));
-            System.out.printf("  └─ Multi-module:    %4d (%3d%% of build-impact)\n",
-                    buildImpactMultiModule.size(),
-                    countPercent(buildImpactMerges.size(), buildImpactMultiModule.size()));
         }
     }
 

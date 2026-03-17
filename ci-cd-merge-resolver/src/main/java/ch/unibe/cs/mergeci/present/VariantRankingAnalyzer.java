@@ -64,18 +64,24 @@ public class VariantRankingAnalyzer {
      * Returns "Human" as baseline, replaced or extended by any variant that ties or beats it.
      */
     private List<String> findBestResolutions(MergeOutputJSON merge) {
-        int baselineBest = resolutionAnalyzer.countSuccessfulTests(merge.getTestResults());
+        java.util.Optional<VariantScore> baselineOpt =
+                VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
+        if (baselineOpt.isEmpty()) return List.of(); // no scoreable baseline, skip
+
+        VariantScore bestScore = baselineOpt.get();
         List<String> bestResolutions = new ArrayList<>(List.of("Human"));
 
         for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
             if ("human_baseline".equals(variant.getVariantName())) continue;
-            int variantBest = resolutionAnalyzer.countSuccessfulTests(variant.getTestResults());
-            String pattern = resolutionAnalyzer.identifyUniformPattern(variant.getConflictPatterns());
+            java.util.Optional<VariantScore> vs =
+                    VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
+            if (vs.isEmpty()) continue; // timeout or missing — excluded
 
-            if (variantBest > baselineBest) {
-                baselineBest = variantBest;
+            String pattern = resolutionAnalyzer.identifyUniformPattern(variant.getConflictPatterns());
+            if (vs.get().isBetterThan(bestScore)) {
+                bestScore = vs.get();
                 bestResolutions = new ArrayList<>(List.of(pattern));
-            } else if (variantBest == baselineBest && !bestResolutions.contains(pattern)) {
+            } else if (vs.get().equals(bestScore) && !bestResolutions.contains(pattern)) {
                 bestResolutions.add(pattern);
             }
         }

@@ -7,14 +7,7 @@ from collections import Counter
 # Increase the field size limit for CSV reader
 csv.field_size_limit(1000000)
 
-def filter_java_files(input_data):
-    """Filter rows to include only chunks from .java files."""
-    header = input_data[0]
-    filtered_data = [header]
-    for row in input_data[1:]:
-        if len(row) > 6 and row[6].endswith('.java'):
-            filtered_data.append(row)
-    return filtered_data
+
 
 def merge_chunks_by_merge_id(input_data):
     """Group chunks by merge_id and concatenate their strategies."""
@@ -226,12 +219,12 @@ def main():
         original_data = list(reader)
     print("Step 1: Read original CSV file.")
     
-    # Step 2: Filter Java files
-    java_only_data = filter_java_files(original_data)
-    print(f"Step 2: Filtered Java files. {len(java_only_data)} rows.")
+    # Step 2: Skip Java filtering (analyze all file types)
+    all_files_data = original_data
+    print(f"Step 2: Analyzing all file types. {len(all_files_data)} rows.")
     
     # Step 3: Merge chunks by merge_id
-    merged_data = merge_chunks_by_merge_id(java_only_data)
+    merged_data = merge_chunks_by_merge_id(all_files_data)
     print(f"Step 3: Merged chunks by merge_id. {len(merged_data)} rows.")
     
     # Step 4: Replace NONCANONICAL with NON
@@ -259,9 +252,9 @@ def main():
     print(f"Step 9: Summarized strategies. {len(summarized_data)} rows.")
     
     # Step 10: Add global overview and write the final output
-    # Compute global overview from java_only_data (absolute counts only)
+    # Compute global overview from all_files_data (absolute counts only)
     global_overview = {}
-    for row in java_only_data[1:]:  # Skip header
+    for row in all_files_data[1:]:  # Skip header
         if len(row) > 8:
             strategy = row[8].replace('CHUNK_', '').replace('CANONICAL_', '').replace('SEMICANONICAL_', '').replace('NONCANONICAL', 'NON').replace('SEMI', '')
             if strategy in global_overview:
@@ -492,22 +485,19 @@ def main():
         unified_summarized_data.append([number_of_chunks, '|'.join(unified_strategies)])
     
     # Prepend global overview to unified summarized_data
-    # Remove NON entries from the global row
-    filtered_global_strategies = []
-    for strategy in global_strategies:
-        if 'NON' not in strategy:
-            filtered_global_strategies.append(strategy)
+    # Keep all entries in the global row (including NON patterns)
+    filtered_global_strategies = global_strategies
     
     final_data = [['0', '|'.join(filtered_global_strategies)]] + unified_summarized_data
     
     # Concatenate rows into log-buckets based on number_of_chunks value
-    # Keep first two rows as is (row 0 and row 1)
-    bucketed_data = final_data[:2] if len(final_data) >= 2 else final_data
+    # Keep first row as is (global overview)
+    bucketed_data = final_data[:1] if len(final_data) >= 1 else final_data
     
     # Group remaining rows by number_of_chunks ranges
     # Start with bucket_size = 2, then 4, 8, 16, etc.
-    current_bucket_start = 2
-    bucket_size = 2
+    current_bucket_start = 1
+    bucket_size = 1
     
     while current_bucket_start <= 3413:  # Go up to the maximum number_of_chunks
         # Determine the end of this bucket
@@ -515,7 +505,7 @@ def main():
         
         # Collect all strategies from rows where number_of_chunks is in this range
         all_strategies = []
-        for row in final_data[2:]:  # Skip first two rows
+        for row in final_data[1:]:  # Skip first row (global overview)
             if len(row) > 1:
                 try:
                     num_chunks = int(row[0])
@@ -529,7 +519,11 @@ def main():
         # Create the concatenated row if we found any strategies
         if all_strategies:
             # Format: "X-Y" where X is start and Y is end of number_of_chunks range
-            number_of_chunks_range = f"{current_bucket_start}-{current_bucket_end}"
+            # For single-number ranges, just use the number
+            if current_bucket_start == current_bucket_end:
+                number_of_chunks_range = f"{current_bucket_start}"
+            else:
+                number_of_chunks_range = f"{current_bucket_start}-{current_bucket_end}"
             
             # Apply unification to the concatenated strategies
             strategies = all_strategies
@@ -677,6 +671,11 @@ def main():
             continue
         
         number_of_chunks = row[0]
+        # Skip relativization for the global overview row (row "0")
+        if number_of_chunks == "0":
+            relativized_data.append(row)
+            continue
+            
         strategies = row[1].split('|')
         
         # Extract the count factors from each strategy

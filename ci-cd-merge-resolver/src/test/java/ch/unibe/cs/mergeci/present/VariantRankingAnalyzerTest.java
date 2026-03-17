@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.present;
 
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import org.junit.jupiter.api.BeforeEach;
@@ -244,7 +245,12 @@ class VariantRankingAnalyzerTest extends BaseTest {
         testTotal.setErrorsNum(errorsNum);
         testTotal.setSkippedNum(0);
         testTotal.setElapsedTime(0.0f);
+        testTotal.setHasData(true);
         return testTotal;
+    }
+
+    private static CompilationResult successCR() {
+        return CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
     }
 
     private MergeOutputJSON createMerge(String commitHash, int runNum, int failuresNum, int errorsNum, int conflictChunks) {
@@ -252,6 +258,7 @@ class VariantRankingAnalyzerTest extends BaseTest {
         merge.setMergeCommit(commitHash);
         MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
         baselineVariant.setVariantName("human_baseline");
+        baselineVariant.setCompilationResult(successCR());
         baselineVariant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
         allVariants.add(baselineVariant);
@@ -270,6 +277,7 @@ class VariantRankingAnalyzerTest extends BaseTest {
     private void addVariant(MergeOutputJSON merge, int runNum, int failuresNum, int errorsNum,
                            Map<String, List<String>> conflictPatterns) {
         MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
+        variant.setCompilationResult(successCR());
         variant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         variant.setConflictPatterns(conflictPatterns);
 

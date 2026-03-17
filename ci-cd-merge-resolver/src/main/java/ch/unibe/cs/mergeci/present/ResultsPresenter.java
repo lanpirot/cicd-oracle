@@ -4,7 +4,6 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.conflict.MergeStatistics;
 import ch.unibe.cs.mergeci.experiment.AllMergesJSON;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
-import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -37,7 +36,9 @@ public class ResultsPresenter {
     private List<MergeOutputJSON> loadMerges(Path dir) {
         List<MergeOutputJSON> allMerges = new ArrayList<>();
 
-        for (File file : dir.toFile().listFiles()) {
+        File[] files = dir.toFile().listFiles();
+        if (files == null) return allMerges;
+        for (File file : files) {
             try {
                 AllMergesJSON allMergesJSON = objectMapper.readValue(file, AllMergesJSON.class);
                 allMerges.addAll(allMergesJSON.getMerges());
@@ -87,12 +88,16 @@ public class ResultsPresenter {
         for (MergeOutputJSON merge : merges) {
             if (merge.getNumConflictChunks() == 0) continue;
 
-            int baselineSuccesses = analyzer.countSuccessfulTests(merge.getTestResults());
+            java.util.Optional<VariantScore> baselineScore =
+                    VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
+            if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-                int variantSuccesses = analyzer.countSuccessfulTests(variant.getTestResults());
+                java.util.Optional<VariantScore> vs =
+                        VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
+                if (vs.isEmpty()) continue; // timeout — excluded
 
-                if (variantSuccesses != baselineSuccesses) {
+                if (!vs.get().equals(baselineScore.get())) {
                     impactMerges.add(merge);
                     break;
                 }

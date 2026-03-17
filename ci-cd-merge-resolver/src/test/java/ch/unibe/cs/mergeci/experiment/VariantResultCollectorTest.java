@@ -49,6 +49,7 @@ class VariantResultCollectorTest extends BaseTest {
         baselineTests.setFailuresNum(5);
         baselineTests.setErrorsNum(0);
         baselineTests.setElapsedTime(12.5f);
+        baselineTests.setHasData(true);
 
         // compilationResults: always has baseline; optionally one variant
         Map<String, CompilationResult> compilationResults = new TreeMap<>();
@@ -62,6 +63,7 @@ class VariantResultCollectorTest extends BaseTest {
             TestTotal variantTests = new TestTotal();
             variantTests.setRunNum(90);
             variantTests.setFailuresNum(2);
+            variantTests.setHasData(true);
             testResults.put(PROJECT_NAME + "_0", variantTests);
         }
 
@@ -99,12 +101,11 @@ class VariantResultCollectorTest extends BaseTest {
         assertNotNull(output.getVariantsExecution());
         assertTrue(output.getVariantsExecution().getVariants().isEmpty());
 
-        // backward-compat getter returns null/empty (no "human_baseline" variant in variant-mode JSON)
+        // backward-compat getter returns null (no "human_baseline" variant in variant-mode JSON)
         assertNull(output.getCompilationResult(),
                 "variant-mode JSON must not expose a compilationResult via human_baseline lookup");
-        assertNotNull(output.getTestResults()); // fallback returns new TestTotal()
-        assertEquals(0, output.getTestResults().getRunNum(),
-                "fallback TestTotal should be empty when no human_baseline variant present");
+        assertNull(output.getTestResults(),
+                "getTestResults() must return null when no human_baseline variant present");
     }
 
     @Test

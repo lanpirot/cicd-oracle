@@ -53,7 +53,7 @@ public class MergeOutputJSON {
                 }
             }
         }
-        return new TestTotal();
+        return null;
     }
 
     /**

@@ -22,6 +22,10 @@ public class TestTotal {
     private int skippedNum;
     private float elapsedTime;
 
+    /** True only when at least one surefire/failsafe report was successfully parsed.
+     *  False means no test reports were found — distinguishable from "ran 0 tests". */
+    private boolean hasData;
+
     private File projectDir;
 
     public TestTotal() {
@@ -50,6 +54,7 @@ public class TestTotal {
                 errorsNum += testResult.getErrorsNum();
                 skippedNum += testResult.getSkippedNum();
                 elapsedTime += testResult.getElapsedTime();
+                hasData = true;
             }
         }
         } catch (IOException e) {

@@ -1,7 +1,6 @@
 package ch.unibe.cs.mergeci.present;
 
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
-import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -24,13 +24,13 @@ public class VariantResolutionAnalyzer {
         List<MergeOutputJSON> result = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            int baselineSuccesses = countSuccessfulTests(merge.getTestResults());
+            Optional<VariantScore> baselineScore = baselineScore(merge);
+            if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
                 if ("human_baseline".equals(variant.getVariantName())) continue;
-                int variantSuccesses = countSuccessfulTests(variant.getTestResults());
-
-                if (baselineSuccesses <= variantSuccesses) {
+                Optional<VariantScore> vs = variantScore(variant);
+                if (vs.isPresent() && vs.get().isAtLeastAsGoodAs(baselineScore.get())) {
                     result.add(merge);
                     break;
                 }
@@ -47,13 +47,13 @@ public class VariantResolutionAnalyzer {
         List<MergeOutputJSON> result = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            int baselineSuccesses = countSuccessfulTests(merge.getTestResults());
+            Optional<VariantScore> baselineScore = baselineScore(merge);
+            if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
                 if ("human_baseline".equals(variant.getVariantName())) continue;
-                int variantSuccesses = countSuccessfulTests(variant.getTestResults());
-
-                if (baselineSuccesses < variantSuccesses) {
+                Optional<VariantScore> vs = variantScore(variant);
+                if (vs.isPresent() && vs.get().isBetterThan(baselineScore.get())) {
                     result.add(merge);
                     break;
                 }
@@ -73,24 +73,23 @@ public class VariantResolutionAnalyzer {
         List<String> patternList = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            int baselineSuccesses = countSuccessfulTests(merge.getTestResults());
+            Optional<VariantScore> baselineScore = baselineScore(merge);
+            if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
                 if ("human_baseline".equals(variant.getVariantName())) continue;
-                int variantSuccesses = countSuccessfulTests(variant.getTestResults());
+                Optional<VariantScore> vs = variantScore(variant);
+                if (vs.isEmpty() || !vs.get().isAtLeastAsGoodAs(baselineScore.get())) continue;
 
-                if (baselineSuccesses <= variantSuccesses) {
-                    List<String> allPatterns = variant.getConflictPatterns().values()
-                            .stream()
-                            .flatMap(Collection::stream)
-                            .toList();
+                List<String> allPatterns = variant.getConflictPatterns().values()
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .toList();
+                Set<String> uniquePatterns = new HashSet<>(allPatterns);
 
-                    Set<String> uniquePatterns = new HashSet<>(allPatterns);
-
-                    // Only add if uniform (single pattern used for all conflicts)
-                    if (uniquePatterns.size() == 1) {
-                        patternList.addAll(uniquePatterns);
-                    }
+                // Only add if uniform (single pattern used for all conflicts)
+                if (uniquePatterns.size() == 1) {
+                    patternList.addAll(uniquePatterns);
                 }
             }
         }
@@ -133,10 +132,11 @@ public class VariantResolutionAnalyzer {
         }
     }
 
-    /**
-     * Count number of successful tests (run - errors - failures).
-     */
-    public int countSuccessfulTests(TestTotal testTotal) {
-        return testTotal.getRunNum() - testTotal.getErrorsNum() - testTotal.getFailuresNum();
+    private static Optional<VariantScore> baselineScore(MergeOutputJSON merge) {
+        return VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
+    }
+
+    private static Optional<VariantScore> variantScore(MergeOutputJSON.Variant variant) {
+        return VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
     }
 }
