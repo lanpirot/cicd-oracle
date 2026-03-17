@@ -72,10 +72,13 @@ public class MavenProcessExecutor {
     }
 
     /**
-     * Start the process, retrying up to 3 times with exponential back-off when the OS
-     * returns ETXTBSY (error=26, "Text file busy").  This can occur under parallel load
-     * when the kernel briefly sees the executable as write-busy between a close() and
-     * the subsequent execve() call.
+     * Start the process, with two recovery strategies:
+     * <ul>
+     *   <li>ETXTBSY (error=26): retry up to 3 times with exponential back-off — the kernel
+     *       briefly sees the executable as write-busy between close() and execve().</li>
+     *   <li>EACCES (error=13) on {@code ./mvnw}: fall back to system {@code mvn} once —
+     *       setExecutable() can succeed yet the OS still denies exec (e.g. NFS, race).</li>
+     * </ul>
      */
     private Process startWithRetryOnTextFileBusy(ProcessBuilder pb, String... command)
             throws IOException, InterruptedException {
@@ -86,12 +89,20 @@ public class MavenProcessExecutor {
             try {
                 return pb.start();
             } catch (IOException e) {
-                if (e.getMessage() != null && e.getMessage().contains("error=26") && attempt < maxAttempts - 1) {
+                String msg = e.getMessage();
+                if (msg != null && msg.contains("error=26") && attempt < maxAttempts - 1) {
                     lastException = e;
                     System.err.printf("ETXTBSY on attempt %d for %s — retrying in %dms%n",
                             attempt + 1, Arrays.toString(command), delayMs);
                     Thread.sleep(delayMs);
                     delayMs *= 2;
+                } else if (msg != null && msg.contains("error=13")
+                        && !pb.command().isEmpty() && pb.command().get(0).equals("./mvnw")
+                        && attempt == 0) {
+                    System.err.printf("EACCES on ./mvnw for %s — falling back to system mvn%n",
+                            Arrays.toString(command));
+                    pb.command().set(0, "mvn");
+                    lastException = e;
                 } else {
                     throw e;
                 }

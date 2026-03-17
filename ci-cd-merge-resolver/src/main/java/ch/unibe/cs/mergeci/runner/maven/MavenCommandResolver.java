@@ -69,12 +69,13 @@ public class MavenCommandResolver {
         File mvnw = projectPath.resolve("mvnw").toFile();
 
         if (mvnw.exists()) {
-            // Fix for Unix: set executable and fix line endings
+            // Fix line endings first — the atomic move may replace the inode, wiping the exec bit.
+            fixUnixLineEndings(mvnw);
+            // Set executable bit after any file replacement so it is always present.
             if (!mvnw.setExecutable(true)) {
                 System.err.println("Warning: Could not set executable bit on " + mvnw.getAbsolutePath() + " — falling back to system mvn");
                 return "mvn";
             }
-            fixUnixLineEndings(mvnw);
             return "./mvnw";
         }
         return "mvn";

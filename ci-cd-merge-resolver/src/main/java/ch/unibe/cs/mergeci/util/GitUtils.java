@@ -326,7 +326,7 @@ public class GitUtils {
         Iterable<RevCommit> logs = new ArrayList<>();
 
         try {
-            logs = git.log().setRevFilter(RevFilter.ONLY_MERGES).call();
+            logs = git.log().all().setRevFilter(RevFilter.ONLY_MERGES).call();
         } catch (Exception e) {
             e.printStackTrace();
         }
