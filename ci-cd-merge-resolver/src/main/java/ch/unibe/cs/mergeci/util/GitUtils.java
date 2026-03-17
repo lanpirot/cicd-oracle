@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.repoCollection.SimpleProgressMonitor;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
@@ -271,8 +272,18 @@ public class GitUtils {
     }
 
     public static List<MergeInfo> getConflictCommits(int maxConflictingMergeCount, Git git) {
+        return getConflictCommits(maxConflictingMergeCount, 0, git);
+    }
+
+    /**
+     * Returns up to {@code maxConflictingMergeCount} merge commits that have conflicts,
+     * skipping the first {@code skip} conflict-having merges in history.
+     * Used by the resampling loop to fetch successive non-overlapping batches.
+     */
+    public static List<MergeInfo> getConflictCommits(int maxConflictingMergeCount, int skip, Git git) {
 
         int conflictingMergeCount = 0;
+        int skipped = 0;
         List<RevCommit> history = getAllMergeCommits(git);
 
         List<MergeInfo> mergeInfos = new ArrayList<>();
@@ -286,21 +297,22 @@ public class GitUtils {
                 try {
                     Map<String, Integer> conflictFiles = countConflictChunks(objectId1.getName(), objectId2.getName(), git);
 
-                    // check defined sampling limit
                     if (!conflictFiles.isEmpty()) {
-                        MergeInfo mergeInfo = new MergeInfo(revCommit,objectId1, objectId2, conflictFiles);
+                        if (skipped < skip) {
+                            skipped++;
+                            continue;
+                        }
+                        MergeInfo mergeInfo = new MergeInfo(revCommit, objectId1, objectId2, conflictFiles);
                         mergeInfos.add(mergeInfo);
                         conflictingMergeCount++;
                     }
                 } catch (NoMergeBaseException e) {
                     // Rare: Skip merges where even RECURSIVE strategy cannot find a merge base
-                    // This should be very uncommon now that we use RECURSIVE merge strategy
                     System.err.println("Warning: No merge base found for commit " + revCommit.name() +
                                        " (even with RECURSIVE strategy). Skipping.");
                 } catch (Exception e) {
                     System.err.println("Warning: Failed to analyze merge commit " + revCommit.name() + ": " + e.getMessage());
                     e.printStackTrace();
-                    // Continue processing other commits
                 }
             }
         }
@@ -385,6 +397,7 @@ public class GitUtils {
                 .setURI(url)
                 .setDirectory(folderToClone.toFile())
                 .setProgressMonitor(monitor)
+                .setTimeout(AppConfig.CLONE_SOCKET_TIMEOUT_SECONDS)
                 .call()) {
             // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
             // Repository info available via result.getRepository().getDirectory() if needed

@@ -74,7 +74,7 @@ public class ResolutionVariantRunner {
         for (File dataset : datasets) {
             String repoName = Files.getNameWithoutExtension(dataset.getName());
             Path jsonOutputPath = outputDir.resolve(repoName + AppConfig.JSON);
-            boolean pending = AppConfig.isFreshRun() || !jsonOutputPath.toFile().exists();
+            boolean pending = AppConfig.isFreshRun() || AppConfig.isReanalyzeSuccess() || !jsonOutputPath.toFile().exists();
             if (pending) pendingProjects++;
 
             try {
@@ -112,7 +112,7 @@ public class ResolutionVariantRunner {
         }
 
         Path jsonOutputPath = outputDir.resolve(repoName + AppConfig.JSON);
-        if (!AppConfig.isFreshRun() && jsonOutputPath.toFile().exists()) {
+        if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess() && jsonOutputPath.toFile().exists()) {
             System.out.printf("File %s already exists. Skipping...\n", jsonOutputPath.getFileName());
             return;
         }

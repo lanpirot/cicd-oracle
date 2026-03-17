@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 
 /**
@@ -27,6 +28,14 @@ public class MavenCommandResolver {
      * @param projectPath Path to the Maven project
      * @return Maven command string (e.g., "mvn", "./mvnw", "mvn.cmd")
      */
+    /**
+     * Detects whether this project's CI uses {@code mvn verify} (integration tests included)
+     * or plain {@code mvn test} by inspecting {@code .github/workflows/*.yml}.
+     */
+    public String resolveMavenGoal(Path projectPath) {
+        return CiConfigReader.detectMavenGoal(projectPath);
+    }
+
     public String resolveMavenCommand(Path projectPath) {
         if (useMavenDaemon) {
             return "mvnd";
@@ -61,7 +70,10 @@ public class MavenCommandResolver {
 
         if (mvnw.exists()) {
             // Fix for Unix: set executable and fix line endings
-            mvnw.setExecutable(true);
+            if (!mvnw.setExecutable(true)) {
+                System.err.println("Warning: Could not set executable bit on " + mvnw.getAbsolutePath() + " — falling back to system mvn");
+                return "mvn";
+            }
             fixUnixLineEndings(mvnw);
             return "./mvnw";
         }
@@ -71,12 +83,20 @@ public class MavenCommandResolver {
     /**
      * Fix Windows line endings in Maven wrapper script.
      * Converts CRLF and CR to LF for Unix compatibility.
+     *
+     * <p>Writes to a sibling temp file and then atomically renames it over {@code mvnw}.
+     * This guarantees that the inode exec'd by the OS never had an open write file descriptor,
+     * which prevents {@code ETXTBSY} (error=26) under parallel load.
      */
     private void fixUnixLineEndings(File mvnw) {
         try {
-            String content = new String(Files.readAllBytes(mvnw.toPath()));
+            byte[] original = Files.readAllBytes(mvnw.toPath());
+            String content = new String(original);
+            if (!content.contains("\r")) return; // already Unix line endings, nothing to do
             content = content.replace("\r\n", "\n").replace("\r", "\n");
-            Files.write(mvnw.toPath(), content.getBytes());
+            Path tmp = mvnw.toPath().resolveSibling(mvnw.getName() + ".tmp");
+            Files.write(tmp, content.getBytes());
+            Files.move(tmp, mvnw.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             System.err.println("Warning: Failed to fix Unix line endings in mvnw: " + e.getMessage());
             System.err.println("  Wrapper may fail on Unix systems. Consider fixing manually.");

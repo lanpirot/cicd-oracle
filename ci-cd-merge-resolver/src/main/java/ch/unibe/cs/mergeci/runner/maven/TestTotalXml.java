@@ -33,12 +33,14 @@ public class TestTotalXml {
 
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
                 "**/target/surefire-reports/TEST-*.xml");
+        PathMatcher failsafeMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
+                "**/target/failsafe-reports/TEST-*.xml");
 
         List<Path> paths = FileUtils.listFilesUsingFileWalk(projectDir.toPath());
         int counter = 0;
 
         for (Path file : paths) {
-            if (pathMatcher.matches(file)) {
+            if (pathMatcher.matches(file) || failsafeMatcher.matches(file)) {
                 counter++;
 
                 File xmlFile = file.toFile();

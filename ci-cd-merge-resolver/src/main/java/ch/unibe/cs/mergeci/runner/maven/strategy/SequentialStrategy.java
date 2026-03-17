@@ -36,13 +36,14 @@ public class SequentialStrategy implements MavenExecutionStrategy {
     public void execute(Path... projects) {
         for (Path project : projects) {
             String mavenCommand = commandResolver.resolveMavenCommand(project);
+            String mavenGoal   = commandResolver.resolveMavenGoal(project);
             Path logFile = logDir.resolve(project.getFileName().toString() + "_compilation");
 
             if (javaHome != null) {
                 processExecutor.executeCommandWithJavaHome(project, logFile, javaHome,
-                        AppConfig.buildCommand(mavenCommand));
+                        AppConfig.buildCommand(mavenCommand, mavenGoal));
             } else {
-                processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand));
+                processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand, mavenGoal));
             }
         }
     }

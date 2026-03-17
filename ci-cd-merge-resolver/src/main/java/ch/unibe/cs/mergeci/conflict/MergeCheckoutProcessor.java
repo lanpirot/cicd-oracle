@@ -50,6 +50,9 @@ public class MergeCheckoutProcessor {
         // Checkout merge commit to temporary directory
         checkoutMerge(projectPath, newProjectPath, mergeCommit);
 
+        // Patch any hardcoded <skipTests>true</skipTests> in pom.xml files so tests always run
+        FileUtils.enableTestsInAllPoms(newProjectPath);
+
         // Detect required Java version from pom.xml and switch JAVA_HOME if needed
         int requiredJava = JavaVersionResolver.detectRequiredVersion(newProjectPath);
         int usedJava = 0;
@@ -79,8 +82,9 @@ public class MergeCheckoutProcessor {
             throw e;
         }
 
-        CheckoutCommand checkout = GitUtils.getGit(targetPath).checkout();
-        checkout.setName(commitHash).setForced(true).call();
+        try (org.eclipse.jgit.api.Git git = GitUtils.getGit(targetPath)) {
+            git.checkout().setName(commitHash).setForced(true).call();
+        }
     }
 
     private MergeProcessResult extractResults(Path projectPath, String projectName,

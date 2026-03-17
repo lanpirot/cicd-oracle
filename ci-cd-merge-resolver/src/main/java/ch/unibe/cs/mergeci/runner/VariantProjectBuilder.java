@@ -116,6 +116,7 @@ public class VariantProjectBuilder {
         Path mainProjectPath = projectTempDir.resolve(projectName);
         Git git = GitUtils.getGit(repositoryPath);
         FileUtils.saveFilesFromObjectId(mainProjectPath, context.getMergeCommitObjects(), git);
+        FileUtils.enableTestsInAllPoms(mainProjectPath);
         return mainProjectPath;
     }
 
@@ -143,6 +144,7 @@ public class VariantProjectBuilder {
             }
         }
 
+        FileUtils.enableTestsInAllPoms(variantPath);
         return variantPath;
     }
 

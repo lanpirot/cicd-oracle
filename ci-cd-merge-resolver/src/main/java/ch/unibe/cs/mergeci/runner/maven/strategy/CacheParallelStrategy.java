@@ -53,10 +53,11 @@ public class CacheParallelStrategy implements MavenExecutionStrategy {
         cacheManager.injectCacheArtifacts(project);
 
         String mavenCommand = commandResolver.resolveMavenCommand(project);
+        String mavenGoal   = commandResolver.resolveMavenGoal(project);
         String projectName = project.getFileName().toString();
         Path logFile = logDir.resolve(projectName + "_compilation");
 
-        processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand));
+        processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand, mavenGoal));
     }
 
     private void buildRemainingProjectsInParallel(Path[] projects) {
@@ -91,9 +92,10 @@ public class CacheParallelStrategy implements MavenExecutionStrategy {
 
         // Build with offline mode to use cache
         String mavenCommand = commandResolver.resolveMavenCommand(project);
+        String mavenGoal   = commandResolver.resolveMavenGoal(project);
         Path logFile = logDir.resolve(projectName + "_compilation");
 
-        processExecutor.executeCommand(project, logFile, AppConfig.buildCommandOffline(mavenCommand));
+        processExecutor.executeCommand(project, logFile, AppConfig.buildCommandOffline(mavenCommand, mavenGoal));
     }
 
     @Override

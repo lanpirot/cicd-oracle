@@ -50,6 +50,7 @@ public class DatasetReader {
                 info.setNumJavaFiles((int) row.getCell(Utility.MERGECOLUMN.numJavaFiles.getColumnNumber()).getNumericCellValue());
                 info.setMultiModule(row.getCell(Utility.MERGECOLUMN.isMultiModule.getColumnNumber()).getBooleanCellValue());
                 info.setNormalizedElapsedTime((float) row.getCell(Utility.MERGECOLUMN.normalizedElapsedTime.getColumnNumber()).getNumericCellValue());
+                info.setHasTestConflict(row.getCell(Utility.MERGECOLUMN.hasTestConflict.getColumnNumber()).getBooleanCellValue());
 
                 merges.add(info);
             }
@@ -71,6 +72,7 @@ public class DatasetReader {
         private int numJavaFiles;
         private boolean multiModule;
         private float normalizedElapsedTime;
+        private boolean hasTestConflict;
 
         /**
          * Get a short version of the merge commit hash (first 8 characters).

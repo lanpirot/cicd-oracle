@@ -12,14 +12,26 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-    private static final boolean FRESH_RUN_DEFAULT = false;
+    private static final boolean FRESH_RUN = false;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
      * @return true if FRESH_RUN mode is enabled
      */
     public static boolean isFreshRun() {
-        return Boolean.parseBoolean(System.getProperty("freshRun", String.valueOf(FRESH_RUN_DEFAULT)));
+        return Boolean.parseBoolean(System.getProperty("freshRun", String.valueOf(FRESH_RUN)));
+    }
+
+    /**
+     * If true: repos currently marked SUCCESS are reset to NOT_PROCESSED_BUT_CLONED so that
+     * the ConflictCollector and VariantRunner re-analyze them from scratch — without re-cloning.
+     * Repos with any other status are left untouched.
+     * Can be overridden via system property "reanalyzeSuccess".
+     */
+    private static final boolean REANALYZE_SUCCESS = true;
+
+    public static boolean isReanalyzeSuccess() {
+        return Boolean.parseBoolean(System.getProperty("reanalyzeSuccess", String.valueOf(REANALYZE_SUCCESS)));
     }
 
     /**
@@ -37,22 +49,34 @@ public class AppConfig {
      * JaCoCo goals are included when coverage is active.
      */
     public static String[] buildCommand(String mavenExecutable) {
+        return buildCommand(mavenExecutable, "test");
+    }
+
+    public static String[] buildCommand(String mavenExecutable, String mavenGoal) {
         if (isCoverageActivated()) {
-            return new String[]{mavenExecutable, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
-                    JACOCO_FULL + ":prepare-agent", "test", JACOCO_FULL + ":report"};
+            return new String[]{mavenExecutable, MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                    SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
+                    JACOCO_FULL + ":prepare-agent", mavenGoal, JACOCO_FULL + ":report"};
         }
-        return new String[]{mavenExecutable, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE, "test"};
+        return new String[]{mavenExecutable, MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE, mavenGoal};
     }
 
     /**
      * Same as {@link #buildCommand} but with {@code -o} (offline) prepended, for cache builds.
      */
     public static String[] buildCommandOffline(String mavenExecutable) {
+        return buildCommandOffline(mavenExecutable, "test");
+    }
+
+    public static String[] buildCommandOffline(String mavenExecutable, String mavenGoal) {
         if (isCoverageActivated()) {
-            return new String[]{mavenExecutable, "-o", MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
-                    JACOCO_FULL + ":prepare-agent", "test", JACOCO_FULL + ":report"};
+            return new String[]{mavenExecutable, "-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                    SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
+                    JACOCO_FULL + ":prepare-agent", mavenGoal, JACOCO_FULL + ":report"};
         }
-        return new String[]{mavenExecutable, "-o", MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE, "test"};
+        return new String[]{mavenExecutable, "-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE, mavenGoal};
     }
 
     // ========== JAVA INSTALLATIONS ==========
@@ -71,6 +95,10 @@ public class AppConfig {
     );
 
     // ========== PHASE 1: REPO COLLECTOR ==========
+    /** Hard wall-clock timeout for a single git clone, in seconds. */
+    public static final int CLONE_TIMEOUT_SECONDS = 600; // 10 minutes
+    /** Per-operation socket timeout passed to JGit transport, in seconds. */
+    public static final int CLONE_SOCKET_TIMEOUT_SECONDS = 120; // 2 minutes
     public static final Path BASE_DIR = Paths.get("/home/lanpirot");
     public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");
     public static final Path INPUT_PROJECT_XLSX = DATA_BASE_DIR.resolve("projects_Java_desc-stars-1000.xlsx"); // Excel with list of repositories and their repo URL
@@ -109,6 +137,13 @@ public class AppConfig {
     public static final int MAX_THREADS = Math.min(Math.round((float) totalRamGB / 8), 16); // avoid hogging all RAM of machine, leave 8GB per thread
 
     /**
+     * Maven batch mode flag.
+     * Suppresses interactive progress bars and ANSI escape codes, making log files
+     * produced by redirectOutput() clean and reliably parseable.
+     */
+    public static final String MAVEN_BATCH_MODE = "-B";
+
+    /**
      * Maven reactor behavior flag.
      * -fae (fail-at-end): Continue building all modules regardless of failures.
      * This ensures we get compilation results for all modules, not just those before the first failure.
@@ -120,6 +155,13 @@ public class AppConfig {
      * Allows the build to continue even if tests fail, so we can collect complete test results.
      */
     public static final String MAVEN_TEST_FAILURE_IGNORE = "-Dmaven.test.failure.ignore=true";
+
+    /**
+     * Override any pom.xml-level skipTests/maven.test.skip flags so command-line properties
+     * always win, ensuring tests are actually executed even in projects that default to skipping.
+     */
+    private static final String SKIP_TESTS_OVERRIDE      = "-DskipTests=false";
+    private static final String MAVEN_TEST_SKIP_OVERRIDE = "-Dmaven.test.skip=false";
 
     /**
      * Timeout multiplier for variant testing in ResolutionVariantRunner.

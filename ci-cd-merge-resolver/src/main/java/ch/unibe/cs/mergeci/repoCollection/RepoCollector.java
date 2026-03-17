@@ -57,6 +57,7 @@ public class RepoCollector {
 
     public void processExcel(Path excelFile) throws Exception {
         cleanForFreshRun();
+        resetForReanalysis();
         FileUtils.deleteDirectory(tempDir.toFile());
 
         BuildFailureLog failureLog = BuildFailureLog.createOrNull(
@@ -105,6 +106,12 @@ public class RepoCollector {
         repoManager.resetCache();
     }
 
+    private void resetForReanalysis() {
+        if (!AppConfig.isReanalyzeSuccess()) return;
+        System.out.println("REANALYZE_SUCCESS enabled: Resetting successful repositories for re-analysis...");
+        repoManager.resetSuccessfulRepos();
+    }
+
     private int countUniqueRepos(Sheet sheet) {
         Set<String> seen = new HashSet<>();
         int total = 0;
@@ -126,7 +133,8 @@ public class RepoCollector {
     private void processRepo(Row row, String repoName, String repoUrl, int currentRepo, int totalRepos,
                               Workbook workbook, Path excelFile, BuildFailureLog failureLog) throws Exception {
         RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
-        if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED) {
+        if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED
+                && existingStatus != RepositoryStatus.NOT_PROCESSED_BUT_CLONED) {
             Path excelOutFile = datasetDir.resolve(repoName + AppConfig.XLSX);
             if (existingStatus == RepositoryStatus.SUCCESS && (!Files.exists(datasetDir) || !Files.exists(excelOutFile))) {
                 System.out.printf("[%d/%d] %s - ⚠ Marked SUCCESS but excel missing, reprocessing...\n", currentRepo, totalRepos, repoName);
@@ -193,7 +201,7 @@ public class RepoCollector {
         if (Files.exists(repoFolder.resolve("build.xml"))) found.add("ant");
         if (Files.exists(repoFolder.resolve("build.sbt"))) found.add("sbt");
         if (Files.exists(repoFolder.resolve("BUILD")) || Files.exists(repoFolder.resolve("BUILD.bazel"))) found.add("bazel");
-        if (found.isEmpty()) return "none";
+        if (found.isEmpty()) return "other";
         return String.join(",", found);
     }
 

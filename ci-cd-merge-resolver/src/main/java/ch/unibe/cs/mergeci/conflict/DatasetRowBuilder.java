@@ -27,6 +27,7 @@ public class DatasetRowBuilder {
 
         int numJavaFiles = countJavaFiles(merge);
         boolean isMultiModule = isMultiModule(result);
+        boolean hasTestConflict = hasTestConflict(merge);
 
         return ExcelWriter.DatasetRow.builder()
                 .mergeCommit(mergeCommit)
@@ -45,6 +46,7 @@ public class DatasetRowBuilder {
                 .normalizedElapsedTime(result.getNormalizedElapsedTime())
                 .numberOfModules(result.getNumberOfModules())
                 .modulesPassed(result.getModulesPassed())
+                .hasTestConflict(hasTestConflict)
                 .build();
     }
 
@@ -57,6 +59,13 @@ public class DatasetRowBuilder {
                 .stream()
                 .filter(file -> file.endsWith(AppConfig.JAVA))
                 .count();
+    }
+
+    private boolean hasTestConflict(MergeInfo merge) {
+        return merge.getConflictingFiles()
+                .keySet()
+                .stream()
+                .anyMatch(file -> file.contains("src/test/"));
     }
 
     /**

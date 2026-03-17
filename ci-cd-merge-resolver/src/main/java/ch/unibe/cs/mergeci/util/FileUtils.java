@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -77,7 +78,9 @@ public class FileUtils {
         // store all the paths of files and folders present
         // inside directory
         if (!file.exists()) return;
-        for (File subfile : file.listFiles()) {
+        File[] children = file.listFiles();
+        if (children == null) return;
+        for (File subfile : children) {
 
             // if it is a subfolder,e.g Rohan and Ritik,
             //  recursively call function to empty subfolder
@@ -105,12 +108,20 @@ public class FileUtils {
         if (!destinationDirectory.exists()) {
             destinationDirectory.mkdir();
         }
-        for (String f : sourceDirectory.list()) {
+        String[] entries = sourceDirectory.list();
+        if (entries == null) return;
+        for (String f : entries) {
             copyDirectoryCompatibilityMode(new File(sourceDirectory, f), new File(destinationDirectory, f));
         }
     }
 
     public static void copyDirectoryCompatibilityMode(File source, File destination) throws IOException {
+        Path sourcePath = source.toPath();
+        if (Files.isSymbolicLink(sourcePath)) {
+            Path linkTarget = Files.readSymbolicLink(sourcePath);
+            Files.createSymbolicLink(destination.toPath(), linkTarget);
+            return;
+        }
         if (source.isDirectory()) {
             copyDirectory(source, destination);
         } else {
@@ -132,6 +143,38 @@ public class FileUtils {
         }catch (IOException e) {
             e.printStackTrace();
             System.out.println(sourceFile.getAbsoluteFile());
+        }
+    }
+
+    /**
+     * Finds every {@code pom.xml} under {@code projectDir} and replaces any hardcoded
+     * {@code <skipTests>true</skipTests>} with {@code <skipTests>false</skipTests>}.
+     *
+     * <p>The Maven Surefire {@code skipTests} configuration element is <em>not</em>
+     * overridable via {@code -DskipTests=false} when it is hardcoded inside the plugin's
+     * {@code <configuration>} block (unlike when it is declared in {@code <properties>}).
+     * Patching the file directly is the only reliable way to force tests to run.
+     */
+    public static void enableTestsInAllPoms(Path projectDir) {
+        try (Stream<Path> stream = Files.walk(projectDir)) {
+            stream.filter(p -> p.getFileName().toString().equals("pom.xml"))
+                  .forEach(FileUtils::patchSkipTestsInPom);
+        } catch (IOException e) {
+            System.err.println("Warning: failed to walk " + projectDir + " for pom.xml patching: " + e.getMessage());
+        }
+    }
+
+    private static void patchSkipTestsInPom(Path pomFile) {
+        try {
+            String content = new String(Files.readAllBytes(pomFile), StandardCharsets.UTF_8);
+            String patched = content.replaceAll(
+                    "(?i)<skipTests>\\s*true\\s*</skipTests>",
+                    "<skipTests>false</skipTests>");
+            if (!patched.equals(content)) {
+                Files.write(pomFile, patched.getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            System.err.println("Warning: failed to patch skipTests in " + pomFile + ": " + e.getMessage());
         }
     }
 

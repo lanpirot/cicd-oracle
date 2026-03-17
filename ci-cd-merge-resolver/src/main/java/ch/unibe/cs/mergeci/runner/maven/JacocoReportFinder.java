@@ -2,7 +2,9 @@ package ch.unibe.cs.mergeci.runner.maven;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +24,13 @@ public class JacocoReportFinder {
     private static final PathMatcher PATH_MATCHER = FileSystems.getDefault().getPathMatcher("glob:" +
             "**/target/site/jacoco/jacoco.xml");
 
+    /** Rethrows parse errors without printing to stderr (suppresses the default "[Fatal Error]" line). */
+    private static final ErrorHandler SILENT_ERROR_HANDLER = new ErrorHandler() {
+        @Override public void warning(SAXParseException e) throws SAXException { throw e; }
+        @Override public void error(SAXParseException e) throws SAXException { throw e; }
+        @Override public void fatalError(SAXParseException e) throws SAXException { throw e; }
+    };
+
     public static CoverageDTO getCoverageResults(Path projectPath, List<String> conflictJavaFiles) {
         List<Path> jacocoReports = findJacocoReports(projectPath);
         DocumentBuilderFactory factory = createXmlDocumentBuilderFactory();
@@ -33,7 +42,12 @@ public class JacocoReportFinder {
 
         try {
             for (Path path : jacocoReports) {
-                Document doc = factory.newDocumentBuilder().parse(path.toFile());
+                if (Files.size(path) == 0) {
+                    throw new IOException("JaCoCo report is empty (build likely killed during write): " + path.getFileName());
+                }
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                builder.setErrorHandler(SILENT_ERROR_HANDLER);
+                Document doc = builder.parse(path.toFile());
                 doc.getDocumentElement().normalize();
                 int[] counts = accumulateCountsFromDocument(doc);
                 coveredInstructions += counts[0];

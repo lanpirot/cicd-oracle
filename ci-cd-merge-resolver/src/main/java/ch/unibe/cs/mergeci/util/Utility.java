@@ -37,7 +37,8 @@ public class Utility {
         testSuccess(12, "Test Success"),
         testTime(13, "Test Time"),
         elapsedTestTime(14, "Elapsed Time"),
-        normalizedElapsedTime(15, "Normalized Elapsed Time");
+        normalizedElapsedTime(15, "Normalized Elapsed Time"),
+        hasTestConflict(16, "Has Test Conflict");
 
         private final int columnNumber;
         private final String columnName;

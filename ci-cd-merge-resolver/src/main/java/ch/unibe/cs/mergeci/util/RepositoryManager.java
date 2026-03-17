@@ -3,12 +3,20 @@ package ch.unibe.cs.mergeci.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Manages repository lifecycle and status tracking to avoid redundant downloads.
@@ -54,11 +62,11 @@ public class RepositoryManager {
         Path repoPath = repoBaseDir.resolve(repoName);
 
         // Download if:
-        // 1. Never processed before
+        // 1. Never processed and never cloned
         // 2. Directory doesn't exist (regardless of status, except we don't re-download successful ones)
         // Note: Rejected repositories keep empty directories as markers, so no re-download needed
         return status == RepositoryStatus.NOT_PROCESSED ||
-               (status != RepositoryStatus.SUCCESS && !repoPath.toFile().exists());
+               (status != RepositoryStatus.SUCCESS && status != RepositoryStatus.NOT_PROCESSED_BUT_CLONED && !repoPath.toFile().exists());
     }
 
     /**
@@ -73,23 +81,43 @@ public class RepositoryManager {
 
         if (shouldDownloadRepository(repoName)) {
             if (repoPath.toFile().exists()) {
-                // Clean up previous rejected repo (empty directory)
+                if (repoPath.resolve(".git").toFile().exists()) {
+                    // Folder exists and is a valid git repo — treat as already cloned
+                    System.out.printf("  ↩ Folder already present for %s — reusing as NOT_PROCESSED_BUT_CLONED%n", repoName);
+                    setRepositoryStatus(repoName, RepositoryStatus.NOT_PROCESSED_BUT_CLONED);
+                    return repoPath;
+                }
+                // Empty, non-git, or otherwise corrupt folder — remove and re-clone
                 FileUtils.deleteDirectory(repoPath.toFile());
             }
 
+            System.out.printf("  Cloning %s...", repoName);
+            System.out.flush();
+
+            ExecutorService cloneExecutor = Executors.newSingleThreadExecutor();
+            Future<QuietProgressMonitor> future = cloneExecutor.submit(() -> GitUtils.cloneRepo(repoPath, repoUrl));
+            cloneExecutor.shutdown();
+
             try {
-                System.out.printf("  Cloning %s...", repoName);
-                System.out.flush();
-                QuietProgressMonitor monitor = GitUtils.cloneRepo(repoPath, repoUrl);
+                QuietProgressMonitor monitor = future.get(AppConfig.CLONE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
                 System.out.println(" " + monitor.getSummary());
-                setRepositoryStatus(repoName, RepositoryStatus.PROCESSING);
+                setRepositoryStatus(repoName, RepositoryStatus.NOT_PROCESSED_BUT_CLONED);
                 return repoPath;
-            } catch (Exception e) {
-                System.out.println(" ✗ Clone failed");
-                // Mark as clone failed but create empty directory as marker
+            } catch (TimeoutException e) {
+                future.cancel(true);
+                System.out.printf(" ✗ Clone timed out after %ds%n", AppConfig.CLONE_TIMEOUT_SECONDS);
                 repoPath.toFile().mkdirs();
                 setRepositoryStatus(repoName, RepositoryStatus.REJECTED_CLONE_FAILED);
-                throw new IOException("Failed to clone repository: " + repoUrl, e);
+                throw new IOException("Clone timed out after " + AppConfig.CLONE_TIMEOUT_SECONDS + "s: " + repoUrl, e);
+            } catch (ExecutionException e) {
+                System.out.println(" ✗ Clone failed");
+                repoPath.toFile().mkdirs();
+                setRepositoryStatus(repoName, RepositoryStatus.REJECTED_CLONE_FAILED);
+                throw new IOException("Failed to clone repository: " + repoUrl, e.getCause());
+            } catch (InterruptedException e) {
+                future.cancel(true);
+                Thread.currentThread().interrupt();
+                throw new IOException("Clone interrupted: " + repoUrl, e);
             }
         }
 
@@ -181,6 +209,7 @@ public class RepositoryManager {
                 stringMap.put(entry.getKey(), entry.getValue().name());
             }
             
+            Files.createDirectories(statusFile.getParent());
             mapper.writeValue(statusFile.toFile(), stringMap);
         } catch (IOException e) {
             System.err.println("Failed to save repository status cache: " + e.getMessage());
@@ -202,5 +231,16 @@ public class RepositoryManager {
     public void resetCache() {
         repoStatusCache.clear();
         repoStatusCache.putAll(loadStatusCache());
+    }
+
+    /**
+     * Reset all SUCCESS repositories to NOT_PROCESSED_BUT_CLONED so they are re-analysed
+     * by the ConflictCollector and VariantRunner without re-cloning.
+     * Used by REANALYZE_SUCCESS mode.
+     */
+    public void resetSuccessfulRepos() {
+        repoStatusCache.replaceAll((name, status) ->
+                status == RepositoryStatus.SUCCESS ? RepositoryStatus.NOT_PROCESSED_BUT_CLONED : status);
+        saveStatusCache();
     }
 }

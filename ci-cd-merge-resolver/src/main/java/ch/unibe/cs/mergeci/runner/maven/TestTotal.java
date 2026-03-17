@@ -33,6 +33,8 @@ public class TestTotal {
 
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
                 "**/target/surefire-reports/*.txt");
+        PathMatcher failsafeMatcher = FileSystems.getDefault().getPathMatcher("glob:" +
+                "**/target/failsafe-reports/*.txt");
 
         List<Path> paths = null;
         try {
@@ -40,7 +42,7 @@ public class TestTotal {
 
 
         for (Path file : paths) {
-            if (pathMatcher.matches(file)) {
+            if (pathMatcher.matches(file) || failsafeMatcher.matches(file)) {
                 TestResult testResult = TestResult.createTestResultFromFile(file.toFile());
                 if (testResult == null) {continue;}
                 runNum += testResult.getRunNum();

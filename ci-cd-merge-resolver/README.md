@@ -1,38 +1,10 @@
 # CI/CD Merge Conflict Resolver
 
-Research tool for analyzing Git merge conflicts by generating resolution variants and evaluating them using CI/CD feedback.
-
-## Recent Improvements
-
-### ✅ Multiple Merge Base Support (RECURSIVE Strategy)
-- **Fixed**: Changed from `RESOLVE` to `RECURSIVE` merge strategy in `GitUtils.makeMerge()`
-- **Impact**: Now handles criss-cross merges with multiple merge bases
-- **Verification**: Added explicit tests that verify multiple merge bases are detected
-- **Tests**: `CrissCrossMergeTest`, `MultipleMergeBasesTest`
-- **Details**: See `RECURSIVE_MERGE_STRATEGY.md`
-
-### ✅ Comprehensive Test Coverage
-- **Status**: 189 tests passing (0 failures, 0 errors)
-- **Coverage**: Improved from baseline with 60+ new tests
-- **Key additions**:
-  - `ExecutionTimeAnalyzerTest` (14 tests)
-  - `TestTotalXmlTest` (11 tests)
-  - `JacocoReportFinderTest` (9 tests)
-  - `MavenCacheManagerTest` (12 tests)
-  - Strategy tests (CoverageStrategy, CacheParallelStrategy)
-  - Analysis tests (VariantRanking, VariantResolution)
-- **Details**: See `COVERAGE_ANALYSIS.md`
-
-### ✅ `-fae` (Fail-at-End) Aware Test Evaluation
-- **Changed**: Test results are only discarded when zero modules compiled (`modulesPassed == 0`)
-- **Impact**: Partial compilation (some modules pass) no longer invalidates test results
-- **Success criteria**: `isSuccessful()` requires `modulesPassed > 0 && numPassedTests > 0`
-- **Dataset**: `numberOfModules` and `modulesPassed` recorded per merge
+Research pipeline that studies automated merge conflict resolution by brute-forcing resolution patterns and evaluating them via Maven builds and test suites.
 
 ## Quick Start
 
 ```bash
-# Build and run
 mvn clean package
 java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
 ```
@@ -42,216 +14,173 @@ java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplicatio
 - **Java 21** (JDK, set in `JAVA_HOME`)
 - **Git** (in `PATH`)
 - **Apache Maven 3.9+**
-- **Maven Daemon** (optional, for optimization)
 
-## Overview
+## Pipeline Overview
 
-For each merge commit with conflicts, the tool:
+Three sequential phases, all coordinated by `CiCdMergeResolverApplication`:
 
-1. Identifies conflicting files and chunks (using JGit)
-2. Generates resolution variants using patterns (`OursPattern`, `TheirsPattern`, etc.)
-3. Creates separate project copies for each variant
-4. Executes Maven build and tests for all variants
-5. Collects results (compilation status, test results, execution times)
-6. Stores structured JSON output for analysis
+```
+Phase 0/1: collect()              → RepoCollector → MergeConflictCollector
+Phase 2:   generateMergeVariants() → ResolutionVariantRunner
+Phase 3:   analyzeResults()       → ResultsPresenter
+```
+
+### Phase 1 — Dataset Collection
+
+`RepoCollector` reads an Excel file of GitHub repositories, clones each, and for Maven projects invokes `MergeConflictCollector`. The collector:
+
+1. Finds merge commits that produce conflicts via JGit
+2. **Resamples** if the first batch yields some but fewer than `MAX_CONFLICT_MERGES` Java-conflict merges — successive batches of unvisited commits are inspected until the quota is filled or no further improvement is found
+3. Checks out each qualifying merge, runs a baseline Maven build, and writes a per-project dataset Excel file
+
+Status is persisted in `.repo_status.json` so interrupted runs resume cleanly.
+
+### Phase 2 — Variant Experiments
+
+`ResolutionVariantRunner` iterates over four experiment modes:
+
+| Mode | Parallel | Cache | SkipVariants |
+|------|----------|-------|--------------|
+| `human_baseline` | — | — | ✓ |
+| `cache_parallel` | ✓ | ✓ | — |
+| `parallel` | ✓ | — | — |
+| `no_optimization` | — | — | — |
+
+For each merge, `MavenExecutionFactory` runs variants **just-in-time**:
+
+- Variant directories are written to disk on demand, in batches of `MAX_THREADS`
+- **Rolling execution** (parallel modes): a free thread slot is refilled as soon as any variant finishes, eliminating straggler idle time
+- **Cache warm-up** (`cache_parallel`): the first variant runs synchronously to populate the local Maven cache before parallel variants copy from it
+- The time budget is `TIMEOUT_MULTIPLIER × normalizedBaselineTime`; each variant receives only the remaining time until the deadline
+- Variant directories are deleted immediately after their results are collected
+
+`human_baseline` results are written to JSON first; subsequent modes read `humanBaselineSeconds` from that JSON.
+
+### Phase 3 — Analysis
+
+`ResultsPresenter` loads all JSON result files and delegates to:
+`StatisticsReporter`, `VariantResolutionAnalyzer`, `VariantRankingAnalyzer`, `ExecutionTimeAnalyzer`.
 
 ## Configuration
 
-Key settings in `AppConfig.java`:
-- `BASE_DIR`: Base directory for operations
-- `MAX_CONFLICT_MERGES`: Maximum merges per repository (default: 10 production, 5 test)
-- `MAX_THREADS`: Parallel execution threads
+All paths, timeouts, and feature flags live in `AppConfig.java`.
 
-### Java installations (machine-specific — update before first run)
+### Java installations (machine-specific)
 
-`JAVA_HOMES` in `AppConfig.java` is hardcoded to the paths on the original development machine.
-You **must** update it to reflect the JDKs installed on your system before running:
+`JAVA_HOMES` maps Java major versions to JDK paths. The tool automatically selects the closest available JDK ≥ the version declared in a project's `pom.xml`:
 
 ```java
 public static final Map<Integer, Path> JAVA_HOMES = Map.of(
-    8,  Paths.get("/usr/lib/jvm/<your-jdk-8-dir>"),
-    17, Paths.get("/usr/lib/jvm/<your-jdk-17-dir>"),
-    21, Paths.get("/usr/lib/jvm/<your-jdk-21-dir>")
-    // add/remove entries to match what is actually installed
+    8,  Paths.get("/usr/lib/jvm/<your-jdk-8>"),
+    11, Paths.get("/usr/lib/jvm/<your-jdk-11>"),
+    17, Paths.get("/usr/lib/jvm/<your-jdk-17>"),
+    21, Paths.get("/usr/lib/jvm/<your-jdk-21>")
 );
 ```
 
 Find available JDKs with:
 ```bash
-ls /usr/lib/jvm/          # Linux
-ls /Library/Java/JavaVirtualMachines/  # macOS
+ls /usr/lib/jvm/                          # Linux
+ls /Library/Java/JavaVirtualMachines/     # macOS
 ```
 
-The tool uses this map to automatically switch `JAVA_HOME` when a repository's `pom.xml` requires a specific Java version. Only include versions that are actually present on disk.
+Only include versions that are actually present on disk.
 
-## Complete Workflow
+### Key tunables
 
-### Step 1: Collect Datasets
+| Property | Default | Effect |
+|----------|---------|--------|
+| `freshRun` | `false` | Delete all output and start from scratch |
+| `coverageActivated` | `true` | Collect JaCoCo coverage data |
+| `maxConflictMerges` | `10` | Max Java-conflict merges collected per project |
+| `MAX_THREADS` | `min(RAM_GB/8, 16)` | Parallel build threads |
+| `TIMEOUT_MULTIPLIER` | `10` | Variant budget = baseline × multiplier |
 
-Clone repositories and generate conflict datasets:
-
-```java
-RepoCollector collector = new RepoCollector(
-    "repos",   // clone directory
-    "temp",    // working directory
-    1,         // start row
-    100        // end row
-);
-collector.processExcel(new File("projects_Java_desc-stars-1000.xlsx"));
-```
-
-**Output**: Excel files in `conflict_datasets/` with merge metadata
-
-### Step 2: Run Experiments
-
-Test resolution variants across all datasets:
-
-```java
-ExperimentRunner runner = new ExperimentRunner(
-    new File("experiments/datasets"),
-    new File("experiments/projects_Java_desc-stars-1000.xlsx"),
-    new File("experiments/temp")
-);
-runner.runTests(new File("experiments/results"), false);
-```
-
-**Output**: JSON files in `experiments/results/`
-
-### Step 3: Analyze Results
-
-```java
-MetricsAnalyzer analyzer = new MetricsAnalyzer(
-    new File("analysis/results")
-);
-analyzer.makeFullAnalysis();
-```
-
-### Step 4: Pattern Heuristics (Optional)
-
-Generate pattern heuristics from conflict chunks:
-
+Override at runtime:
 ```bash
-cd src/main/resources/pattern-heuristics
-python3 complete_workflow.py
+java -DfreshRun=true -DmaxConflictMerges=5 -cp "target/*:target/lib/*" \
+     ch.unibe.cs.mergeci.CiCdMergeResolverApplication
 ```
-
-**Input**: `Java_chunks_original.csv` (conflict chunk data)
-**Output**: `relative_numbers_summary.csv` (pattern frequency analysis)
-
-**Features**:
-- **In-memory processing**: No intermediate files written to disk
-- **Log-bucket concatenation**: Strategies grouped by number_of_chunks ranges (2-3, 4-7, 8-15, etc.)
-- **Row-wise unification**: Identical strategies unified within each row
-- **Relativized factors**: Strategy counts normalized to sum to 100 within each row
-- **9-digit precision**: All percentage calculations use high precision formatting
-- **NON strategy filtering**: NON entries removed from global overview row
 
 ## Execution Modes
 
-Two modes control behavior:
-
-### FRESH_RUN Mode
-Clean slate - deletes everything and starts from scratch:
+### Fresh run
 ```bash
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-DfreshRun=true"
+java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
 ```
+Deletes all output directories and processes everything from scratch.
 
-### Resume Mode (Default)
-Continue from where work stopped:
+### Resume (default)
 ```bash
-mvn spring-boot:run
+java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
 ```
+Skips already-processed repositories and merges; picks up where work stopped.
 
-## Repository Management
-
-- **Successful repos**: Preserved between runs
-- **Rejected repos**: Empty directory markers
-- **Status tracking**: `.repo_status.json`
-- **Smart downloads**: Only new/failed repositories
-
-## Merge Selection Criteria
-
-A merge is included in the dataset if:
-1. Repository is a Maven project (has `pom.xml`)
-2. Merge contains Java conflicts (`.java` files)
-3. Project has at least one passing test
-4. Within limit (`MAX_CONFLICT_MERGES` per repository)
-
-## Timeout Handling
-
-- **Conflict Collection**: 5-minute timeout (timed-out merges are skipped)
-- **Variant Testing**: 20-minute timeout (timed-out variants marked as `TIMEOUT`)
-
-## Directory Structure
+## Data Directories
 
 ```
 /home/lanpirot/data/bruteforcemerge/
-├── conflict_datasets/        # Dataset Excel files
-│   ├── atmosphere.xlsx
-│   └── jackson-databind.xlsx
-├── experiments/              # Experiment JSON results
-│   ├── no_optimization/
-│   ├── parallel/
-│   └── cache_parallel/
-├── repos/                    # Cloned repositories
-└── temp/                     # Temporary working directory
+  conflict_datasets/     # Per-project Excel files (Phase 1 output)
+  variant_experiments/   # Per-project JSON results, one subdir per mode (Phase 2 output)
+  test/                  # All test output
+/home/lanpirot/tmp/
+  bruteforce_repos/      # Cloned repositories
+  bruteforce_tmp/        # Variant working directories
 ```
 
-## Complete Workflow Example
+## Build & Test
 
 ```bash
-# Fresh start
-mvn clean compile && mvn spring-boot:run -Dspring-boot.run.jvmArguments="-DfreshRun=true"
+mvn compile                          # Compile only
+mvn test                             # Run all tests
+mvn test -Dtest=ClassName            # Run a single test class
+mvn test -Dtest=ClassName#methodName # Run a single test method
+mvn clean package                    # Full build + package
+```
 
-# Generate pattern heuristics
-cd src/main/resources/pattern-heuristics
-python3 complete_workflow.py
-cd ../../../..
-
-# Commit results
-git add .
-git commit -m "feat: complete experiment results with pattern heuristics"
+Test property overrides:
+```bash
+mvn test -DfreshRun=true
+mvn test -DmaxConflictMerges=3
+mvn test -DcoverageActivated=false
 ```
 
 ## Resolution Patterns
 
-Implement `IPattern` interface to create custom patterns:
-- `OursPattern`: Take "ours" side
-- `TheirsPattern`: Take "theirs" side
-- `BasePattern`: Use base version
-- `EmptyPattern`: Remove conflicting code
-- `CompoundPattern`: Combine multiple patterns
+A conflict chunk is resolved by assigning one atomic pattern:
 
-## Success Criteria
+| Pattern | Meaning |
+|---------|---------|
+| `OURS` | Take the "ours" side |
+| `THEIRS` | Take the "theirs" side |
+| `BASE` | Use the base version |
+| `EMPTY` | Remove the conflicting block |
 
-A variant is successful if:
-- ✅ At least one module compiled successfully (`modulesPassed > 0`)
-- ✅ At least one test passed (`numPassedTests > 0`)
-- ✅ Build did not time out
+Compound patterns combine atomics (e.g., `OURSTHEIRS`). `StrategySelector` and `PatternHeuristics` (from `relative_numbers_summary.csv`) order the search. For large numbers of conflict chunks the space is exponential; the time budget is the natural stopping condition.
 
-## Research Questions
+## Merge Selection Criteria
 
-1. How often does brute-force resolution succeed?
-2. Can simple patterns match human quality?
-3. What is the computational cost?
-4. Do optimizations (caching, parallelization) help?
-5. Which patterns are most effective?
+A merge is included in the dataset when:
+1. The repository is a Maven project (`pom.xml` present)
+2. The merge produces Java file conflicts
+3. The baseline build compiles and at least one test passes
+4. The project has not yet reached `MAX_CONFLICT_MERGES` qualifying merges
 
-## Advanced: MergeAnalyzer
+## Variant Success Criteria
 
-Core component for single-merge analysis:
+A variant is successful when:
+- At least one module compiled (`modulesPassed > 0`)
+- At least one test passed (`numPassedTests > 0`)
+- The build did not time out
 
-```java
-MergeAnalyzer analyzer = new MergeAnalyzer(
-    new File("src/test/resources/test-merge-projects/zemberek-nlp"),
-    "temp"
-);
-analyzer.buildProjects("mergeCommit", "parent1", "parent2");
-analyzer.runTests(mavenRunner);
+## Pattern Heuristics (optional)
+
+Regenerate the pattern frequency table from raw conflict data:
+
+```bash
+cd src/main/resources/pattern-heuristics
+python3 complete_workflow.py
 ```
 
-## Documentation
-
-- **AGENTS.md**: Architecture and pipeline details
-- **RECURSIVE_MERGE_STRATEGY.md**: Multiple merge base support
-- **CRITICAL_UNTESTED_ANALYSIS.md**: Test coverage analysis
+**Input**: `Java_chunks_original.csv`
+**Output**: `relative_numbers_summary.csv` (used at runtime by `PatternHeuristics`)

@@ -57,7 +57,7 @@ public class MavenProcessExecutor {
     private void run(ProcessBuilder pb, String... command) {
         Process process = null;
         try {
-            process = pb.start();
+            process = startWithRetryOnTextFileBusy(pb, command);
             if (timeoutSeconds <= 0) {
                 process.waitFor(); // no timeout — run to completion
             } else {
@@ -71,11 +71,40 @@ public class MavenProcessExecutor {
         }
     }
 
+    /**
+     * Start the process, retrying up to 3 times with exponential back-off when the OS
+     * returns ETXTBSY (error=26, "Text file busy").  This can occur under parallel load
+     * when the kernel briefly sees the executable as write-busy between a close() and
+     * the subsequent execve() call.
+     */
+    private Process startWithRetryOnTextFileBusy(ProcessBuilder pb, String... command)
+            throws IOException, InterruptedException {
+        int maxAttempts = 3;
+        long delayMs = 50;
+        IOException lastException = null;
+        for (int attempt = 0; attempt < maxAttempts; attempt++) {
+            try {
+                return pb.start();
+            } catch (IOException e) {
+                if (e.getMessage() != null && e.getMessage().contains("error=26") && attempt < maxAttempts - 1) {
+                    lastException = e;
+                    System.err.printf("ETXTBSY on attempt %d for %s — retrying in %dms%n",
+                            attempt + 1, Arrays.toString(command), delayMs);
+                    Thread.sleep(delayMs);
+                    delayMs *= 2;
+                } else {
+                    throw e;
+                }
+            }
+        }
+        throw lastException; // unreachable, but satisfies the compiler
+    }
+
     private void handleTimeout(Process process, String... command) {
         System.err.println("TIMEOUT: Build exceeded " + timeoutSeconds +
                 " seconds. Killing process: " + Arrays.toString(command));
 
-        process.destroyForcibly();
+        killProcessTree(process);
 
         try {
             process.waitFor();
@@ -88,7 +117,13 @@ public class MavenProcessExecutor {
         e.printStackTrace();
 
         if (process != null && process.isAlive()) {
-            process.destroyForcibly();
+            killProcessTree(process);
         }
+    }
+
+    /** Kill the process and all its descendants (e.g. surefire-forked JVMs, JaCoCo agents). */
+    private void killProcessTree(Process process) {
+        process.descendants().forEach(ProcessHandle::destroyForcibly);
+        process.destroyForcibly();
     }
 }

@@ -5,10 +5,15 @@ package ch.unibe.cs.mergeci.util;
  */
 public enum RepositoryStatus {
     /**
-     * Repository has not been processed yet
+     * Repository has not been processed yet and has not been cloned
      */
     NOT_PROCESSED,
-    
+
+    /**
+     * Repository has been cloned but not yet processed
+     */
+    NOT_PROCESSED_BUT_CLONED,
+
     /**
      * Repository is currently being processed
      */
@@ -33,14 +38,34 @@ public enum RepositoryStatus {
      * Repository was rejected because it has no Java conflicts
      */
     REJECTED_NO_JAVA_CONFLICTS,
-    
+
     /**
      * Repository was rejected because it has no tests
      */
     REJECTED_NO_TESTS,
-    
+
     /**
-     * Repository was rejected for other reasons
+     * Repository was rejected because all qualifying merges timed out during the baseline build
+     */
+    REJECTED_TIMEOUT,
+
+    /**
+     * Repository was rejected because all qualifying merges failed to compile (modulesPassed == 0)
+     */
+    REJECTED_BUILD_FAILED,
+
+    /**
+     * Repository was rejected because all qualifying merges compiled but every test failed
+     */
+    REJECTED_ALL_TESTS_FAILED,
+
+    /**
+     * Repository was rejected due to a mix of different failure types across merges
+     */
+    REJECTED_MULTI,
+
+    /**
+     * Repository was rejected due to unexpected exceptions during merge processing
      */
     REJECTED_OTHER;
     

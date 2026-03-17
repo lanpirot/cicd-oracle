@@ -46,6 +46,7 @@ public class ExcelWriter {
             row.createCell(Utility.MERGECOLUMN.normalizedElapsedTime.getColumnNumber()).setCellValue(r.normalizedElapsedTime());
             row.createCell(Utility.MERGECOLUMN.numberOfModules.getColumnNumber()).setCellValue(r.numberOfModules());
             row.createCell(Utility.MERGECOLUMN.modulesPassed.getColumnNumber()).setCellValue(r.modulesPassed());
+            row.createCell(Utility.MERGECOLUMN.hasTestConflict.getColumnNumber()).setCellValue(r.hasTestConflict());
         }
 
 
@@ -74,7 +75,8 @@ public class ExcelWriter {
             float testTime,
             float normalizedElapsedTime,
             int numberOfModules,
-            int modulesPassed
+            int modulesPassed,
+            boolean hasTestConflict
     ) {
     }
 
