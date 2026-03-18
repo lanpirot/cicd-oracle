@@ -23,9 +23,9 @@ public class ExecutionTimeAnalyzer {
         List<Double> ratios = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            if (merge.getCompilationResult() == null || merge.getVariantsExecution() == null) continue;
+            if (merge.getCompilationResult() == null || merge.getVariants() == null) continue;
             double baselineTime = merge.getCompilationResult().getTotalTime();
-            double variantTime = merge.getVariantsExecution().getExecutionTimeSeconds();
+            double variantTime = merge.getVariantsExecutionTimeSeconds();
 
             if (baselineTime > 0) {
                 double ratio = variantTime / baselineTime;

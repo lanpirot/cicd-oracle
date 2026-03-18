@@ -14,6 +14,7 @@ import org.eclipse.jgit.api.Git;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -73,18 +74,19 @@ public class DatasetCollectionOrchestrator {
         int totalMergeCount = loadResult.totalMergeCount;
         int totalCommitCount = loadResult.totalCommitCount;
 
-        // Filter to Java conflicts only
+        int totalConflictCount = allMerges.size();
+        // Count Java conflicts for statistics (no longer used for filtering)
         int javaConflictCount = mergeFilter.countJavaConflicts(allMerges);
 
-        if (javaConflictCount == 0) {
+        if (totalConflictCount == 0) {
             return buildRejectionResult(
-                    RepositoryStatus.REJECTED_NO_JAVA_CONFLICTS,
-                    "No merges with Java file conflicts found",
-                    repoName, repoUrl, totalCommitCount, totalMergeCount, allMerges.size(), 0, 0, 0, 0);
+                    RepositoryStatus.REJECTED_NO_CONFLICTS,
+                    "No merges with conflicts found",
+                    repoName, repoUrl, totalCommitCount, totalMergeCount, 0, 0, 0, 0, 0);
         }
 
-        System.out.printf("  → Processing %d merges with Java conflicts (out of %d total merges)\n",
-                javaConflictCount, totalMergeCount);
+        System.out.printf("  → Processing %d merges with conflicts (%d with Java conflicts, out of %d total merges)\n",
+                totalConflictCount, javaConflictCount, totalMergeCount);
 
         // Clean temp directory
         FileUtils.deleteDirectory(tempPath.toFile());
@@ -95,7 +97,7 @@ public class DatasetCollectionOrchestrator {
                 projectPath,
                 tempPath,
                 projectName,
-                javaConflictCount);
+                totalConflictCount);
 
         // Determine status and write results
         return buildFinalResult(
@@ -105,21 +107,12 @@ public class DatasetCollectionOrchestrator {
                 repoUrl,
                 totalCommitCount,
                 totalMergeCount,
-                allMerges.size(),
+                totalConflictCount,
                 javaConflictCount);
     }
 
     /**
-     * Load merges from repository, resampling until we have enough good (Java-conflict) merges.
-     *
-     * <p>Algorithm:
-     * <ol>
-     *   <li>First sample: fetch up to {@code maxConflictMerges} any-conflict merges.</li>
-     *   <li>Count how many have Java conflicts ("good" merges).</li>
-     *   <li>If {@code 0 < good < max}: fetch the next batch of any-conflict merges (not yet
-     *       inspected) and add them. Repeat as long as at least one new good merge is found.</li>
-     *   <li>Stop when {@code good >= max}, no improvement, or no more merges exist.</li>
-     * </ol>
+     * Load merges from repository up to {@code maxConflictMerges} any-conflict merges.
      *
      * @throws RuntimeException if Git operations fail
      */
@@ -128,21 +121,16 @@ public class DatasetCollectionOrchestrator {
             int totalMergeCount = GitUtils.getTotalMergeCount(git);
             int totalCommitCount = GitUtils.getTotalCommitCount(git);
 
-            // First sample.
-            List<MergeInfo> allMerges = new java.util.ArrayList<>(
-                    GitUtils.getConflictCommits(maxConflictMerges, 0, git));
-            int skip = allMerges.size();
-            int goodCount = mergeFilter.countJavaConflicts(allMerges);
+            List<MergeInfo> allMerges = GitUtils.getConflictCommits(maxConflictMerges, 0, git);
 
-            // Resample while we have some good merges but still need more.
-            while (goodCount > 0 && goodCount < maxConflictMerges) {
-                List<MergeInfo> batch = GitUtils.getConflictCommits(maxConflictMerges, skip, git);
-                if (batch.isEmpty()) break;
-                allMerges.addAll(batch);
-                skip += batch.size();
-                int newGoodCount = mergeFilter.countJavaConflicts(allMerges);
-                if (newGoodCount <= goodCount) break; // no improvement in this round
-                goodCount = newGoodCount;
+            // Primary check: skip merges already used in pattern-learning (prevents data leakage)
+            int beforeFilter = allMerges.size();
+            allMerges = allMerges.stream()
+                    .filter(m -> !mergeFilter.isTrainingMerge(m))
+                    .collect(Collectors.toList());
+            int skipped = beforeFilter - allMerges.size();
+            if (skipped > 0) {
+                System.out.printf("  → Skipped %d merge(s) already in training set (data leakage prevention)%n", skipped);
             }
 
             return new MergeLoadResult(allMerges, totalMergeCount, totalCommitCount);
@@ -173,10 +161,6 @@ public class DatasetCollectionOrchestrator {
         ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
 
         for (MergeInfo merge : allMerges) {
-            if (!mergeFilter.hasJavaConflicts(merge)) {
-                continue;
-            }
-
             pool.submit(() -> processMergeTask(
                     merge,
                     projectPath,
@@ -231,11 +215,11 @@ public class DatasetCollectionOrchestrator {
 
             if (!result.isHadTests()) {
                 noTestCount.incrementAndGet();
-                logMergeFailure(projectName, commitShort, MergeFailureType.NO_TESTS, "");
+                logMergeFailure(projectName, commitShort, MergeFailureType.NO_TESTS);
                 System.out.println("✗ No tests");
             } else if (result.isTimedOut()) {
                 timeoutCount.incrementAndGet();
-                logMergeFailure(projectName, commitShort, MergeFailureType.TIMEOUT, "");
+                logMergeFailure(projectName, commitShort, MergeFailureType.TIMEOUT);
                 System.out.println("⏱ Timeout");
             } else {
                 ExcelWriter.DatasetRow row = rowBuilder.buildRow(result);
@@ -271,7 +255,7 @@ public class DatasetCollectionOrchestrator {
             int javaConflictCount) throws Exception {
 
         if (stats.rows.isEmpty()) {
-            int exceptionCount = javaConflictCount
+            int exceptionCount = mergesWithConflicts
                     - stats.noTestCount - stats.timeoutCount
                     - stats.buildFailureCount - stats.allTestsFailedCount;
 
@@ -292,19 +276,19 @@ public class DatasetCollectionOrchestrator {
                         stats.noTestCount, stats.timeoutCount, stats.buildFailureCount, stats.allTestsFailedCount, exceptionCount);
             } else if (hasNoTest) {
                 rejectionStatus = RepositoryStatus.REJECTED_NO_TESTS;
-                message = String.format("All %d merges had no tests", javaConflictCount);
+                message = String.format("All %d merges had no tests", mergesWithConflicts);
             } else if (hasTimeout) {
                 rejectionStatus = RepositoryStatus.REJECTED_TIMEOUT;
-                message = String.format("All %d merges timed out", javaConflictCount);
+                message = String.format("All %d merges timed out", mergesWithConflicts);
             } else if (hasBuildFail) {
                 rejectionStatus = RepositoryStatus.REJECTED_BUILD_FAILED;
-                message = String.format("All %d merges failed to compile", javaConflictCount);
+                message = String.format("All %d merges failed to compile", mergesWithConflicts);
             } else if (hasTestsFail) {
                 rejectionStatus = RepositoryStatus.REJECTED_ALL_TESTS_FAILED;
-                message = String.format("All %d merges compiled but every test failed", javaConflictCount);
+                message = String.format("All %d merges compiled but every test failed", mergesWithConflicts);
             } else {
                 rejectionStatus = RepositoryStatus.REJECTED_OTHER;
-                message = String.format("All %d merges failed with unexpected exceptions", javaConflictCount);
+                message = String.format("All %d merges failed with unexpected exceptions", mergesWithConflicts);
             }
 
             return buildRejectionResult(
@@ -364,8 +348,8 @@ public class DatasetCollectionOrchestrator {
     }
 
     private void logMergeFailure(String repoName, String shortCommit,
-                                  MergeFailureType type, String detail) {
-        if (failureLog != null) failureLog.logMergeFailure(repoName, shortCommit, type, detail);
+                                  MergeFailureType type) {
+        if (failureLog != null) failureLog.logMergeFailure(repoName, shortCommit, type, "");
     }
 
     private void logCompileFailure(String repoName, String shortCommit,
@@ -385,39 +369,15 @@ public class DatasetCollectionOrchestrator {
     }
 
     /**
-     * Result of loading merges from repository.
-     */
-    private static class MergeLoadResult {
-        final List<MergeInfo> mergesWithConflicts;
-        final int totalMergeCount;
-        final int totalCommitCount;
-
-        MergeLoadResult(List<MergeInfo> mergesWithConflicts, int totalMergeCount, int totalCommitCount) {
-            this.mergesWithConflicts = mergesWithConflicts;
-            this.totalMergeCount = totalMergeCount;
-            this.totalCommitCount = totalCommitCount;
-        }
+         * Result of loading merges from repository.
+         */
+        private record MergeLoadResult(List<MergeInfo> mergesWithConflicts, int totalMergeCount, int totalCommitCount) {
     }
 
     /**
-     * Statistics from parallel processing.
-     */
-    private static class ProcessingStatistics {
-        final List<ExcelWriter.DatasetRow> rows;
-        final int noTestCount;
-        final int timeoutCount;
-        final int buildFailureCount;
-        final int allTestsFailedCount;
-        final int maxModules;
-
-        ProcessingStatistics(List<ExcelWriter.DatasetRow> rows, int noTestCount, int timeoutCount,
-                             int buildFailureCount, int allTestsFailedCount, int maxModules) {
-            this.rows = rows;
-            this.noTestCount = noTestCount;
-            this.timeoutCount = timeoutCount;
-            this.buildFailureCount = buildFailureCount;
-            this.allTestsFailedCount = allTestsFailedCount;
-            this.maxModules = maxModules;
-        }
+         * Statistics from parallel processing.
+         */
+        private record ProcessingStatistics(List<ExcelWriter.DatasetRow> rows, int noTestCount, int timeoutCount,
+                                            int buildFailureCount, int allTestsFailedCount, int maxModules) {
     }
 }

@@ -144,10 +144,6 @@ public class ResolutionVariantRunner {
         makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, false, AppConfig.TMP_DIR);
     }
 
-    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants) throws Exception {
-        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, skipVariants, AppConfig.TMP_DIR);
-    }
-
     public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir) throws Exception {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
@@ -222,7 +218,7 @@ public class ResolutionVariantRunner {
             results.add(result);
             MergeOutputJSON baselineResult = collector.collectBaselineResult(processed);
             baselineResults.add(baselineResult);
-            totalTime += processed.getAnalysisResult().getExecutionTimeSeconds();
+            totalTime += processed.getAnalysisResult().executionTimeSeconds();
             System.out.println(collector.getSuccessSummary(processed));
         }
 

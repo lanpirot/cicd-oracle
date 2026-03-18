@@ -1,6 +1,9 @@
 package ch.unibe.cs.mergeci.runner.maven;
 
 import ch.unibe.cs.mergeci.util.FileUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +18,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestTotal {
     private int runNum;
     private int failuresNum;
@@ -26,7 +30,13 @@ public class TestTotal {
      *  False means no test reports were found — distinguishable from "ran 0 tests". */
     private boolean hasData;
 
+    @JsonIgnore
     private File projectDir;
+
+    @JsonProperty
+    public int getPassedTests() {
+        return runNum - failuresNum - errorsNum - skippedNum;
+    }
 
     public TestTotal() {
     }

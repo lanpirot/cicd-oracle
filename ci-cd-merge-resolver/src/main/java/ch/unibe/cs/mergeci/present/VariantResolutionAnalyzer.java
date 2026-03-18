@@ -27,8 +27,8 @@ public class VariantResolutionAnalyzer {
             Optional<VariantScore> baselineScore = baselineScore(merge);
             if (baselineScore.isEmpty()) continue;
 
-            for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-                if ("human_baseline".equals(variant.getVariantName())) continue;
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+                if (variant.getVariantIndex() == 0) continue;
                 Optional<VariantScore> vs = variantScore(variant);
                 if (vs.isPresent() && vs.get().isAtLeastAsGoodAs(baselineScore.get())) {
                     result.add(merge);
@@ -50,8 +50,8 @@ public class VariantResolutionAnalyzer {
             Optional<VariantScore> baselineScore = baselineScore(merge);
             if (baselineScore.isEmpty()) continue;
 
-            for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-                if ("human_baseline".equals(variant.getVariantName())) continue;
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+                if (variant.getVariantIndex() == 0) continue;
                 Optional<VariantScore> vs = variantScore(variant);
                 if (vs.isPresent() && vs.get().isBetterThan(baselineScore.get())) {
                     result.add(merge);
@@ -76,8 +76,8 @@ public class VariantResolutionAnalyzer {
             Optional<VariantScore> baselineScore = baselineScore(merge);
             if (baselineScore.isEmpty()) continue;
 
-            for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-                if ("human_baseline".equals(variant.getVariantName())) continue;
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+                if (variant.getVariantIndex() == 0) continue;
                 Optional<VariantScore> vs = variantScore(variant);
                 if (vs.isEmpty() || !vs.get().isAtLeastAsGoodAs(baselineScore.get())) continue;
 

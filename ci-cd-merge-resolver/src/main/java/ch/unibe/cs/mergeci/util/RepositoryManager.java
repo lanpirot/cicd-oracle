@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,13 @@ import java.util.concurrent.TimeoutException;
  * Manages repository lifecycle and status tracking to avoid redundant downloads.
  */
 public class RepositoryManager {
+    /**
+     * -- GETTER --
+     *  Get the base directory where repositories are stored
+     *
+     * @return the base directory path
+     */
+    @Getter
     private final Path repoBaseDir;
     private final Map<String, RepositoryStatus> repoStatusCache;
     private final Path statusFile;
@@ -217,14 +225,6 @@ public class RepositoryManager {
     }
 
     /**
-     * Get the base directory where repositories are stored
-     * @return the base directory path
-     */
-    public Path getRepoBaseDir() {
-        return repoBaseDir;
-    }
-
-    /**
      * Clear the in-memory status cache and reload from disk.
      * Used when FRESH_RUN mode deletes the repository directory.
      */
@@ -234,7 +234,7 @@ public class RepositoryManager {
     }
 
     /**
-     * Reset all SUCCESS repositories to NOT_PROCESSED_BUT_CLONED so they are re-analysed
+     * Reset all SUCCESS repositories to NOT_PROCESSED_BUT_CLONED so they are re-analyzed
      * by the ConflictCollector and VariantRunner without re-cloning.
      * Used by REANALYZE_SUCCESS mode.
      */

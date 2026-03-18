@@ -13,7 +13,6 @@ import ch.unibe.cs.mergeci.util.GitUtils;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -102,6 +101,7 @@ public class MergeExperimentRunner {
         Map<String, TestTotal> testResults = factory.getTestResults();
         JacocoReportFinder.CoverageDTO coverageResult = factory.getCoverageResult();
         Map<String, Double> variantFinishSeconds = factory.getVariantFinishSeconds();
+        Map<String, Double> variantSinceMergeStartSeconds = factory.getVariantSinceMergeStartSeconds();
 
         return new MergeAnalysisResult(
                 variantProjectBuilder,
@@ -110,7 +110,9 @@ public class MergeExperimentRunner {
                 timeElapsed,
                 experimentTiming,
                 coverageResult,
-                variantFinishSeconds
+                variantFinishSeconds,
+                variantSinceMergeStartSeconds,
+                factory.isBudgetExhausted()
         );
     }
 
@@ -152,37 +154,17 @@ public class MergeExperimentRunner {
     }
 
     /**
-     * Results from running merge analysis.
-     */
-    @Getter
-    public static class MergeAnalysisResult {
-        private final VariantProjectBuilder analyzer;
-        private final Map<String, CompilationResult> compilationResults;
-        private final Map<String, TestTotal> testResults;
-        private final long executionTimeSeconds;
-        private final ExperimentTiming runExecutionTime;
-        private final JacocoReportFinder.CoverageDTO coverageResult;
-        private final Map<String, Double> variantFinishSeconds;
-
-        public MergeAnalysisResult(
-                VariantProjectBuilder analyzer,
-                Map<String, CompilationResult> compilationResults,
-                Map<String, TestTotal> testResults,
-                long executionTimeSeconds,
-                ExperimentTiming runExecutionTime,
-                JacocoReportFinder.CoverageDTO coverageResult,
-                Map<String, Double> variantFinishSeconds) {
-            this.analyzer = analyzer;
-            this.compilationResults = compilationResults;
-            this.testResults = testResults;
-            this.executionTimeSeconds = executionTimeSeconds;
-            this.runExecutionTime = runExecutionTime;
-            this.coverageResult = coverageResult;
-            this.variantFinishSeconds = variantFinishSeconds;
-        }
+         * Results from running merge analysis.
+         */
+        public record MergeAnalysisResult(VariantProjectBuilder analyzer, Map<String, CompilationResult> compilationResults,
+                                          Map<String, TestTotal> testResults, long executionTimeSeconds,
+                                          ExperimentTiming runExecutionTime, JacocoReportFinder.CoverageDTO coverageResult,
+                                          Map<String, Double> variantFinishSeconds,
+                                          Map<String, Double> variantSinceMergeStartSeconds,
+                                          boolean budgetExhausted) {
 
         public String getProjectName() {
-            return analyzer.getProjectName();
+                return analyzer.getProjectName();
+            }
         }
-    }
 }

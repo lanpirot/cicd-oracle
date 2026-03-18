@@ -71,8 +71,8 @@ public class VariantRankingAnalyzer {
         VariantScore bestScore = baselineOpt.get();
         List<String> bestResolutions = new ArrayList<>(List.of("Human"));
 
-        for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-            if ("human_baseline".equals(variant.getVariantName())) continue;
+        for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+            if (variant.getVariantIndex() == 0) continue;
             java.util.Optional<VariantScore> vs =
                     VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
             if (vs.isEmpty()) continue; // timeout or missing — excluded

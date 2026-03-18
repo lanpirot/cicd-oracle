@@ -11,4 +11,7 @@ import java.util.Map;
 
 public interface IPattern {
     List<String> apply(MergeResult<RawText> mergeResult, Map<CheckoutCommand.Stage, MergeChunk> chunks);
+
+    /** Canonical name of this pattern, e.g. "OURS", "THEIRS", or "OURS:BASE" for a compound. */
+    String name();
 }

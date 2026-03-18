@@ -2,7 +2,6 @@ package ch.unibe.cs.mergeci.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
@@ -35,8 +34,7 @@ public class NonConflictBlock implements IMergeBlock {
     @Override
     public NonConflictBlock clone() {
         try {
-            NonConflictBlock clone = (NonConflictBlock) super.clone();
-            return clone;
+            return (NonConflictBlock) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

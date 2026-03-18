@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-Plots variant experiment results comparing 4 execution modes:
-  - human_baseline
-  - no_optimization
-  - parallel
-  - cache_parallel
+Unified presentation layer for variant experiment results.
+Compares 4 execution modes: human_baseline, no_optimization, parallel, cache_parallel.
 
-Graph 1: Module build success rate over relative time
-Graph 2: Test success rate over relative time
+Charts produced (single PDF):
+  1. Module build success rate over relative time
+  2. Test success rate over relative time
+  3. Java conflict file ratio vs. impact rate (bar chart)
 
-X-axis: relative time (1.0 = human baseline duration)
-Y-axis: success relative to human baseline (1.0 = human baseline score)
+All charts use LaTeX fonts for paper inclusion.
+Set USE_LATEX = False if pdflatex / dvipng are not installed.
 
 Usage:
   python plot_results.py [variant_experiments_dir] [output_pdf]
+  python plot_results.py --mockup [output_pdf]
 
 Defaults:
   variant_experiments_dir = /home/lanpirot/data/bruteforcemerge/variant_experiments
@@ -28,10 +28,27 @@ from pathlib import Path
 from collections import defaultdict
 
 import matplotlib
+import matplotlib.ticker
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.backends.backend_pdf import PdfPages
+
+# ── Paper font settings ────────────────────────────────────────────────────────
+# Set USE_LATEX = False if pdflatex / dvipng are not installed on this machine.
+USE_LATEX = True
+
+plt.rcParams.update({
+    "text.usetex":               USE_LATEX,
+    "font.family":               "serif",
+    "font.size":                 10,
+    "axes.labelsize":            10,
+    "axes.titlesize":            11,
+    "legend.fontsize":           8,
+    "xtick.labelsize":           9,
+    "ytick.labelsize":           9,
+    "figure.dpi":                200,
+})
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 DEFAULT_VARIANT_DIR = Path("/home/lanpirot/data/bruteforcemerge/variant_experiments")
@@ -56,6 +73,79 @@ MODE_MARKERS = {
     "parallel":        "s",
     "cache_parallel":  "^",
 }
+
+
+# ── Impact detection (mirrors Java MergeStatistics.filterImpactMerges) ────────
+
+def variant_score(variant: dict) -> tuple | None:
+    """
+    Returns (modules_passed, tests_passed) or None if the variant timed out
+    or has no scoreable compilation result.
+    Mirrors Java VariantScore.of().
+    """
+    cr = variant.get("compilationResult")
+    if cr is None:
+        return None
+    status = cr.get("buildStatus")
+    if status is None or status == "TIMEOUT":
+        return None
+    module_results = cr.get("moduleResults", [])
+    if module_results:
+        modules = sum(1 for m in module_results if m.get("status") == "SUCCESS")
+    else:
+        modules = 1 if status == "SUCCESS" else 0
+    # Normalize: a successful single-module build counts as at least 1
+    if status == "SUCCESS":
+        modules = max(1, modules)
+    tr = variant.get("testResults")
+    tests = 0
+    if tr:
+        run = tr.get("runNum", 0)
+        tests = max(0, run - tr.get("failuresNum", 0) - tr.get("errorsNum", 0))
+    return (modules, tests)
+
+
+def is_impact_merge(merge: dict) -> bool:
+    """
+    A merge is 'impact' if at least one non-human-baseline variant has a
+    different score than the human baseline.  Mirrors Java filterImpactMerges.
+    """
+    if merge.get("numConflictChunks", 0) == 0:
+        return False
+    variants = (merge.get("variantsExecution") or {}).get("variants", [])
+    baseline_score = None
+    for v in variants:
+        if v.get("variantName") == "human_baseline":
+            baseline_score = variant_score(v)
+            break
+    if baseline_score is None:
+        return False
+    for v in variants:
+        if v.get("variantName") == "human_baseline":
+            continue
+        score = variant_score(v)
+        if score is None:
+            continue  # timeout — excluded
+        if score != baseline_score:
+            return True
+    return False
+
+
+def compute_statistics(all_data: dict) -> dict:
+    """
+    Compute cross-mode statistics (impact set, Java ratio data).
+    Uses the first available non-baseline mode for impact detection.
+    Returns a dict with keys: all_merges (list), impact_set (set of mergeCommit strings).
+    """
+    source_mode = next(
+        (m for m in ["no_optimization", "parallel", "cache_parallel"] if all_data.get(m)),
+        None,
+    )
+    if source_mode is None:
+        return {"all_merges": [], "impact_set": set()}
+    all_merges = list(all_data[source_mode].values())
+    impact_set = {m["mergeCommit"] for m in all_merges if is_impact_merge(m)}
+    return {"all_merges": all_merges, "impact_set": impact_set}
 
 
 # ── Data loading ───────────────────────────────────────────────────────────────
@@ -239,6 +329,50 @@ def draw_graph(ax, mode_markers, mode_steps, title, ylabel):
     ax.grid(True, alpha=0.3)
 
 
+def draw_java_ratio_chart(ax, all_merges: list, impact_set: set):
+    """
+    Bar chart: fraction of conflict files that are Java vs. impact rate.
+    5 equal-width buckets spanning [0, 1].
+    """
+    labels   = [r"$[0.0,\,0.2)$", r"$[0.2,\,0.4)$", r"$[0.4,\,0.6)$",
+                r"$[0.6,\,0.8)$", r"$[0.8,\,1.0]$"]
+    totals  = [0] * 5
+    impacts = [0] * 5
+
+    for merge in all_merges:
+        total_files = merge.get("numConflictFiles", 0)
+        if total_files == 0:
+            continue
+        java_files = merge.get("numJavaConflictFiles", 0)
+        ratio  = java_files / total_files
+        bucket = min(4, int(ratio / 0.2))
+        totals[bucket] += 1
+        if merge.get("mergeCommit") in impact_set:
+            impacts[bucket] += 1
+
+    impact_rates = [impacts[i] / totals[i] if totals[i] > 0 else 0.0 for i in range(5)]
+
+    x    = list(range(5))
+    bars = ax.bar(x, impact_rates, color="#2c7bb6", edgecolor="white", linewidth=0.5,
+                  zorder=3)
+
+    for bar, imp, tot in zip(bars, impacts, totals):
+        label = rf"${imp}/{tot}$" if USE_LATEX else f"{imp}/{tot}"
+        ax.text(bar.get_x() + bar.get_width() / 2,
+                bar.get_height() + 0.02,
+                label, ha="center", va="bottom", fontsize=8)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.set_xlabel(r"Java conflict file ratio"
+                  r" $\left(\frac{\mathrm{numJavaConflictFiles}}{\mathrm{numConflictFiles}}\right)$")
+    ax.set_ylabel(r"Impact rate (fraction of merges)")
+    ax.set_title(r"Java Conflict File Ratio vs.\ Impact Rate")
+    ax.set_ylim(0, 1.15)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
+    ax.grid(True, axis="y", alpha=0.3, zorder=0)
+
+
 def make_plots(variant_dir: Path, output_pdf: Path):
     print(f"Loading data from: {variant_dir}")
     all_data = load_all_data(variant_dir)
@@ -252,23 +386,33 @@ def make_plots(variant_dir: Path, output_pdf: Path):
     print("Assembling test success data ...")
     test_mode_markers, test_mode_steps = assemble_plot_data(all_data, test_stats)
 
+    print("Computing impact statistics ...")
+    stats = compute_statistics(all_data)
+
     print(f"Writing plots to: {output_pdf}")
     with PdfPages(output_pdf) as pdf:
-        # Graph 1: Module build success rate
+        # Chart 1: Module build success rate vs. relative time
         fig, ax = plt.subplots(figsize=(10, 6))
         draw_graph(ax, module_mode_markers, module_mode_steps,
-                   title="Module Build Success Rate vs. Relative Time",
-                   ylabel="Modules built  (relative to human baseline = 1.0)")
+                   title="Module Build Success Rate vs.\ Relative Time",
+                   ylabel=r"Modules built (relative to human baseline $= 1.0$)")
         pdf.savefig(fig, bbox_inches="tight")
         plt.close(fig)
 
-        # Graph 2: Test success rate
+        # Chart 2: Test success rate vs. relative time
         fig, ax = plt.subplots(figsize=(10, 6))
         draw_graph(ax, test_mode_markers, test_mode_steps,
-                   title="Test Success Rate vs. Relative Time",
-                   ylabel="Tests passed  (relative to human baseline = 1.0)")
+                   title="Test Success Rate vs.\ Relative Time",
+                   ylabel=r"Tests passed (relative to human baseline $= 1.0$)")
         pdf.savefig(fig, bbox_inches="tight")
         plt.close(fig)
+
+        # Chart 3: Java conflict file ratio vs. impact rate
+        if stats["all_merges"]:
+            fig, ax = plt.subplots(figsize=(8, 5))
+            draw_java_ratio_chart(ax, stats["all_merges"], stats["impact_set"])
+            pdf.savefig(fig, bbox_inches="tight")
+            plt.close(fig)
 
     print("Done.")
 
@@ -379,13 +523,20 @@ def generate_mockup(output_dir: Path, output_pdf: Path):
         human_tests   = sc["human_tests"]
         human_modules = sc["human_modules"]
 
+        num_conflict_files      = rng.randint(1, 6)
+        num_java_conflict_files = rng.randint(0, num_conflict_files)
+        num_conflict_chunks     = rng.randint(1, 8)
+
         def merge_dict(exec_secs, variants):
             return {
-                "mergeCommit":          commit,
-                "humanBaselineSeconds": human_secs,
-                "totalExecutionTime":   human_secs + exec_secs,
-                "variantsExecution":    {"executionTimeSeconds": exec_secs,
-                                         "variants": variants},
+                "mergeCommit":           commit,
+                "humanBaselineSeconds":  human_secs,
+                "totalExecutionTime":    human_secs + exec_secs,
+                "numConflictFiles":      num_conflict_files,
+                "numJavaConflictFiles":  num_java_conflict_files,
+                "numConflictChunks":     num_conflict_chunks,
+                "variantsExecution":     {"executionTimeSeconds": exec_secs,
+                                          "variants": variants},
             }
 
         # human_baseline: one perfect-resolution variant per merge

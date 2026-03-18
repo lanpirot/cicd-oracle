@@ -11,6 +11,9 @@ import java.util.Map;
 
 public class OursPattern implements IPattern {
     @Override
+    public String name() { return "OURS"; }
+
+    @Override
     public List<String> apply(MergeResult<RawText> mergeResult, Map<CheckoutCommand.Stage, MergeChunk> chunks) {
         List<String> list = new LinkedList<>();
         MergeChunk oursChunk = chunks.get(CheckoutCommand.Stage.OURS);

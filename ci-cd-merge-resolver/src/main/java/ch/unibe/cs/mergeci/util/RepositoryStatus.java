@@ -40,6 +40,11 @@ public enum RepositoryStatus {
     REJECTED_NO_JAVA_CONFLICTS,
 
     /**
+     * Repository was rejected because it has no merge conflicts at all
+     */
+    REJECTED_NO_CONFLICTS,
+
+    /**
      * Repository was rejected because it has no tests
      */
     REJECTED_NO_TESTS,

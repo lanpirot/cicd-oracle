@@ -60,7 +60,7 @@ public class StrategySelector {
         }
 
         // Fallback to last strategy (should rarely happen due to floating point precision)
-        return strategies.get(strategies.size() - 1);
+        return strategies.getLast();
     }
 
     /**
@@ -93,11 +93,11 @@ public class StrategySelector {
     /**
      * Sample N meso-patterns independently (multinomial) from the macro-pattern's
      * sub-pattern percentages, then shuffle the resulting list.
-     *
+     * <p>
      * Each chunk's meso-pattern is drawn independently — no probability adjustment
      * between draws. After all N draws the list is randomly permuted so that chunk
      * position is unrelated to draw order.
-     *
+     * <p>
      * NON meso-patterns are replaced by sampling from the full global row (row 0).
      * Compound meso-patterns get a random internal component ordering via
      * {@link PatternFactory#sampleOrdering}.
@@ -130,7 +130,7 @@ public class StrategySelector {
             cumulative += sp.getPercentage();
             if (r < cumulative) return sp.getPattern();
         }
-        return subPatterns.get(subPatterns.size() - 1).getPattern();
+        return subPatterns.getLast().getPattern();
     }
 
     /**
@@ -152,7 +152,7 @@ public class StrategySelector {
         List<PatternStrategy> nonNonStrategies = globalStrategies.stream()
                 .filter(s -> {
                     if (s.getSubPatterns().isEmpty()) return false;
-                    String pattern = s.getSubPatterns().get(0).getPattern();
+                    String pattern = s.getSubPatterns().getFirst().getPattern();
                     return !"NON".equals(pattern);
                 })
                 .toList();
@@ -168,7 +168,7 @@ public class StrategySelector {
         // Return the first (dominant) pattern from the selected global strategy
         // For global strategies, typically they are 100% single patterns
         if (!globalStrategy.getSubPatterns().isEmpty()) {
-            String pattern = globalStrategy.getSubPatterns().get(0).getPattern();
+            String pattern = globalStrategy.getSubPatterns().getFirst().getPattern();
             // Double-check we didn't get NON (paranoid check)
             return "NON".equals(pattern) ? "OURS" : pattern;
         }
@@ -198,7 +198,7 @@ public class StrategySelector {
         }
 
         // Fallback to last strategy
-        return strategies.get(strategies.size() - 1);
+        return strategies.getLast();
     }
 
     /**

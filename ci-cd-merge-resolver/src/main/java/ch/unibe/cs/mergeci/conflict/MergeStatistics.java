@@ -96,8 +96,8 @@ public class MergeStatistics {
                     VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
             if (baselineScore.isEmpty()) continue; // no scoreable baseline
 
-            for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
-                if ("human_baseline".equals(variant.getVariantName())) continue;
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+                if (variant.getVariantIndex() == 0) continue;
                 Optional<VariantScore> vs =
                         VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
                 if (vs.isEmpty()) continue; // timeout — excluded from comparison
@@ -135,24 +135,9 @@ public class MergeStatistics {
     }
 
     /**
-     * Categorized subsets of merges (single-module or multi-module).
-     */
-    @Getter
-    public static class MergeSubsets {
-        private final List<MergeOutputJSON> impact;
-        private final List<MergeOutputJSON> noImpact;
-        private final List<MergeOutputJSON> impactWithCoverage;
-        private final List<MergeOutputJSON> noImpactWithCoverage;
-
-        public MergeSubsets(
-                List<MergeOutputJSON> impact,
-                List<MergeOutputJSON> noImpact,
-                List<MergeOutputJSON> impactWithCoverage,
-                List<MergeOutputJSON> noImpactWithCoverage) {
-            this.impact = impact;
-            this.noImpact = noImpact;
-            this.impactWithCoverage = impactWithCoverage;
-            this.noImpactWithCoverage = noImpactWithCoverage;
-        }
+         * Categorized subsets of merges (single-module or multi-module).
+         */
+        public record MergeSubsets(List<MergeOutputJSON> impact, List<MergeOutputJSON> noImpact,
+                                   List<MergeOutputJSON> impactWithCoverage, List<MergeOutputJSON> noImpactWithCoverage) {
     }
 }

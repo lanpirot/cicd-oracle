@@ -92,7 +92,7 @@ public class ResultsPresenter {
                     VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
             if (baselineScore.isEmpty()) continue;
 
-            for (MergeOutputJSON.Variant variant : merge.getVariantsExecution().getVariants()) {
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
                 java.util.Optional<VariantScore> vs =
                         VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
                 if (vs.isEmpty()) continue; // timeout — excluded

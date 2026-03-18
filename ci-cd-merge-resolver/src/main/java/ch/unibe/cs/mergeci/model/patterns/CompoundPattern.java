@@ -37,13 +37,14 @@ public class CompoundPattern implements IPattern {
     }
 
     @Override
+    public String name() {
+        return atomicPatterns.stream()
+                .map(IPattern::name)
+                .collect(java.util.stream.Collectors.joining(":"));
+    }
+
+    @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("CompoundPattern[");
-        for (int i = 0; i < atomicPatterns.size(); i++) {
-            if (i > 0) sb.append(", ");
-            sb.append(atomicPatterns.get(i).getClass().getSimpleName());
-        }
-        sb.append("]");
-        return sb.toString();
+        return "CompoundPattern[" + name() + "]";
     }
 }

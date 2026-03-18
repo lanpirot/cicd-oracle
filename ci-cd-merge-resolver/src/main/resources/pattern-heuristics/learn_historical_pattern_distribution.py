@@ -219,6 +219,46 @@ def main():
         original_data = list(reader)
     print("Step 1: Read original CSV file.")
     
+    # Step 1.5: Filter out youngest 10% of merges to prevent data leakage.
+    # The Java pipeline analyzes the same repos we learn patterns from, so we
+    # exclude the most-recent merges from learning — they may appear in the
+    # experiment dataset and would otherwise contaminate the heuristics.
+    # Only the IDs actually trained on are written to trained_on_merge_ids.csv,
+    # so the Java side can skip exactly those merges during dataset collection.
+    from datetime import datetime
+    merge_times = {}
+    for row in original_data[1:]:
+        if len(row) > 4 and row[4]:
+            try:
+                merge_times[row[3]] = datetime.fromisoformat(row[4])
+            except ValueError:
+                pass
+
+    if merge_times:
+        sorted_merge_ids = sorted(merge_times, key=lambda m: merge_times[m])
+        cutoff_idx = int(len(sorted_merge_ids) * 0.9)  # keep oldest 90%
+        allowed_merge_ids = set(sorted_merge_ids[:cutoff_idx])
+        removed_count = len(merge_times) - len(allowed_merge_ids)
+        original_data = [original_data[0]] + [
+            row for row in original_data[1:]
+            if len(row) > 3 and row[3] in allowed_merge_ids
+        ]
+        print(f"Step 1.5: Filtered to oldest 90% of merges. "
+              f"{len(original_data) - 1} rows remaining "
+              f"(removed {removed_count} unique merge IDs from youngest 10%).")
+    else:
+        allowed_merge_ids = set(merge_times.keys())
+        print("Step 1.5: No merge times found, skipping filter.")
+
+    # Write the trained-on merge IDs (90% oldest) to file so the Java pipeline
+    # can exclude them from dataset collection.
+    with open('trained_on_merge_ids.csv', 'w', newline='') as outfile:
+        writer = csv.writer(outfile)
+        writer.writerow(['merge_id'])
+        for merge_id in sorted(allowed_merge_ids):
+            writer.writerow([merge_id])
+    print(f"Step 1.5: Wrote {len(allowed_merge_ids)} trained-on merge IDs to trained_on_merge_ids.csv")
+
     # Step 2: Skip Java filtering (analyze all file types)
     all_files_data = original_data
     print(f"Step 2: Analyzing all file types. {len(all_files_data)} rows.")
@@ -488,7 +528,20 @@ def main():
     # Keep all entries in the global row (including NON patterns)
     filtered_global_strategies = global_strategies
     
-    final_data = [['0', '|'.join(filtered_global_strategies)]] + unified_summarized_data
+    # Calculate total count for relativization
+    total_count = sum(int(strategy.split('*')[0]) for strategy in filtered_global_strategies)
+    
+    # Relativize the global row
+    relativized_global_strategies = []
+    for strategy in filtered_global_strategies:
+        count_part, rest = strategy.split('*', 1)
+        count = int(count_part)
+        relativized_factor = (count / total_count) * 100
+        formatted_factor = f"{relativized_factor:.9g}"
+        relativized_strategy = f"{formatted_factor}*{rest}"
+        relativized_global_strategies.append(relativized_strategy)
+    
+    final_data = [['0', '|'.join(relativized_global_strategies)]] + unified_summarized_data
     
     # Concatenate rows into log-buckets based on number_of_chunks value
     # Keep first row as is (global overview)

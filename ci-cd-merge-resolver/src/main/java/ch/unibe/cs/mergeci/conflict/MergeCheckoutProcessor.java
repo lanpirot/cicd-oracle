@@ -9,7 +9,6 @@ import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.JavaVersionResolver;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
-import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.IOException;
@@ -212,7 +211,7 @@ public class MergeCheckoutProcessor {
          * With -fae flag, we accept partial compilation if:
          * - At least some modules compiled (modulesPassed > 0)
          * - At least some tests passed (numPassedTests > 0)
-         * - Build didn't timeout
+         * - Build didn't time out
          */
         public boolean isSuccessful() {
             return hadTests && !timedOut && modulesPassed > 0 && numPassedTests > 0;

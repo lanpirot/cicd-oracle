@@ -4,7 +4,6 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog;
 import ch.unibe.cs.mergeci.repoCollection.CollectionResult;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -18,12 +17,12 @@ public class MergeConflictCollector {
     private final int maxConflictMerges;
     private final DatasetCollectionOrchestrator orchestrator;
 
-    public MergeConflictCollector(Path projectPath, Path tempPath, int maxConflictMerges) throws IOException {
+    public MergeConflictCollector(Path projectPath, Path tempPath, int maxConflictMerges) {
         this(projectPath, tempPath, maxConflictMerges, null);
     }
 
     public MergeConflictCollector(Path projectPath, Path tempPath, int maxConflictMerges,
-                                   BuildFailureLog failureLog) throws IOException {
+                                   BuildFailureLog failureLog) {
         this.projectPath = projectPath;
         this.tempPath = tempPath;
         this.projectName = projectPath.toFile().getName();

@@ -12,6 +12,9 @@ import java.util.Map;
 public class BasePattern implements IPattern {
 
     @Override
+    public String name() { return "BASE"; }
+
+    @Override
     public List<String> apply(MergeResult<RawText> mergeResult, Map<CheckoutCommand.Stage, MergeChunk> chunks) {
         List<String> list = new LinkedList<>();
         MergeChunk baseChunk = chunks.get(CheckoutCommand.Stage.BASE);

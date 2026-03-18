@@ -42,7 +42,7 @@ public class VariantProject implements Cloneable {
                     if (block instanceof ConflictBlock conflict) {
                         IPattern pattern = conflict.getPattern();
                         if (pattern != null) {
-                            patternNames.add(pattern.getClass().getSimpleName());
+                            patternNames.add(pattern.name());
                         }
                     }
                 }

@@ -32,7 +32,7 @@ public class ResultsPresenterTest extends BaseTest {
         assertNotNull(initMerges, "Initial merges should not be null");
 
         List<MergeOutputJSON> merges;
-        merges = initMerges.stream().filter(x->x.getCompilationResult().getTotalTime()>0).filter(x->x.getCompilationResult().getTotalTime()<1.1*x.getVariantsExecution().getExecutionTimeSeconds()).
+        merges = initMerges.stream().filter(x->x.getCompilationResult().getTotalTime()>0).filter(x->x.getCompilationResult().getTotalTime()<1.1*x.getVariantsExecutionTimeSeconds()).
                 collect(Collectors.toList());
 
         System.out.printf(merges.size()+" %n");

@@ -3,8 +3,10 @@ package ch.unibe.cs.mergeci.present;
 import ch.unibe.cs.mergeci.conflict.MergeStatistics;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Presents comprehensive statistics and analysis results for merge experiments.
@@ -44,6 +46,7 @@ public class StatisticsReporter {
         printOverviewStatistics(allMerges, impactMerges, noImpactMerges);
         printModuleBreakdown(allMerges, impactMerges, noImpactMerges);
         printCoverageStatistics();
+        printJavaRatioImpactChart(allMerges, impactMerges);
         printResolutionAnalysis(impactMerges);
         printRankings(impactMerges);
         printExecutionTimeAnalysis(impactMerges);
@@ -109,10 +112,10 @@ public class StatisticsReporter {
 
         printSectionHeader("Module Type Breakdown");
 
-        List<MergeOutputJSON> noImpactSingleModule = statistics.getSingleModule().getNoImpact();
-        List<MergeOutputJSON> noImpactMultiModule = statistics.getMultiModule().getNoImpact();
-        List<MergeOutputJSON> impactSingleModule = statistics.getSingleModule().getImpact();
-        List<MergeOutputJSON> impactMultiModule = statistics.getMultiModule().getImpact();
+        List<MergeOutputJSON> noImpactSingleModule = statistics.getSingleModule().noImpact();
+        List<MergeOutputJSON> noImpactMultiModule = statistics.getMultiModule().noImpact();
+        List<MergeOutputJSON> impactSingleModule = statistics.getSingleModule().impact();
+        List<MergeOutputJSON> impactMultiModule = statistics.getMultiModule().impact();
 
         System.out.println("  No Impact Merges:");
         System.out.printf("  ├─ Single-module:   %4d (%3d%% of all)\n",
@@ -138,8 +141,8 @@ public class StatisticsReporter {
 
         // No impact coverage
         List<MergeOutputJSON> noImpactWithCoverage = statistics.getNoImpactMerges();
-        List<MergeOutputJSON> noImpactSingleModuleCoverage = statistics.getSingleModule().getNoImpactWithCoverage();
-        List<MergeOutputJSON> noImpactMultiModuleCoverage = statistics.getMultiModule().getNoImpactWithCoverage();
+        List<MergeOutputJSON> noImpactSingleModuleCoverage = statistics.getSingleModule().noImpactWithCoverage();
+        List<MergeOutputJSON> noImpactMultiModuleCoverage = statistics.getMultiModule().noImpactWithCoverage();
 
         System.out.println("  No Impact Merges:");
         System.out.printf("  ├─ All:             %6.2f%%\n",
@@ -159,8 +162,8 @@ public class StatisticsReporter {
                         .orElse(0.0));
 
         // Impact coverage
-        List<MergeOutputJSON> impactSingleModuleCoverage = statistics.getSingleModule().getImpactWithCoverage();
-        List<MergeOutputJSON> impactMultiModuleCoverage = statistics.getMultiModule().getImpactWithCoverage();
+        List<MergeOutputJSON> impactSingleModuleCoverage = statistics.getSingleModule().impactWithCoverage();
+        List<MergeOutputJSON> impactMultiModuleCoverage = statistics.getMultiModule().impactWithCoverage();
 
         System.out.println("  Impact Merges:");
         System.out.printf("  ├─ Single-module:   %6.2f%%\n",
@@ -182,8 +185,8 @@ public class StatisticsReporter {
 
         printSectionHeader("Resolution Analysis (Impact Merges Only)");
 
-        List<MergeOutputJSON> impactSingleModule = statistics.getSingleModule().getImpact();
-        List<MergeOutputJSON> impactMultiModule = statistics.getMultiModule().getImpact();
+        List<MergeOutputJSON> impactSingleModule = statistics.getSingleModule().impact();
+        List<MergeOutputJSON> impactMultiModule = statistics.getMultiModule().impact();
 
         // At least one resolution
         List<MergeOutputJSON> withResolution = resolutionAnalyzer.findMergesWithAtLeastOneResolution(impactMerges);
@@ -391,6 +394,42 @@ public class StatisticsReporter {
                         totalInGroup,
                         (float) entry.getValue() * 100 / totalInGroup);
             }
+        }
+    }
+
+    private void printJavaRatioImpactChart(
+            List<MergeOutputJSON> allMerges,
+            List<MergeOutputJSON> impactMerges) {
+
+        printSectionHeader("Java Conflict File Ratio vs Impact Rate");
+        System.out.println("  Fraction of conflict files that are Java → fraction of merges that are impact\n");
+
+        String[] labels = {"[0.0, 0.2)", "[0.2, 0.4)", "[0.4, 0.6)", "[0.6, 0.8)", "[0.8, 1.0]"};
+        int[] totalCounts = new int[5];
+        int[] impactCounts = new int[5];
+
+        Set<MergeOutputJSON> impactSet = new HashSet<>(impactMerges);
+
+        for (MergeOutputJSON merge : allMerges) {
+            int totalFiles = merge.getNumConflictFiles();
+            if (totalFiles == 0) continue;
+            double ratio = (double) merge.getNumJavaConflictFiles() / totalFiles;
+            int bucket = Math.min(4, (int) (ratio / 0.2));
+            totalCounts[bucket]++;
+            if (impactSet.contains(merge)) {
+                impactCounts[bucket]++;
+            }
+        }
+
+        int barWidth = 28;
+        for (int i = 0; i < 5; i++) {
+            int total = totalCounts[i];
+            int impact = impactCounts[i];
+            double impactRate = total > 0 ? (double) impact / total : 0.0;
+            int filled = total > 0 ? (int) Math.round(impactRate * barWidth) : 0;
+            String bar = "█".repeat(filled) + "░".repeat(barWidth - filled);
+            System.out.printf("  %s  %s  %5.1f%%  (%d/%d)\n",
+                    labels[i], bar, impactRate * 100, impact, total);
         }
     }
 

@@ -38,7 +38,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = createMerge("merge1", 50, 0, 0);
 
         // Add variant with same success rate
-        addVariant(merge, "variant1", 50, 0, 0, Map.of("file1", List.of("OURS")));
+        addVariant(merge, 1, 50, 0, 0, Map.of("file1", List.of("OURS")));
 
         List<MergeOutputJSON> result = analyzer.findMergesWithAtLeastOneResolution(List.of(merge));
 
@@ -52,7 +52,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = createMerge("merge1", 50, 10, 0);
 
         // Add variant with better success: 45 passing tests
-        addVariant(merge, "variant1", 50, 5, 0, Map.of("file1", List.of("THEIRS")));
+        addVariant(merge, 1, 50, 5, 0, Map.of("file1", List.of("THEIRS")));
 
         List<MergeOutputJSON> result = analyzer.findMergesWithAtLeastOneResolution(List.of(merge));
 
@@ -65,7 +65,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = createMerge("merge1", 50, 0, 0);
 
         // Add variant with worse success: 40 passing tests
-        addVariant(merge, "variant1", 50, 10, 0, Map.of("file1", List.of("BASE")));
+        addVariant(merge, 1, 50, 10, 0, Map.of("file1", List.of("BASE")));
 
         List<MergeOutputJSON> result = analyzer.findMergesWithAtLeastOneResolution(List.of(merge));
 
@@ -78,7 +78,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = createMerge("merge1", 50, 10, 0);
 
         // Add variant with strictly better success: 45 passing tests
-        addVariant(merge, "variant1", 50, 5, 0, Map.of("file1", List.of("OURS")));
+        addVariant(merge, 1, 50, 5, 0, Map.of("file1", List.of("OURS")));
 
         List<MergeOutputJSON> result = analyzer.findMergesThatPerformBetter(List.of(merge));
 
@@ -91,7 +91,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = createMerge("merge1", 50, 0, 0);
 
         // Add variant with equal success
-        addVariant(merge, "variant1", 50, 0, 0, Map.of("file1", List.of("OURS")));
+        addVariant(merge, 1, 50, 0, 0, Map.of("file1", List.of("OURS")));
 
         List<MergeOutputJSON> result = analyzer.findMergesThatPerformBetter(List.of(merge));
 
@@ -102,7 +102,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     void testExtractUniformPatterns_SinglePattern() {
         // Create merge with variant using uniform pattern (all OURS)
         MergeOutputJSON merge = createMerge("merge1", 40, 10, 0);
-        addVariant(merge, "variant1", 50, 0, 0, Map.of(
+        addVariant(merge, 1, 50, 0, 0, Map.of(
             "file1", List.of("OURS"),
             "file2", List.of("OURS"),
             "file3", List.of("OURS")
@@ -118,7 +118,7 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     void testExtractUniformPatterns_MixedPatternNotIncluded() {
         // Create merge with variant using mixed patterns
         MergeOutputJSON merge = createMerge("merge1", 40, 10, 0);
-        addVariant(merge, "variant1", 50, 0, 0, Map.of(
+        addVariant(merge, 1, 50, 0, 0, Map.of(
             "file1", List.of("OURS"),
             "file2", List.of("THEIRS"),
             "file3", List.of("BASE")
@@ -133,8 +133,8 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     void testExtractUniformPatterns_MultipleVariants() {
         // Create merge with two successful uniform variants
         MergeOutputJSON merge = createMerge("merge1", 40, 10, 0);
-        addVariant(merge, "variant1", 50, 0, 0, Map.of("file1", List.of("OURS")));
-        addVariant(merge, "variant2", 45, 5, 0, Map.of("file1", List.of("THEIRS")));
+        addVariant(merge, 1, 50, 0, 0, Map.of("file1", List.of("OURS")));
+        addVariant(merge, 2, 45, 5, 0, Map.of("file1", List.of("THEIRS")));
 
         List<String> patterns = analyzer.extractUniformPatterns(List.of(merge));
 
@@ -223,16 +223,16 @@ class VariantResolutionAnalyzerTest extends BaseTest {
     void testComplexScenario_MultiplemergesWithVariants() {
         // Merge 1: baseline fails, variant1 succeeds with OURS, variant2 succeeds with THEIRS
         MergeOutputJSON merge1 = createMerge("merge1", 50, 50, 0);
-        addVariant(merge1, "variant1", 50, 0, 0, Map.of("file1", List.of("OURS")));
-        addVariant(merge1, "variant2", 50, 0, 0, Map.of("file1", List.of("THEIRS")));
+        addVariant(merge1, 1, 50, 0, 0, Map.of("file1", List.of("OURS")));
+        addVariant(merge1, 2, 50, 0, 0, Map.of("file1", List.of("THEIRS")));
 
         // Merge 2: baseline succeeds, variant1 succeeds better with BASE
         MergeOutputJSON merge2 = createMerge("merge2", 100, 10, 0);
-        addVariant(merge2, "variant1", 100, 5, 0, Map.of("file1", List.of("BASE")));
+        addVariant(merge2, 1, 100, 5, 0, Map.of("file1", List.of("BASE")));
 
         // Merge 3: baseline succeeds, no variants better
         MergeOutputJSON merge3 = createMerge("merge3", 50, 0, 0);
-        addVariant(merge3, "variant1", 50, 25, 0, Map.of("file1", List.of("OURS")));
+        addVariant(merge3, 1, 50, 25, 0, Map.of("file1", List.of("OURS")));
 
         List<MergeOutputJSON> allMerges = List.of(merge1, merge2, merge3);
 
@@ -276,26 +276,26 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = new MergeOutputJSON();
         merge.setMergeCommit(commitHash);
         MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
-        baselineVariant.setVariantName("human_baseline");
+        baselineVariant.setVariantIndex(0);
         baselineVariant.setCompilationResult(successCR());
         baselineVariant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
         allVariants.add(baselineVariant);
-        merge.setVariantsExecution(new MergeOutputJSON.VariantsExecution(allVariants));
+        merge.setVariants(allVariants);
         return merge;
     }
 
-    private void addVariant(MergeOutputJSON merge, String variantName, int runNum, int failuresNum, int errorsNum,
+    private void addVariant(MergeOutputJSON merge, int variantIndex, int runNum, int failuresNum, int errorsNum,
                            Map<String, List<String>> conflictPatterns) {
         MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
-        variant.setVariantName(variantName);
+        variant.setVariantIndex(variantIndex);
         variant.setCompilationResult(successCR());
         variant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         variant.setConflictPatterns(conflictPatterns);
 
-        if (merge.getVariantsExecution().getVariants() == null) {
-            merge.getVariantsExecution().setVariants(new ArrayList<>());
+        if (merge.getVariants() == null) {
+            merge.setVariants(new ArrayList<>());
         }
-        merge.getVariantsExecution().getVariants().add(variant);
+        merge.getVariants().add(variant);
     }
 }

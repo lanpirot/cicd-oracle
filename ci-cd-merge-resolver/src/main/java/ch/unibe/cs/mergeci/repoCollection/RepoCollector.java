@@ -16,7 +16,6 @@ import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 public class RepoCollector {
-    private static int HEADER_LINE = 1;
     private final Path cloneDir;
     private final Path tempDir;
     private final Path datasetDir;
@@ -98,7 +96,7 @@ public class RepoCollector {
         }
     }
 
-    private void cleanForFreshRun() throws IOException {
+    private void cleanForFreshRun() {
         if (!AppConfig.isFreshRun()) return;
         System.out.println("FRESH_RUN enabled: Cleaning collection directories...");
         if (Files.exists(cloneDir)) FileUtils.deleteDirectory(cloneDir.toFile());

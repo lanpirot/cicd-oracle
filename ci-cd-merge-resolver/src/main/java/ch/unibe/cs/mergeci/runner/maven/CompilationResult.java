@@ -1,6 +1,8 @@
 package ch.unibe.cs.mergeci.runner.maven;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,10 +24,27 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Getter
-@JsonPropertyOrder({"moduleResults", "buildStatus", "totalTime"})
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({"buildStatus", "totalTime", "totalModules", "successfulModules", "failedModuleNames"})
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class CompilationResult {
+    @Getter(onMethod_ = {@JsonIgnore})
     private final List<ModuleResult> moduleResults;
+
+    @JsonProperty
+    public int getTotalModules() { return moduleResults == null ? 0 : moduleResults.size(); }
+
+    @JsonProperty
+    public int getSuccessfulModules() { return moduleResults == null ? 0 : getNumberOfSuccessfulModules(); }
+
+    @JsonProperty
+    public List<String> getFailedModuleNames() {
+        if (moduleResults == null) return List.of();
+        return moduleResults.stream()
+                .filter(m -> m.getStatus() == Status.FAILURE)
+                .map(ModuleResult::getModuleName)
+                .toList();
+    }
     private final Status buildStatus;
     private final float totalTime;
     private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+?)\\s\\.*\\s*(SUCCESS|FAILURE|SKIPPED)\\s(\\[\\s*([\\d.:]+) (min|s|ms)\\])?";
@@ -105,12 +124,12 @@ public class CompilationResult {
 
     @JsonIgnore
     public int getNumberOfModules() {
-        return moduleResults.size();
+        return moduleResults == null ? 0 : moduleResults.size();
     }
 
     @JsonIgnore
     public int getNumberOfSuccessfulModules() {
-        return (int) moduleResults.stream().filter(x -> x.status == Status.SUCCESS).count();
+        return moduleResults == null ? 0 : (int) moduleResults.stream().filter(x -> x.status == Status.SUCCESS).count();
     }
 
     @AllArgsConstructor

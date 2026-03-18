@@ -50,7 +50,7 @@ public class VariantProjectBuilder {
         this.logDir = tempDir.resolve("log");
         this.conflictPatterns = new ArrayList<>();
         try {
-            this.heuristics = PatternHeuristics.loadFromResource("pattern-heuristics/relative_numbers_summary.csv");
+            this.heuristics = PatternHeuristics.loadFromResource("pattern-heuristics/learnt_historical_pattern_distribution.csv");
         } catch (Exception e) {
             throw new RuntimeException("Failed to load pattern heuristics", e);
         }
@@ -173,7 +173,7 @@ public class VariantProjectBuilder {
     /**
      * Collect test result from a single project directory.
      */
-    public TestTotal collectTestResult(String projectKey, Path projectPath) {
+    public TestTotal collectTestResult(Path projectPath) {
         return new TestTotal(projectPath.toFile());
     }
 }

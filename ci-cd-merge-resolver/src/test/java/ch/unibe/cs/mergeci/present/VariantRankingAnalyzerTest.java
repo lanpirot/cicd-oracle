@@ -257,12 +257,12 @@ class VariantRankingAnalyzerTest extends BaseTest {
         MergeOutputJSON merge = new MergeOutputJSON();
         merge.setMergeCommit(commitHash);
         MergeOutputJSON.Variant baselineVariant = new MergeOutputJSON.Variant();
-        baselineVariant.setVariantName("human_baseline");
+        baselineVariant.setVariantIndex(0);
         baselineVariant.setCompilationResult(successCR());
         baselineVariant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         List<MergeOutputJSON.Variant> allVariants = new ArrayList<>();
         allVariants.add(baselineVariant);
-        merge.setVariantsExecution(new MergeOutputJSON.VariantsExecution(allVariants));
+        merge.setVariants(allVariants);
         merge.setNumConflictChunks(conflictChunks);
         return merge;
     }
@@ -280,10 +280,13 @@ class VariantRankingAnalyzerTest extends BaseTest {
         variant.setCompilationResult(successCR());
         variant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
         variant.setConflictPatterns(conflictPatterns);
+        // assign a non-zero index (size of list since baseline is at 0)
+        int nextIndex = merge.getVariants().size();
+        variant.setVariantIndex(nextIndex);
 
-        if (merge.getVariantsExecution().getVariants() == null) {
-            merge.getVariantsExecution().setVariants(new ArrayList<>());
+        if (merge.getVariants() == null) {
+            merge.setVariants(new ArrayList<>());
         }
-        merge.getVariantsExecution().getVariants().add(variant);
+        merge.getVariants().add(variant);
     }
 }

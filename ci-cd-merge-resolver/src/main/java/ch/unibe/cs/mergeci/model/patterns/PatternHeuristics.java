@@ -29,12 +29,12 @@ public class PatternHeuristics {
     public static PatternHeuristics loadFromResource(String csvPath) throws IOException {
         PatternHeuristics heuristics = new PatternHeuristics();
 
-        try (InputStream is = PatternHeuristics.class.getClassLoader().getResourceAsStream(csvPath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+        InputStream is = PatternHeuristics.class.getClassLoader().getResourceAsStream(csvPath);
+        if (is == null) {
+            throw new IOException("Resource not found: " + csvPath);
+        }
 
-            if (is == null) {
-                throw new IOException("Resource not found: " + csvPath);
-            }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -126,13 +126,6 @@ public class PatternHeuristics {
     }
 
     /**
-     * Check if heuristics are loaded for a specific chunk count.
-     */
-    public boolean hasStrategiesFor(int chunkCount) {
-        return strategiesByChunkCount.containsKey(chunkCount);
-    }
-
-    /**
      * Get all chunk counts that have specific heuristics.
      */
     public Set<Integer> getAvailableChunkCounts() {
@@ -141,11 +134,9 @@ public class PatternHeuristics {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("PatternHeuristics:\n");
-        sb.append("  Global strategies: ").append(globalStrategies != null ? globalStrategies.size() : 0).append("\n");
-        sb.append("  Chunk-specific strategies: ").append(strategiesByChunkCount.size()).append(" counts\n");
-        sb.append("  Available counts: ").append(getAvailableChunkCounts()).append("\n");
-        return sb.toString();
+        return "PatternHeuristics:\n" +
+                "  Global strategies: " + (globalStrategies != null ? globalStrategies.size() : 0) + "\n" +
+                "  Chunk-specific strategies: " + strategiesByChunkCount.size() + " counts\n" +
+                "  Available counts: " + getAvailableChunkCounts() + "\n";
     }
 }

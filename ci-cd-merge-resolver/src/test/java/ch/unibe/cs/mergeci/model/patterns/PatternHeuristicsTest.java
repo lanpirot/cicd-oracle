@@ -13,7 +13,7 @@ class PatternHeuristicsTest {
     @Test
     void testLoadHeuristics() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
-                "pattern-heuristics/relative_numbers_summary.csv"
+                "pattern-heuristics/learnt_historical_pattern_distribution.csv"
         );
 
         assertNotNull(heuristics);
@@ -40,7 +40,7 @@ class PatternHeuristicsTest {
     @Test
     void testStrategySelection() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
-                "pattern-heuristics/relative_numbers_summary.csv"
+                "pattern-heuristics/learnt_historical_pattern_distribution.csv"
         );
 
         // Test strategy selection for different chunk counts
@@ -77,7 +77,7 @@ class PatternHeuristicsTest {
     @Test
     void testDeduplication() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
-                "pattern-heuristics/relative_numbers_summary.csv"
+                "pattern-heuristics/learnt_historical_pattern_distribution.csv"
         );
 
         // Use fixed seed for reproducibility
@@ -111,7 +111,7 @@ class PatternHeuristicsTest {
     @Test
     void testNonPatternFallback() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
-                "pattern-heuristics/relative_numbers_summary.csv"
+                "pattern-heuristics/learnt_historical_pattern_distribution.csv"
         );
 
         // Use fixed seed for reproducibility
@@ -150,7 +150,7 @@ class PatternHeuristicsTest {
     @Timeout(5)
     void testSingleChunkVariantCount() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
-                "pattern-heuristics/relative_numbers_summary.csv"
+                "pattern-heuristics/learnt_historical_pattern_distribution.csv"
         );
 
         StrategySelector selector = new StrategySelector(heuristics, new Random(42));
@@ -177,7 +177,7 @@ class PatternHeuristicsTest {
     @Test
     void testOuterRetryWarning() throws Exception {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
-                "pattern-heuristics/relative_numbers_summary.csv"
+                "pattern-heuristics/learnt_historical_pattern_distribution.csv"
         );
 
         // Use fixed seed for reproducibility

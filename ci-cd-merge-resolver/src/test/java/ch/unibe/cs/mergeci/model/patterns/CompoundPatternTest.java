@@ -118,8 +118,8 @@ class CompoundPatternTest {
 
         String str = compound.toString();
         assertTrue(str.contains("CompoundPattern"));
-        assertTrue(str.contains("OursPattern"));
-        assertTrue(str.contains("TheirsPattern"));
+        assertTrue(str.contains("OURS"));
+        assertTrue(str.contains("THEIRS"));
     }
 
     /**

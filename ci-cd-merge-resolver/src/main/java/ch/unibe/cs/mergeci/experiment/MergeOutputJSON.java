@@ -17,9 +17,11 @@ import java.util.Map;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"mergeCommit", "parent1", "parent2", "numConflictFiles", "numJavaConflictFiles",
-        "numConflictChunks", "isMultiModule", "coverage", "humanBaselineSeconds", "totalExecutionTime",
-        "variantsExecution"})
+@JsonPropertyOrder({"mergeCommit", "parent1", "parent2",
+        "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
+        "isMultiModule", "humanBaselineSeconds", "variantBudgetSeconds",
+        "totalExecutionTime", "variantsExecutionTimeSeconds",
+        "numVariantsAttempted", "budgetExhausted", "coverage", "variants"})
 @ToString
 public class MergeOutputJSON {
     private String mergeCommit;
@@ -35,20 +37,24 @@ public class MergeOutputJSON {
 
     private long humanBaselineSeconds;
 
+    private long variantBudgetSeconds;
+    private boolean budgetExhausted;
+    private int numVariantsAttempted;
+
     private long totalExecutionTime;
 
-
-    private VariantsExecution variantsExecution;
+    private long variantsExecutionTimeSeconds;
+    private List<Variant> variants;
 
     /**
-     * Returns the baseline (human_baseline) TestTotal by looking at the variants list.
-     * Falls back to an empty TestTotal if not available.
+     * Returns the baseline (index 0) TestTotal by looking at the variants list.
+     * Falls back to null if not available.
      */
     @JsonIgnore
     public TestTotal getTestResults() {
-        if (variantsExecution != null && variantsExecution.getVariants() != null) {
-            for (Variant v : variantsExecution.getVariants()) {
-                if ("human_baseline".equals(v.getVariantName()) && v.getTestResults() != null) {
+        if (variants != null) {
+            for (Variant v : variants) {
+                if (v.getVariantIndex() == 0 && v.getTestResults() != null) {
                     return v.getTestResults();
                 }
             }
@@ -57,14 +63,14 @@ public class MergeOutputJSON {
     }
 
     /**
-     * Returns the baseline (human_baseline) CompilationResult by looking at the variants list.
+     * Returns the baseline (index 0) CompilationResult by looking at the variants list.
      * Returns null if not available.
      */
     @JsonIgnore
     public CompilationResult getCompilationResult() {
-        if (variantsExecution != null && variantsExecution.getVariants() != null) {
-            for (Variant v : variantsExecution.getVariants()) {
-                if ("human_baseline".equals(v.getVariantName()) && v.getCompilationResult() != null) {
+        if (variants != null) {
+            for (Variant v : variants) {
+                if (v.getVariantIndex() == 0 && v.getCompilationResult() != null) {
                     return v.getCompilationResult();
                 }
             }
@@ -76,24 +82,13 @@ public class MergeOutputJSON {
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Variant {
-        private String variantName;
+        private int variantIndex;
         private CompilationResult compilationResult;
         private TestTotal testResults;
         private Map<String, List<String>> conflictPatterns;
-        private Double finishedAfterFirstVariantStartSeconds;
-    }
-
-    @Getter
-    @Setter
-    @JsonPropertyOrder({"executionTimeSeconds", "results"})
-    @NoArgsConstructor
-    public static class VariantsExecution {
-        private long executionTimeSeconds;
-        private List<Variant> variants;
-
-        public VariantsExecution(List<Variant> variants) {
-            this.variants = variants;
-        }
+        private Double ownExecutionSeconds;
+        private Double totalTimeSinceMergeStartSeconds;
+        private boolean timedOut;
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 /**
  * Factory for creating pattern instances from pattern names.
  * Supports atomic patterns (OURS, THEIRS, BASE, EMPTY) and compound patterns (OURSTHEIRS, etc.).
- *
+ * <p>
  * Compound pattern names encode a specific ordering of atomic components.
  * Use {@link #sampleOrdering(String, Random)} to randomly pick one ordering before calling
  * {@link #fromName(String)}, so that deduplication in StrategySelector operates on the
@@ -55,7 +55,7 @@ public class PatternFactory {
 
         // Single component doesn't need CompoundPattern wrapper
         if (components.size() == 1) {
-            return components.get(0);
+            return components.getFirst();
         }
 
         return new CompoundPattern(components);
@@ -66,7 +66,7 @@ public class PatternFactory {
      * For atomic patterns the name is returned unchanged (only one ordering exists).
      * For compound patterns, the atomic components are randomly permuted and
      * the result is returned as a new name string (e.g., "OURSTHEIRS" → "THEIRSOURS").
-     *
+     * <p>
      * The returned name can be used as a deduplication key and passed to {@link #fromName(String)}.
      *
      * @param patternName Pattern name from the heuristics CSV (e.g., "OURSTHEIRS")

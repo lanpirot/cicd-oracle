@@ -81,7 +81,8 @@ class VariantResultCollectorTest extends BaseTest {
         }
 
         MergeExperimentRunner.MergeAnalysisResult result = new MergeExperimentRunner.MergeAnalysisResult(
-                analyzer, compilationResults, testResults, 200L, timing, null, variantFinishSeconds
+                analyzer, compilationResults, testResults, 200L, timing, null, variantFinishSeconds,
+                null, false
         );
 
         return MergeExperimentRunner.ProcessedMerge.completed(info, 2, result);
@@ -98,14 +99,14 @@ class VariantResultCollectorTest extends BaseTest {
         assertEquals(BASELINE_SECONDS, output.getHumanBaselineSeconds());
 
         // variants list is empty (no variants, only baseline was in compilationResults)
-        assertNotNull(output.getVariantsExecution());
-        assertTrue(output.getVariantsExecution().getVariants().isEmpty());
+        assertNotNull(output.getVariants());
+        assertTrue(output.getVariants().isEmpty());
 
-        // backward-compat getter returns null (no "human_baseline" variant in variant-mode JSON)
+        // backward-compat getter returns null (no index-0 variant in variant-mode JSON)
         assertNull(output.getCompilationResult(),
-                "variant-mode JSON must not expose a compilationResult via human_baseline lookup");
+                "variant-mode JSON must not expose a compilationResult via baseline lookup");
         assertNull(output.getTestResults(),
-                "getTestResults() must return null when no human_baseline variant present");
+                "getTestResults() must return null when no baseline variant present");
     }
 
     @Test
@@ -114,13 +115,12 @@ class VariantResultCollectorTest extends BaseTest {
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(true, finishTimes);
         MergeOutputJSON output = new VariantResultCollector().collectResults(processed);
 
-        List<MergeOutputJSON.Variant> variants = output.getVariantsExecution().getVariants();
+        List<MergeOutputJSON.Variant> variants = output.getVariants();
         assertEquals(1, variants.size());
 
         MergeOutputJSON.Variant variant = variants.get(0);
-        assertEquals(PROJECT_NAME + "_0", variant.getVariantName());
-        assertNotNull(variant.getFinishedAfterFirstVariantStartSeconds());
-        assertEquals(VARIANT_FINISH_SECONDS, variant.getFinishedAfterFirstVariantStartSeconds(), 0.001);
+        assertNotNull(variant.getOwnExecutionSeconds());
+        assertEquals(VARIANT_FINISH_SECONDS, variant.getOwnExecutionSeconds(), 0.001);
     }
 
     @Test
@@ -139,18 +139,18 @@ class VariantResultCollectorTest extends BaseTest {
     // ── collectBaselineResult (human_baseline mode) ───────────────────────────
 
     @Test
-    void collectBaselineResult_hasSingleHumanBaselineVariant() throws Exception {
+    void collectBaselineResult_hasSingleBaselineVariant() throws Exception {
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(false, Map.of());
         MergeOutputJSON output = new VariantResultCollector().collectBaselineResult(processed);
 
         assertEquals(BASELINE_SECONDS, output.getHumanBaselineSeconds());
 
-        List<MergeOutputJSON.Variant> variants = output.getVariantsExecution().getVariants();
+        List<MergeOutputJSON.Variant> variants = output.getVariants();
         assertEquals(1, variants.size());
 
         MergeOutputJSON.Variant variant = variants.get(0);
-        assertEquals("human_baseline", variant.getVariantName());
-        assertEquals(BASELINE_SECONDS, variant.getFinishedAfterFirstVariantStartSeconds(), 0.001);
+        assertEquals(0, variant.getVariantIndex());
+        assertEquals(BASELINE_SECONDS, variant.getOwnExecutionSeconds(), 0.001);
     }
 
     @Test
@@ -158,7 +158,7 @@ class VariantResultCollectorTest extends BaseTest {
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(false, Map.of());
         MergeOutputJSON output = new VariantResultCollector().collectBaselineResult(processed);
 
-        // getTestResults() finds the "human_baseline" variant and returns its TestTotal
+        // getTestResults() finds the index-0 variant and returns its TestTotal
         TestTotal tests = output.getTestResults();
         assertNotNull(tests);
         assertEquals(100, tests.getRunNum());
@@ -170,6 +170,6 @@ class VariantResultCollectorTest extends BaseTest {
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(false, Map.of());
         MergeOutputJSON output = new VariantResultCollector().collectBaselineResult(processed);
 
-        assertEquals(BASELINE_SECONDS, output.getVariantsExecution().getExecutionTimeSeconds());
+        assertEquals(BASELINE_SECONDS, output.getVariantsExecutionTimeSeconds());
     }
 }

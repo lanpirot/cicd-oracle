@@ -11,6 +11,9 @@ import java.util.Map;
 
 public class EmptyPattern implements IPattern {
     @Override
+    public String name() { return "EMPTY"; }
+
+    @Override
     public List<String> apply(MergeResult<RawText> mergeResult, Map<CheckoutCommand.Stage, MergeChunk> chunks) {
         return Collections.emptyList();
     }

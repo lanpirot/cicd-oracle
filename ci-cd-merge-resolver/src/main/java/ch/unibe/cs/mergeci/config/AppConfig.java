@@ -105,7 +105,6 @@ public class AppConfig {
     public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                             // directory to clone projects into
     public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");               // datasets collected by RepoCollector / MergeConflictCollector
     public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");                                // temporary working directory
-    public static final Path TMP_PROJECT_DIR = TMP_DIR.resolve("projects");
 
     // ========== PHASE 2: CONFLICT COLLECTION ==========
     private static final int MAX_CONFLICT_MERGES_DEFAULT = 10;  // sample maximally this many merges per project to avoid bias towards giant projects
@@ -129,6 +128,13 @@ public class AppConfig {
 
     // ========== PHASE 3: VARIANT EXPERIMENTS ==========
     public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");
+
+    // ========== PRESENTATION (PHASE 4) ==========
+    /** Python script that generates all paper-ready PDF charts with LaTeX fonts. */
+    public static final Path PLOT_SCRIPT = Paths.get(
+            "/home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/scripts/plot_results.py");
+    /** Output PDF written by the Python presentation script. */
+    public static final Path PLOTS_OUTPUT_PDF = DATA_BASE_DIR.resolve("plots.pdf");
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     static Runtime runtime = Runtime.getRuntime();

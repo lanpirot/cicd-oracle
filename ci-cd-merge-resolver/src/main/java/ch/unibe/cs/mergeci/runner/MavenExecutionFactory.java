@@ -36,6 +36,10 @@ public class MavenExecutionFactory {
     private JacocoReportFinder.CoverageDTO coverageResult;
     @Getter
     private Map<String, Double> variantFinishSeconds;
+    @Getter
+    private Map<String, Double> variantSinceMergeStartSeconds;
+    @Getter
+    private boolean budgetExhausted;
 
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
@@ -68,6 +72,8 @@ public class MavenExecutionFactory {
         testResults = new TreeMap<>();
         coverageResult = null;
         variantFinishSeconds = new TreeMap<>();
+        variantSinceMergeStartSeconds = new TreeMap<>();
+        budgetExhausted = false;
 
         return new IJustInTimeRunner() {
             @Override
@@ -85,17 +91,17 @@ public class MavenExecutionFactory {
                 TestTotal baselineTests = testResults.get(context.getProjectName());
                 long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
-                Instant deadline = Instant.now().plusSeconds(totalBudgetSeconds);
 
                 if (skipVariants) {
                     System.out.print("[∞] ");
                 } else {
-                    System.out.printf("[budget: %ds] ", totalBudgetSeconds);
+                    System.out.printf("[budget: %ds]%n", totalBudgetSeconds);
                 }
                 System.out.flush();
 
                 Instant variantsStart = Instant.now();
                 if (!skipVariants) {
+                    Instant deadline = Instant.now().plusSeconds(totalBudgetSeconds);
                     runVariants(context, builder, deadline);
                 }
                 experimentTiming.setVariantsExecutionTime(Duration.between(variantsStart, Instant.now()));
@@ -125,7 +131,7 @@ public class MavenExecutionFactory {
                 builder.collectCompilationResult(projectName).ifPresent(result ->
                     compilationResults.put(projectName, result)
                 );
-                testResults.put(projectName, builder.collectTestResult(projectName, mainProjectPath));
+                testResults.put(projectName, builder.collectTestResult(mainProjectPath));
             }
 
             private void runVariants(VariantBuildContext context, VariantProjectBuilder builder,
@@ -134,17 +140,18 @@ public class MavenExecutionFactory {
                 String projectName = context.getProjectName();
                 MavenCommandResolver commandResolver = new MavenCommandResolver(false);
                 MavenCacheManager cacheManager = new MavenCacheManager();
-                int globalVariantIndex = 0;
+                int globalVariantIndex = 1;
                 Path cacheWarmPath = null;
+                Instant variantsStart = Instant.now();
 
                 // Cache mode: run the very first variant synchronously to warm the local Maven cache.
                 if (isCache) {
                     Optional<VariantProject> first = context.nextVariant();
-                    if (first.isPresent() && !Instant.now().isAfter(deadline)) {
+                    int timeout0 = remainingSeconds(deadline);
+                    if (first.isPresent() && timeout0 > 0) {
                         int idx = globalVariantIndex++;
                         Path firstPath = builder.buildVariant(context, first.get(), idx);
                         cacheManager.injectCacheArtifacts(firstPath);
-                        int timeout0 = remainingSeconds(deadline);
                         System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
                                 firstPath.getFileName(), timeout0);
                         new MavenProcessExecutor(timeout0).executeCommand(
@@ -153,7 +160,7 @@ public class MavenExecutionFactory {
                                         commandResolver.resolveMavenGoal(firstPath)));
                         cacheWarmPath = firstPath;
                         String warmKey = projectName + "_" + idx;
-                        collectResult(warmKey, firstPath, builder);
+                        collectResult(warmKey, firstPath, builder, variantsStart);
                     }
                 }
                 final Path warmPath = cacheWarmPath;
@@ -183,7 +190,7 @@ public class MavenExecutionFactory {
                         while (inFlight > 0) {
                             Map.Entry<String, Path> done = drainOne(cs);
                             inFlight--;
-                            collectResult(done.getKey(), done.getValue(), builder);
+                            collectResult(done.getKey(), done.getValue(), builder, variantsStart);
                             if (!done.getValue().equals(warmPath) && done.getValue().toFile().exists()) {
                                 deleteWithRetry(done.getValue());
                             }
@@ -214,24 +221,21 @@ public class MavenExecutionFactory {
                     double cumulativeSeconds = 0;
                     try {
                         while (true) {
-                            if (Instant.now().isAfter(deadline)) {
+                            int variantTimeout = remainingSeconds(deadline);
+                            if (variantTimeout <= 0) {
                                 System.out.println("⚠ Timeout budget exhausted");
+                                MavenExecutionFactory.this.budgetExhausted = true;
                                 break;
                             }
                             Optional<VariantProject> next = context.nextVariant();
                             if (next.isEmpty()) break;
 
                             VariantProject variant = next.get();
-                            if (Instant.now().isAfter(deadline)) {
-                                System.out.println("⚠ Timeout budget exhausted");
-                                break;
-                            }
                             int idx = globalVariantIndex++;
                             Path variantPath = builder.buildVariant(context, variant, idx);
                             String variantKey = projectName + "_" + idx;
 
                             try {
-                                int variantTimeout = remainingSeconds(deadline);
                                 System.out.printf("[DEBUG] sequential variant %d: timeout=%ds%n", idx, variantTimeout);
                                 Instant variantStart = Instant.now();
                                 if (isCache) {
@@ -245,12 +249,15 @@ public class MavenExecutionFactory {
                                 } else {
                                     new MavenRunner(logDir, false, variantTimeout).run_no_optimization(variantPath);
                                 }
-                                cumulativeSeconds += Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
+                                Instant variantFinish = Instant.now();
+                                cumulativeSeconds += Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
                                 builder.collectCompilationResult(variantKey).ifPresent(result ->
                                     compilationResults.put(variantKey, result)
                                 );
-                                testResults.put(variantKey, builder.collectTestResult(variantKey, variantPath));
+                                testResults.put(variantKey, builder.collectTestResult(variantPath));
                                 variantFinishSeconds.put(variantKey, cumulativeSeconds);
+                                variantSinceMergeStartSeconds.put(variantKey,
+                                        (double) Duration.between(variantsStart, variantFinish).getSeconds());
                             } finally {
                                 if (!variantPath.equals(warmPath) && variantPath.toFile().exists()) {
                                     deleteWithRetry(variantPath);
@@ -270,8 +277,8 @@ public class MavenExecutionFactory {
                                     MavenCacheManager cacheManager,
                                     Path warmPath, Path vPath, String key, Instant deadline) {
                 cs.submit(() -> {
-                    if (!Instant.now().isAfter(deadline)) {
-                        int timeout = remainingSeconds(deadline);
+                    int timeout = remainingSeconds(deadline);
+                    if (timeout > 0) {
                         System.out.printf("[DEBUG] variant %s starting, timeout=%ds%n", vPath.getFileName(), timeout);
                         if (isCache) {
                             cacheManager.injectCacheArtifacts(vPath);
@@ -297,15 +304,17 @@ public class MavenExecutionFactory {
                 return cs.take().get();
             }
 
-            private void collectResult(String key, Path path, VariantProjectBuilder builder) throws Exception {
+            private void collectResult(String key, Path path, VariantProjectBuilder builder, Instant variantsStart) throws Exception {
+                Instant finish = Instant.now();
                 builder.collectCompilationResult(key).ifPresent(r -> compilationResults.put(key, r));
-                testResults.put(key, builder.collectTestResult(key, path));
+                testResults.put(key, builder.collectTestResult(path));
                 CompilationResult cr = compilationResults.get(key);
                 variantFinishSeconds.put(key, cr != null ? (double) cr.getTotalTime() : 0.0);
+                variantSinceMergeStartSeconds.put(key, (double) Duration.between(variantsStart, finish).getSeconds());
             }
 
             private int remainingSeconds(Instant deadline) {
-                return (int) Math.max(1, Duration.between(Instant.now(), deadline).getSeconds());
+                return (int) Duration.between(Instant.now(), deadline).getSeconds();
             }
         };
     }
