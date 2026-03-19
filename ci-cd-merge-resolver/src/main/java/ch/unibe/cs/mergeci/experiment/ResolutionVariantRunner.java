@@ -28,7 +28,7 @@ public class ResolutionVariantRunner {
     private final RepositoryManager repoManager;
 
     public ResolutionVariantRunner() {
-        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.INPUT_PROJECT_XLSX, AppConfig.REPO_DIR);
+        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.INPUT_PROJECT_CSV, AppConfig.REPO_DIR);
     }
 
     public ResolutionVariantRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
@@ -104,10 +104,10 @@ public class ResolutionVariantRunner {
 
     private void processDataset(File dataset, Path outputDir, Path humanBaselineDir, boolean isParallel, boolean isCache, boolean skipVariants) throws Exception {
         String repoName = Files.getNameWithoutExtension(dataset.getName());
-        Optional<String> repoUrlOpt = Utility.getRepoUrlFromExcel(repoDatasetsFile, repoName);
+        Optional<String> repoUrlOpt = Utility.getRepoUrlFromCsv(repoDatasetsFile, repoName);
 
         if (repoUrlOpt.isEmpty()) {
-            System.err.println("Repository URL not found in Excel for: " + repoName + ". Skipping...");
+            System.err.println("Repository URL not found in CSV for: " + repoName + ". Skipping...");
             return;
         }
 
@@ -153,6 +153,12 @@ public class ResolutionVariantRunner {
                 : loadStoredBaselines(humanBaselineOutput);
         boolean hasStoredBaselines = !storedBaselines.isEmpty();
 
+        // For broken-baseline merges, inject a meaningful budget derived from the project average
+        // (non-broken merges) so their variants get a fair shot, with 300s as fallback.
+        if (!skipVariants) {
+            injectFallbackBaselinesForBrokenMerges(mergeInfos, storedBaselines);
+        }
+
         MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines);
         VariantResultCollector collector = new VariantResultCollector();
 
@@ -166,6 +172,36 @@ public class ResolutionVariantRunner {
             new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
         }
         new JsonResultWriter().writeResults(projectName, stats.results(), output);
+    }
+
+    /**
+     * For merges where the human baseline fails to compile ({@code baselineBroken=true}),
+     * override their stored baseline with the average of the non-broken merges in the same
+     * project, falling back to 300 s when no non-broken baselines are available.
+     * This gives broken-baseline merges a fair variant budget instead of inheriting a tiny
+     * value from a failed compilation attempt.
+     */
+    private static void injectFallbackBaselinesForBrokenMerges(
+            List<DatasetReader.MergeInfo> mergeInfos,
+            Map<String, Long> storedBaselines) {
+
+        long sum = 0, count = 0;
+        for (DatasetReader.MergeInfo info : mergeInfos) {
+            if (!info.isBaselineBroken()) {
+                Long baseline = storedBaselines.get(info.getMergeCommit());
+                if (baseline != null && baseline > 0) {
+                    sum += baseline;
+                    count++;
+                }
+            }
+        }
+        long fallback = count > 0 ? sum / count : 300L;
+
+        for (DatasetReader.MergeInfo info : mergeInfos) {
+            if (info.isBaselineBroken()) {
+                storedBaselines.put(info.getMergeCommit(), fallback);
+            }
+        }
     }
 
     /**

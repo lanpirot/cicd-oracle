@@ -67,6 +67,10 @@ public class BuildFailureLog {
         TIMEOUT,
         NO_TESTS,
         JAVA_VERSION,
-        COMPILE_FAILURE
+        COMPILE_FAILURE,
+        /** Dead remote repository or incompatible frontend toolchain — permanently unfixable. */
+        INFRA_FAILURE,
+        /** Merge commit has genuine source-level errors; a variant may fix it. */
+        BROKEN_MERGE
     }
 }

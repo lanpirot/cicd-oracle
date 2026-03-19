@@ -54,7 +54,7 @@ public class DatasetCollectionOrchestrator {
      * @param tempPath Temporary directory for checkouts
      * @param projectName Project name
      * @param maxConflictMerges Maximum number of conflict merges to collect
-     * @param excelOutFile Output Excel file path
+     * @param csvOutFile Output Excel file path
      * @param repoName Repository name
      * @param repoUrl Repository URL
      * @return Collection result with status and statistics
@@ -64,7 +64,7 @@ public class DatasetCollectionOrchestrator {
             Path tempPath,
             String projectName,
             int maxConflictMerges,
-            Path excelOutFile,
+            Path csvOutFile,
             String repoName,
             String repoUrl) throws Exception {
 
@@ -102,7 +102,7 @@ public class DatasetCollectionOrchestrator {
         // Determine status and write results
         return buildFinalResult(
                 stats,
-                excelOutFile,
+                csvOutFile,
                 repoName,
                 repoUrl,
                 totalCommitCount,
@@ -150,12 +150,14 @@ public class DatasetCollectionOrchestrator {
             String projectName,
             int javaConflictCount) {
 
-        List<ExcelWriter.DatasetRow> rows = Collections.synchronizedList(new java.util.ArrayList<>());
+        List<CsvWriter.DatasetRow> rows = Collections.synchronizedList(new java.util.ArrayList<>());
         AtomicInteger processedCount = new AtomicInteger(0);
         AtomicInteger noTestCount = new AtomicInteger(0);
         AtomicInteger timeoutCount = new AtomicInteger(0);
         AtomicInteger buildFailureCount = new AtomicInteger(0);
         AtomicInteger allTestsFailedCount = new AtomicInteger(0);
+        AtomicInteger infraFailureCount = new AtomicInteger(0);
+        AtomicInteger brokenMergeCount = new AtomicInteger(0);
         AtomicInteger maxModules = new AtomicInteger(0);
 
         ExecutorService pool = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
@@ -172,6 +174,8 @@ public class DatasetCollectionOrchestrator {
                     timeoutCount,
                     buildFailureCount,
                     allTestsFailedCount,
+                    infraFailureCount,
+                    brokenMergeCount,
                     maxModules,
                     javaConflictCount));
         }
@@ -179,7 +183,8 @@ public class DatasetCollectionOrchestrator {
         Utility.shutdownAndAwaitTermination(pool);
 
         return new ProcessingStatistics(rows, noTestCount.get(), timeoutCount.get(),
-                buildFailureCount.get(), allTestsFailedCount.get(), maxModules.get());
+                buildFailureCount.get(), allTestsFailedCount.get(),
+                infraFailureCount.get(), brokenMergeCount.get(), maxModules.get());
     }
 
     /**
@@ -190,12 +195,14 @@ public class DatasetCollectionOrchestrator {
             Path projectPath,
             Path tempPath,
             String projectName,
-            List<ExcelWriter.DatasetRow> rows,
+            List<CsvWriter.DatasetRow> rows,
             AtomicInteger processedCount,
             AtomicInteger noTestCount,
             AtomicInteger timeoutCount,
             AtomicInteger buildFailureCount,
             AtomicInteger allTestsFailedCount,
+            AtomicInteger infraFailureCount,
+            AtomicInteger brokenMergeCount,
             AtomicInteger maxModules,
             int totalJavaCount) {
 
@@ -213,7 +220,20 @@ public class DatasetCollectionOrchestrator {
                 maxModules.updateAndGet(current -> Math.max(current, result.getNumberOfModules()));
             }
 
-            if (!result.isHadTests()) {
+            if (!result.isHadTests() && result.isInfraFailure()) {
+                infraFailureCount.incrementAndGet();
+                logMergeFailure(projectName, commitShort, MergeFailureType.INFRA_FAILURE);
+                System.out.println("✗ Infra failure");
+            } else if (!result.isHadTests() && result.isBrokenMerge()) {
+                brokenMergeCount.incrementAndGet();
+                logMergeFailure(projectName, commitShort, MergeFailureType.BROKEN_MERGE);
+                rows.add(rowBuilder.buildBrokenMergeRow(result));
+                System.out.println("⚠ Broken baseline (included in dataset)");
+            } else if (!result.isHadTests() && !result.isCompilationSuccess()) {
+                buildFailureCount.incrementAndGet();
+                logCompileFailure(projectName, commitShort, result);
+                System.out.println("✗ Build failed");
+            } else if (!result.isHadTests()) {
                 noTestCount.incrementAndGet();
                 logMergeFailure(projectName, commitShort, MergeFailureType.NO_TESTS);
                 System.out.println("✗ No tests");
@@ -222,7 +242,7 @@ public class DatasetCollectionOrchestrator {
                 logMergeFailure(projectName, commitShort, MergeFailureType.TIMEOUT);
                 System.out.println("⏱ Timeout");
             } else {
-                ExcelWriter.DatasetRow row = rowBuilder.buildRow(result);
+                CsvWriter.DatasetRow row = rowBuilder.buildRow(result);
                 if (row != null) {
                     rows.add(row);
                     System.out.println("✓ Success");
@@ -246,7 +266,7 @@ public class DatasetCollectionOrchestrator {
      */
     private CollectionResult buildFinalResult(
             ProcessingStatistics stats,
-            Path excelOutFile,
+            Path csvOutFile,
             String repoName,
             String repoUrl,
             int totalCommits,
@@ -257,7 +277,8 @@ public class DatasetCollectionOrchestrator {
         if (stats.rows.isEmpty()) {
             int exceptionCount = mergesWithConflicts
                     - stats.noTestCount - stats.timeoutCount
-                    - stats.buildFailureCount - stats.allTestsFailedCount;
+                    - stats.buildFailureCount - stats.allTestsFailedCount
+                    - stats.infraFailureCount - stats.brokenMergeCount;
 
             boolean hasNoTest       = stats.noTestCount > 0;
             boolean hasTimeout      = stats.timeoutCount > 0;
@@ -298,7 +319,7 @@ public class DatasetCollectionOrchestrator {
         }
 
         // Success - write Excel file
-        ExcelWriter.writeExcel(excelOutFile, stats.rows);
+        CsvWriter.writeCsv(csvOutFile, stats.rows);
 
         return CollectionResult.builder()
                 .status(RepositoryStatus.SUCCESS)
@@ -313,7 +334,8 @@ public class DatasetCollectionOrchestrator {
                 .mergesWithNoTests(stats.noTestCount)
                 .mergesTimedOut(stats.timeoutCount)
                 .maxModules(stats.maxModules)
-                .message(String.format("Dataset created with %d compilable and testable merges", stats.rows.size()))
+                .message(String.format("Dataset created with %d merges (%d compilable+testable, %d broken baseline)",
+                        stats.rows.size(), stats.rows.size() - stats.brokenMergeCount, stats.brokenMergeCount))
                 .build();
     }
 
@@ -377,7 +399,8 @@ public class DatasetCollectionOrchestrator {
     /**
          * Statistics from parallel processing.
          */
-        private record ProcessingStatistics(List<ExcelWriter.DatasetRow> rows, int noTestCount, int timeoutCount,
-                                            int buildFailureCount, int allTestsFailedCount, int maxModules) {
+        private record ProcessingStatistics(List<CsvWriter.DatasetRow> rows, int noTestCount, int timeoutCount,
+                                            int buildFailureCount, int allTestsFailedCount,
+                                            int infraFailureCount, int brokenMergeCount, int maxModules) {
     }
 }

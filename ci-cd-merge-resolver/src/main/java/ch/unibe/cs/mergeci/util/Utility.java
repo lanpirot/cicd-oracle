@@ -1,14 +1,13 @@
 package ch.unibe.cs.mergeci.util;
 
 import lombok.Getter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +37,9 @@ public class Utility {
         testTime(13, "Test Time"),
         elapsedTestTime(14, "Elapsed Time"),
         normalizedElapsedTime(15, "Normalized Elapsed Time"),
-        hasTestConflict(16, "Has Test Conflict");
+        hasTestConflict(16, "Has Test Conflict"),
+        /** True when the human merge commit itself fails to compile; a variant may fix it. */
+        baselineBroken(17, "Baseline Broken");
 
         private final int columnNumber;
         private final String columnName;
@@ -130,32 +131,63 @@ public class Utility {
     }
 
     /**
-     * Look up repository URL from an Excel file containing project information.
+     * Look up repository URL from a CSV file containing project information.
      * Searches for a project by name and returns its URL.
      *
-     * @param excelFile Path to the Excel file containing repository information
+     * @param csvFile Path to the CSV file containing repository information
      * @param projectName Name of the project to find (without extension)
      * @return Optional containing the repository URL, or empty if not found
-     * @throws IOException if the Excel file cannot be read
+     * @throws IOException if the CSV file cannot be read
      */
-    public static Optional<String> getRepoUrlFromExcel(Path excelFile, String projectName) throws IOException {
-        try (FileInputStream file = new FileInputStream(excelFile.toFile());
-             Workbook workbook = new XSSFWorkbook(file)) {
-            Sheet sheet = workbook.getSheetAt(0);
+    public static Optional<String> getRepoUrlFromCsv(Path csvFile, String projectName) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile.toFile()))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) { firstLine = false; continue; } // skip header
+                if (line.isBlank()) continue;
 
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) continue;
+                String[] fields = parseCsvLine(line);
+                if (fields.length <= PROJECTCOLUMN.repoURL.getColumnNumber()) continue;
 
-                String repoName = row.getCell(PROJECTCOLUMN.repoName.getColumnNumber())
-                        .getStringCellValue().split("/")[1].trim();
+                String repoName = fields[PROJECTCOLUMN.repoName.getColumnNumber()].split("/")[1].trim();
                 if (repoName.equals(projectName)) {
-                    String url = row.getCell(PROJECTCOLUMN.repoURL.getColumnNumber())
-                            .getStringCellValue().trim();
-                    return Optional.of(url);
+                    return Optional.of(fields[PROJECTCOLUMN.repoURL.getColumnNumber()].trim());
                 }
             }
         }
         return Optional.empty();
+    }
+
+    public static String[] parseCsvLine(String line) {
+        List<String> result = new ArrayList<>();
+        StringBuilder field = new StringBuilder();
+        boolean inQuotes = false;
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '"') {
+                if (inQuotes && i + 1 < line.length() && line.charAt(i + 1) == '"') {
+                    field.append('"');
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (c == ',' && !inQuotes) {
+                result.add(field.toString());
+                field = new StringBuilder();
+            } else {
+                field.append(c);
+            }
+        }
+        result.add(field.toString());
+        return result.toArray(new String[0]);
+    }
+
+    public static String escapeCsvField(String value) {
+        if (value == null) return "";
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 }

@@ -4,22 +4,31 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 
 /**
- * Builds Excel dataset rows from merge processing results.
- * Transforms merge information and test results into structured Excel rows.
+ * Builds dataset rows from merge processing results.
+ * Transforms merge information and test results into structured CSV rows.
  */
 public class DatasetRowBuilder {
 
     /**
-     * Build an Excel dataset row from merge processing result.
+     * Build a dataset row from a successfully compiled+tested merge.
      *
      * @param result Merge processing result
-     * @return Excel row with merge data, or null if result is not successful
+     * @return CSV row, or null if result is not successful
      */
-    public ExcelWriter.DatasetRow buildRow(MergeCheckoutProcessor.MergeProcessResult result) {
+    public CsvWriter.DatasetRow buildRow(MergeCheckoutProcessor.MergeProcessResult result) {
         if (!result.isSuccessful()) {
             return null;
         }
 
+        MergeInfo merge = result.getMerge();
+        return buildRowInternal(merge, result, false);
+    }
+
+    /**
+     * Build a dataset row for a merge whose human baseline fails to compile but where a
+     * generated variant may succeed.  All test-related fields are zero; {@code baselineBroken=true}.
+     */
+    public CsvWriter.DatasetRow buildBrokenMergeRow(MergeCheckoutProcessor.MergeProcessResult result) {
         MergeInfo merge = result.getMerge();
         String mergeCommit = merge.getResultedMergeCommit().getName();
         String parent1 = merge.getCommit1().getName();
@@ -28,8 +37,43 @@ public class DatasetRowBuilder {
         int numJavaFiles = countJavaFiles(merge);
         boolean isMultiModule = isMultiModule(result);
         boolean hasTestConflict = hasTestConflict(merge);
+        int numberOfModules = result.getCompilationResult() != null
+                ? result.getCompilationResult().getNumberOfModules() : 0;
 
-        return ExcelWriter.DatasetRow.builder()
+        return CsvWriter.DatasetRow.builder()
+                .mergeCommit(mergeCommit)
+                .parent1(parent1)
+                .parent2(parent2)
+                .numTests(0)
+                .numConflictingFiles(merge.getConflictingFiles().size())
+                .numJavaFiles(numJavaFiles)
+                .compilationSuccess(false)
+                .testSuccess(false)
+                .elapsedTestTime(0)
+                .isMultiModule(isMultiModule)
+                .numPassedTests(0)
+                .compilationTime(0)
+                .testTime(0)
+                .normalizedElapsedTime(0)
+                .numberOfModules(numberOfModules)
+                .modulesPassed(0)
+                .hasTestConflict(hasTestConflict)
+                .baselineBroken(true)
+                .build();
+    }
+
+    private CsvWriter.DatasetRow buildRowInternal(MergeInfo merge,
+                                                  MergeCheckoutProcessor.MergeProcessResult result,
+                                                  boolean baselineBroken) {
+        String mergeCommit = merge.getResultedMergeCommit().getName();
+        String parent1 = merge.getCommit1().getName();
+        String parent2 = merge.getCommit2().getName();
+
+        int numJavaFiles = countJavaFiles(merge);
+        boolean isMultiModule = isMultiModule(result);
+        boolean hasTestConflict = hasTestConflict(merge);
+
+        return CsvWriter.DatasetRow.builder()
                 .mergeCommit(mergeCommit)
                 .parent1(parent1)
                 .parent2(parent2)
@@ -47,12 +91,10 @@ public class DatasetRowBuilder {
                 .numberOfModules(result.getNumberOfModules())
                 .modulesPassed(result.getModulesPassed())
                 .hasTestConflict(hasTestConflict)
+                .baselineBroken(baselineBroken)
                 .build();
     }
 
-    /**
-     * Count the number of Java files in conflict.
-     */
     private int countJavaFiles(MergeInfo merge) {
         return (int) merge.getConflictingFiles()
                 .keySet()
@@ -68,9 +110,6 @@ public class DatasetRowBuilder {
                 .anyMatch(file -> file.contains("src/test/"));
     }
 
-    /**
-     * Determine if the project is multi-module based on compilation result.
-     */
     private boolean isMultiModule(MergeCheckoutProcessor.MergeProcessResult result) {
         if (result.getCompilationResult() == null) {
             return false;

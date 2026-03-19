@@ -12,7 +12,7 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-    private static final boolean FRESH_RUN = false;
+    private static final boolean FRESH_RUN = true;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
@@ -87,12 +87,16 @@ public class AppConfig {
     // Used by JavaVersionResolver to switch to the closest compatible JDK when a
     // repository requires a specific Java version.
     public static final Map<Integer, Path> JAVA_HOMES = Map.of(
-            8,  Paths.get("/usr/lib/jvm/openlogic-openjdk-8u462-b08-linux-x64"),
+            8,  Paths.get("/usr/lib/jvm/jdk1.8.0_202"),
             11, Paths.get("/usr/lib/jvm/jdk-11.0.2"),
             17, Paths.get("/usr/lib/jvm/java-17-openjdk-amd64"),
             21, Paths.get("/usr/lib/jvm/jdk-21.0.2"),
             25, Paths.get("/usr/lib/jvm/jdk-25.0.1")
     );
+
+    // Maven -D flags that are safe to always pass: they skip style/validation plugins
+    // that have no effect on compilation or test execution. Discovered incrementally
+    // by inspecting projects that fail before tests run.
 
     // ========== PHASE 1: REPO COLLECTOR ==========
     /** Hard wall-clock timeout for a single git clone, in seconds. */
@@ -101,7 +105,7 @@ public class AppConfig {
     public static final int CLONE_SOCKET_TIMEOUT_SECONDS = 120; // 2 minutes
     public static final Path BASE_DIR = Paths.get("/home/lanpirot");
     public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");
-    public static final Path INPUT_PROJECT_XLSX = DATA_BASE_DIR.resolve("projects_Java_desc-stars-1000.xlsx"); // Excel with list of repositories and their repo URL
+    public static final Path INPUT_PROJECT_CSV = DATA_BASE_DIR.resolve("projects_Java_desc-stars-1000.csv"); // CSV with list of repositories and their repo URL
     public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                             // directory to clone projects into
     public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");               // datasets collected by RepoCollector / MergeConflictCollector
     public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");                                // temporary working directory
@@ -190,7 +194,7 @@ public class AppConfig {
 
     // ========== UTILITY ==========
     // File extensions
-    public static final String XLSX = ".xlsx";
+    public static final String CSV = ".csv";
     public static final String JSON = ".json";
     public static final String POMXML = "pom.xml";
     public static final String JAVA = ".java";
@@ -198,6 +202,7 @@ public class AppConfig {
 
     // Test repo names
     public static final String myTest = "myTest";
+    public static final String brokenMergeTest = "broken-merge-test";
     public static final String jacksonDatabind = "jackson-databind";
     public static final String ruoyivuepro = "ruoyi-vue-pro";
     public static final String Activiti = "Activiti";
@@ -208,7 +213,7 @@ public class AppConfig {
 
     // Test-specific directories (all test output goes here)
     public static final Path TEST_BASE_DIR = DATA_BASE_DIR.resolve("test");
-    public static final Path TEST_INPUT_PROJECT_XLSX = TEST_BASE_DIR.resolve("projects_test.xlsx");
+    public static final Path TEST_INPUT_PROJECT_CSV = TEST_BASE_DIR.resolve("projects_test.csv");
     public static final Path TEST_DATASET_DIR = TEST_BASE_DIR.resolve("dataset_temp");
     public static final Path TEST_REPO_DIR = Paths.get("src/test/resources/test-merge-projects");
     public static final Path TEST_EXPERIMENTS_DIR = TEST_BASE_DIR.resolve("experiments");

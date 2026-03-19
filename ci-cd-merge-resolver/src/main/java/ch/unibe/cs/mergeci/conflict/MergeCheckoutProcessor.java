@@ -193,6 +193,11 @@ public class MergeCheckoutProcessor {
                 : JavaVersionResolver.detectVersionErrorInLog(compilationLogPath);
         boolean javaVersionError = versionErrorInLog > 0;
 
+        // Classify non-compilation failures: infra (dead repo/toolchain) vs genuine broken merge
+        boolean infraFailure = !compilationSuccess && BuildFailureClassifier.isInfraFailure(compilationLogPath);
+        boolean brokenMerge  = !compilationSuccess && !infraFailure
+                && BuildFailureClassifier.isGenuineCompilationError(compilationLogPath);
+
         TestTotal testTotal = new TestTotal(projectPath.toFile());
         int runTests = testTotal.getRunNum();
 
@@ -202,14 +207,19 @@ public class MergeCheckoutProcessor {
             String mvnGoal201 = mavenRunner.getCommandResolver().resolveMavenGoal(projectPath);
             String mvnCmd201 = String.join(" ", AppConfig.buildCommand(mvnExe201, mvnGoal201));
             String javaPrefix201 = usedJava > 0 ? "JAVA_HOME=<java" + usedJava + "> " : "";
-            System.err.printf("  [BREAKPOINT] No tests ran — compilationSuccess=%b javaVersionError=%b%n  → %s%s%n  → path=%s%n", // BREAKPOINT
-                    compilationSuccess, javaVersionError, javaPrefix201, mvnCmd201, projectPath);
+            System.err.printf("  [BREAKPOINT] No tests ran — compilationSuccess=%b javaVersionError=%b infraFailure=%b brokenMerge=%b%n  → %s%s%n  → path=%s%n", // BREAKPOINT
+                    compilationSuccess, javaVersionError, infraFailure, brokenMerge, javaPrefix201, mvnCmd201, projectPath);
             return MergeProcessResult.builder()
                     .hadTests(false)
                     .timedOut(false)
+                    .compilationSuccess(compilationSuccess)
+                    .compilationResult(compilationResult)
+                    .merge(merge)
                     .requiredJavaVersion(requiredJava)
                     .usedJavaVersion(usedJava)
                     .javaVersionError(javaVersionError)
+                    .infraFailure(infraFailure)
+                    .brokenMerge(brokenMerge)
                     .build();
         }
 
@@ -292,6 +302,9 @@ public class MergeCheckoutProcessor {
         private final int requiredJavaVersion;   // from pom.xml; 0 = not detected
         private final int usedJavaVersion;       // version we switched to; 0 = system default
         private final boolean javaVersionError;  // Maven log contained a source/release version error
+        // Build failure classification
+        private final boolean infraFailure;  // dead repo / frontend toolchain — permanently unfixable
+        private final boolean brokenMerge;  // genuine javac error in merged source — a variant may fix it
 
         /**
          * Check if this result represents a successful processing.

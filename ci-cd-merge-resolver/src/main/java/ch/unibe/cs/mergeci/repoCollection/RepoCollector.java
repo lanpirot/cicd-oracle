@@ -7,21 +7,19 @@ import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.RepositoryStatus;
 import ch.unibe.cs.mergeci.util.Utility;
 import ch.unibe.cs.mergeci.util.Utility.PROJECTCOLUMN;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,17 +41,15 @@ public class RepoCollector {
         this.repoManager = new RepositoryManager(cloneDir);
     }
 
-    int headerLine = 1;
-
-    public void processExcel() {
+    public void processCsv() {
         try {
-            processExcel(AppConfig.INPUT_PROJECT_XLSX);
+            processCsv(AppConfig.INPUT_PROJECT_CSV);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void processExcel(Path excelFile) throws Exception {
+    public void processCsv(Path csvFile) throws Exception {
         cleanForFreshRun();
         resetForReanalysis();
         FileUtils.deleteDirectory(tempDir.toFile());
@@ -61,39 +57,31 @@ public class RepoCollector {
         BuildFailureLog failureLog = BuildFailureLog.createOrNull(
                 AppConfig.DATA_BASE_DIR.resolve("build_failures.log"));
 
-        // Load workbook into memory (close stream immediately so we can write back later)
-        Workbook workbook;
-        try (FileInputStream fis = new FileInputStream(excelFile.toFile())) {
-            workbook = WorkbookFactory.create(fis);
+        List<String[]> rows = readCsv(csvFile);
+        ensureHeaders(rows);
+        flushCsv(csvFile, rows);
+
+        int totalRepos = countUniqueRepos(rows);
+        printHeader(totalRepos);
+
+        Set<String> seen = new HashSet<>();
+        int currentRepo = 0;
+
+        for (int i = 1; i < rows.size(); i++) {
+            String[] row = rows.get(i);
+            if (row.length < 2 || row[0].isEmpty()) continue;
+
+            String repoName = Utility.extractRepoName(row[0].trim());
+            String repoUrl = row[1].trim();
+
+            if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
+            if (!seen.add(repoUrl)) continue;
+
+            currentRepo++;
+            processRepo(rows, i, repoName, repoUrl, currentRepo, totalRepos, csvFile, failureLog);
         }
 
-        try {
-            Sheet sheet = workbook.getSheetAt(0);
-            ensureHeaders(sheet);
-            flushWorkbook(workbook, excelFile);
-
-            int totalRepos = countUniqueRepos(sheet);
-            printHeader(totalRepos);
-
-            Set<String> seen = new HashSet<>();
-            int currentRepo = 0;
-
-            for (Row row : sheet) {
-                if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
-
-                String repoName = Utility.extractRepoName(row.getCell(0).getStringCellValue().trim());
-                String repoUrl = row.getCell(1).getStringCellValue().trim();
-
-                if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
-                if (!seen.add(repoUrl)) continue;
-
-                currentRepo++;
-                processRepo(row, repoName, repoUrl, currentRepo, totalRepos, workbook, excelFile, failureLog);
-            }
-        } finally {
-            workbook.close();
-            if (failureLog != null) failureLog.close();
-        }
+        if (failureLog != null) failureLog.close();
     }
 
     private void cleanForFreshRun() {
@@ -110,13 +98,13 @@ public class RepoCollector {
         repoManager.resetSuccessfulRepos();
     }
 
-    private int countUniqueRepos(Sheet sheet) {
+    private int countUniqueRepos(List<String[]> rows) {
         Set<String> seen = new HashSet<>();
         int total = 0;
-        for (Row row : sheet) {
-            if (row.getRowNum() < headerLine || row.getCell(0) == null) continue;
-            String repoUrl = row.getCell(1) != null ? row.getCell(1).getStringCellValue().trim() : "";
-            if (!repoUrl.isEmpty() && seen.add(repoUrl)) total++;
+        for (int i = 1; i < rows.size(); i++) {
+            String[] row = rows.get(i);
+            if (row.length < 2 || row[1].isEmpty()) continue;
+            if (seen.add(row[1].trim())) total++;
         }
         return total;
     }
@@ -128,14 +116,15 @@ public class RepoCollector {
         System.out.println("================================================================================\n");
     }
 
-    private void processRepo(Row row, String repoName, String repoUrl, int currentRepo, int totalRepos,
-                              Workbook workbook, Path excelFile, BuildFailureLog failureLog) throws Exception {
+    private void processRepo(List<String[]> rows, int rowIndex, String repoName, String repoUrl,
+                              int currentRepo, int totalRepos, Path csvFile,
+                              BuildFailureLog failureLog) throws Exception {
         RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
         if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED
                 && existingStatus != RepositoryStatus.NOT_PROCESSED_BUT_CLONED) {
-            Path excelOutFile = datasetDir.resolve(repoName + AppConfig.XLSX);
-            if (existingStatus == RepositoryStatus.SUCCESS && (!Files.exists(datasetDir) || !Files.exists(excelOutFile))) {
-                System.out.printf("[%d/%d] %s - ⚠ Marked SUCCESS but excel missing, reprocessing...\n", currentRepo, totalRepos, repoName);
+            Path csvOutFile = datasetDir.resolve(repoName + AppConfig.CSV);
+            if (existingStatus == RepositoryStatus.SUCCESS && (!Files.exists(datasetDir) || !Files.exists(csvOutFile))) {
+                System.out.printf("[%d/%d] %s - ⚠ Marked SUCCESS but csv missing, reprocessing...\n", currentRepo, totalRepos, repoName);
             } else {
                 System.out.printf("[%d/%d] %s - ⏩ Already processed (%s)\n", currentRepo, totalRepos, repoName, existingStatus);
                 return;
@@ -150,8 +139,8 @@ public class RepoCollector {
         } catch (IOException e) {
             System.out.printf("  ✗ Clone failed: %s\n", e.getMessage());
             if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_CLONE_FAILED", e.getMessage());
-            writeRepoRow(row, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
-            flushWorkbook(workbook, excelFile);
+            writeRepoRow(rows, rowIndex, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
+            flushCsv(csvFile, rows);
             return;
         }
 
@@ -160,8 +149,8 @@ public class RepoCollector {
             System.out.printf("  ✗ Not a Maven project (build tool: %s) → REJECTED_NO_POM\n", buildTool);
             if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_NO_POM", "build tool: " + buildTool);
             repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
-            writeRepoRow(row, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
-            flushWorkbook(workbook, excelFile);
+            writeRepoRow(rows, rowIndex, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
+            flushCsv(csvFile, rows);
             return;
         }
 
@@ -170,7 +159,7 @@ public class RepoCollector {
                 repoFolder, tempDir.resolve(repoName), AppConfig.getMaxConflictMerges(), failureLog);
 
         CollectionResult result = conflictCollector.collectDataset(
-                datasetDir.resolve(repoName + AppConfig.XLSX), repoName, repoUrl);
+                datasetDir.resolve(repoName + AppConfig.CSV), repoName, repoUrl);
 
         System.out.println(formatResultSummary(result));
 
@@ -181,8 +170,8 @@ public class RepoCollector {
             repoManager.markRepositoryRejected(repoName, result.getStatus());
         }
 
-        writeRepoRow(row, buildTool, result.getStatus(), result);
-        flushWorkbook(workbook, excelFile);
+        writeRepoRow(rows, rowIndex, buildTool, result.getStatus(), result);
+        flushCsv(csvFile, rows);
 
         RepositoryCache.clear();
         WindowCache.reconfigure(new WindowCacheConfig());
@@ -204,57 +193,79 @@ public class RepoCollector {
     }
 
     /** Write the new-column headers into row 0 if not already present. */
-    private void ensureHeaders(Sheet sheet) {
-        Row headerRow = sheet.getRow(0);
-        if (headerRow == null) headerRow = sheet.createRow(0);
-        for (PROJECTCOLUMN col : PROJECTCOLUMN.values()) {
-            if (col.getColumnNumber() < 2) continue; // leave existing name/url headers as-is
-            Cell cell = headerRow.getCell(col.getColumnNumber());
-            if (cell == null) cell = headerRow.createCell(col.getColumnNumber());
-            cell.setCellValue(col.getColumnName());
+    private void ensureHeaders(List<String[]> rows) {
+        String[] headerRow = rows.isEmpty() ? new String[0] : rows.get(0);
+        if (headerRow.length < PROJECTCOLUMN.values().length) {
+            headerRow = Arrays.copyOf(headerRow, PROJECTCOLUMN.values().length);
+            for (PROJECTCOLUMN col : PROJECTCOLUMN.values()) {
+                if (col.getColumnNumber() < 2) continue; // leave existing name/url headers as-is
+                if (headerRow[col.getColumnNumber()] == null || headerRow[col.getColumnNumber()].isEmpty()) {
+                    headerRow[col.getColumnNumber()] = col.getColumnName();
+                }
+            }
+            if (rows.isEmpty()) rows.add(headerRow);
+            else rows.set(0, headerRow);
         }
     }
 
     /** Populate the stats columns for a processed (or rejected) repository row. */
-    private void writeRepoRow(Row row, String buildTool, RepositoryStatus status, CollectionResult result) {
-        setCell(row, PROJECTCOLUMN.buildTool, buildTool);
-        setCell(row, PROJECTCOLUMN.status, status.name());
+    private void writeRepoRow(List<String[]> rows, int rowIndex, String buildTool,
+                               RepositoryStatus status, CollectionResult result) {
+        String[] row = rows.get(rowIndex);
+        if (row.length < PROJECTCOLUMN.values().length) {
+            row = Arrays.copyOf(row, PROJECTCOLUMN.values().length);
+            rows.set(rowIndex, row);
+        }
+        row[PROJECTCOLUMN.buildTool.getColumnNumber()] = Utility.escapeCsvField(buildTool);
+        row[PROJECTCOLUMN.status.getColumnNumber()] = status.name();
         if (result != null) {
-            setCell(row, PROJECTCOLUMN.totalCommits,      result.getTotalCommits());
-            setCell(row, PROJECTCOLUMN.totalMerges,       result.getTotalMerges());
-            setCell(row, PROJECTCOLUMN.conflictMerges,    result.getMergesWithConflicts());
-            setCell(row, PROJECTCOLUMN.javaConflictMerges,result.getMergesWithJavaConflicts());
-            setCell(row, PROJECTCOLUMN.analyzableMerges,  result.getSuccessfulMerges());
-            setCell(row, PROJECTCOLUMN.maxModules,        result.getMaxModules());
-            setCell(row, PROJECTCOLUMN.timedOut,          result.getMergesTimedOut());
-            setCell(row, PROJECTCOLUMN.noTests,           result.getMergesWithNoTests());
+            row[PROJECTCOLUMN.totalCommits.getColumnNumber()]      = String.valueOf(result.getTotalCommits());
+            row[PROJECTCOLUMN.totalMerges.getColumnNumber()]       = String.valueOf(result.getTotalMerges());
+            row[PROJECTCOLUMN.conflictMerges.getColumnNumber()]    = String.valueOf(result.getMergesWithConflicts());
+            row[PROJECTCOLUMN.javaConflictMerges.getColumnNumber()] = String.valueOf(result.getMergesWithJavaConflicts());
+            row[PROJECTCOLUMN.analyzableMerges.getColumnNumber()]  = String.valueOf(result.getSuccessfulMerges());
+            row[PROJECTCOLUMN.maxModules.getColumnNumber()]        = String.valueOf(result.getMaxModules());
+            row[PROJECTCOLUMN.timedOut.getColumnNumber()]          = String.valueOf(result.getMergesTimedOut());
+            row[PROJECTCOLUMN.noTests.getColumnNumber()]           = String.valueOf(result.getMergesWithNoTests());
         }
     }
 
-    private void setCell(Row row, PROJECTCOLUMN col, String value) {
-        Cell cell = row.getCell(col.getColumnNumber());
-        if (cell == null) cell = row.createCell(col.getColumnNumber());
-        cell.setCellValue(value);
-    }
-
-    private void setCell(Row row, PROJECTCOLUMN col, int value) {
-        Cell cell = row.getCell(col.getColumnNumber());
-        if (cell == null) cell = row.createCell(col.getColumnNumber());
-        cell.setCellValue(value);
-    }
-
-    private void flushWorkbook(Workbook workbook, Path excelFile) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(excelFile.toFile())) {
-            workbook.write(fos);
+    private void flushCsv(Path csvFile, List<String[]> rows) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.toFile()))) {
+            for (String[] row : rows) {
+                writer.write(rowToCsvLine(row));
+                writer.newLine();
+            }
         }
+    }
+
+    private static String rowToCsvLine(String[] fields) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fields.length; i++) {
+            if (i > 0) sb.append(',');
+            String value = fields[i] != null ? fields[i] : "";
+            sb.append(Utility.escapeCsvField(value));
+        }
+        return sb.toString();
+    }
+
+    static List<String[]> readCsv(Path csvFile) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile.toFile()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                rows.add(Utility.parseCsvLine(line));
+            }
+        }
+        return rows;
     }
 
     private String formatResultSummary(CollectionResult result) {
         StringBuilder sb = new StringBuilder();
 
         if (result.getStatus() == RepositoryStatus.SUCCESS) {
-            sb.append(String.format("  ✓ SUCCESS: %d/%d merges with Java conflicts → dataset created\n",
-                    result.getSuccessfulMerges(), result.getMergesWithJavaConflicts()));
+            sb.append(String.format("  ✓ SUCCESS: %d/%d conflict merges → dataset created\n",
+                    result.getSuccessfulMerges(), result.getMergesWithConflicts()));
         } else {
             sb.append(String.format("  ✗ %s: %s\n", result.getStatus(), result.getMessage()));
         }
