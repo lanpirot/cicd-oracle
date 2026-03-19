@@ -9,57 +9,80 @@ mvn clean package
 java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
 ```
 
+Resume from previous run (default) or start fresh:
+```bash
+# Resume — skips already-processed repos and merges
+java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
+
+# Fresh run — deletes all output and reprocesses everything
+java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
+```
+
 ## Requirements
 
 - **Java 21** (JDK, set in `JAVA_HOME`)
 - **Git** (in `PATH`)
 - **Apache Maven 3.9+**
 
-## Pipeline Overview
+## Pipeline
 
-Three sequential phases, all coordinated by `CiCdMergeResolverApplication`:
+Three sequential phases coordinated by `CiCdMergeResolverApplication`:
 
 ```
-Phase 0/1: collect()              → RepoCollector → MergeConflictCollector
-Phase 2:   generateMergeVariants() → ResolutionVariantRunner
-Phase 3:   analyzeResults()       → ResultsPresenter
+Phase 1: collect()              → RepoCollector → MergeConflictCollector
+Phase 2: generateMergeVariants() → ResolutionVariantRunner
+Phase 3: analyzeResults()       → ResultsPresenter
 ```
 
 ### Phase 1 — Dataset Collection
 
-`RepoCollector` reads an Excel file of GitHub repositories, clones each, and for Maven projects invokes `MergeConflictCollector`. The collector:
+`RepoCollector` reads a CSV file of GitHub repos, clones Maven projects, and invokes `MergeConflictCollector`, which:
 
-1. Finds merge commits that produce conflicts via JGit
-2. **Resamples** if the first batch yields some but fewer than `MAX_CONFLICT_MERGES` Java-conflict merges — successive batches of unvisited commits are inspected until the quota is filled or no further improvement is found
-3. Checks out each qualifying merge, runs a baseline Maven build, and writes a per-project dataset Excel file
+1. Finds merge commits with Java file conflicts
+2. Resamples if the first batch yields fewer than `MAX_CONFLICT_MERGES` qualifying merges
+3. Runs a baseline Maven build per merge and writes a per-project dataset CSV file
+4. Skips merges listed in `training_mergeIDs.csv` (training data, filtered to prevent leakage)
 
 Status is persisted in `.repo_status.json` so interrupted runs resume cleanly.
 
 ### Phase 2 — Variant Experiments
 
-`ResolutionVariantRunner` iterates over four experiment modes:
+`ResolutionVariantRunner` iterates over four experiment modes — a 2×2 matrix of (cache/no-cache) × (parallel/sequential):
 
-| Mode | Parallel | Cache | SkipVariants |
-|------|----------|-------|--------------|
-| `human_baseline` | — | — | ✓ |
-| `cache_parallel` | ✓ | ✓ | — |
-| `parallel` | ✓ | — | — |
-| `no_optimization` | — | — | — |
+| Mode | Parallel | Cache |
+|------|----------|-------|
+| `human_baseline` | — | — |
+| `cache_parallel` | ✓ | ✓ |
+| `cache_sequential` | — | ✓ |
+| `parallel` | ✓ | — |
+| `no_optimization` | — | — |
 
-For each merge, `MavenExecutionFactory` runs variants **just-in-time**:
+`human_baseline` only records the human-authored merge result (no variants). All other modes use it as the time-budget base: `budget = TIMEOUT_MULTIPLIER × humanBaselineSeconds`.
 
-- Variant directories are written to disk on demand, in batches of `MAX_THREADS`
-- **Rolling execution** (parallel modes): a free thread slot is refilled as soon as any variant finishes, eliminating straggler idle time
-- **Cache warm-up** (`cache_parallel`): the first variant runs synchronously to populate the local Maven cache before parallel variants copy from it
-- The time budget is `TIMEOUT_MULTIPLIER × normalizedBaselineTime`; each variant receives only the remaining time until the deadline
-- Variant directories are deleted immediately after their results are collected
-
-`human_baseline` results are written to JSON first; subsequent modes read `humanBaselineSeconds` from that JSON.
+Variant execution is **just-in-time**: variants are written to disk in batches of `MAX_THREADS`, run, and immediately deleted. The per-variant timeout shrinks as the deadline approaches (`deadline − now()`). In `cache_parallel`, the first variant runs synchronously to warm the Maven cache before parallel variants copy from it.
 
 ### Phase 3 — Analysis
 
-`ResultsPresenter` loads all JSON result files and delegates to:
-`StatisticsReporter`, `VariantResolutionAnalyzer`, `VariantRankingAnalyzer`, `ExecutionTimeAnalyzer`.
+`ResultsPresenter` loads all JSON result files and delegates to `StatisticsReporter`, `VariantResolutionAnalyzer`, `VariantRankingAnalyzer`, and `ExecutionTimeAnalyzer`.
+
+Visualizations can be generated via:
+```bash
+python3 scripts/plot_results.py               # real data
+python3 scripts/plot_results.py --mockup      # instant preview with synthetic data
+```
+
+## Resolution Patterns
+
+Each conflict chunk is resolved by one pattern:
+
+| Pattern | Meaning |
+|---------|---------|
+| `OURS` | Take the "ours" side |
+| `THEIRS` | Take the "theirs" side |
+| `BASE` | Use the base version |
+| `EMPTY` | Remove the block |
+
+Compound patterns combine atomics (e.g., `OURS:BASE`). `StrategySelector` + `PatternHeuristics` order the search by historical frequency. For large numbers of conflict chunks the space is exponential; the time budget is the natural stopping condition.
 
 ## Configuration
 
@@ -67,7 +90,7 @@ All paths, timeouts, and feature flags live in `AppConfig.java`.
 
 ### Java installations (machine-specific)
 
-`JAVA_HOMES` maps Java major versions to JDK paths. The tool automatically selects the closest available JDK ≥ the version declared in a project's `pom.xml`:
+`JAVA_HOMES` maps Java major versions to JDK paths. The tool selects the closest available JDK ≥ the version in `pom.xml`:
 
 ```java
 public static final Map<Integer, Path> JAVA_HOMES = Map.of(
@@ -78,49 +101,21 @@ public static final Map<Integer, Path> JAVA_HOMES = Map.of(
 );
 ```
 
-Find available JDKs with:
-```bash
-ls /usr/lib/jvm/                          # Linux
-ls /Library/Java/JavaVirtualMachines/     # macOS
-```
-
-Only include versions that are actually present on disk.
-
 ### Key tunables
 
 | Property | Default | Effect |
 |----------|---------|--------|
 | `freshRun` | `false` | Delete all output and start from scratch |
 | `coverageActivated` | `true` | Collect JaCoCo coverage data |
-| `maxConflictMerges` | `10` | Max Java-conflict merges collected per project |
+| `maxConflictMerges` | `10` | Max qualifying merges per project |
 | `MAX_THREADS` | `min(RAM_GB/8, 16)` | Parallel build threads |
 | `TIMEOUT_MULTIPLIER` | `10` | Variant budget = baseline × multiplier |
-
-Override at runtime:
-```bash
-java -DfreshRun=true -DmaxConflictMerges=5 -cp "target/*:target/lib/*" \
-     ch.unibe.cs.mergeci.CiCdMergeResolverApplication
-```
-
-## Execution Modes
-
-### Fresh run
-```bash
-java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
-```
-Deletes all output directories and processes everything from scratch.
-
-### Resume (default)
-```bash
-java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
-```
-Skips already-processed repositories and merges; picks up where work stopped.
 
 ## Data Directories
 
 ```
 /home/lanpirot/data/bruteforcemerge/
-  conflict_datasets/     # Per-project Excel files (Phase 1 output)
+  conflict_datasets/     # Per-project CSV files (Phase 1 output)
   variant_experiments/   # Per-project JSON results, one subdir per mode (Phase 2 output)
   test/                  # All test output
 /home/lanpirot/tmp/
@@ -145,61 +140,16 @@ mvn test -DmaxConflictMerges=3
 mvn test -DcoverageActivated=false
 ```
 
-## Resolution Patterns
+## Pattern Heuristics
 
-A conflict chunk is resolved by assigning one atomic pattern:
-
-| Pattern | Meaning |
-|---------|---------|
-| `OURS` | Take the "ours" side |
-| `THEIRS` | Take the "theirs" side |
-| `BASE` | Use the base version |
-| `EMPTY` | Remove the conflicting block |
-
-Compound patterns combine atomics (e.g., `OURSTHEIRS`). `StrategySelector` and `PatternHeuristics` (from `relative_numbers_summary.csv`) order the search. For large numbers of conflict chunks the space is exponential; the time budget is the natural stopping condition.
-
-## Merge Selection Criteria
-
-A merge is included in the dataset when:
-1. The repository is a Maven project (`pom.xml` present)
-2. The merge produces Java file conflicts
-3. The baseline build compiles and at least one test passes
-4. The project has not yet reached `MAX_CONFLICT_MERGES` qualifying merges
-
-## Variant Success Criteria
-
-A variant is successful when:
-- At least one module compiled (`modulesPassed > 0`)
-- At least one test passed (`numPassedTests > 0`)
-- The build did not time out
-
-## Pattern Heuristics (optional)
-
-Analyze historical pattern distribution from conflict data:
+Learn historical pattern distributions from conflict data to guide variant ordering:
 
 ```bash
 cd src/main/resources/pattern-heuristics
 python3 learn_historical_pattern_distribution.py
 ```
 
-**Pipeline**:
-1. Merge chunks by merge ID (all file types)
-2. Clean pattern names (NONCANONICAL → NON)
-3. Remove prefixes (CANONICAL_, CHUNK_, etc.)
-4. Group by chunk count
-5. Sort substrategies
-6. Count and rank patterns
-7. Summarize strategies
-8. Compute relative frequencies
-9. Unify similar patterns
-10. Relativize factors
+**Input**: `Java_chunks_original.csv` (or any conflict chunks CSV, all file types)
+**Output**: `learnt_historical_pattern_distribution.csv` — loaded at runtime by `PatternHeuristics`
 
-**Input**: `Java_chunks_original.csv` (or any conflict chunks CSV)
-**Output**: `learnt_historical_pattern_distribution.csv` (used at runtime by `PatternHeuristics`)
-
-**Key Improvements**:
-- Removed Java-only filtering to analyze all file types
-- Enhanced pattern unification across similar strategies
-- Improved bucketing with single-number ranges
-- Better handling of NON patterns
-- More accurate relativization calculations
+The script groups by conflict chunk count, ranks patterns by frequency, unifies similar strategies, and relativizes frequencies per row. Youngest 10% of merges are excluded from training to prevent data leakage (those IDs are saved to `training_mergeIDs.csv` for training and `evaluation_mergeIDs.csv` for evaluation).
