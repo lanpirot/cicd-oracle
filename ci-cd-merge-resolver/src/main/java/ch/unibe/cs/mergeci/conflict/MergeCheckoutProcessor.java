@@ -12,6 +12,7 @@ import lombok.Getter;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -52,23 +53,96 @@ public class MergeCheckoutProcessor {
         // Patch any hardcoded <skipTests>true</skipTests> in pom.xml files so tests always run
         FileUtils.enableTestsInAllPoms(newProjectPath);
 
-        // Detect required Java version from pom.xml and switch JAVA_HOME if needed
+        // Resolve JAVA_HOME:
+        // - .mvn/jvm.config may contain JVM flags (e.g. --sun-misc-unsafe-memory-access=allow)
+        //   that require a newer JVM to run Maven itself, regardless of compilation target.
+        // - Otherwise use the closest JDK that satisfies the pom's declared source version.
         int requiredJava = JavaVersionResolver.detectRequiredVersion(newProjectPath);
         int usedJava = 0;
-        if (requiredJava > 0) {
+        String javaHome = null;
+        if (JavaVersionResolver.hasMvnJvmConfig(newProjectPath)) {
+            javaHome = JavaVersionResolver.resolveHighestJavaHome().orElse(null);
+            usedJava = JavaVersionResolver.selectHighestVersion();
+        } else if (requiredJava > 0) {
             int selected = JavaVersionResolver.selectClosestVersion(requiredJava);
-            Optional<String> javaHome = JavaVersionResolver.resolveJavaHome(newProjectPath);
-            if (javaHome.isPresent()) {
-                usedJava = selected;
-                mavenRunner.run_no_optimization(javaHome.get(), newProjectPath);
-            } else {
-                mavenRunner.run_no_optimization(newProjectPath);
-            }
-        } else {
-            mavenRunner.run_no_optimization(newProjectPath);
+            javaHome = JavaVersionResolver.resolveJavaHome(newProjectPath).orElse(null);
+            if (javaHome != null) usedJava = selected;
         }
 
-        return extractResults(newProjectPath, newProjectName, merge, requiredJava, usedJava);
+        // Pre-install SNAPSHOT inter-module dependencies so a cold build can resolve them.
+        // Multi-module SNAPSHOT projects publish sibling artifacts only to the local cache;
+        // the first merge checkout would fail dependency resolution without this step.
+        if (isSnapshotMultiModule(newProjectPath)) {
+            System.out.printf("  ⚙ SNAPSHOT multi-module — pre-installing to local cache...%n");
+            preInstall(newProjectPath, javaHome);
+        }
+
+        runBuild(javaHome, newProjectPath);
+
+        MergeProcessResult result = extractResults(newProjectPath, newProjectName, merge, requiredJava, usedJava);
+
+        // Retry 1: pom-based version detection missed the requirement (e.g. bare <source>1.6</source>
+        // inside plugin config rather than a <maven.compiler.source> property).
+        if (!result.isHadTests() && result.isJavaVersionError() && javaHome == null) {
+            Path logFile = mavenRunner.getLogDir().resolve(newProjectName + "_compilation");
+            int errorVersion = JavaVersionResolver.detectVersionErrorInLog(logFile);
+            if (errorVersion > 0) {
+                int retrySelected = JavaVersionResolver.selectClosestVersion(errorVersion);
+                Optional<String> retryHome = JavaVersionResolver.resolveJavaHomeForVersion(errorVersion);
+                if (retryHome.isPresent()) {
+                    System.out.printf("  ↻ Java version error (required: %d) — retrying with Java %d%n",
+                            errorVersion, retrySelected);
+                    runBuild(retryHome.get(), newProjectPath);
+                    result = extractResults(newProjectPath, newProjectName, merge, errorVersion, retrySelected);
+                }
+            }
+        }
+
+        // Retry 2: plugin compatibility error (e.g. gmaven-plugin:1.5 ExceptionInInitializerError on Java 9+).
+        // Not caught by the source-version pattern — retry with Java 8 which still runs old Groovy runtimes.
+        if (!result.isHadTests() && !result.isJavaVersionError() && !result.isTimedOut() && javaHome == null) {
+            Path logFile = mavenRunner.getLogDir().resolve(newProjectName + "_compilation");
+            if (JavaVersionResolver.detectPluginCompatibilityError(logFile)) {
+                Optional<String> retryHome = JavaVersionResolver.resolveJavaHomeForVersion(8);
+                if (retryHome.isPresent()) {
+                    System.out.printf("  ↻ Plugin compatibility error — retrying with Java 8%n");
+                    runBuild(retryHome.get(), newProjectPath);
+                    result = extractResults(newProjectPath, newProjectName, merge, 8, 8);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void runBuild(String javaHome, Path projectPath) {
+        if (javaHome != null) {
+            mavenRunner.run_no_optimization(javaHome, projectPath);
+        } else {
+            mavenRunner.run_no_optimization(projectPath);
+        }
+    }
+
+    private void preInstall(Path projectPath, String javaHome) {
+        String mvnCmd = mavenRunner.getCommandResolver().resolveMavenCommand(projectPath);
+        String[] cmd = {mvnCmd, "-B", "-fae", "-DskipTests=true", "-Dmaven.test.skip=true", "install"};
+        Path logFile = mavenRunner.getLogDir().resolve(projectPath.getFileName() + "_preinstall");
+        if (javaHome != null) {
+            mavenRunner.getProcessExecutor().executeCommandWithJavaHome(projectPath, logFile, javaHome, cmd);
+        } else {
+            mavenRunner.getProcessExecutor().executeCommand(projectPath, logFile, cmd);
+        }
+    }
+
+    private static boolean isSnapshotMultiModule(Path projectPath) {
+        Path pomFile = projectPath.resolve("pom.xml");
+        if (!pomFile.toFile().exists()) return false;
+        try {
+            String pom = Files.readString(pomFile);
+            return pom.contains("-SNAPSHOT") && pom.contains("<modules>");
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     private void checkoutMerge(Path sourcePath, Path targetPath, String commitHash)
@@ -123,6 +197,13 @@ public class MergeCheckoutProcessor {
         int runTests = testTotal.getRunNum();
 
         if (runTests == 0) {
+
+            String mvnExe201 = mavenRunner.getCommandResolver().resolveMavenCommand(projectPath);
+            String mvnGoal201 = mavenRunner.getCommandResolver().resolveMavenGoal(projectPath);
+            String mvnCmd201 = String.join(" ", AppConfig.buildCommand(mvnExe201, mvnGoal201));
+            String javaPrefix201 = usedJava > 0 ? "JAVA_HOME=<java" + usedJava + "> " : "";
+            System.err.printf("  [BREAKPOINT] No tests ran — compilationSuccess=%b javaVersionError=%b%n  → %s%s%n  → path=%s%n", // BREAKPOINT
+                    compilationSuccess, javaVersionError, javaPrefix201, mvnCmd201, projectPath);
             return MergeProcessResult.builder()
                     .hadTests(false)
                     .timedOut(false)
@@ -151,6 +232,12 @@ public class MergeCheckoutProcessor {
         }
 
         if (modulesPassed == 0) {
+            String mvnExe231 = mavenRunner.getCommandResolver().resolveMavenCommand(projectPath);
+            String mvnGoal231 = mavenRunner.getCommandResolver().resolveMavenGoal(projectPath);
+            String mvnCmd231 = String.join(" ", AppConfig.buildCommand(mvnExe231, mvnGoal231));
+            String javaPrefix231 = usedJava > 0 ? "JAVA_HOME=<java" + usedJava + "> " : "";
+            System.err.printf("  [BREAKPOINT] Build failed — modulesPassed=%d/%d passedTests=%d%n  → %s%s%n  → path=%s%n", // BREAKPOINT
+                    modulesPassed, numberOfModules, passedTests, javaPrefix231, mvnCmd231, projectPath);
             testSuccess = false;
             passedTests = 0;
             runTests = 0;
