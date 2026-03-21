@@ -162,10 +162,11 @@ Given a list of repositories with tests (e.g., Java repositories using Maven):
 ---
 
 ## Research Questions
-- **RQ1:** How many of the generated resolutions are “good”?  
-  How many are **better than the ground truth**?
+- **RQ1:** Are pattern distributions learnable to bias search space exploration?
 
-- **RQ2:** How can we deal with the **explosion of the search space**?
+- **RQ2:** Which variant generation mode is the fastest?
+
+- **RQ3:** How many variants are *as good* or *better* than the human baseline?
 
 ---
 

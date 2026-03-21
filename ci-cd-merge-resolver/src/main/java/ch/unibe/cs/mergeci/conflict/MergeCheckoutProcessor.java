@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Processes individual merge commits by checking them out and running builds.
@@ -60,30 +61,40 @@ public class MergeCheckoutProcessor {
         int requiredJava = JavaVersionResolver.detectRequiredVersion(newProjectPath);
         int usedJava = 0;
         String javaHome = null;
-        if (JavaVersionResolver.hasMvnJvmConfig(newProjectPath)) {
-            javaHome = JavaVersionResolver.resolveHighestJavaHome().orElse(null);
-            usedJava = JavaVersionResolver.selectHighestVersion();
-        } else if (requiredJava > 0) {
+        if (requiredJava > 0) {
+            // Pom-declared version takes priority — even if jvm.config is present, the project's
+            // enforcer may reject a newer JDK (e.g. [21.0,21.99]).  The --add-exports / --add-opens
+            // flags in jvm.config are legal on the declared target JDK anyway.
             int selected = JavaVersionResolver.selectClosestVersion(requiredJava);
             javaHome = JavaVersionResolver.resolveJavaHome(newProjectPath).orElse(null);
             if (javaHome != null) usedJava = selected;
+        } else if (JavaVersionResolver.hasMvnJvmConfig(newProjectPath)) {
+            // No pom-declared version: jvm.config flags may require a newer JVM to run Maven.
+            javaHome = JavaVersionResolver.resolveHighestJavaHome().orElse(null);
+            usedJava = JavaVersionResolver.selectHighestVersion();
         }
+
+        // Per-merge wall-clock deadline: shared across preInstall, main build, and any retries.
+        // Each subsequent Maven invocation receives the remaining budget so the total never
+        // exceeds MAVEN_BUILD_TIMEOUT seconds, regardless of how many commands are chained.
+        long deadlineNanos = System.nanoTime()
+                + TimeUnit.SECONDS.toNanos(AppConfig.MAVEN_BUILD_TIMEOUT);
 
         // Pre-install SNAPSHOT inter-module dependencies so a cold build can resolve them.
         // Multi-module SNAPSHOT projects publish sibling artifacts only to the local cache;
         // the first merge checkout would fail dependency resolution without this step.
         if (isSnapshotMultiModule(newProjectPath)) {
             System.out.printf("  ⚙ SNAPSHOT multi-module — pre-installing to local cache...%n");
-            preInstall(newProjectPath, javaHome);
+            preInstall(newProjectPath, javaHome, remainingSeconds(deadlineNanos));
         }
 
-        runBuild(javaHome, newProjectPath);
+        runBuild(javaHome, newProjectPath, remainingSeconds(deadlineNanos));
 
         MergeProcessResult result = extractResults(newProjectPath, newProjectName, merge, requiredJava, usedJava);
 
         // Retry 1: pom-based version detection missed the requirement (e.g. bare <source>1.6</source>
         // inside plugin config rather than a <maven.compiler.source> property).
-        if (!result.isHadTests() && result.isJavaVersionError() && javaHome == null) {
+        if (!result.isHadTests() && !result.isTimedOut() && result.isJavaVersionError() && javaHome == null) {
             Path logFile = mavenRunner.getLogDir().resolve(newProjectName + "_compilation");
             int errorVersion = JavaVersionResolver.detectVersionErrorInLog(logFile);
             if (errorVersion > 0) {
@@ -92,7 +103,7 @@ public class MergeCheckoutProcessor {
                 if (retryHome.isPresent()) {
                     System.out.printf("  ↻ Java version error (required: %d) — retrying with Java %d%n",
                             errorVersion, retrySelected);
-                    runBuild(retryHome.get(), newProjectPath);
+                    runBuild(retryHome.get(), newProjectPath, remainingSeconds(deadlineNanos));
                     result = extractResults(newProjectPath, newProjectName, merge, errorVersion, retrySelected);
                 }
             }
@@ -106,7 +117,7 @@ public class MergeCheckoutProcessor {
                 Optional<String> retryHome = JavaVersionResolver.resolveJavaHomeForVersion(8);
                 if (retryHome.isPresent()) {
                     System.out.printf("  ↻ Plugin compatibility error — retrying with Java 8%n");
-                    runBuild(retryHome.get(), newProjectPath);
+                    runBuild(retryHome.get(), newProjectPath, remainingSeconds(deadlineNanos));
                     result = extractResults(newProjectPath, newProjectName, merge, 8, 8);
                 }
             }
@@ -115,22 +126,30 @@ public class MergeCheckoutProcessor {
         return result;
     }
 
-    private void runBuild(String javaHome, Path projectPath) {
+    /** Returns remaining seconds until deadlineNanos, clamped to a minimum of 1. */
+    private static int remainingSeconds(long deadlineNanos) {
+        long remaining = TimeUnit.NANOSECONDS.toSeconds(deadlineNanos - System.nanoTime());
+        return (int) Math.max(1, remaining);
+    }
+
+    private void runBuild(String javaHome, Path projectPath, int timeoutSeconds) {
+        MavenRunner r = mavenRunner.withTimeout(timeoutSeconds);
         if (javaHome != null) {
-            mavenRunner.run_no_optimization(javaHome, projectPath);
+            r.run_no_optimization(javaHome, projectPath);
         } else {
-            mavenRunner.run_no_optimization(projectPath);
+            r.run_no_optimization(projectPath);
         }
     }
 
-    private void preInstall(Path projectPath, String javaHome) {
-        String mvnCmd = mavenRunner.getCommandResolver().resolveMavenCommand(projectPath);
+    private void preInstall(Path projectPath, String javaHome, int timeoutSeconds) {
+        MavenRunner r = mavenRunner.withTimeout(timeoutSeconds);
+        String mvnCmd = r.getCommandResolver().resolveMavenCommand(projectPath);
         String[] cmd = {mvnCmd, "-B", "-fae", "-DskipTests=true", "-Dmaven.test.skip=true", "install"};
-        Path logFile = mavenRunner.getLogDir().resolve(projectPath.getFileName() + "_preinstall");
+        Path logFile = r.getLogDir().resolve(projectPath.getFileName() + "_preinstall");
         if (javaHome != null) {
-            mavenRunner.getProcessExecutor().executeCommandWithJavaHome(projectPath, logFile, javaHome, cmd);
+            r.getProcessExecutor().executeCommandWithJavaHome(projectPath, logFile, javaHome, cmd);
         } else {
-            mavenRunner.getProcessExecutor().executeCommand(projectPath, logFile, cmd);
+            r.getProcessExecutor().executeCommand(projectPath, logFile, cmd);
         }
     }
 
@@ -193,23 +212,32 @@ public class MergeCheckoutProcessor {
                 : JavaVersionResolver.detectVersionErrorInLog(compilationLogPath);
         boolean javaVersionError = versionErrorInLog > 0;
 
-        // Classify non-compilation failures: infra (dead repo/toolchain) vs genuine broken merge
-        boolean infraFailure = !compilationSuccess && BuildFailureClassifier.isInfraFailure(compilationLogPath);
+        // Classify non-compilation failures: infra (dead repo/toolchain) vs genuine broken merge.
+        // Build-file conflict markers (pom.xml, package.json, *.gradle) must be checked first:
+        // they trigger log patterns that look like infra failures (DependencyResolutionException,
+        // frontend-maven-plugin errors) but are actually broken merges — a generated variant may
+        // resolve the conflict differently and produce a clean build file.
+        boolean buildFileConflict = !compilationSuccess
+                && BuildFailureClassifier.hasBuildFileConflictMarkers(projectPath);
+        boolean infraFailure = !compilationSuccess && !buildFileConflict
+                && BuildFailureClassifier.isInfraFailure(compilationLogPath);
         boolean brokenMerge  = !compilationSuccess && !infraFailure
-                && BuildFailureClassifier.isGenuineCompilationError(compilationLogPath);
+                && (buildFileConflict || BuildFailureClassifier.isGenuineCompilationError(compilationLogPath));
 
         TestTotal testTotal = new TestTotal(projectPath.toFile());
         int runTests = testTotal.getRunNum();
 
         if (runTests == 0) {
 
-            String mvnExe201 = mavenRunner.getCommandResolver().resolveMavenCommand(projectPath);
-            String mvnGoal201 = mavenRunner.getCommandResolver().resolveMavenGoal(projectPath);
-            String mvnCmd201 = String.join(" ", AppConfig.buildCommand(mvnExe201, mvnGoal201));
-            String javaPrefix201 = usedJava > 0 ? "JAVA_HOME=<java" + usedJava + "> " : "";
-            System.err.printf("  [BREAKPOINT] No tests ran — compilationSuccess=%b javaVersionError=%b infraFailure=%b brokenMerge=%b%n  → %s%s%n  → path=%s%n", // BREAKPOINT
-                    compilationSuccess, javaVersionError, infraFailure, brokenMerge, javaPrefix201, mvnCmd201, projectPath);
-            return MergeProcessResult.builder()
+            if (!infraFailure && !brokenMerge && !javaVersionError && !compilationSuccess) {
+                String mvnExe201 = mavenRunner.getCommandResolver().resolveMavenCommand(projectPath);
+                String mvnGoal201 = mavenRunner.getCommandResolver().resolveMavenGoal(projectPath);
+                String mvnCmd201 = String.join(" ", AppConfig.buildCommand(mvnExe201, mvnGoal201));
+                String javaPrefix201 = usedJava > 0 ? "JAVA_HOME=<java" + usedJava + "> " : "";
+                System.err.printf("  [BREAKPOINT] No tests ran — compilationSuccess=%b javaVersionError=%b infraFailure=%b brokenMerge=%b%n  → %s%s%n  → path=%s%n", // BREAKPOINT
+                        compilationSuccess, javaVersionError, infraFailure, brokenMerge, javaPrefix201, mvnCmd201, projectPath);
+            }
+             return MergeProcessResult.builder()
                     .hadTests(false)
                     .timedOut(false)
                     .compilationSuccess(compilationSuccess)
@@ -248,7 +276,7 @@ public class MergeCheckoutProcessor {
             String javaPrefix231 = usedJava > 0 ? "JAVA_HOME=<java" + usedJava + "> " : "";
             System.err.printf("  [BREAKPOINT] Build failed — modulesPassed=%d/%d passedTests=%d%n  → %s%s%n  → path=%s%n", // BREAKPOINT
                     modulesPassed, numberOfModules, passedTests, javaPrefix231, mvnCmd231, projectPath);
-            testSuccess = false;
+             testSuccess = false;
             passedTests = 0;
             runTests = 0;
             time = 0;

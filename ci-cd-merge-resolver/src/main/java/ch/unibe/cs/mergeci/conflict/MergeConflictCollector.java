@@ -43,21 +43,21 @@ public class MergeConflictCollector {
     }
 
     /**
-     * Collect dataset of merge conflicts and save to Excel file.
+     * Collect dataset of merge conflicts and save to CSV file.
      *
-     * @param excelOutFile Path to output Excel file
+     * @param csvOutFile Path to output CSV file
      * @param repoName Repository name
      * @param repoUrl Repository URL
      * @return Collection result with status and statistics
      * @throws Exception if collection fails
      */
-    public CollectionResult collectDataset(Path excelOutFile, String repoName, String repoUrl) throws Exception {
+    public CollectionResult collectDataset(Path csvOutFile, String repoName, String repoUrl) throws Exception {
         return orchestrator.collectDataset(
                 projectPath,
                 tempPath,
                 projectName,
                 maxConflictMerges,
-                excelOutFile,
+                csvOutFile,
                 repoName,
                 repoUrl);
     }

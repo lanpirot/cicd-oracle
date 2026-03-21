@@ -15,7 +15,7 @@ public class CiCdMergeResolverApplication {
     }
 
     private static void collect() {
-        new RepoCollector().processExcel();
+        new RepoCollector().processCsv();
     }
 
     private static void generateMergeVariants() {

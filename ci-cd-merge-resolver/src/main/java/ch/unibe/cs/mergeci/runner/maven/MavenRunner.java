@@ -28,6 +28,24 @@ public class MavenRunner {
         this.cacheManager = new MavenCacheManager();
     }
 
+    /**
+     * Returns a new runner that shares this runner's log directory and command resolver
+     * (preserving daemon settings) but uses a different per-process timeout.
+     * Used to honour a per-merge deadline across multiple sequential Maven invocations.
+     */
+    public MavenRunner withTimeout(int timeoutSeconds) {
+        return new MavenRunner(this.logDir, this.commandResolver, timeoutSeconds);
+    }
+
+    /** Internal constructor that accepts a pre-built command resolver (used by withTimeout). */
+    MavenRunner(Path logDir, MavenCommandResolver commandResolver, int timeoutSeconds) {
+        this.logDir = logDir;
+        this.logDir.toFile().mkdirs();
+        this.commandResolver = commandResolver;
+        this.processExecutor = new MavenProcessExecutor(timeoutSeconds);
+        this.cacheManager = new MavenCacheManager();
+    }
+
     public MavenRunner(Path tempDir, int timeoutSeconds) {
         this(tempDir, false, timeoutSeconds);
     }

@@ -35,24 +35,29 @@ Phase 3:   analyzeResults()       → ResultsPresenter
 
 ### Phase 0/1 — Repository Collection (`repoCollection`, `conflict`)
 
-`RepoCollector` reads an Excel file of GitHub repositories, clones each, detects build tools, and for Maven projects invokes `MergeConflictCollector`. The conflict collector finds merge commits with Java conflicts, checks out each merge, runs a baseline Maven build (600s timeout), and writes a per-project dataset Excel file.
+`RepoCollector` reads a CSV file of GitHub repositories, clones each, detects build tools, and for Maven projects invokes `MergeConflictCollector`. The conflict collector finds merge commits with Java conflicts, checks out each merge, runs a baseline Maven build (600s timeout), and writes a per-project dataset CSV file.
 
 Status is persisted in `.repo_status.json` so interrupted runs resume cleanly. `NOT_PROCESSED_BUT_CLONED` means the repo was cloned but processing never completed — it skips the clone but re-runs analysis.
 
+`BuildFailureClassifier` classifies failed builds into three categories: **INFRA_FAILURE** (dead Maven repo or frontend toolchain — skipped), **BROKEN_MERGE** (genuine `javac` errors in the merged source, e.g. committed conflict markers — included in the dataset with `baselineBroken=true`), and generic build failure (skipped). **Broken merges are valuable**: a generated variant may resolve the conflict differently and compile cleanly. Their dataset rows have `compilationSuccess=false`, zero test fields, and `baselineBroken=true`.
+
 ### Phase 2 — Variant Experiments (`experiment`, `runner`)
 
-`ResolutionVariantRunner` iterates over all 4 experiment modes defined in `Utility.Experiments`:
+`ResolutionVariantRunner` iterates over 5 experiment modes defined in `Utility.Experiments` — a 2×2 matrix of (cache/no-cache) × (parallel/sequential), plus a baseline:
 
 | Mode | Parallel | Cache | SkipVariants |
 |------|----------|-------|--------------|
 | `human_baseline` | — | — | true |
 | `cache_parallel` | ✓ | ✓ | — |
+| `cache_sequential` | — | ✓ | — |
 | `parallel` | ✓ | — | — |
 | `no_optimization` | — | — | — |
 
 For every merge in a dataset, `MergeExperimentRunner` creates a `VariantBuildContext` (lazy state, no disk I/O yet), then `MavenExecutionFactory` creates a just-in-time runner. Variants are generated on-demand via `context.nextVariant()` in batches of `MAX_THREADS`, built to disk, run through Maven, then immediately deleted. The time budget is `TIMEOUT_MULTIPLIER × normalizedBaselineTime`; the deadline is checked before each variant starts (ever-decreasing per-variant timeout = `deadline − now()`).
 
-`human_baseline` results are written to JSON first; subsequent modes read `humanBaselineSeconds` from that JSON to skip re-running the baseline build.
+`human_baseline` results are written to JSON first; subsequent modes read `humanBaselineSeconds` from that JSON to skip re-running the baseline build. In cache modes, the first variant warms the Maven cache; subsequent variants copy from it.
+
+For **broken-baseline merges** (`baselineBroken=true`), the stored baseline wall-clock time is overridden with the project average of non-broken merges (300 s fallback) via `injectFallbackBaselinesForBrokenMerges()`, giving their variants a meaningful time budget.
 
 ### Phase 3 — Analysis (`present`)
 
@@ -60,7 +65,9 @@ For every merge in a dataset, `MergeExperimentRunner` creates a `VariantBuildCon
 
 ### Variant / Pattern Model (`model`, `model/patterns`)
 
-A merge has N conflict chunks. Each variant assigns one pattern per chunk. Atomic patterns: `OURS`, `THEIRS`, `BASE`, `EMPTY`. Compound patterns combine these (e.g., `OURSTHEIRS`). `StrategySelector` + `PatternHeuristics` (loaded from `src/main/resources/pattern-heuristics/relative_numbers_summary.csv`) pick the order in which assignments are tried. For large N, the search space is exponential; the time budget is the natural stopping condition.
+A merge has N conflict chunks. Each variant assigns one pattern per chunk. Atomic patterns: `OURS`, `THEIRS`, `BASE`, `EMPTY`. Compound patterns combine atomics with colon notation (e.g., `OURS:BASE`). `StrategySelector` + `PatternHeuristics` (loaded from `src/main/resources/pattern-heuristics/learnt_historical_pattern_distribution.csv`) pick the order in which assignments are tried. For large N, the search space is exponential; the time budget is the natural stopping condition.
+
+`MergeFilter` loads `training_mergeIDs.csv` from the classpath and exposes `isTrainingMerge()`. `DatasetCollectionOrchestrator` skips training merges during dataset collection to prevent data leakage (the heuristics model was trained on those merges).
 
 ### Key Configuration (`config/AppConfig.java`)
 
@@ -70,7 +77,9 @@ Overridable at runtime via system properties: `freshRun`, `coverageActivated`, `
 
 ### Maven Execution (`runner/maven`)
 
-`MavenRunner` dispatches to three strategies: `SequentialStrategy`, `ParallelStrategy`, `CacheParallelStrategy`. All variants are run with `-fae -Dmaven.test.failure.ignore=true` so partial results are always collected. Coverage adds `jacoco:prepare-agent test jacoco:report` to the command. `MavenProcessExecutor` enforces a per-process timeout in seconds (not minutes).
+`MavenRunner` dispatches to four strategies: `SequentialStrategy`, `ParallelStrategy`, `CacheParallelStrategy`, `CacheSequentialStrategy`. All variants are run with `-fae -Dmaven.test.failure.ignore=true` so partial results are always collected. Coverage adds `jacoco:prepare-agent test jacoco:report` to the command. `MavenProcessExecutor` enforces a per-process timeout in seconds (not minutes).
+
+JSON output per variant includes: `variantIndex`, `ownExecutionSeconds`, `timedOut`, `budgetExhausted`, plus `CompilationResult` and `TestTotal` summaries.
 
 ## Test Infrastructure
 
@@ -82,7 +91,7 @@ Test directories (defined in `AppConfig`): `TEST_TMP_DIR`, `TEST_EXPERIMENTS_TEM
 
 ```
 /home/lanpirot/data/bruteforcemerge/
-  conflict_datasets/     # Per-project Excel datasets (Phase 1 output)
+  conflict_datasets/     # Per-project CSV datasets (Phase 1 output)
   variant_experiments/   # Per-project JSON results, one subdir per mode (Phase 2 output)
   test/                  # All test output
 /home/lanpirot/tmp/

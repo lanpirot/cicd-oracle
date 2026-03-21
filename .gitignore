@@ -32,6 +32,22 @@ build/
 ### VS Code ###
 .vscode/
 
+### Python ###
+.venv/
+__pycache__/
+*.pyc
+
+### Large data / generated files ###
+**/pattern-heuristics/autoregressive_model_fold*.pt
+**/pattern-heuristics/autoregressive_predictions_fold*.csv
+**/pattern-heuristics/Java_chunks_bruteforce.csv
+**/pattern-heuristics/cv_trajectory.csv
+**/pattern-heuristics/maven_check_cache.json
+**/pattern-heuristics/*.log
+**/pattern-heuristics/hamming_progress_*.pdf
+scripts/__pycache__/
+scripts/*.pdf
+
 ### My ignore ###
 **/src/test/**/test-merge-projects/
 temp/

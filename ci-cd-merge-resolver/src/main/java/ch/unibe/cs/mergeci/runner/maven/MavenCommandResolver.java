@@ -71,6 +71,10 @@ public class MavenCommandResolver {
         if (mvnw.exists()) {
             // Fix line endings first — the atomic move may replace the inode, wiping the exec bit.
             fixUnixLineEndings(mvnw);
+            // Also fix the wrapper properties file — CRLF there corrupts the wrapperUrl, causing
+            // the JAR download to 404 with a %0D-appended URL.
+            File wrapperProps = projectPath.resolve(".mvn/wrapper/maven-wrapper.properties").toFile();
+            if (wrapperProps.exists()) fixUnixLineEndings(wrapperProps);
             // Set executable bit after any file replacement so it is always present.
             if (!mvnw.setExecutable(true)) {
                 System.err.println("Warning: Could not set executable bit on " + mvnw.getAbsolutePath() + " — falling back to system mvn");

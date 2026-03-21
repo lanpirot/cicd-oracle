@@ -7,16 +7,13 @@ import ch.unibe.cs.mergeci.experiment.ResolutionVariantRunner;
 import ch.unibe.cs.mergeci.repoCollection.RepoCollector;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,7 +46,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         testRepoDir = AppConfig.TEST_BASE_DIR.resolve("integration_test_repos");
         testDatasetDir = AppConfig.TEST_BASE_DIR.resolve("integration_test_datasets");
         testExperimentsDir = AppConfig.TEST_BASE_DIR.resolve("integration_test_experiments");
-        testInputExcel = AppConfig.TEST_BASE_DIR.resolve("integration_test_projects.xlsx");
+        testInputExcel = AppConfig.TEST_BASE_DIR.resolve("integration_test_projects.csv");
 
         // Clean up test directories
         cleanDirectory(testRepoDir);
@@ -71,29 +68,17 @@ public class FreshRunModeIntegrationTest extends BaseTest {
     }
 
     /**
-     * Create a minimal test Excel file with one repository (myTest)
+     * Create a minimal test CSV file with one repository (myTest)
      */
     private void createTestExcelFile() throws IOException {
         Files.createDirectories(testInputExcel.getParent());
 
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Projects");
-
-            // Header row
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Repository");
-            headerRow.createCell(1).setCellValue("URL");
-
-            // Data row - use myTest (smaller and faster for integration testing)
-            Row dataRow = sheet.createRow(1);
-            dataRow.createCell(0).setCellValue("test/myTest");
-            // Use file:// URL to point to local test repository
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(testInputExcel.toFile()))) {
+            writer.write("Repository,URL");
+            writer.newLine();
             String localRepoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toAbsolutePath().toString();
-            dataRow.createCell(1).setCellValue("file://" + localRepoPath);
-
-            try (FileOutputStream fos = new FileOutputStream(testInputExcel.toFile())) {
-                workbook.write(fos);
-            }
+            writer.write("test/myTest,file://" + localRepoPath);
+            writer.newLine();
         }
     }
 
@@ -110,7 +95,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
 
         // Run collection
         RepoCollector freshCollector = new RepoCollector(testRepoDir, AppConfig.TEST_TMP_DIR, testDatasetDir);
-        freshCollector.processExcel(testInputExcel);
+        freshCollector.processCsv(testInputExcel);
 
         // Verify dataset was created
         File[] datasetsAfterFresh = testDatasetDir.toFile().listFiles();
@@ -144,7 +129,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
 
         // Run collection again (should skip already-processed repos)
         RepoCollector resumeCollector = new RepoCollector(testRepoDir, AppConfig.TEST_TMP_DIR, testDatasetDir);
-        resumeCollector.processExcel(testInputExcel);
+        resumeCollector.processCsv(testInputExcel);
 
         // Run experiment again (should skip already-processed datasets)
         ResolutionVariantRunner resumeRunner = new ResolutionVariantRunner(testDatasetDir, testInputExcel, AppConfig.TEST_TMP_DIR);
@@ -196,7 +181,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         // First run: Create some data
         System.setProperty("freshRun", "false");
         RepoCollector collector1 = new RepoCollector(testRepoDir, AppConfig.TEST_TMP_DIR, testDatasetDir);
-        collector1.processExcel(testInputExcel);
+        collector1.processCsv(testInputExcel);
 
         // Verify data exists
         assertTrue(testDatasetDir.toFile().exists(), "Dataset directory should exist");
@@ -212,7 +197,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         assertTrue(testDatasetDir.toFile().exists(), "Dataset directory exists before processExcel");
 
         // Run with FRESH_RUN - should delete and recreate
-        collector2.processExcel(testInputExcel);
+        collector2.processCsv(testInputExcel);
 
         // Verify data was recreated (fresh timestamps)
         File[] datasets2 = testDatasetDir.toFile().listFiles();

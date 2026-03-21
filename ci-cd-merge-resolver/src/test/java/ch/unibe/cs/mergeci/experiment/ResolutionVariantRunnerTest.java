@@ -14,7 +14,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
 
     @Test
     void makeAnalysisByDataset() throws Exception {
-        Path dataset = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.XLSX);
+        Path dataset = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.CSV);
         Path repoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind);
         Path output = AppConfig.TEST_EXPERIMENTS_DIR.resolve( AppConfig.jacksonDatabind + AppConfig.JSON);
 
@@ -35,7 +35,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     @Test
     void runTestsNoCacheParallel() throws Exception {
         ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
-                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.INPUT_PROJECT_CSV,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
                 );
 
@@ -50,7 +50,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     @Test
     void runTestsCacheParallel() throws Exception {
         ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
-                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.INPUT_PROJECT_CSV,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 
@@ -65,7 +65,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     @Test
     void runTestsNoCacheNoParallel() throws Exception {
         ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
-                AppConfig.INPUT_PROJECT_XLSX,
+                AppConfig.INPUT_PROJECT_CSV,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 

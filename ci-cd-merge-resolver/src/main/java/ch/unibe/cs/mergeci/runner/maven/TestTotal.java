@@ -70,6 +70,23 @@ public class TestTotal {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // JUnit 4 test suites (e.g. PrimarySuite) report 0 tests in the .txt wrapper but the
+        // actual counts are in the XML file.  Fall back to XML when .txt files gave us nothing.
+        if (runNum == 0 && hasData) {
+            try {
+                TestTotalXml xml = new TestTotalXml(projectDir);
+                if (xml.getRunNum() > 0) {
+                    runNum      = xml.getRunNum();
+                    failuresNum = xml.getFailuresNum();
+                    errorsNum   = xml.getErrorsNum();
+                    skippedNum  = xml.getSkippedNum();
+                    elapsedTime = xml.getElapsedTime();
+                }
+            } catch (Exception ignored) {
+                // XML fallback is best-effort; keep the txt-based (zero) result on failure
+            }
+        }
     }
 
     /**

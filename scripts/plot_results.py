@@ -373,6 +373,111 @@ def draw_java_ratio_chart(ax, all_merges: list, impact_set: set):
     ax.grid(True, axis="y", alpha=0.3, zorder=0)
 
 
+def draw_search_space_coverage(ax, all_data: dict, num_patterns: int = 16):
+    """
+    Violin + jitter plot: log10 fraction of the naive search space (p^c) explored per merge.
+    One violin per non-baseline execution mode.
+
+    For each merge: fraction = min(1, numVariantsAttempted / p^c),
+    where p = num_patterns and c = numConflictChunks.
+    Merges with c=0 or zero variants are skipped.
+    """
+    import random as _random
+    EXPLORATION_MODES = [m for m in MODES if m != "human_baseline"]
+
+    mode_fractions: dict[str, list[float]] = {}
+    for mode in EXPLORATION_MODES:
+        fracs = []
+        for merge in all_data.get(mode, {}).values():
+            c = merge.get("numConflictChunks", 0)
+            if c <= 0:
+                continue
+            attempted = merge.get("numVariantsAttempted")
+            if attempted is None:
+                variants = (merge.get("variantsExecution") or {}).get("variants", [])
+                attempted = len(variants)
+            if attempted <= 0:
+                continue
+            fraction = min(1.0, attempted / (num_patterns ** c))
+            fracs.append(math.log10(fraction))
+        if fracs:
+            mode_fractions[mode] = fracs
+
+    plot_modes = [m for m in EXPLORATION_MODES if m in mode_fractions]
+    if not plot_modes:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    positions = list(range(len(plot_modes)))
+    data      = [mode_fractions[m] for m in plot_modes]
+
+    parts = ax.violinplot(data, positions=positions, showmedians=True, showextrema=True,
+                          widths=0.6)
+    for pc, mode in zip(parts["bodies"], plot_modes):
+        pc.set_facecolor(MODE_COLORS[mode])
+        pc.set_alpha(0.65)
+        pc.set_edgecolor("none")
+    for key in ("cmedians", "cmins", "cmaxes", "cbars"):
+        if key in parts:
+            parts[key].set_color("black")
+            parts[key].set_linewidth(1.0)
+
+    # Jittered individual-point overlay
+    rng = _random.Random(0)
+    for i, (vals, mode) in enumerate(zip(data, plot_modes)):
+        xs = [i + rng.gauss(0, 0.07) for _ in vals]
+        ax.scatter(xs, vals, color=MODE_COLORS[mode], s=8, alpha=0.40,
+                   edgecolors="none", zorder=3)
+
+    ax.set_xticks(positions)
+    ax.set_xticklabels([MODE_LABELS[m] for m in plot_modes])
+
+    def _log10_fmt(y, _):
+        exp = int(round(y))
+        return (rf"$10^{{{exp}}}$" if USE_LATEX else f"1e{exp}")
+
+    ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(_log10_fmt))
+
+    # n= label above each violin
+    y_max = max(max(v) for v in data)
+    y_span = y_max - min(min(v) for v in data)
+    for i, (vals, mode) in enumerate(zip(data, plot_modes)):
+        n_lbl = rf"$n={len(vals)}$" if USE_LATEX else f"n={len(vals)}"
+        ax.text(i, y_max + 0.04 * y_span, n_lbl,
+                ha="center", va="bottom", fontsize=8)
+
+    space_expr = (rf"$p^c = {num_patterns}^c$" if USE_LATEX
+                  else f"p^c = {num_patterns}^c")
+    ax.set_ylabel(
+        rf"Fraction of search space explored  ({space_expr} total)"
+    )
+    ax.set_title(
+        (rf"Search Space Coverage  ($p={num_patterns}$ patterns, "
+         rf"$c=$ conflict chunks per merge)")
+        if USE_LATEX else
+        f"Search Space Coverage  (p={num_patterns} patterns, c=conflict chunks per merge)"
+    )
+    ax.grid(True, axis="y", alpha=0.3)
+
+    # Right y-axis: #conflicts whose full search space equals this fraction.
+    # Transformation: c = -log10(fraction) / log10(p)  ↔  log10(fraction) = -c·log10(p)
+    _log10_p = math.log10(num_patterns)
+    ax2 = ax.secondary_yaxis(
+        "right",
+        functions=(
+            lambda y: -y / _log10_p,   # log10-fraction  →  #conflicts
+            lambda c: -c * _log10_p,   # #conflicts      →  log10-fraction
+        ),
+    )
+    ax2.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True, min_n_ticks=3))
+    ax2.set_ylabel(
+        r"Equiv.\ \#\ conflicts $c$  (exhaustive at this fraction)"
+        if USE_LATEX else
+        "Equiv. # conflicts c  (exhaustive at this fraction)"
+    )
+
+
 def make_plots(variant_dir: Path, output_pdf: Path):
     print(f"Loading data from: {variant_dir}")
     all_data = load_all_data(variant_dir)
@@ -413,6 +518,12 @@ def make_plots(variant_dir: Path, output_pdf: Path):
             draw_java_ratio_chart(ax, stats["all_merges"], stats["impact_set"])
             pdf.savefig(fig, bbox_inches="tight")
             plt.close(fig)
+
+        # Chart 4: Search space coverage (fraction of p^c explored per merge)
+        fig, ax = plt.subplots(figsize=(9, 6))
+        draw_search_space_coverage(ax, all_data)
+        pdf.savefig(fig, bbox_inches="tight")
+        plt.close(fig)
 
     print("Done.")
 
@@ -535,6 +646,7 @@ def generate_mockup(output_dir: Path, output_pdf: Path):
                 "numConflictFiles":      num_conflict_files,
                 "numJavaConflictFiles":  num_java_conflict_files,
                 "numConflictChunks":     num_conflict_chunks,
+                "numVariantsAttempted":  len(variants),
                 "variantsExecution":     {"executionTimeSeconds": exec_secs,
                                           "variants": variants},
             }

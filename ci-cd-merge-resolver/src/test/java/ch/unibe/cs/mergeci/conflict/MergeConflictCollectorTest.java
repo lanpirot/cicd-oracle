@@ -16,25 +16,22 @@ public class MergeConflictCollectorTest extends BaseTest {
     @Test
     void collectDataset() throws Exception {
         MergeConflictCollector collector = new MergeConflictCollector(
-                AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind),
-                AppConfig.TMP_DIR,
+                AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest),
+                AppConfig.TEST_TMP_DIR,
                 AppConfig.getMaxConflictMerges()
         );
 
-        Path outputPath = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.XLSX);
+        Path outputPath = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.myTest + AppConfig.CSV);
 
         CollectionResult result = collector.collectDataset(
                 outputPath,
-                AppConfig.jacksonDatabind,
+                AppConfig.myTest,
                 "test-url"
         );
 
-        // Verify the dataset file was created and status is SUCCESS
         assertEquals(RepositoryStatus.SUCCESS, result.getStatus(), "Repository should be successfully processed");
         assertTrue(Files.exists(outputPath), "Dataset file should be created: " + outputPath);
         assertTrue(Files.size(outputPath) > 0, "Dataset file should not be empty");
-
-        // Verify statistics are populated
         assertTrue(result.getTotalMerges() > 0, "Should have found merge commits");
         assertTrue(result.getSuccessfulMerges() > 0, "Should have successful merges");
         System.out.println(result.getDetailedStats());

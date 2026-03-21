@@ -157,7 +157,7 @@ public class MavenExecutionFactory {
                         new MavenProcessExecutor(timeout0).executeCommand(
                                 firstPath, logDir.resolve(firstPath.getFileName() + "_compilation"),
                                 AppConfig.buildCommand(commandResolver.resolveMavenCommand(firstPath),
-                                        commandResolver.resolveMavenGoal(firstPath)));
+                                        commandResolver.resolveMavenGoal(firstPath), firstPath));
                         cacheWarmPath = firstPath;
                         String warmKey = projectName + "_" + idx;
                         collectResult(warmKey, firstPath, builder, variantsStart);
@@ -245,7 +245,7 @@ public class MavenExecutionFactory {
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
                                             AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
-                                                    commandResolver.resolveMavenGoal(variantPath)));
+                                                    commandResolver.resolveMavenGoal(variantPath), variantPath));
                                 } else {
                                     new MavenRunner(logDir, false, variantTimeout).run_no_optimization(variantPath);
                                 }
@@ -287,12 +287,12 @@ public class MavenExecutionFactory {
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                     AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath)));
+                                            commandResolver.resolveMavenGoal(vPath), vPath));
                         } else {
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                     AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath)));
+                                            commandResolver.resolveMavenGoal(vPath), vPath));
                         }
                     }
                     return Map.entry(key, vPath);

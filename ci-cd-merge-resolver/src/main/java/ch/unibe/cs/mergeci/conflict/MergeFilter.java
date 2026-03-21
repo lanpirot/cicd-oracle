@@ -27,9 +27,9 @@ public class MergeFilter {
     private static Set<String> loadTrainingMergeIds() {
         Set<String> ids = new HashSet<>();
         InputStream is = MergeFilter.class.getClassLoader()
-                .getResourceAsStream("pattern-heuristics/trained_on_merge_ids.csv");
+                .getResourceAsStream("pattern-heuristics/training_mergeIDs.csv");
         if (is == null) {
-            System.err.println("Warning: trained_on_merge_ids.csv not found on classpath — no training-set filtering applied");
+            System.err.println("Warning: training_mergeIDs.csv not found on classpath — no training-set filtering applied");
             return ids;
         }
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
@@ -41,9 +41,9 @@ public class MergeFilter {
                 if (!line.isEmpty()) ids.add(line);
             }
         } catch (IOException e) {
-            System.err.println("Warning: Failed to load trained_on_merge_ids.csv: " + e.getMessage());
+            System.err.println("Warning: Failed to load training_mergeIDs.csv: " + e.getMessage());
         }
-        System.out.printf("Loaded %d trained-on merge IDs to exclude from dataset collection.%n", ids.size());
+        System.out.printf("Loaded %d training merge IDs to exclude from dataset collection.%n", ids.size());
         return ids;
     }
 

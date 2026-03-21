@@ -41,9 +41,9 @@ public class SequentialStrategy implements MavenExecutionStrategy {
 
             if (javaHome != null) {
                 processExecutor.executeCommandWithJavaHome(project, logFile, javaHome,
-                        AppConfig.buildCommand(mavenCommand, mavenGoal));
+                        AppConfig.buildCommand(mavenCommand, mavenGoal, project));
             } else {
-                processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand, mavenGoal));
+                processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand, mavenGoal, project));
             }
         }
     }

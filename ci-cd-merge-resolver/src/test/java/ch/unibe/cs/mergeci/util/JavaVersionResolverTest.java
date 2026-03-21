@@ -58,11 +58,83 @@ public class JavaVersionResolverTest extends BaseTest {
     }
 
     @Test
+    void detectsJava11FromMavenCompilerRelease(@TempDir Path dir) throws Exception {
+        writePom(dir, "<maven.compiler.release>11</maven.compiler.release>");
+        assertEquals(11, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    @Test
+    void detectsJava11ViaPropertyInterpolationInMavenCompilerRelease(@TempDir Path dir) throws Exception {
+        // Mirrors the Activiti pattern: <java.release>11</java.release>
+        //                               <maven.compiler.release>${java.release}</maven.compiler.release>
+        writePom(dir, "<java.release>11</java.release>\n"
+                    + "<maven.compiler.release>${java.release}</maven.compiler.release>");
+        assertEquals(11, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    @Test
+    void detectsJava11ViaPropertyInterpolationInMavenCompilerSource(@TempDir Path dir) throws Exception {
+        writePom(dir, "<my.java.version>11</my.java.version>\n"
+                    + "<maven.compiler.source>${my.java.version}</maven.compiler.source>");
+        assertEquals(11, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    @Test
+    void mavenCompilerReleaseTakesPriorityOverSource(@TempDir Path dir) throws Exception {
+        // maven.compiler.release is the first pattern — must win
+        writePom(dir, "<maven.compiler.release>17</maven.compiler.release>\n"
+                    + "<maven.compiler.source>11</maven.compiler.source>");
+        assertEquals(17, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    @Test
     void mavenCompilerSourceTakesPriorityOverJavaVersion(@TempDir Path dir) throws Exception {
-        // Both tags present — maven.compiler.source wins
+        // Both tags present — maven.compiler.source wins over java.version
         writePom(dir, "<maven.compiler.source>7</maven.compiler.source>\n"
                     + "<java.version>11</java.version>");
         assertEquals(7, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    @Test
+    void detectsJava6FromBareSourceTagInPluginConfig(@TempDir Path dir) throws Exception {
+        Files.writeString(dir.resolve("pom.xml"),
+                "<project><build><plugins><plugin>" +
+                "<artifactId>maven-compiler-plugin</artifactId>" +
+                "<configuration><source>1.6</source><target>1.6</target></configuration>" +
+                "</plugin></plugins></build></project>");
+        assertEquals(6, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    @Test
+    void propertyStyleTakesPriorityOverBareSourceTag(@TempDir Path dir) throws Exception {
+        Files.writeString(dir.resolve("pom.xml"),
+                "<project><properties>" +
+                "<maven.compiler.source>11</maven.compiler.source>" +
+                "</properties><build><plugins><plugin>" +
+                "<configuration><source>1.6</source></configuration>" +
+                "</plugin></plugins></build></project>");
+        assertEquals(11, JavaVersionResolver.detectRequiredVersion(dir));
+    }
+
+    // ---- detectPluginCompatibilityError --------------------------------------
+
+    @Test
+    void detectsExceptionInInitializerError(@TempDir Path dir) throws Exception {
+        Path log = dir.resolve("build_compilation");
+        Files.writeString(log, "[ERROR] ExceptionInInitializerError: null\n[INFO] BUILD FAILURE");
+        assertTrue(JavaVersionResolver.detectPluginCompatibilityError(log));
+    }
+
+    @Test
+    void noPluginCompatibilityErrorForCleanLog(@TempDir Path dir) throws Exception {
+        Path log = dir.resolve("build_compilation");
+        Files.writeString(log, "[INFO] BUILD SUCCESS\n[INFO] Total time: 5.0 s");
+        assertFalse(JavaVersionResolver.detectPluginCompatibilityError(log));
+    }
+
+    @Test
+    void noPluginCompatibilityErrorForMissingLog(@TempDir Path dir) {
+        assertFalse(JavaVersionResolver.detectPluginCompatibilityError(dir.resolve("nonexistent")));
     }
 
     // ---- selectClosestVersion ------------------------------------------------

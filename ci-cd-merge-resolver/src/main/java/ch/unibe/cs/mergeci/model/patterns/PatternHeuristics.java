@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -20,12 +22,28 @@ public class PatternHeuristics {
     }
 
     /**
-     * Load pattern heuristics from CSV file.
+     * Load pattern heuristics from a file on the local filesystem.
      *
-     * @param csvPath Path to CSV file in resources (e.g., "pattern-heuristics/relative_numbers_summary.csv")
+     * @param csvPath Path to the CSV file
      * @return Loaded PatternHeuristics
      * @throws IOException if file cannot be read
      */
+    public static PatternHeuristics loadFromFile(Path csvPath) throws IOException {
+        PatternHeuristics heuristics = new PatternHeuristics();
+
+        try (BufferedReader reader = Files.newBufferedReader(csvPath)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                parseLine(line, heuristics);
+            }
+        }
+
+        return heuristics;
+    }
+
     public static PatternHeuristics loadFromResource(String csvPath) throws IOException {
         PatternHeuristics heuristics = new PatternHeuristics();
 
@@ -130,6 +148,38 @@ public class PatternHeuristics {
      */
     public Set<Integer> getAvailableChunkCounts() {
         return strategiesByChunkCount.keySet();
+    }
+
+    /**
+     * A PatternHeuristics variant that always uses the global distribution regardless of chunk
+     * count. Used for the GLOBAL mode in cross-validation evaluation (RQ1).
+     */
+    public static class GlobalOnlyPatternHeuristics extends PatternHeuristics {
+        private final PatternHeuristics wrapped;
+
+        private GlobalOnlyPatternHeuristics(PatternHeuristics wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        /** Wrap an existing PatternHeuristics so every per-count lookup returns global strategies. */
+        public static GlobalOnlyPatternHeuristics of(PatternHeuristics base) {
+            return new GlobalOnlyPatternHeuristics(base);
+        }
+
+        @Override
+        public List<PatternStrategy> getStrategies(int chunkCount) {
+            return wrapped.getGlobalStrategies();
+        }
+
+        @Override
+        public List<PatternStrategy> getGlobalStrategies() {
+            return wrapped.getGlobalStrategies();
+        }
+
+        @Override
+        public Set<Integer> getAvailableChunkCounts() {
+            return wrapped.getAvailableChunkCounts();
+        }
     }
 
     @Override

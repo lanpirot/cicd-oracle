@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.conflict.ConflictFileSaver;
 import ch.unibe.cs.mergeci.runner.IJustInTimeRunner;
 import ch.unibe.cs.mergeci.runner.MavenExecutionFactory;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
@@ -102,6 +103,10 @@ public class MergeExperimentRunner {
         JacocoReportFinder.CoverageDTO coverageResult = factory.getCoverageResult();
         Map<String, Double> variantFinishSeconds = factory.getVariantFinishSeconds();
         Map<String, Double> variantSinceMergeStartSeconds = factory.getVariantSinceMergeStartSeconds();
+
+        // Save human/tentative/variant file triplets for later inspection
+        ConflictFileSaver.save(context, testResults, compilationResults, info,
+                AppConfig.CONFLICT_FILES_DIR);
 
         return new MergeAnalysisResult(
                 variantProjectBuilder,

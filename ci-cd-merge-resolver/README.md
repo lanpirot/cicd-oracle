@@ -71,6 +71,8 @@ python3 scripts/plot_results.py               # real data
 python3 scripts/plot_results.py --mockup      # instant preview with synthetic data
 ```
 
+For manual inspection of noteworthy or edge-case merges, Phase 2 saves human/tentative/variant file triplets to `conflict_files/` (±100-line windows around each conflict for large files); run `python3 scripts/view_noteworthy.py` to generate a self-contained `viewer.html` with a three-panel diff view and color-coded conflict regions.
+
 ## Resolution Patterns
 
 Each conflict chunk is resolved by one pattern:
