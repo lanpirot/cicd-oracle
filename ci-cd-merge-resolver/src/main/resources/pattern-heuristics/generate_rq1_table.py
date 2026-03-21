@@ -154,54 +154,6 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted):
     return '\n'.join(lines)
 
 
-def load_ml_data(data_dir, bucket_stats, merge_data):
-    """
-    Load ML_AUTOREGRESSIVE stats from prediction + evaluation fold files.
-    Injects into bucket_stats and merge_data in-place.
-    Returns True if any data was loaded.
-    """
-    loaded = False
-    for fold in range(10):
-        eval_path = os.path.join(data_dir, f'evaluation_fold{fold}.csv')
-        pred_path = os.path.join(data_dir, f'autoregressive_predictions_fold{fold}.csv')
-        if not (os.path.exists(eval_path) and os.path.exists(pred_path)):
-            continue
-
-        gt = {}
-        with open(eval_path, newline='') as f:
-            for row in csv.DictReader(f):
-                gt[row['merge_id']] = row['total_resolution_pattern'].split('|')
-
-        preds = defaultdict(list)
-        with open(pred_path, newline='') as f:
-            for row in csv.DictReader(f):
-                preds[row['merge_id']].append(row['sequence'].split('|'))
-
-        for mid, truth in gt.items():
-            n = len(truth)
-            b = bucket_of(n)
-            uid = (str(fold), mid)
-
-            hit, rk = 0, None
-            for rank, seq in enumerate(preds.get(mid, []), start=1):
-                dist = sum(1 for a, b2 in zip(seq, truth) if a != b2) + abs(len(seq) - n)
-                if dist == 0:
-                    hit, rk = 1, rank
-                    break
-
-            s = bucket_stats[(b, ML_MODE)]
-            s['total'] += 1
-            s['hits']  += hit
-            if hit:
-                s['rank_sum']   += rk
-                s['rank_count'] += 1
-
-            merge_data[uid][ML_MODE] = {'hit': hit, 'rank': rk, 'n': n}
-            loaded = True
-
-    return loaded
-
-
 def main():
     csv_path    = sys.argv[1]
     variant_cap = sys.argv[2] if len(sys.argv) > 2 else '?'
@@ -219,6 +171,8 @@ def main():
     merge_data = defaultdict(dict)
 
     for r in rows:
+        if not r.get('num_chunks'):  # skip partial/truncated rows (file written mid-run)
+            continue
         n   = int(r['num_chunks'])
         b   = bucket_of(n)
         m   = r['mode']
@@ -235,10 +189,9 @@ def main():
         uid = (r['fold'], r['merge_id'])
         merge_data[uid][m] = {'hit': hit, 'rank': rk, 'n': n}
 
-    # ── inject ML_AUTOREGRESSIVE from prediction files ────────────────────
-    ml_loaded = load_ml_data(out_dir, bucket_stats, merge_data)
-    if not ml_loaded:
-        print('Note: no ML prediction files found — ML-AR column will be empty.')
+    # ── drop ML_AUTOREGRESSIVE column if cv_results.csv contains no ML rows ──
+    if not any(r['mode'] == ML_MODE for r in rows):
+        print('Note: no ML_AUTOREGRESSIVE rows in cv_results.csv — ML-AR column omitted.')
         global MODES, DISPLAY_NAMES
         MODES         = [m for m in MODES         if m != ML_MODE]
         DISPLAY_NAMES = DISPLAY_NAMES[:len(MODES)]

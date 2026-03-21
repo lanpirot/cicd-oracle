@@ -79,18 +79,17 @@ public class PatternMatchEvaluator {
                 List<EvalRow> evalRows = loadEvalRows(evalFile);
                 System.out.println("  " + evalRows.size() + " eval merges.");
 
-                Path mlPredFile = resourceDir.resolve("autoregressive_predictions_fold" + fold + ".csv");
-                Map<String, List<List<String>>> mlPredictions =
-                    Files.exists(mlPredFile) ? loadMlPredictions(mlPredFile) : Map.of();
-                if (!mlPredictions.isEmpty()) {
-                    System.out.println("  Loaded ML predictions for " + mlPredictions.size() + " merges.");
+                MlAutoregressivePredictor mlPredictor =
+                    MlAutoregressivePredictor.forFold(resourceDir, fold, variantCap);
+                if (mlPredictor.isAvailable()) {
+                    System.out.println("  ML predictions available for " + mlPredictor.mergeCount() + " merges.");
                 }
 
                 for (EvalRow row : evalRows) {
                     for (Mode mode : Mode.values()) {
-                        if (mode == Mode.ML_AUTOREGRESSIVE && mlPredictions.isEmpty()) continue;
+                        if (mode == Mode.ML_AUTOREGRESSIVE && !mlPredictor.isAvailable()) continue;
                         Result result = evaluate(row, mode, heuristics, variantCap, fold, trajWriter,
-                                                 mlPredictions);
+                                                 mlPredictor);
                         writer.printf("%d,%s,%d,%s,%d,%d,%d%n",
                             fold, row.mergeId(), row.numChunks(), mode,
                             result.minDist(), result.rankOfClosest(), result.variantsGenerated());
@@ -161,7 +160,7 @@ public class PatternMatchEvaluator {
 
     static Result evaluate(EvalRow row, Mode mode, PatternHeuristics heuristics, int variantCap,
                            int fold, PrintWriter trajWriter,
-                           Map<String, List<List<String>>> mlPredictions) {
+                           MlAutoregressivePredictor mlPredictor) {
         int n = row.numChunks();
         String[] groundTruth = row.groundTruth();
 
@@ -290,7 +289,7 @@ public class PatternMatchEvaluator {
             }
 
             case ML_AUTOREGRESSIVE -> {
-                List<List<String>> preds = mlPredictions.getOrDefault(row.mergeId(), List.of());
+                List<List<String>> preds = mlPredictor.getPredictions(row.mergeId());
                 for (List<String> assignment : preds) {
                     if (variantsGenerated >= maxVariants || minDist == 0) break;
                     variantsGenerated++;
@@ -336,28 +335,6 @@ public class PatternMatchEvaluator {
     static boolean isNonStrategy(PatternStrategy s) {
         return s.getSubPatterns().size() == 1
             && "NON".equals(s.getSubPatterns().getFirst().getPattern());
-    }
-
-    /**
-     * Load autoregressive_predictions_fold{k}.csv.
-     * Format: merge_id,sequence  where sequence is pipe-separated patterns.
-     * Returns merge_id → ordered list of variant assignments (each a List&lt;String&gt;).
-     */
-    static Map<String, List<List<String>>> loadMlPredictions(Path predFile) throws IOException {
-        Map<String, List<List<String>>> result = new LinkedHashMap<>();
-        try (BufferedReader reader = Files.newBufferedReader(predFile)) {
-            String line = reader.readLine(); // skip header
-            while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
-                int comma = line.indexOf(',');
-                if (comma < 0) continue;
-                String mergeId = line.substring(0, comma).trim();
-                String seqPart = line.substring(comma + 1).trim();
-                List<String> assignment = Arrays.asList(seqPart.split("\\|", -1));
-                result.computeIfAbsent(mergeId, k -> new ArrayList<>()).add(assignment);
-            }
-        }
-        return result;
     }
 
     static List<String> randomVariant(int numChunks, Random random) {

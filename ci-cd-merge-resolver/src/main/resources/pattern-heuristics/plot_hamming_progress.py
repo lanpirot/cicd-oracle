@@ -14,7 +14,7 @@ Usage:
 
 Both files are looked up relative to this script's directory if not given.
 cv_results.csv is used to determine the final (capped) distance for each merge.
-ML-AR data is loaded from autoregressive_predictions_fold{k}.csv + evaluation_fold{k}.csv.
+ML-AR rows are read from cv_trajectory.csv / cv_results.csv like all other modes.
 """
 
 import csv
@@ -41,8 +41,12 @@ matplotlib.rcParams.update({
 csv.field_size_limit(1_000_000)
 
 # Modes from cv_trajectory.csv / cv_results.csv
-CV_MODES = {'GLOBAL_UNIFORM': r'\textsc{Uniform}', 'HEURISTIC': r'\textsc{Heuristic}'}
 ML_LABEL = r'\textsc{ML-AR}'
+CV_MODES = {
+    'GLOBAL_UNIFORM':    r'\textsc{Uniform}',
+    'HEURISTIC':         r'\textsc{Heuristic}',
+    'ML_AUTOREGRESSIVE': ML_LABEL,
+}
 
 COLORS  = {
     r'\textsc{Uniform}':   '#1f77b4',
@@ -94,50 +98,6 @@ def load_final_state(results_path):
     return final
 
 
-def load_ml_trajectory_and_final(script_dir):
-    """
-    Build trajectory and final-state dicts for ML_AUTOREGRESSIVE from fold files.
-    Trajectory events = improvement events only (matching cv_trajectory format).
-    """
-    traj  = {}
-    final = {}
-
-    for fold in range(10):
-        eval_path = os.path.join(script_dir, f'evaluation_fold{fold}.csv')
-        pred_path = os.path.join(script_dir, f'autoregressive_predictions_fold{fold}.csv')
-        if not (os.path.exists(eval_path) and os.path.exists(pred_path)):
-            continue
-
-        gt = {}
-        with open(eval_path, newline='') as f:
-            for row in csv.DictReader(f):
-                gt[row['merge_id']] = row['total_resolution_pattern'].split('|')
-
-        preds_by_merge = defaultdict(list)
-        with open(pred_path, newline='') as f:
-            for row in csv.DictReader(f):
-                preds_by_merge[row['merge_id']].append(row['sequence'].split('|'))
-
-        for mid, truth in gt.items():
-            preds = preds_by_merge.get(mid, [])
-            n   = len(truth)
-            mk  = (str(fold), mid)
-            key = (mk, 'ML_AUTOREGRESSIVE')
-
-            best   = n
-            events = []
-            for attempt, seq in enumerate(preds, start=1):
-                dist = sum(1 for a, b in zip(seq, truth) if a != b) + abs(len(seq) - n)
-                if dist < best:
-                    best = dist
-                    events.append((attempt, dist))
-
-            traj[key]  = events
-            final[key] = (n, best, len(preds))
-
-    return traj, final
-
-
 def best_so_far_at(events, attempt, num_chunks, min_distance, variants_generated):
     """
     Given improvement events for one merge+mode, return best distance at or before `attempt`.
@@ -155,7 +115,7 @@ def build_curves(traj, final, x_values):
     """
     For each mode, build a 2-D array: rows = merges, cols = x_values.
     """
-    all_labels = list(CV_MODES.values()) + [ML_LABEL]
+    all_labels = list(CV_MODES.values())
     curves = {label: [] for label in all_labels}
 
     all_keys = set()
@@ -165,7 +125,6 @@ def build_curves(traj, final, x_values):
         all_keys.add(mk)
 
     raw_mode_of = {v: k for k, v in CV_MODES.items()}
-    raw_mode_of[ML_LABEL] = 'ML_AUTOREGRESSIVE'
 
     for mk in all_keys:
         for label in all_labels:
@@ -264,11 +223,6 @@ def main():
     traj  = load_trajectory(traj_path)
     print(f'Loading final states from {results_path} ...')
     final = load_final_state(results_path)
-
-    print(f'Loading ML-AR fold files from {script_dir} ...')
-    ml_traj, ml_final = load_ml_trajectory_and_final(script_dir)
-    traj.update(ml_traj)
-    final.update(ml_final)
 
     max_attempts = max(vg for (_, _), (_, _, vg) in final.items())
     x_values = np.arange(1, max_attempts + 1)

@@ -26,7 +26,6 @@ import itertools
 import math
 import os
 import random
-import subprocess
 import sys
 from collections import defaultdict
 from datetime import date
@@ -95,10 +94,12 @@ LOG1P_MERGE = {
     "commitCountOURS", "commitCountTHEIRS",
     "changedFilesOURS", "changedFilesTHEIRS", "concurrentlyChangedFiles",
     "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
+    "num_chunks_in_merge",
 }
 LOG1P_CHUNK = {
     "chunkAbsSize", "chunkAbsSizeOURS", "chunkAbsSizeTHEIRS",
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
+    "num_chunks_in_file",
 }
 
 MERGE_COLS = [
@@ -112,9 +113,10 @@ MERGE_COLS = [
     "changedFilesOURS", "changedFilesTHEIRS", "concurrentlyChangedFiles",
     "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
     "contributionDurationDays", "conclusionDelayDays", "mergeDurationDays",
-    "is_maven",        # 0/1 feature (not a filter)
-    "merge_time_days", # engineered
-    "devInt_ALL",      # one-hot from developersIntersection
+    "is_maven",              # 0/1 feature (not a filter)
+    "merge_time_days",       # engineered
+    "devInt_ALL",            # one-hot from developersIntersection
+    "num_chunks_in_merge",   # computed: total conflict chunks in this merge
 ]
 CHUNK_COLS = [
     "selfConflict",
@@ -124,6 +126,7 @@ CHUNK_COLS = [
     "chunkAbsSizeOURS", "chunkAbsSizeTHEIRS",
     "chunkRelSizeOURS", "chunkRelSizeTHEIRS",
     "file_lex_rank",
+    "num_chunks_in_file",    # computed: conflict chunks sharing this file
 ]
 MERGE_DIM = len(MERGE_COLS)
 CHUNK_DIM = len(CHUNK_COLS)
@@ -158,6 +161,13 @@ def extract_features(rows: list[dict], merge_time_median: float):
     dev_int_all = 1.0 if r0.get("developersIntersection", "") == "ALL" else 0.0
     is_maven    = 1.0 if r0.get("is_maven", "False") == "True" else 0.0
 
+    # Computed features (not present as CSV columns)
+    n_chunks_merge = float(len(rows))
+    file_chunk_counts: dict[str, int] = {}
+    for row in rows:
+        fp = row.get("file_path", "")
+        file_chunk_counts[fp] = file_chunk_counts.get(fp, 0) + 1
+
     merge_vals = []
     for col in MERGE_COLS:
         if col == "merge_time_days":
@@ -166,6 +176,8 @@ def extract_features(rows: list[dict], merge_time_median: float):
             merge_vals.append(dev_int_all)
         elif col == "is_maven":
             merge_vals.append(is_maven)
+        elif col == "num_chunks_in_merge":
+            merge_vals.append(_log1p_if(col, LOG1P_MERGE, n_chunks_merge))
         else:
             v = _safe_float(r0.get(col, 0))
             merge_vals.append(_log1p_if(col, LOG1P_MERGE, v))
@@ -174,8 +186,12 @@ def extract_features(rows: list[dict], merge_time_median: float):
     for row in rows:
         cv = []
         for col in CHUNK_COLS:
-            v = _safe_float(row.get(col, 0))
-            cv.append(_log1p_if(col, LOG1P_CHUNK, v))
+            if col == "num_chunks_in_file":
+                v = float(file_chunk_counts.get(row.get("file_path", ""), 1))
+                cv.append(_log1p_if(col, LOG1P_CHUNK, v))
+            else:
+                v = _safe_float(row.get(col, 0))
+                cv.append(_log1p_if(col, LOG1P_CHUNK, v))
         chunk_list.append(cv)
 
         lbl = normalize_label(row.get("y_conflictResolutionResult", ""))
@@ -399,14 +415,19 @@ def train_model(train_merges, max_seq: int, d_model: int, epochs: int,
     train_norm = apply_scaler(train_merges, m_mean, m_std, c_mean, c_std)
 
     ds      = MergeDataset(train_norm, max_seq)
-    sampler = BucketSampler(ds.lengths, batch_size=64, seed=seed)
-    dl      = DataLoader(ds, batch_size=64, sampler=sampler,
+    sampler = BucketSampler(ds.lengths, batch_size=256, seed=seed)
+    dl      = DataLoader(ds, batch_size=256, sampler=sampler,
                          collate_fn=collate_fn, num_workers=0)
 
     model = AutoregressiveModel(MERGE_DIM, CHUNK_DIM, d_model=d_model,
                                 max_seq=max_seq + 10).to(device)
-    opt   = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
-    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
+    opt    = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-4)
+    warmup = torch.optim.lr_scheduler.LinearLR(
+        opt, start_factor=0.1, end_factor=1.0, total_iters=3)
+    cosine = torch.optim.lr_scheduler.CosineAnnealingLR(
+        opt, T_max=max(epochs - 3, 1), eta_min=1e-5)
+    sched  = torch.optim.lr_scheduler.SequentialLR(
+        opt, schedulers=[warmup, cosine], milestones=[3])
     # PAD_IDX = sequence padding, masked from loss.
     # NON_TGT_IDX = replaced with GLOBAL sample below; never reaches loss as-is.
     crit  = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
@@ -645,7 +666,7 @@ def save_fold_assignment(folds: list[set], path: str):
 # ---------------------------------------------------------------------------
 def parse_args():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--epochs",    type=int,   default=15)
+    p.add_argument("--epochs",    type=int,   default=40)
     p.add_argument("--d-model",   type=int,   default=128)
     p.add_argument("--nhead",     type=int,   default=4)
     p.add_argument("--layers",    type=int,   default=2)
@@ -756,13 +777,6 @@ def main():
         print(f"  Written: {out_path}", flush=True)
 
     print("\nAll folds done.", flush=True)
-
-    # Regenerate RQ1 table if cv_results.csv and generate_rq1_table.py exist
-    cv_results = os.path.join(data_dir, "cv_results.csv")
-    table_script = os.path.join(data_dir, "generate_rq1_table.py")
-    if os.path.exists(cv_results) and os.path.exists(table_script):
-        print("\nRegenerating RQ1 tables…", flush=True)
-        subprocess.run([sys.executable, table_script, cv_results, "1000"], check=False)
 
 
 if __name__ == "__main__":
