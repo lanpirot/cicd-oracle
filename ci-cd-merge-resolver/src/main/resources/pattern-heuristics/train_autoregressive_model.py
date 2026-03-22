@@ -478,7 +478,7 @@ _TEMP_BUMP = 1.5   # multiply temperature when >50% of a batch are duplicates
 @torch.no_grad()
 def generate_sequences(model, merge_feat_np, chunk_feats_np,
                         m_mean, m_std, c_mean, c_std,
-                        n_variants: int, max_seq: int,
+                        n_variants: int,
                         temperature: float, device: torch.device,
                         rng: random.Random) -> list[list[str]]:
     """
@@ -488,19 +488,42 @@ def generate_sequences(model, merge_feat_np, chunk_feats_np,
     - Compound-pattern permutation expansion (post-generation)
     """
     model.eval()
-    T = min(len(chunk_feats_np), max_seq)
+    T = len(chunk_feats_np)
     if T == 0:
         return []
 
+    # For sequences longer than the training cap, run the model on the first
+    # model.pe.shape[0] chunks, take the majority pattern, and tile to full length.
+    _MAX_T = model.pe.shape[0]
+    if T > _MAX_T:
+        short_seqs = generate_sequences(
+            model, merge_feat_np, chunk_feats_np[:_MAX_T],
+            m_mean, m_std, c_mean, c_std,
+            n_variants=n_variants, temperature=temperature,
+            device=device, rng=rng,
+        )
+        full_seqs = []
+        seen_full: set[str] = set()
+        for seq in short_seqs:
+            majority = max(set(seq), key=seq.count)
+            full = [majority] * T
+            k = "|".join(full)
+            if k not in seen_full:
+                seen_full.add(k)
+                full_seqs.append(full)
+        return full_seqs
+
     mf      = torch.tensor((merge_feat_np - m_mean) / m_std,
                            dtype=torch.float32).unsqueeze(0).to(device)
-    cf_raw  = torch.tensor((chunk_feats_np[:T] - c_mean) / c_std,
+    cf_raw  = torch.tensor((chunk_feats_np - c_mean) / c_std,
                            dtype=torch.float32).unsqueeze(0).to(device)
     ctx     = model.merge_encoder(mf)                          # (1, d_model)
     cf_proj = model.chunk_proj(cf_raw)                         # (1, T, proj_dim)
     pe      = model.pe[:T].unsqueeze(0)                        # (1, T, d_model)
 
-    def _run_batch(batch_size: int, temp: float) -> list[list[int]]:
+    def _run_batch(batch_size: int, temp: float,
+                   greedy: bool = False,
+                   exclude_per_chunk: list[int] | None = None) -> list[list[int]]:
         seqs: list[list[int]] = [[] for _ in range(batch_size)]
         ctx_b = ctx.expand(batch_size, -1).unsqueeze(1)        # (B, 1, d_model)
 
@@ -529,21 +552,40 @@ def generate_sequences(model, merge_feat_np, chunk_feats_np,
             sz     = seq_in.shape[1]
             causal = torch.triu(torch.ones(sz, sz, device=device, dtype=torch.bool), diagonal=1)
             out    = model.transformer(seq_in, mask=causal)
-            logits = model.out_head(out[:, -1, :])
+            logits = model.out_head(out[:, -1, :]).clone()
 
-            if temp != 1.0:
-                logits = logits / temp
-            probs = torch.softmax(logits, dim=-1).cpu().numpy()
-            for i in range(batch_size):
-                seqs[i].append(rng.choices(range(N_LABELS), weights=probs[i].tolist(), k=1)[0])
+            if exclude_per_chunk is not None:
+                logits[:, exclude_per_chunk[t]] = float('-inf')
+
+            if greedy:
+                for i in range(batch_size):
+                    seqs[i].append(int(logits[i].argmax().item()))
+            else:
+                if temp != 1.0:
+                    logits = logits / temp
+                probs = torch.softmax(logits, dim=-1).cpu().numpy()
+                for i in range(batch_size):
+                    seqs[i].append(rng.choices(range(N_LABELS), weights=probs[i].tolist(), k=1)[0])
 
         return seqs
 
-    # Phase 1: generate n_variants model samples with dedup + adaptive temperature
+    # Phase 0: two greedy passes as variants #1 and #2.
+    # Pass 1: unconstrained argmax (usually OURS×N).
+    # Pass 2: argmax with each chunk's pass-1 label excluded (usually THEIRS×N).
     seen: set[str] = set()
     unique_seqs: list[list[str]] = []
+    pass1 = _run_batch(1, temperature, greedy=True)[0]
+    for exclude in (None, pass1):
+        int_seq = _run_batch(1, temperature, greedy=True, exclude_per_chunk=exclude)[0]
+        s = [I2L[idx] for idx in int_seq]
+        k = "|".join(s)
+        if k not in seen:
+            seen.add(k)
+            unique_seqs.append(s)
+
+    # Phase 1: stochastic sampling with dedup + adaptive temperature
     cur_temp = temperature
-    remaining = n_variants
+    remaining = n_variants - len(unique_seqs)
     while remaining > 0:
         bs = min(remaining, _INF_BATCH)
         new_count = 0
@@ -604,7 +646,7 @@ def load_model_checkpoint(path: str, device: torch.device, max_seq: int = 210):
 # ---------------------------------------------------------------------------
 def load_data(csv_path: str, max_rows: int = 0):
     """
-    Load Java_chunks_bruteforce.csv.
+    Load Java_chunks.csv.
     max_rows: if > 0, stop after this many CSV rows (for quick tests).
     Returns rows_by_merge, merge_ids_in_order, merge_time_median.
     """
@@ -686,7 +728,7 @@ def main():
     args      = parse_args()
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir   = args.data_dir or script_dir
-    csv_path   = os.path.join(data_dir, "Java_chunks_bruteforce.csv")
+    csv_path   = os.path.join(data_dir, "Java_chunks.csv")
 
     folds_to_run = [int(x) for x in args.folds.split(",")]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -768,7 +810,7 @@ def main():
                 mf, cf, _, _ = features_by_mid[mid]
                 seqs = generate_sequences(
                     model, mf, cf, m_mean, m_std, c_mean, c_std,
-                    n_variants=args.variants, max_seq=args.max_seq,
+                    n_variants=args.variants,
                     temperature=args.temp, device=device, rng=inf_rng,
                 )
                 for seq_strs in seqs:

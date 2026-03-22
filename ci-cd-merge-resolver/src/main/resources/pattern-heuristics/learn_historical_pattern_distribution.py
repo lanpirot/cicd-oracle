@@ -217,7 +217,7 @@ def run_learning_pipeline(all_files_data, output_path):
     """Run the full learning pipeline on input data and write results to output_path.
 
     Args:
-        all_files_data: List of CSV rows including header row (same format as Java_chunks_original.csv).
+        all_files_data: List of CSV rows including header row (same format as Java_chunks.csv).
         output_path: Output file path for the learnt distribution CSV.
     """
     # Step 3: Merge chunks by merge_id
@@ -728,7 +728,7 @@ def run_learning_pipeline(all_files_data, output_path):
 
 def main():
     # Step 1: Read the original CSV file
-    with open('Java_chunks_original.csv', 'r') as infile:
+    with open('Java_chunks.csv', 'r') as infile:
         reader = csv.reader(infile)
         original_data = list(reader)
     print("Step 1: Read original CSV file.")

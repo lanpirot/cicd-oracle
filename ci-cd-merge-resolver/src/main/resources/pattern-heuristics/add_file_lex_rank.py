@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Add a file_lex_rank column to Java_chunks_original.csv.
+Add a file_lex_rank column to Java_chunks.csv.
 
 file_lex_rank: 1-based lexicographic rank of file_path among all unique
 file paths within the same merge_id.  Combined with chunk_id this gives
@@ -10,7 +10,7 @@ needs to generate patterns in a consistent order.
 Usage:
     python3 add_file_lex_rank.py [input.csv] [output.csv]
 
-Defaults to Java_chunks_original.csv in the script directory, writing
+Defaults to Java_chunks.csv in the script directory, writing
 back to the same file (in-place via a temp file).
 """
 
@@ -24,7 +24,7 @@ csv.field_size_limit(1_000_000)
 
 def main():
     script_dir  = os.path.dirname(os.path.abspath(__file__))
-    input_path  = sys.argv[1] if len(sys.argv) > 1 else os.path.join(script_dir, 'Java_chunks_original.csv')
+    input_path  = sys.argv[1] if len(sys.argv) > 1 else os.path.join(script_dir, 'Java_chunks.csv')
     output_path = sys.argv[2] if len(sys.argv) > 2 else input_path
 
     print(f'Reading {input_path} ...')

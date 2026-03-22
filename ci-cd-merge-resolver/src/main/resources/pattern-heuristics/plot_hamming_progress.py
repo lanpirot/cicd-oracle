@@ -49,9 +49,9 @@ CV_MODES = {
 }
 
 COLORS  = {
-    r'\textsc{Uniform}':   '#1f77b4',
-    r'\textsc{Heuristic}': '#d62728',
-    r'\textsc{ML-AR}':     '#2ca02c',
+    r'\textsc{Uniform}':   '#a6cee3',   # ColorBrewer Paired light blue
+    r'\textsc{Heuristic}': '#33a02c',   # ColorBrewer Paired dark green
+    r'\textsc{ML-AR}':     '#1f78b4',   # ColorBrewer Paired dark blue
 }
 # IQR band hatch patterns: /, \, - for the three methods
 HATCHES = {
@@ -73,7 +73,10 @@ def load_trajectory(path):
             if mode not in CV_MODES:
                 continue
             key = (row['fold'], row['merge_id'])
-            traj[(key, mode)].append((int(row['attempt']), int(row['distance'])))
+            try:
+                traj[(key, mode)].append((int(row['attempt']), int(row['distance'])))
+            except (ValueError, TypeError):
+                continue
     for k in traj:
         traj[k].sort()
     return traj
@@ -90,11 +93,14 @@ def load_final_state(results_path):
             if mode not in CV_MODES:
                 continue
             key = (row['fold'], row['merge_id'])
-            final[(key, mode)] = (
-                int(row['num_chunks']),
-                int(row['min_distance']),
-                int(row['variants_generated']),
-            )
+            try:
+                final[(key, mode)] = (
+                    int(row['num_chunks']),
+                    int(row['min_distance']),
+                    int(row['variants_generated']),
+                )
+            except (ValueError, TypeError):
+                continue
     return final
 
 
@@ -169,26 +175,23 @@ def add_zoom_inset(ax, curves, x_values, use_mean):
     hi_lim = max(limit_vals)
     gap    = hi_lim - lo_lim
     margin = 1.0 if gap > 0.5 else 0.25
-    y_lo   = max(0.0, lo_lim - margin)
-    y_hi   = hi_lim + margin
+    y_lo   = max(0.0, lo_lim - margin) + 0.2
+    y_hi   = hi_lim + margin + 0.4
 
-    log_min = np.log10(x_values[0])
-    log_max = np.log10(x_values[-1])
-    x_inset_start = 10 ** (log_min + 0.45 * (log_max - log_min))
+    x_inset_start = 1.6
 
-    axins = ax.inset_axes([0.28, 0.44, 0.68, 0.55])
+    axins = ax.inset_axes([0.35, 0.45, 0.65, 0.55])
 
     for label, mat in curves.items():
         color  = COLORS[label]
-        hatch  = HATCHES[label]
-        center, band_lo, band_hi = compute_center_and_bands(mat, use_mean)
+        center, _, _ = compute_center_and_bands(mat, use_mean)
         axins.plot(x_values, center, color=color, linewidth=1.4)
-        _fill_hatched(axins, x_values, band_lo, band_hi, color, hatch)
 
     axins.set_xscale('log')
     axins.set_xlim(x_inset_start, x_values[-1])
     axins.set_ylim(y_lo, y_hi)
     axins.tick_params(labelsize=6)
+    axins.set_xticklabels([])
     axins.grid(True, linestyle='--', linewidth=0.4, alpha=0.5)
 
     ax.indicate_inset_zoom(axins, edgecolor='0.4', linewidth=0.8)
@@ -200,7 +203,6 @@ def plot_panel(ax, curves, x_values, use_mean):
         hatch  = HATCHES[label]
         center, lo, hi = compute_center_and_bands(mat, use_mean)
         ax.plot(x_values, center, label=label, color=color, linewidth=1.8)
-        _fill_hatched(ax, x_values, lo, hi, color, hatch)
 
     ylabel = 'Expected best Hamming distance' if use_mean else 'Median best Hamming distance'
     ax.set_xlabel('Number of attempts')

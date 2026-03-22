@@ -10,7 +10,7 @@ Usage:
     cd src/main/resources/pattern-heuristics/
     python3 learn_cv_folds.py
 
-Input:  Java_chunks_original.csv  (same directory)
+Input:  Java_chunks.csv  (same directory)
 Output: learnt_historical_pattern_distribution_train{k}.csv  (10 files)
         evaluation_fold{k}.csv                                (10 files)
 """
@@ -39,7 +39,7 @@ def normalize_pattern(pattern):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    input_file = os.path.join(script_dir, 'Java_chunks_original.csv')
+    input_file = os.path.join(script_dir, 'Java_chunks.csv')
 
     # Step 1: Load input data
     with open(input_file, 'r') as f:

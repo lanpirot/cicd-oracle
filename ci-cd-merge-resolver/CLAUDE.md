@@ -98,3 +98,14 @@ Test directories (defined in `AppConfig`): `TEST_TMP_DIR`, `TEST_EXPERIMENTS_TEM
   bruteforce_repos/      # Cloned repositories
   bruteforce_tmp/        # Working scratch space
 ```
+
+## Plot Color Scheme (ColorBrewer Paired)
+
+Use these colors consistently across all RQ plots:
+
+| Role       | Hex       | Description              |
+|------------|-----------|--------------------------|
+| Uniform    | `#a6cee3` | light blue               |
+| Heuristic  | `#33a02c` | dark green               |
+| ML-AR      | `#1f78b4` | dark blue                |
+| (backup)   | `#b2df8a` | light green (other plots)|

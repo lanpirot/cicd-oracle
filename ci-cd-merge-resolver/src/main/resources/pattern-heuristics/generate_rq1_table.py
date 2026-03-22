@@ -154,6 +154,90 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted):
     return '\n'.join(lines)
 
 
+def compute_oneshot_accuracy(traj_path, modes):
+    """
+    One-shot chunk accuracy from cv_trajectory.csv.
+    For each (fold, merge_id, mode): attempt=0 holds num_chunks (initial distance).
+    attempt=1 is recorded only when the first variant improved. If absent, distance=num_chunks.
+    Returns dict: mode -> {'pooled', 'mean', 'median'} as percentages.
+    """
+    initial = {}  # (fold, merge_id, mode) -> num_chunks
+    at_one  = {}  # (fold, merge_id, mode) -> distance at attempt 1
+
+    with open(traj_path, newline='') as f:
+        for row in csv.DictReader(f):
+            try:
+                attempt  = int(row['attempt'])
+                distance = int(row['distance'])
+            except (ValueError, TypeError):
+                continue
+            mode = row['mode']
+            if mode not in modes:
+                continue
+            key = (row['fold'], row['merge_id'], mode)
+            if attempt == 0:
+                initial[key] = distance
+            elif attempt == 1:
+                at_one[key] = distance
+
+    mode_correct = defaultdict(list)
+    mode_total   = defaultdict(list)
+    for key, n in initial.items():
+        _, _, mode = key
+        if n == 0:
+            continue
+        dist1   = at_one.get(key, n)
+        mode_correct[mode].append(n - dist1)
+        mode_total[mode].append(n)
+
+    result = {}
+    for mode in modes:
+        correct = mode_correct[mode]
+        total   = mode_total[mode]
+        if not total:
+            result[mode] = dict(pooled=float('nan'), mean=float('nan'), median=float('nan'))
+            continue
+        pooled     = 100.0 * sum(correct) / sum(total)
+        per_merge  = sorted(c / t for c, t in zip(correct, total))
+        mean_acc   = 100.0 * sum(per_merge) / len(per_merge)
+        mid        = len(per_merge) // 2
+        median_acc = 100.0 * (per_merge[mid] if len(per_merge) % 2
+                               else (per_merge[mid - 1] + per_merge[mid]) / 2)
+        result[mode] = dict(pooled=pooled, mean=mean_acc, median=median_acc)
+    return result
+
+
+def build_oneshot_tex(oneshot, variant_cap):
+    lines = [
+        r'\begin{table}[ht]',
+        r'\centering',
+        (rf'\caption{{RQ1 one-shot chunk accuracy (first variant only, '
+         rf'cap\,=\,{variant_cap})}}'),
+        r'\label{tab:rq1-oneshot}',
+        r'\begin{tabular}{l|' + 'r' * len(MODES) + '}',
+        r'\hline',
+    ]
+    hdr = r'\textbf{metric}'
+    for name in DISPLAY_NAMES:
+        hdr += rf' & \textbf{{{name}}}'
+    lines.append(hdr + r' \\')
+    lines.append(r'\hline')
+
+    for metric_key, label in [('pooled', 'pooled'), ('mean', 'mean'), ('median', 'median')]:
+        vals = [oneshot[m][metric_key] for m in MODES]
+        best = [fmt(v, 1) for v in vals]
+        valid = [s for s in best if s != '--']
+        mx   = max(valid, key=float) if valid else None
+        row  = rf'\textbf{{{label}}}'
+        for v, s in zip(vals, best):
+            cell = bold(s) if s == mx else s
+            row += f' & {cell}'
+        lines.append(row + r' \\')
+
+    lines += [r'\hline', r'\end{tabular}', r'\end{table}']
+    return '\n'.join(lines)
+
+
 def main():
     csv_path    = sys.argv[1]
     variant_cap = sys.argv[2] if len(sys.argv) > 2 else '?'
@@ -171,9 +255,10 @@ def main():
     merge_data = defaultdict(dict)
 
     for r in rows:
-        if not r.get('num_chunks'):  # skip partial/truncated rows (file written mid-run)
+        try:
+            n = int(r['num_chunks'])  # skip corrupt/truncated rows
+        except (ValueError, TypeError):
             continue
-        n   = int(r['num_chunks'])
         b   = bucket_of(n)
         m   = r['mode']
         hit = 1 if r['min_distance'] == '0' else 0
@@ -242,6 +327,21 @@ def main():
     for sw, fname in [(False, 'RQ1-tab.tex'), (True, 'RQ1-tab-sz.tex')]:
         tex = build_tex(bucket_stats, agg, variant_cap, sw)
         out = os.path.join(out_dir, fname)
+        with open(out, 'w') as f:
+            f.write(tex + '\n')
+        print(f'Written: {out}')
+
+    # ── one-shot chunk accuracy ──────────────────────────────────────────────
+    traj_path = os.path.join(out_dir, 'cv_trajectory.csv')
+    if os.path.exists(traj_path):
+        oneshot = compute_oneshot_accuracy(traj_path, MODES)
+        print('\nOne-shot chunk accuracy (first variant only):')
+        print(f"  {'mode':<20} {'pooled':>8} {'mean':>8} {'median':>8}")
+        for m, name in zip(MODES, DISPLAY_NAMES):
+            o = oneshot[m]
+            print(f"  {name:<20} {fmt(o['pooled'],1):>8} {fmt(o['mean'],1):>8} {fmt(o['median'],1):>8}")
+        tex = build_oneshot_tex(oneshot, variant_cap)
+        out = os.path.join(out_dir, 'RQ1-oneshot.tex')
         with open(out, 'w') as f:
             f.write(tex + '\n')
         print(f'Written: {out}')

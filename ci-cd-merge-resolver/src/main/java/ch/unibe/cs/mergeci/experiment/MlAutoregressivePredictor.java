@@ -94,9 +94,11 @@ public class MlAutoregressivePredictor {
             int exit = pb.start().waitFor();
             if (exit != 0) {
                 System.err.println("ML inference exited with code " + exit + " for fold " + fold);
+                try { Files.deleteIfExists(predFile); } catch (Exception ignored) {}
             }
         } catch (Exception e) {
             System.err.println("Failed to run ML inference for fold " + fold + ": " + e.getMessage());
+            try { Files.deleteIfExists(predFile); } catch (Exception ignored) {}
         }
     }
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Check each project's GitHub repo for a root-level pom.xml (no cloning).
-Adds an `is_maven` column (True/False) to Java_chunks_bruteforce.csv.
+Adds an `is_maven` column (True/False) to Java_chunks.csv.
 
 Usage:
     python3 add_maven_column.py [--token YOUR_GITHUB_TOKEN]
@@ -22,7 +22,7 @@ import urllib.error
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
-BRUTEFORCE_CSV = SCRIPT_DIR / "Java_chunks_bruteforce.csv"
+BRUTEFORCE_CSV = SCRIPT_DIR / "Java_chunks.csv"
 CACHE_FILE = SCRIPT_DIR / "maven_check_cache.json"
 
 PROBE_TIMEOUT = 10  # seconds per HTTP request
