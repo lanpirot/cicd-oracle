@@ -1,3 +1,0 @@
-# Exclude all generated artefacts in the backup folder
-*
-!.gitignore
