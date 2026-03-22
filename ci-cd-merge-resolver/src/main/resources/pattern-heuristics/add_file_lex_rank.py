@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Add file_lex_rank and chunkRankInFile columns to Java_chunks.csv.
+Add file_lex_rank and chunkRankInFile columns to all_conflicts.csv.
 
 file_lex_rank:    1-based lexicographic rank of file_path among all unique
                   file paths within the same merge_id.
@@ -11,7 +11,7 @@ chunkRankInFile:  1-based rank of the chunk within its (merge_id, file_path)
 Usage:
     python3 add_file_lex_rank.py [input.csv] [output.csv]
 
-Defaults to Java_chunks.csv in the script directory, writing
+Defaults to all_conflicts.csv in ~/data/bruteforcemerge/rq1/, writing
 back to the same file (in-place via a temp file).
 """
 
@@ -25,7 +25,8 @@ csv.field_size_limit(1_000_000)
 
 def main():
     script_dir  = os.path.dirname(os.path.abspath(__file__))
-    input_path  = sys.argv[1] if len(sys.argv) > 1 else os.path.join(script_dir, 'Java_chunks.csv')
+    rq1_dir     = os.path.join(os.path.expanduser('~'), 'data', 'bruteforcemerge', 'rq1')
+    input_path  = sys.argv[1] if len(sys.argv) > 1 else os.path.join(rq1_dir, 'all_conflicts.csv')
     output_path = sys.argv[2] if len(sys.argv) > 2 else input_path
 
     print(f'Reading {input_path} ...')
@@ -44,7 +45,7 @@ def main():
             header.remove(col)
 
     merge_id_col  = header.index('merge_id')
-    file_path_col = header.index('file_path')
+    file_path_col = header.index('filename') if 'filename' in header else header.index('file_path')
     chunk_id_col  = header.index('chunk_id')
 
     # Pass 1: collect sorted unique file paths per merge (for file_lex_rank)

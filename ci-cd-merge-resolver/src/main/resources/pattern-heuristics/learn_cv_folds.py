@@ -11,7 +11,7 @@ Usage:
     python3 learn_cv_folds.py --data-dir ~/data/bruteforcemerge/rq1 \
                                --output-dir ~/data/bruteforcemerge/rq1/cv_folds
 
-Input:  Java_chunks.csv  (from --data-dir, defaults to script directory)
+Input:  all_conflicts.csv  (from --data-dir, defaults to script directory)
 Output: learnt_historical_pattern_distribution_train{k}.csv  (10 files)
         evaluation_fold{k}.csv                                (10 files)
         Written to --output-dir (defaults to --data-dir)
@@ -45,7 +45,7 @@ def main():
 
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--data-dir",   default=script_dir,
-                   help="Directory containing Java_chunks.csv (default: script dir)")
+                   help="Directory containing all_conflicts.csv (default: script dir)")
     p.add_argument("--output-dir", default=None,
                    help="Directory for output CSVs (default: --data-dir)")
     args = p.parse_args()
@@ -54,7 +54,7 @@ def main():
     output_dir = args.output_dir or data_dir
     os.makedirs(output_dir, exist_ok=True)
 
-    input_file = os.path.join(data_dir, 'Java_chunks.csv')
+    input_file = os.path.join(data_dir, 'all_conflicts.csv')
 
     # Step 1: Load input data
     with open(input_file, 'r') as f:
@@ -63,13 +63,17 @@ def main():
     print(f"Loaded {len(original_data)} rows from {input_file}")
 
     header = original_data[0]
+    col_merge_id   = header.index('merge_id')
+    col_file_path  = header.index('filename') if 'filename' in header else header.index('file_path')
+    col_chunk_id   = header.index('chunk_id')
+    col_resolution = header.index('y_conflictResolutionResult')
 
-    # Step 2: Collect unique merge_ids (col index 3) in encounter order
+    # Step 2: Collect unique merge_ids in encounter order
     merge_ids = []
     seen = set()
     for row in original_data[1:]:  # skip header
-        if len(row) > 3:
-            mid = row[3]
+        if len(row) > col_merge_id:
+            mid = row[col_merge_id]
             if mid not in seen:
                 seen.add(mid)
                 merge_ids.append(mid)
@@ -99,7 +103,7 @@ def main():
         print(f"\n=== Fold {k}: {len(train_ids)} train, {len(eval_ids)} eval merge_ids ===")
 
         # --- Training CSV ---
-        train_rows = [row for row in original_data[1:] if len(row) > 3 and row[3] in train_ids]
+        train_rows = [row for row in original_data[1:] if len(row) > col_merge_id and row[col_merge_id] in train_ids]
         all_files_data_train = [header] + train_rows
 
         train_output = os.path.join(output_dir, f'learnt_historical_pattern_distribution_train{k}.csv')
@@ -111,8 +115,8 @@ def main():
         # Group rows by merge_id, preserving all columns
         merge_rows = {}
         for row in original_data[1:]:
-            if len(row) > 8:
-                mid = row[3]
+            if len(row) > col_resolution:
+                mid = row[col_merge_id]
                 if mid in eval_ids:
                     if mid not in merge_rows:
                         merge_rows[mid] = []
@@ -125,9 +129,8 @@ def main():
             # Sort merge_ids numerically for deterministic output
             for mid in sorted(merge_rows.keys(), key=lambda x: int(x)):
                 rows = merge_rows[mid]
-                # Sort by (file_path, chunk_id) — col 6 and col 7
-                rows_sorted = sorted(rows, key=lambda r: (r[6], int(r[7])))
-                patterns = [normalize_pattern(r[8]) for r in rows_sorted]
+                rows_sorted = sorted(rows, key=lambda r: (r[col_file_path], int(r[col_chunk_id])))
+                patterns = [normalize_pattern(r[col_resolution]) for r in rows_sorted]
                 num_chunks = len(patterns)
                 # Use | as intra-field separator to avoid CSV quoting ambiguity
                 total_pattern = '|'.join(patterns)

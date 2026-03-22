@@ -15,10 +15,13 @@ def merge_chunks_by_merge_id(input_data):
     strategies = {}
 
     header = input_data[0]
+    strategy_col = (header.index('y_conflictResolutionResult')
+                    if 'y_conflictResolutionResult' in header else 8)
+    merge_id_col = header.index('merge_id') if 'merge_id' in header else 3
     for row in input_data[1:]:
-        if len(row) > 8:
-            merge_id = row[3]
-            strategy = row[8]
+        if len(row) > strategy_col:
+            merge_id = row[merge_id_col]
+            strategy = row[strategy_col]
             if merge_id not in counts:
                 counts[merge_id] = 0
                 strategies[merge_id] = []
@@ -127,9 +130,11 @@ def compute_relative_numbers(input_data, java_chunks_data):
     """Compute relative numbers for substrategies."""
     # Step 1: Add the global overview row (row "0")
     global_overview = {}
+    _hdr = java_chunks_data[0]
+    _strategy_col = _hdr.index('y_conflictResolutionResult') if 'y_conflictResolutionResult' in _hdr else 8
     for row in java_chunks_data[1:]:  # Skip the header row
-        if len(row) > 8:
-            strategy = row[8].replace('CHUNK_', '').replace('CANONICAL_', '').replace('SEMICANONICAL_', '').replace('NONCANONICAL', 'NON').replace('SEMI', '')
+        if len(row) > _strategy_col:
+            strategy = row[_strategy_col].replace('CHUNK_', '').replace('CANONICAL_', '').replace('SEMICANONICAL_', '').replace('NONCANONICAL', 'NON').replace('SEMI', '')
             if strategy in global_overview:
                 global_overview[strategy] += 1
             else:
@@ -217,7 +222,7 @@ def run_learning_pipeline(all_files_data, output_path):
     """Run the full learning pipeline on input data and write results to output_path.
 
     Args:
-        all_files_data: List of CSV rows including header row (same format as Java_chunks.csv).
+        all_files_data: List of CSV rows including header row (same format as all_conflicts.csv).
         output_path: Output file path for the learnt distribution CSV.
     """
     # Step 3: Merge chunks by merge_id
@@ -244,9 +249,12 @@ def run_learning_pipeline(all_files_data, output_path):
     # Step 10: Add global overview and write the final output
     # Compute global overview from all_files_data (absolute counts only)
     global_overview = {}
+    hdr = all_files_data[0]
+    g_strategy_col = (hdr.index('y_conflictResolutionResult')
+                      if 'y_conflictResolutionResult' in hdr else 8)
     for row in all_files_data[1:]:  # Skip header
-        if len(row) > 8:
-            strategy = row[8].replace('CHUNK_', '').replace('CANONICAL_', '').replace('SEMICANONICAL_', '').replace('NONCANONICAL', 'NON').replace('SEMI', '')
+        if len(row) > g_strategy_col:
+            strategy = row[g_strategy_col].replace('CHUNK_', '').replace('CANONICAL_', '').replace('SEMICANONICAL_', '').replace('NONCANONICAL', 'NON').replace('SEMI', '')
             if strategy in global_overview:
                 global_overview[strategy] += 1
             else:
@@ -727,8 +735,17 @@ def run_learning_pipeline(all_files_data, output_path):
 
 
 def main():
+    import argparse
+    from pathlib import Path
+    p = argparse.ArgumentParser()
+    p.add_argument('--data-dir',
+                   default=str(Path.home() / 'data/bruteforcemerge/rq1'),
+                   help='Directory containing all_conflicts.csv')
+    args = p.parse_args()
+    csv_path = os.path.join(args.data_dir, 'all_conflicts.csv')
+
     # Step 1: Read the original CSV file
-    with open('Java_chunks.csv', 'r') as infile:
+    with open(csv_path, 'r') as infile:
         reader = csv.reader(infile)
         original_data = list(reader)
     print("Step 1: Read original CSV file.")

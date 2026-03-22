@@ -90,41 +90,60 @@ def normalize_label(raw: str) -> str:
 # ---------------------------------------------------------------------------
 # Features that are heavily right-skewed → apply log1p before standardisation
 LOG1P_MERGE = {
-    "locTentativeFile", "authorsCountOURS", "authorsCountTHEIRS",
-    "commitCountOURS", "commitCountTHEIRS",
-    "changedFilesOURS", "changedFilesTHEIRS", "concurrentlyChangedFiles",
+    "mergeAuthorContribution",
+    "mergeRangeOursAuthorsCount", "mergeRangeTheirsAuthorsCount",
+    "mergeRangeCommitCountOurs", "mergeRangeCommitCountTheirs",
+    "changedFilesOURS", "changedFilesTHEIRS", "filesConflictingMerged",
     "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
     "num_chunks_in_merge",
 }
 LOG1P_CHUNK = {
-    "chunkAbsSize", "chunkAbsSizeOURS", "chunkAbsSizeTHEIRS",
+    "lengthChunk", "lengthOURS", "lengthTHEIRS",
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
+    "lineCountUnmergedFile",
     "num_chunks_in_file", "chunkRankInFile",
 }
 
 MERGE_COLS = [
-    "authorContribution", "commonDevelopers", "differentDevelopers",
-    "multipleAuthors", "developersIntersection_code",
-    "keywords_fix", "keywords_bug", "keywords_feature", "keywords_improve",
-    "keywords_document", "keywords_refactor", "keywords_update", "keywords_add",
-    "keywords_remove", "keywords_use", "keywords_delete", "keywords_change",
-    "locTentativeFile", "authorsCountOURS", "authorsCountTHEIRS",
-    "commitCountOURS", "commitCountTHEIRS",
-    "changedFilesOURS", "changedFilesTHEIRS", "concurrentlyChangedFiles",
+    # Author / contributor features (SQL-native names)
+    "mergeAuthorContribution",
+    "authorsBothBranchesMergeRange",       # commonDevelopers
+    "authorsOnlyOneBranchMergeRange",      # differentDevelopers
+    "authorsMultipleContributorsMergeRange",  # multipleAuthors
+    # Keywords (12 stems from mergeRangekeywordFrequency JSON)
+    "keyword_fix", "keyword_bug", "keyword_feature", "keyword_improv",
+    "keyword_document", "keyword_refactor", "keyword_updat", "keyword_add",
+    "keyword_remov", "keyword_us", "keyword_delet", "keyword_chang",
+    # Commit / author counts
+    "mergeRangeOursAuthorsCount",          # authorsCountOURS
+    "mergeRangeTheirsAuthorsCount",        # authorsCountTHEIRS
+    "mergeRangeCommitCountOurs",           # commitCountOURS
+    "mergeRangeCommitCountTheirs",         # commitCountTHEIRS
+    # File change counts
+    "changedFilesOURS", "changedFilesTHEIRS",
+    "filesConflictingMerged",              # concurrentlyChangedFiles
+    # LOC changes
     "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
-    "contributionDurationDays", "conclusionDelayDays", "mergeDurationDays",
+    # Duration / delay
+    "branchDivergenceDays",                # abs(oursCommitTime - theirsCommitTime)
+    "conclusionDelay",                     # conclusionDelayDays
+    "mergeRangeDurationDays",              # commitTime - mergeRangeOldestCommitTime
     "is_maven",              # 0/1 feature (not a filter)
-    "merge_time_days",       # engineered
-    "devInt_ALL",            # one-hot from developersIntersection
+    "merge_time_days",       # engineered from commitTime
+    "devInt_ALL",            # one-hot from authorsIntersectionMergeRange
     "num_chunks_in_merge",   # computed: total conflict chunks in this merge
 ]
 CHUNK_COLS = [
-    "selfConflict",
+    "selfConflict",                # 1 if authorsIntersectionMergeRange == 'ALL'
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
     "chunkPositionQuarter",
-    "chunkAbsSize", "chunkRelSize",
-    "chunkAbsSizeOURS", "chunkAbsSizeTHEIRS",
-    "chunkRelSizeOURS", "chunkRelSizeTHEIRS",
+    "lengthChunk",                 # = lengthOURS + lengthBASE + lengthTHEIRS (chunkAbsSize)
+    "lengthRelativeOURSTHEIRS",    # chunkRelSize
+    "lengthOURS",                  # chunkAbsSizeOURS
+    "lengthTHEIRS",                # chunkAbsSizeTHEIRS
+    "lengthRelativeOURS",          # chunkRelSizeOURS
+    "lengthRelativeTHEIRS",        # chunkRelSizeTHEIRS
+    "lineCountUnmergedFile",       # locTentativeFile (per-file, more correct here)
     "file_lex_rank",
     "num_chunks_in_file",    # computed: conflict chunks sharing this file
     "chunkRankInFile",       # 1-based rank of chunk within its file (by chunk_id)
@@ -158,15 +177,15 @@ def extract_features(rows: list[dict], merge_time_median: float):
       target_labels:list[int]  — L2I or PAD_IDX (NON masked from loss)
     """
     r0 = rows[0]
-    mt = parse_merge_time(r0.get("merge_time", ""), merge_time_median)
-    dev_int_all = 1.0 if r0.get("developersIntersection", "") == "ALL" else 0.0
+    mt = parse_merge_time(r0.get("commitTime", ""), merge_time_median)
+    dev_int_all = 1.0 if r0.get("authorsIntersectionMergeRange", "") == "ALL" else 0.0
     is_maven    = 1.0 if r0.get("is_maven", "False") == "True" else 0.0
 
     # Computed features (not present as CSV columns)
     n_chunks_merge = float(len(rows))
     file_chunk_counts: dict[str, int] = {}
     for row in rows:
-        fp = row.get("file_path", "")
+        fp = row.get("filename", "")
         file_chunk_counts[fp] = file_chunk_counts.get(fp, 0) + 1
 
     merge_vals = []
@@ -188,7 +207,7 @@ def extract_features(rows: list[dict], merge_time_median: float):
         cv = []
         for col in CHUNK_COLS:
             if col == "num_chunks_in_file":
-                v = float(file_chunk_counts.get(row.get("file_path", ""), 1))
+                v = float(file_chunk_counts.get(row.get("filename", ""), 1))
                 cv.append(_log1p_if(col, LOG1P_CHUNK, v))
             else:
                 v = _safe_float(row.get(col, 0))
@@ -647,7 +666,7 @@ def load_model_checkpoint(path: str, device: torch.device, max_seq: int = 210):
 # ---------------------------------------------------------------------------
 def load_data(csv_path: str, max_rows: int = 0):
     """
-    Load Java_chunks.csv.
+    Load all_conflicts.csv.
     max_rows: if > 0, stop after this many CSV rows (for quick tests).
     Returns rows_by_merge, merge_ids_in_order, merge_time_median.
     """
@@ -667,7 +686,7 @@ def load_data(csv_path: str, max_rows: int = 0):
                 merge_ids_in_order.append(mid)
             rows_by_merge[mid].append(row)
             try:
-                d = date.fromisoformat(row["merge_time"].strip().split(" ")[0])
+                d = date.fromisoformat(row["commitTime"].strip().split(" ")[0])
                 merge_times.append(float((d - EPOCH_ORIGIN).days))
             except Exception:
                 pass
@@ -675,7 +694,7 @@ def load_data(csv_path: str, max_rows: int = 0):
     merge_time_median = float(np.median(merge_times)) if merge_times else 0.0
 
     for mid in rows_by_merge:
-        rows_by_merge[mid].sort(key=lambda r: (r.get("file_path", ""),
+        rows_by_merge[mid].sort(key=lambda r: (r.get("filename", ""),
                                                 int(r.get("chunk_id", 0))))
     return rows_by_merge, merge_ids_in_order, merge_time_median
 
@@ -767,7 +786,7 @@ def main():
     args      = parse_args()
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir   = args.data_dir or script_dir
-    csv_path   = os.path.join(data_dir, "Java_chunks.csv")
+    csv_path   = os.path.join(data_dir, "all_conflicts.csv")
 
     cv_folds_dir    = args.cv_folds_dir    or os.path.join(data_dir, "cv_folds")
     checkpoints_dir = args.checkpoints_dir or os.path.join(data_dir, "checkpoints")
