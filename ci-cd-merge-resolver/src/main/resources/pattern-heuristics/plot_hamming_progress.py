@@ -237,7 +237,7 @@ def main():
         fig, ax = plt.subplots(figsize=(COL_WIDTH_IN, COL_WIDTH_IN * 0.85))
         plot_panel(ax, curves, x_values, use_mean=use_mean)
         fig.tight_layout()
-        out_path = os.path.join(script_dir, fname)
+        out_path = os.path.join(os.path.dirname(os.path.abspath(traj_path)), fname)
         fig.savefig(out_path, bbox_inches='tight', pad_inches=0)
         plt.close(fig)
         print(f'Written: {out_path}')

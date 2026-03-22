@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experiment;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
 import ch.unibe.cs.mergeci.model.patterns.PatternHeuristics;
 import ch.unibe.cs.mergeci.model.patterns.PatternStrategy;
@@ -49,15 +50,12 @@ public class PatternMatchEvaluator {
         }
         System.out.println("All 16 patterns validated.");
 
-        Path resourceDir = args.length > 0
-            ? Path.of(args[0])
-            : Path.of("src/main/resources/pattern-heuristics");
-
-        int variantCap = args.length > 1 ? Integer.parseInt(args[1]) : 1000;
+        int variantCap = args.length > 0 ? Integer.parseInt(args[0]) : 1000;
         System.out.println("Variant cap: " + variantCap);
 
-        Path outputCsv        = resourceDir.resolve("cv_results.csv");
-        Path trajectorycsv    = resourceDir.resolve("cv_trajectory.csv");
+        Files.createDirectories(AppConfig.RQ1_RESULTS_DIR);
+        Path outputCsv     = AppConfig.RQ1_RESULTS_DIR.resolve("cv_results.csv");
+        Path trajectorycsv = AppConfig.RQ1_RESULTS_DIR.resolve("cv_trajectory.csv");
 
         try (PrintWriter writer     = new PrintWriter(new FileWriter(outputCsv.toFile()));
              PrintWriter trajWriter = new PrintWriter(new FileWriter(trajectorycsv.toFile()))) {
@@ -65,9 +63,9 @@ public class PatternMatchEvaluator {
             trajWriter.println("fold,merge_id,num_chunks,mode,attempt,distance");
 
             for (int fold = 0; fold < 10; fold++) {
-                Path heuristicsFile = resourceDir.resolve(
+                Path heuristicsFile = AppConfig.RQ1_CV_FOLDS_DIR.resolve(
                     "learnt_historical_pattern_distribution_train" + fold + ".csv");
-                Path evalFile = resourceDir.resolve("evaluation_fold" + fold + ".csv");
+                Path evalFile = AppConfig.RQ1_CV_FOLDS_DIR.resolve("evaluation_fold" + fold + ".csv");
 
                 if (!Files.exists(heuristicsFile) || !Files.exists(evalFile)) {
                     System.err.println("Fold " + fold + " files not found, skipping.");
@@ -80,7 +78,7 @@ public class PatternMatchEvaluator {
                 System.out.println("  " + evalRows.size() + " eval merges.");
 
                 MlAutoregressivePredictor mlPredictor =
-                    MlAutoregressivePredictor.forFold(resourceDir, fold, variantCap);
+                    MlAutoregressivePredictor.forFold(AppConfig.RQ1_SCRIPTS_DIR, fold, variantCap);
                 if (mlPredictor.isAvailable()) {
                     System.out.println("  ML predictions available for " + mlPredictor.mergeCount() + " merges.");
                 }
@@ -99,8 +97,8 @@ public class PatternMatchEvaluator {
         }
         System.out.println("Written: " + outputCsv);
         System.out.println("Written: " + trajectorycsv);
-        generateLatexTables(resourceDir, outputCsv, variantCap);
-        generateHammingProgressPlot(resourceDir, trajectorycsv, outputCsv);
+        generateLatexTables(AppConfig.RQ1_SCRIPTS_DIR, outputCsv, variantCap);
+        generateHammingProgressPlot(AppConfig.RQ1_SCRIPTS_DIR, trajectorycsv, outputCsv);
     }
 
     static void generateHammingProgressPlot(Path resourceDir, Path trajPath, Path resultsPath) {

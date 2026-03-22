@@ -99,7 +99,7 @@ LOG1P_MERGE = {
 LOG1P_CHUNK = {
     "chunkAbsSize", "chunkAbsSizeOURS", "chunkAbsSizeTHEIRS",
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
-    "num_chunks_in_file",
+    "num_chunks_in_file", "chunkRankInFile",
 }
 
 MERGE_COLS = [
@@ -127,6 +127,7 @@ CHUNK_COLS = [
     "chunkRelSizeOURS", "chunkRelSizeTHEIRS",
     "file_lex_rank",
     "num_chunks_in_file",    # computed: conflict chunks sharing this file
+    "chunkRankInFile",       # 1-based rank of chunk within its file (by chunk_id)
 ]
 MERGE_DIM = len(MERGE_COLS)
 CHUNK_DIM = len(CHUNK_COLS)
@@ -716,7 +717,13 @@ def parse_args():
     p.add_argument("--max-seq",   type=int,   default=200)
     p.add_argument("--temp",      type=float, default=1.0)
     p.add_argument("--folds",     type=str,   default="0,1,2,3,4,5,6,7,8,9")
-    p.add_argument("--data-dir",  type=str,   default=None)
+    p.add_argument("--data-dir",        type=str, default=None)
+    p.add_argument("--cv-folds-dir",    type=str, default=None,
+                   help="Dir with evaluation_fold*.csv and learnt_*_train*.csv (default: data-dir/cv_folds)")
+    p.add_argument("--checkpoints-dir", type=str, default=None,
+                   help="Dir to save/load .pt checkpoints (default: data-dir/checkpoints)")
+    p.add_argument("--predictions-dir", type=str, default=None,
+                   help="Dir to write autoregressive_predictions_fold*.csv (default: data-dir/predictions)")
     p.add_argument("--max-rows",  type=int,   default=0,
                    help="Load only first N CSV rows (0=all). For pipeline tests.")
     p.add_argument("--inference-only", action="store_true",
@@ -724,11 +731,51 @@ def parse_args():
     return p.parse_args()
 
 
+def _csv_header(csv_path: str) -> list[str]:
+    with open(csv_path, newline='') as f:
+        return next(csv.reader(f))
+
+
+def ensure_csv_columns(csv_path: str, script_dir: str) -> None:
+    """Run preprocessing scripts if their output columns are absent from the CSV."""
+    header = _csv_header(csv_path)
+
+    # --- file_lex_rank + chunkRankInFile ---
+    if 'file_lex_rank' not in header or 'chunkRankInFile' not in header:
+        print("Columns file_lex_rank / chunkRankInFile missing — running add_file_lex_rank.py …",
+              flush=True)
+        script = os.path.join(script_dir, "add_file_lex_rank.py")
+        ret = os.system(f'python3 "{script}" "{csv_path}"')
+        if ret != 0:
+            raise RuntimeError("add_file_lex_rank.py failed")
+
+    # --- is_maven ---
+    if 'is_maven' not in _csv_header(csv_path):
+        print("Column is_maven missing — running add_maven_column.py …", flush=True)
+        token = input("Enter your GitHub token (leave blank to proceed unauthenticated, "
+                      "rate-limited to 60 req/h): ").strip()
+        script = os.path.join(script_dir, "add_maven_column.py")
+        cmd = f'python3 "{script}" "{csv_path}"'
+        if token:
+            cmd += f' --token "{token}"'
+        ret = os.system(cmd)
+        if ret != 0:
+            raise RuntimeError("add_maven_column.py failed")
+
+
 def main():
     args      = parse_args()
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir   = args.data_dir or script_dir
     csv_path   = os.path.join(data_dir, "Java_chunks.csv")
+
+    cv_folds_dir    = args.cv_folds_dir    or os.path.join(data_dir, "cv_folds")
+    checkpoints_dir = args.checkpoints_dir or os.path.join(data_dir, "checkpoints")
+    predictions_dir = args.predictions_dir or os.path.join(data_dir, "predictions")
+    for d in (cv_folds_dir, checkpoints_dir, predictions_dir):
+        os.makedirs(d, exist_ok=True)
+
+    ensure_csv_columns(csv_path, script_dir)
 
     folds_to_run = [int(x) for x in args.folds.split(",")]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -740,7 +787,7 @@ def main():
     global_weights = None
     if not args.inference_only:
         try:
-            global_weights = load_global_weights(data_dir)
+            global_weights = load_global_weights(script_dir)
             print(f"Global weights loaded ({N_LABELS} labels, top: "
                   f"{ALL_16[int(global_weights.argmax())]}={global_weights.max():.3f})", flush=True)
         except Exception as e:
@@ -755,7 +802,7 @@ def main():
     folds      = make_folds(merge_ids_in_order)
     all_mid_set = set(merge_ids_in_order)
 
-    fold_assignment_path = os.path.join(data_dir, "autoregressive_fold_assignment.json")
+    fold_assignment_path = os.path.join(checkpoints_dir, "autoregressive_fold_assignment.json")
     if not os.path.exists(fold_assignment_path):
         save_fold_assignment(folds, fold_assignment_path)
 
@@ -781,7 +828,7 @@ def main():
             print(f"  Train: {len(train_merges):,} merges | Eval: {len(eval_ids):,} merges",
                   flush=True)
 
-        ckpt_path = os.path.join(data_dir, f"autoregressive_model_fold{fold_k}.pt")
+        ckpt_path = os.path.join(checkpoints_dir, f"autoregressive_model_fold{fold_k}.pt")
         if args.inference_only:
             print(f"  Loading checkpoint: {ckpt_path}", flush=True)
             model, m_mean, m_std, c_mean, c_std = load_model_checkpoint(
@@ -795,7 +842,7 @@ def main():
             save_model_checkpoint(model, m_mean, m_std, c_mean, c_std, args.d_model, ckpt_path)
             print(f"  Model saved: {ckpt_path}", flush=True)
 
-        out_path = os.path.join(data_dir, f"autoregressive_predictions_fold{fold_k}.csv")
+        out_path = os.path.join(predictions_dir, f"autoregressive_predictions_fold{fold_k}.csv")
         inf_rng  = random.Random(42 + fold_k)
         eval_mids_sorted = sorted(eval_ids, key=lambda x: int(x))
         print(f"  Generating predictions for {len(eval_mids_sorted):,} eval merges…",

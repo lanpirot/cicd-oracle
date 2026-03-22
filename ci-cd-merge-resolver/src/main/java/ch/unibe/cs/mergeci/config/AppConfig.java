@@ -177,6 +177,20 @@ public class AppConfig {
      */
     public static final int MAVEN_BUILD_TIMEOUT = 600;
 
+    // ========== RQ1: PATTERN HEURISTICS / ML-AR ==========
+    /** Root data directory for RQ1 artefacts (Java_chunks.csv, fold files, checkpoints …). */
+    public static final Path RQ1_DIR             = DATA_BASE_DIR.resolve("rq1");
+    /** Fold train/eval CSVs produced by learn_cv_folds.py. */
+    public static final Path RQ1_CV_FOLDS_DIR    = RQ1_DIR.resolve("cv_folds");
+    /** Trained ML-AR checkpoints (.pt) and fold assignment JSON. */
+    public static final Path RQ1_CHECKPOINTS_DIR = RQ1_DIR.resolve("checkpoints");
+    /** Per-fold ML-AR prediction CSVs (~200 MB each). */
+    public static final Path RQ1_PREDICTIONS_DIR = RQ1_DIR.resolve("predictions");
+    /** cv_results.csv, cv_trajectory.csv, LaTeX tables and PDFs. */
+    public static final Path RQ1_RESULTS_DIR     = RQ1_DIR.resolve("results");
+    /** Python scripts (stays under src/main/resources, not data). */
+    public static final Path RQ1_SCRIPTS_DIR     = Paths.get("src/main/resources/pattern-heuristics");
+
     // ========== PHASE 3: VARIANT EXPERIMENTS ==========
     public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");
 

@@ -67,6 +67,8 @@ For **broken-baseline merges** (`baselineBroken=true`), the stored baseline wall
 
 A merge has N conflict chunks. Each variant assigns one pattern per chunk. Atomic patterns: `OURS`, `THEIRS`, `BASE`, `EMPTY`. Compound patterns combine atomics with colon notation (e.g., `OURS:BASE`). `StrategySelector` + `PatternHeuristics` (loaded from `src/main/resources/pattern-heuristics/learnt_historical_pattern_distribution.csv`) pick the order in which assignments are tried. For large N, the search space is exponential; the time budget is the natural stopping condition.
 
+RQ1 large artefacts (`Java_chunks.csv`, fold CSVs, `.pt` checkpoints, prediction CSVs, results) live under `~/data/bruteforcemerge/rq1/` with subdirs `cv_folds/`, `checkpoints/`, `predictions/`, `results/`. Python scripts remain in `src/main/resources/pattern-heuristics/`. Paths are defined in `AppConfig.RQ1_*`.
+
 `MergeFilter` loads `training_mergeIDs.csv` from the classpath and exposes `isTrainingMerge()`. `DatasetCollectionOrchestrator` skips training merges during dataset collection to prevent data leakage (the heuristics model was trained on those merges).
 
 ### Key Configuration (`config/AppConfig.java`)

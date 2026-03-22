@@ -22,8 +22,6 @@ import urllib.error
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
-BRUTEFORCE_CSV = SCRIPT_DIR / "Java_chunks.csv"
-CACHE_FILE = SCRIPT_DIR / "maven_check_cache.json"
 
 PROBE_TIMEOUT = 10  # seconds per HTTP request
 RETRY_DELAY = 5     # seconds to wait after a rate-limit response
@@ -32,6 +30,8 @@ MAX_RETRIES = 3
 
 def parse_args():
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("csv", nargs="?", default=None,
+                   help="Path to Java_chunks.csv (default: Java_chunks.csv next to this script)")
     p.add_argument("--token", default=os.environ.get("GITHUB_TOKEN"),
                    help="GitHub personal access token (or set GITHUB_TOKEN env var)")
     return p.parse_args()
@@ -167,6 +167,8 @@ def write_output(bruteforce_csv: Path, cache: dict):
 
 def main():
     args = parse_args()
+    BRUTEFORCE_CSV = Path(args.csv) if args.csv else SCRIPT_DIR / "Java_chunks.csv"
+    CACHE_FILE = BRUTEFORCE_CSV.parent / "maven_check_cache.json"
     if not args.token:
         print("WARNING: No GitHub token provided. Rate limit is 60 req/h. "
               "Set --token or GITHUB_TOKEN for 5000 req/h.", file=sys.stderr)

@@ -7,14 +7,17 @@ For each fold k (0-9):
   - Writes evaluation ground-truth → evaluation_fold<k>.csv
 
 Usage:
-    cd src/main/resources/pattern-heuristics/
     python3 learn_cv_folds.py
+    python3 learn_cv_folds.py --data-dir ~/data/bruteforcemerge/rq1 \
+                               --output-dir ~/data/bruteforcemerge/rq1/cv_folds
 
-Input:  Java_chunks.csv  (same directory)
+Input:  Java_chunks.csv  (from --data-dir, defaults to script directory)
 Output: learnt_historical_pattern_distribution_train{k}.csv  (10 files)
         evaluation_fold{k}.csv                                (10 files)
+        Written to --output-dir (defaults to --data-dir)
 """
 
+import argparse
 import csv
 import os
 import random
@@ -39,7 +42,19 @@ def normalize_pattern(pattern):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    input_file = os.path.join(script_dir, 'Java_chunks.csv')
+
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--data-dir",   default=script_dir,
+                   help="Directory containing Java_chunks.csv (default: script dir)")
+    p.add_argument("--output-dir", default=None,
+                   help="Directory for output CSVs (default: --data-dir)")
+    args = p.parse_args()
+
+    data_dir   = args.data_dir
+    output_dir = args.output_dir or data_dir
+    os.makedirs(output_dir, exist_ok=True)
+
+    input_file = os.path.join(data_dir, 'Java_chunks.csv')
 
     # Step 1: Load input data
     with open(input_file, 'r') as f:
@@ -87,7 +102,7 @@ def main():
         train_rows = [row for row in original_data[1:] if len(row) > 3 and row[3] in train_ids]
         all_files_data_train = [header] + train_rows
 
-        train_output = os.path.join(script_dir, f'learnt_historical_pattern_distribution_train{k}.csv')
+        train_output = os.path.join(output_dir, f'learnt_historical_pattern_distribution_train{k}.csv')
         print(f"Running pipeline on {len(train_rows)} training rows...")
         run_learning_pipeline(all_files_data_train, train_output)
         print(f"Written: {train_output}")
@@ -103,7 +118,7 @@ def main():
                         merge_rows[mid] = []
                     merge_rows[mid].append(row)
 
-        eval_output = os.path.join(script_dir, f'evaluation_fold{k}.csv')
+        eval_output = os.path.join(output_dir, f'evaluation_fold{k}.csv')
         with open(eval_output, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(['merge_id', 'num_chunks', 'total_resolution_pattern'])

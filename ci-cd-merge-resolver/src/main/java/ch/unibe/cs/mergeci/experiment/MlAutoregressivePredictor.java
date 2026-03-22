@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.experiment;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,15 +29,16 @@ public class MlAutoregressivePredictor {
      * Build a predictor for {@code fold}, running Python inference if the prediction file is
      * absent.
      *
-     * @param resourceDir directory that contains the script, data files, and fold CSVs
-     * @param fold        fold index (0–9)
-     * @param variantCap  maximum number of variants to generate per merge
+     * @param scriptDir  directory that contains the Python scripts
+     * @param fold       fold index (0–9)
+     * @param variantCap maximum number of variants to generate per merge
      */
-    public static MlAutoregressivePredictor forFold(Path resourceDir, int fold, int variantCap)
+    public static MlAutoregressivePredictor forFold(Path scriptDir, int fold, int variantCap)
             throws IOException {
-        Path predFile = resourceDir.resolve("autoregressive_predictions_fold" + fold + ".csv");
+        Files.createDirectories(AppConfig.RQ1_PREDICTIONS_DIR);
+        Path predFile = AppConfig.RQ1_PREDICTIONS_DIR.resolve("autoregressive_predictions_fold" + fold + ".csv");
         if (!Files.exists(predFile)) {
-            runPythonInference(resourceDir, fold, variantCap);
+            runPythonInference(scriptDir, fold, variantCap);
         }
         if (!Files.exists(predFile)) {
             return new MlAutoregressivePredictor(Map.of());
@@ -66,28 +68,32 @@ public class MlAutoregressivePredictor {
     // Internal helpers
     // -------------------------------------------------------------------------
 
-    private static void runPythonInference(Path resourceDir, int fold, int variantCap) {
-        Path script = resourceDir.resolve(SCRIPT_NAME);
+    private static void runPythonInference(Path scriptDir, int fold, int variantCap) {
+        Path script = scriptDir.resolve(SCRIPT_NAME);
         if (!Files.exists(script)) {
             System.err.println("ML script not found, skipping ML_AUTOREGRESSIVE for fold "
                     + fold + ": " + script);
             return;
         }
 
-        String pythonExe = resolvePythonExecutable(resourceDir);
+        String pythonExe = resolvePythonExecutable(scriptDir);
 
-        // Use --inference-only when a trained checkpoint is already present.
-        Path checkpoint = resourceDir.resolve("autoregressive_model_fold" + fold + ".pt");
+        try { Files.createDirectories(AppConfig.RQ1_CHECKPOINTS_DIR); } catch (Exception ignored) {}
+        Path checkpoint = AppConfig.RQ1_CHECKPOINTS_DIR.resolve("autoregressive_model_fold" + fold + ".pt");
         List<String> cmd = new ArrayList<>(List.of(
                 pythonExe, script.toAbsolutePath().toString(),
-                "--folds", String.valueOf(fold),
-                "--data-dir", resourceDir.toAbsolutePath().toString(),
-                "--variants", String.valueOf(variantCap)
+                "--folds",            String.valueOf(fold),
+                "--data-dir",         AppConfig.RQ1_DIR.toAbsolutePath().toString(),
+                "--cv-folds-dir",     AppConfig.RQ1_CV_FOLDS_DIR.toAbsolutePath().toString(),
+                "--checkpoints-dir",  AppConfig.RQ1_CHECKPOINTS_DIR.toAbsolutePath().toString(),
+                "--predictions-dir",  AppConfig.RQ1_PREDICTIONS_DIR.toAbsolutePath().toString(),
+                "--variants",         String.valueOf(variantCap)
         ));
         if (Files.exists(checkpoint)) {
             cmd.add("--inference-only");
         }
 
+        Path predFile = AppConfig.RQ1_PREDICTIONS_DIR.resolve("autoregressive_predictions_fold" + fold + ".csv");
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.inheritIO();
         try {
@@ -107,8 +113,8 @@ public class MlAutoregressivePredictor {
      * The venv lives one level above the inner project root, so relative to
      * {@code src/main/resources/pattern-heuristics} it is four directories up then {@code .venv}.
      */
-    private static String resolvePythonExecutable(Path resourceDir) {
-        Path venv = resourceDir.resolve("../../../../../.venv/bin/python3").normalize();
+    private static String resolvePythonExecutable(Path scriptDir) {
+        Path venv = scriptDir.resolve("../../../../../.venv/bin/python3").normalize();
         return Files.exists(venv) ? venv.toAbsolutePath().toString() : "python3";
     }
 
