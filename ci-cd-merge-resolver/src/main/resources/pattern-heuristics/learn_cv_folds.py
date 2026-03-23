@@ -2,6 +2,10 @@
 """
 10-fold cross-validation fold generator for pattern heuristics (RQ1).
 
+Folds are assigned in chronological order of merge commitTime: fold 0
+contains the 10% oldest merges, fold 9 the 10% newest.  All chunks of a
+merge are always kept in the same fold.
+
 For each fold k (0-9):
   - Trains on 9/10 of merge_ids → learnt_historical_pattern_distribution_train<k>.csv
   - Writes evaluation ground-truth → evaluation_fold<k>.csv
@@ -20,7 +24,6 @@ Output: learnt_historical_pattern_distribution_train{k}.csv  (10 files)
 import argparse
 import csv
 import os
-import random
 import sys
 
 csv.field_size_limit(1000000)
@@ -64,33 +67,35 @@ def main():
 
     header = original_data[0]
     col_merge_id   = header.index('merge_id')
+    col_commit_time = header.index('commitTime')
     col_file_path  = header.index('filename') if 'filename' in header else header.index('file_path')
     col_chunk_id   = header.index('chunk_id')
     col_resolution = header.index('y_conflictResolutionResult')
 
-    # Step 2: Collect unique merge_ids in encounter order
-    merge_ids = []
-    seen = set()
-    for row in original_data[1:]:  # skip header
-        if len(row) > col_merge_id:
+    # Step 2: Collect unique merge_ids with their commitTime (first occurrence)
+    merge_time = {}
+    for row in original_data[1:]:
+        if len(row) > col_commit_time:
             mid = row[col_merge_id]
-            if mid not in seen:
-                seen.add(mid)
-                merge_ids.append(mid)
+            if mid not in merge_time:
+                merge_time[mid] = row[col_commit_time].strip()
 
+    # Sort chronologically (ISO strings sort correctly lexicographically)
+    merge_ids = sorted(merge_time.keys(), key=lambda m: merge_time[m])
     print(f"Found {len(merge_ids)} unique merge_ids")
+    print(f"Date range: {merge_time[merge_ids[0]][:10]} → {merge_time[merge_ids[-1]][:10]}")
 
-    # Step 3: Shuffle with fixed seed and split into 10 equal folds
-    rng = random.Random(42)
-    rng.shuffle(merge_ids)
-
+    # Step 3: Split into 10 chronological folds (fold 0 = oldest, fold 9 = newest)
     n = len(merge_ids)
     fold_size = n // 10
     folds = []
     for k in range(10):
         start = k * fold_size
-        end = start + fold_size if k < 9 else n  # last fold absorbs remainder
+        end = start + fold_size if k < 9 else n
         folds.append(set(merge_ids[start:end]))
+        fold_list = merge_ids[start:end]
+        print(f"  Fold {k}: {len(fold_list)} merges  "
+              f"{merge_time[fold_list[0]][:10]} → {merge_time[fold_list[-1]][:10]}")
 
     print(f"Fold sizes: {[len(f) for f in folds]}")
 

@@ -94,6 +94,7 @@ LOG1P_MERGE = {
     "mergeRangeOursAuthorsCount", "mergeRangeTheirsAuthorsCount",
     "mergeRangeCommitCountOurs", "mergeRangeCommitCountTheirs",
     "changedFilesOURS", "changedFilesTHEIRS", "filesConflictingMerged",
+    "filesCleanMerged", "fileCount",
     "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
     "num_chunks_in_merge",
 }
@@ -102,6 +103,7 @@ LOG1P_CHUNK = {
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
     "lineCountUnmergedFile",
     "num_chunks_in_file", "chunkRankInFile",
+    "lengthContextBefore", "lengthContextAfter",
 }
 
 MERGE_COLS = [
@@ -122,6 +124,8 @@ MERGE_COLS = [
     # File change counts
     "changedFilesOURS", "changedFilesTHEIRS",
     "filesConflictingMerged",              # concurrentlyChangedFiles
+    "filesCleanMerged",                    # clean (non-conflicting) files in merge
+    "fileCount",                           # total files touched in merge
     # LOC changes
     "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
     # Duration / delay
@@ -137,6 +141,11 @@ CHUNK_COLS = [
     "selfConflict",                # 1 if authorsIntersectionMergeRange == 'ALL'
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
     "chunkPositionQuarter",
+    "chunkIndex",                  # absolute 0-based chunk position within merge
+    "lengthContextBefore",         # lines of context before chunk
+    "lengthContextAfter",          # lines of context after chunk
+    "isStableContextBefore",       # bool: context before is unchanged on both branches
+    "isStableContextAfter",        # bool: context after is unchanged on both branches
     "lengthChunk",                 # = lengthOURS + lengthBASE + lengthTHEIRS (chunkAbsSize)
     "lengthRelativeOURSTHEIRS",    # chunkRelSize
     "lengthOURS",                  # chunkAbsSizeOURS
@@ -209,6 +218,8 @@ def extract_features(rows: list[dict], merge_time_median: float):
             if col == "num_chunks_in_file":
                 v = float(file_chunk_counts.get(row.get("filename", ""), 1))
                 cv.append(_log1p_if(col, LOG1P_CHUNK, v))
+            elif col in ("isStableContextBefore", "isStableContextAfter"):
+                cv.append(1.0 if row.get(col, "False") == "True" else 0.0)
             else:
                 v = _safe_float(row.get(col, 0))
                 cv.append(_log1p_if(col, LOG1P_CHUNK, v))

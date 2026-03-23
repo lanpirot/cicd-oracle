@@ -173,56 +173,37 @@ All large generated artefacts for RQ1 live under `~/data/bruteforcemerge/rq1/` (
 | `rq1/predictions/` | `autoregressive_predictions_fold{k}.csv` (~200 MB each) |
 | `rq1/results/` | `cv_results.csv`, `cv_trajectory.csv`, LaTeX tables, PDF plots |
 
-### Running the RQ1 pipeline from scratch
-
-All scripts live in `src/main/resources/pattern-heuristics/`. Run them in order:
+### Running the RQ1 pipeline
 
 **Prerequisites**
 
-- A GitHub personal access token (needed to probe 100–106 projects not yet in `maven_check_cache.json`).
-  Add it to `~/.bashrc` once:
+- A GitHub personal access token (needed to probe projects not yet in `maven_check_cache.json`).
+  Set it once:
   ```bash
-  echo 'export GITHUB_TOKEN=ghp_yourToken' >> ~/.bashrc
-  source ~/.bashrc
+  echo 'export GITHUB_TOKEN=ghp_yourToken' >> ~/.bashrc && source ~/.bashrc
   ```
-- The Python **virtual environment** in `.venv/` at the repo root — it contains PyTorch with CUDA support.
-  Always activate it before running any RQ1 script, or prefix commands with the venv Python:
-  ```bash
-  source /path/to/ci-cd-merge-resolver/.venv/bin/activate
-  ```
-  **Do not use the system `python3`** — it has a CPU-only PyTorch build and training will run 10–50× slower.
+- The Python **virtual environment** in `.venv/` at the repo root — contains PyTorch with CUDA.
+  The pipeline script picks it up automatically.
+  **Do not use the system `python3`** for training — it has a CPU-only PyTorch build (10–50× slower).
 
-**Step 1 — Extract CSVs from the SQL dump** (≈2 min)
+**One-liner (full pipeline from scratch):**
 ```bash
-python3 src/main/resources/pattern-heuristics/extract_from_sql_dump.py
-# reads: ~/data/bruteforcemerge/rq1/Java_1767374472.sql
-# writes: all_conflicts.csv  (one row per conflict chunk, all file types)
-#         merge_commits.csv  (one row per Maven merge, exact commit SHAs)
-# uses GITHUB_TOKEN env var automatically
+./src/main/resources/pattern-heuristics/run_rq1.sh
 ```
 
-**Step 2 — Add positional chunk features** (≈1 min)
+Resume from a specific step (e.g. after changing the model, skip re-extraction):
 ```bash
-python3 src/main/resources/pattern-heuristics/add_file_lex_rank.py
-# adds file_lex_rank + chunkRankInFile columns to all_conflicts.csv in-place
+./src/main/resources/pattern-heuristics/run_rq1.sh --from-step 4
 ```
 
-**Step 3 — Learn global pattern distribution** (≈30 s)
-```bash
-python3 src/main/resources/pattern-heuristics/learn_historical_pattern_distribution.py \
-  --data-dir ~/data/bruteforcemerge/rq1
-```
+| Step | What it does | Time |
+|------|-------------|------|
+| 1 | Extract `all_conflicts.csv` + `merge_commits.csv` from SQL dump | ≈2 min |
+| 2 | Learn global pattern distribution (`learnt_historical_pattern_distribution.csv`) | ≈30 s |
+| 3 | Generate chronological 10-fold CV splits (fold 0 = oldest 10% of merges) | ≈2 min |
+| 4 | Train autoregressive model + generate per-fold predictions | hours (GPU) |
+| 5 | Evaluate all strategies → `cv_results.csv`, LaTeX tables, PDF plots | ≈30 min |
 
-**Step 4 — Generate 10-fold CV splits** (≈2 min)
-```bash
-python3 src/main/resources/pattern-heuristics/learn_cv_folds.py \
-  --data-dir ~/data/bruteforcemerge/rq1 \
-  --output-dir ~/data/bruteforcemerge/rq1/cv_folds
-```
-
-**Step 5 — Train the autoregressive model** (hours; GPU strongly recommended)
-```bash
-source /path/to/.venv/bin/activate
-python3 src/main/resources/pattern-heuristics/train_autoregressive_model.py \
-  --data-dir ~/data/bruteforcemerge/rq1
-```
+After step 5 the script prints a **temporal sanity check**: per-fold ML-AR hit rate.
+Fold 9 (newest merges) should not perform much worse than folds 0–8; a large drop would
+indicate the model is overfitting to temporal patterns rather than structural ones.

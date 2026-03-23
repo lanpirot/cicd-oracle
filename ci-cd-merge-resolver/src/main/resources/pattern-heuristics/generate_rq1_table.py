@@ -103,14 +103,14 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg
         (rf'\caption{{RQ1: Pattern heuristic cross-validation '
          rf'(cap\,=\,{variant_cap} variants, {weight_note})}}'),
         rf'\label{{tab:rq1{sz_suffix}}}',
-        r'\begin{tabular}{lr' + '|rr' * len(MODES) + '|rr}',
-        r'\hline',
+        r'\begin{tabular}{l r' + r' @{\hspace{2em}} r r' * len(MODES) + r' @{\hspace{2em}} r r}',
+        r'\toprule',
     ]
 
     # Header row 1 — mode names spanning two sub-columns each, then PERFECT (1 col)
     hdr1 = r'\textbf{\#chunks} & \textbf{N}'
     for name in DISPLAY_NAMES:
-        hdr1 += rf' & \multicolumn{{2}}{{c|}}{{\textbf{{{name}}}}}'
+        hdr1 += rf' & \multicolumn{{2}}{{c}}{{\textbf{{{name}}}}}'
     hdr1 += r' & \multicolumn{2}{c}{\textcolor{gray}{\textit{PERFECT}}}'
     lines.append(hdr1 + r' \\')
 
@@ -118,7 +118,7 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg
     lines.append(
         r' & ' + r' & \% & \textit{att}' * len(MODES) + r' & \textcolor{gray}{\textit{\%}} & \\'
     )
-    lines.append(r'\hline')
+    lines.append(r'\midrule')
 
     # Bucket body rows
     for b in BUCKET_ORDER:
@@ -138,7 +138,7 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg
         row += f' & {fmt_ceiling(bucket_ceiling.get(b, float("nan")))} &'
         lines.append(row + r' \\')
 
-    lines.append(r'\hline')
+    lines.append(r'\midrule')
 
     # Aggregate rows: Mean then Median
     sw = size_weighted
@@ -161,7 +161,7 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg
         row += f' & {fmt_ceiling(ceiling_val)} &'
         lines.append(row + r' \\')
 
-    lines += [r'\hline', r'\end{tabular}', r'\end{table*}']
+    lines += [r'\bottomrule', r'\end{tabular}', r'\end{table*}']
     return '\n'.join(lines)
 
 
@@ -365,6 +365,21 @@ def main():
             mean_pct_sw=mean_pct_sw,     mean_rk_sw=mean_rk_sw,
             median_pct_sw=median_pct_sw, median_rk_sw=median_rk_sw,
         )
+
+    # ── temporal sanity check: per-fold hit rate for ML-AR ──────────────────
+    if ML_MODE in MODES:
+        fold_hits   = defaultdict(int)
+        fold_totals = defaultdict(int)
+        for (fold, merge_id), modes_dict in merge_data.items():
+            if ML_MODE in modes_dict:
+                fold_hits[fold]   += modes_dict[ML_MODE]['hit']
+                fold_totals[fold] += 1
+        print('\nTemporal sanity check — ML-AR hit rate per fold (fold 0 = oldest):')
+        print(f"  {'fold':>6}  {'N':>6}  {'hit%':>6}")
+        for fold in sorted(fold_totals.keys(), key=lambda x: int(x)):
+            n_f = fold_totals[fold]
+            pct = 100.0 * fold_hits[fold] / n_f if n_f else float('nan')
+            print(f"  {fold:>6}  {n_f:>6}  {fmt(pct, 1):>6}")
 
     # ── write both table files ───────────────────────────────────────────────
     for sw, fname in [(False, 'RQ1-tab.tex'), (True, 'RQ1-tab-sz.tex')]:
