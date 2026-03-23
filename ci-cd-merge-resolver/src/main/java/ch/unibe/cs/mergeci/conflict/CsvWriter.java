@@ -49,6 +49,7 @@ public class CsvWriter {
                 fields[Utility.MERGECOLUMN.modulesPassed.getColumnNumber()] = String.valueOf(r.modulesPassed());
                 fields[Utility.MERGECOLUMN.hasTestConflict.getColumnNumber()] = String.valueOf(r.hasTestConflict());
                 fields[Utility.MERGECOLUMN.baselineBroken.getColumnNumber()] = String.valueOf(r.baselineBroken());
+                fields[Utility.MERGECOLUMN.mergeId.getColumnNumber()] = r.mergeId() != null ? r.mergeId() : "";
                 writer.write(String.join(",", fields));
                 writer.newLine();
             }
@@ -97,7 +98,8 @@ public class CsvWriter {
             int numberOfModules,
             int modulesPassed,
             boolean hasTestConflict,
-            boolean baselineBroken
+            boolean baselineBroken,
+            String mergeId
     ) {
     }
 }

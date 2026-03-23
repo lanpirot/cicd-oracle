@@ -768,18 +768,6 @@ def ensure_csv_columns(csv_path: str, script_dir: str) -> None:
         if ret != 0:
             raise RuntimeError("add_file_lex_rank.py failed")
 
-    # --- is_maven ---
-    if 'is_maven' not in _csv_header(csv_path):
-        print("Column is_maven missing — running add_maven_column.py …", flush=True)
-        token = input("Enter your GitHub token (leave blank to proceed unauthenticated, "
-                      "rate-limited to 60 req/h): ").strip()
-        script = os.path.join(script_dir, "add_maven_column.py")
-        cmd = f'python3 "{script}" "{csv_path}"'
-        if token:
-            cmd += f' --token "{token}"'
-        ret = os.system(cmd)
-        if ret != 0:
-            raise RuntimeError("add_maven_column.py failed")
 
 
 def main():

@@ -27,12 +27,14 @@ public class VariantResultCollector {
         // Set basic merge information
         populateBasicInfo(output, processed);
 
+        MergeExperimentRunner.MergeAnalysisResult result = processed.getAnalysisResult();
+
         // Build and set variant results
-        VariantSummary variantSummary = buildVariantSummary(processed.getAnalysisResult());
+        VariantSummary variantSummary = buildVariantSummary(result, result.cacheWarmerKey());
         output.setVariants(variantSummary.variants());
         output.setVariantsExecutionTimeSeconds(variantSummary.variantsExecutionTimeSeconds());
-        output.setNumVariantsAttempted(variantSummary.variants().size());
-        output.setBudgetExhausted(processed.getAnalysisResult().budgetExhausted());
+        output.setBudgetExhausted(result.budgetExhausted());
+        output.setNumInFlightVariantsKilled(result.numInFlightVariantsKilled());
 
         return output;
     }
@@ -54,7 +56,7 @@ public class VariantResultCollector {
         ExperimentTiming timing = processed.getAnalysisResult().runExecutionTime();
         long baselineSeconds = (timing != null && timing.getHumanBaselineExecutionTime() != null)
                 ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
-        output.setHumanBaselineSeconds(baselineSeconds);
+        output.setBudgetBasisSeconds(baselineSeconds);
         output.setVariantBudgetSeconds(baselineSeconds * ch.unibe.cs.mergeci.config.AppConfig.TIMEOUT_MULTIPLIER);
         output.setCoverage(processed.getAnalysisResult().coverageResult());
     }
@@ -62,7 +64,8 @@ public class VariantResultCollector {
     /**
      * Build complete variant summary including all variants and success metrics.
      */
-    private VariantSummary buildVariantSummary(MergeExperimentRunner.MergeAnalysisResult result) {
+    private VariantSummary buildVariantSummary(MergeExperimentRunner.MergeAnalysisResult result,
+                                               String cacheWarmerKey) {
         String projectName = result.getProjectName();
         Map<String, CompilationResult> compilationResults = result.compilationResults();
         Map<String, TestTotal> testResults = result.testResults();
@@ -80,7 +83,8 @@ public class VariantResultCollector {
                 result.analyzer(),
                 projectName,
                 variantFinishSeconds,
-                variantSinceMergeStartSeconds
+                variantSinceMergeStartSeconds,
+                cacheWarmerKey
         );
 
         // Calculate variants execution time
@@ -134,7 +138,8 @@ public class VariantResultCollector {
             ch.unibe.cs.mergeci.runner.VariantProjectBuilder builder,
             String projectName,
             Map<String, Double> variantFinishSeconds,
-            Map<String, Double> variantSinceMergeStartSeconds) {
+            Map<String, Double> variantSinceMergeStartSeconds,
+            String cacheWarmerKey) {
 
         List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResults.size());
 
@@ -147,6 +152,7 @@ public class VariantResultCollector {
             String key = entry.getKey();
             int variantIndex = Integer.parseInt(key.substring(key.lastIndexOf('_') + 1));
             variant.setVariantIndex(variantIndex);
+            variant.setCacheWarmer(key.equals(cacheWarmerKey));
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(key));
             variant.setConflictPatterns(builder.getConflictPatterns().get(variants.size()));
@@ -176,10 +182,10 @@ public class VariantResultCollector {
         variant.setVariantIndex(0);
         variant.setCompilationResult(result.compilationResults().get(projectName));
         variant.setTestResults(result.testResults().get(projectName));
-        variant.setOwnExecutionSeconds((double) output.getHumanBaselineSeconds());
+        variant.setOwnExecutionSeconds((double) output.getBudgetBasisSeconds());
 
         output.setVariants(List.of(variant));
-        output.setVariantsExecutionTimeSeconds(output.getHumanBaselineSeconds());
+        output.setVariantsExecutionTimeSeconds(output.getBudgetBasisSeconds());
 
         return output;
     }
@@ -199,7 +205,7 @@ public class VariantResultCollector {
             return processed.getSkipReason();
         }
 
-        VariantSummary summary = buildVariantSummary(processed.getAnalysisResult());
+        VariantSummary summary = buildVariantSummary(processed.getAnalysisResult(), null);
         int successful = summary.successfulVariants();
         int total = summary.totalVariants();
         long executionTime = processed.getAnalysisResult().executionTimeSeconds();

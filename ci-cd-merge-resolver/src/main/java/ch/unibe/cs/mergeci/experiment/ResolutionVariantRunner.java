@@ -128,7 +128,7 @@ public class ResolutionVariantRunner {
         }
 
         try {
-            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache, skipVariants, tempDir);
+            makeAnalysisByDataset(dataset.toPath(), repoPath, jsonOutputPath, humanBaselineOutputPath, isParallel, isCache, skipVariants, tempDir, outputDir.getFileName().toString());
             repoManager.markRepositorySuccess(repoName);
         } catch (Exception e) {
             System.err.println("Analysis failed for repository " + repoName + ": " + e.getMessage());
@@ -145,9 +145,17 @@ public class ResolutionVariantRunner {
     }
 
     public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir) throws Exception {
+        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, skipVariants, tmpDir, "");
+    }
+
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir, String modeName) throws Exception {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
+        String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
+        makeAnalysisByMergeList(mergeInfos, projectName, repoPath, output, humanBaselineOutput, isParallel, isCache, skipVariants, tmpDir, modeName);
+    }
 
+    public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir, String modeName) throws Exception {
         // For non-baseline modes, read stored baseline durations to skip re-running the baseline build.
         Map<String, Long> storedBaselines = skipVariants ? Collections.emptyMap()
                 : loadStoredBaselines(humanBaselineOutput);
@@ -162,11 +170,10 @@ public class ResolutionVariantRunner {
         MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines);
         VariantResultCollector collector = new VariantResultCollector();
 
-        MergeRunStats stats = processMerges(mergeInfos, processor, collector);
+        MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName);
 
         System.out.println(formatSummary(mergeInfos.size(), stats.results().size(), stats.skippedCount(), stats.totalTime()));
 
-        String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
         // Only write the baseline JSON if we actually ran the baseline (i.e., it wasn't stored already).
         if (!hasStoredBaselines) {
             new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
@@ -217,8 +224,8 @@ public class ResolutionVariantRunner {
             if (allMerges.getMerges() == null) return Collections.emptyMap();
             Map<String, Long> map = new HashMap<>();
             for (MergeOutputJSON merge : allMerges.getMerges()) {
-                if (merge.getMergeCommit() != null && merge.getHumanBaselineSeconds() > 0) {
-                    map.put(merge.getMergeCommit(), merge.getHumanBaselineSeconds());
+                if (merge.getMergeCommit() != null && merge.getBudgetBasisSeconds() > 0) {
+                    map.put(merge.getMergeCommit(), merge.getBudgetBasisSeconds());
                 }
             }
             return map;
@@ -230,7 +237,8 @@ public class ResolutionVariantRunner {
 
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
                                                MergeExperimentRunner processor,
-                                               VariantResultCollector collector) throws Exception {
+                                               VariantResultCollector collector,
+                                               String modeName) throws Exception {
         List<MergeOutputJSON> results = new ArrayList<>();
         List<MergeOutputJSON> baselineResults = new ArrayList<>();
         int skippedCount = 0;
@@ -251,6 +259,7 @@ public class ResolutionVariantRunner {
             }
 
             MergeOutputJSON result = collector.collectResults(processed);
+            result.setMode(modeName);
             results.add(result);
             MergeOutputJSON baselineResult = collector.collectBaselineResult(processed);
             baselineResults.add(baselineResult);

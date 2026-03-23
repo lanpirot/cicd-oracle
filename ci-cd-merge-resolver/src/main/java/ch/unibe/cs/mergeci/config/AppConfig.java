@@ -190,6 +190,16 @@ public class AppConfig {
     public static final Path RQ1_RESULTS_DIR     = RQ1_DIR.resolve("results");
     /** Python scripts (stays under src/main/resources, not data). */
     public static final Path RQ1_SCRIPTS_DIR     = Paths.get("src/main/resources/pattern-heuristics");
+    /** Fold assignment JSON: maps merge_id → fold index (0-based). Required for leakage-free ML-AR inference. */
+    public static final Path RQ1_FOLD_ASSIGNMENT_FILE = RQ1_CHECKPOINTS_DIR.resolve("autoregressive_fold_assignment.json");
+    /** Maximum number of ML-AR variant predictions to load per merge (matches Python --variants cap). */
+    public static final int  ML_VARIANT_CAP      = 500;
+
+    // ========== RQ2: JAVA CHUNKS PIPELINE ==========
+    public static final Path RQ2_MERGE_COMMITS_CSV      = RQ1_DIR.resolve("merge_commits.csv");
+    public static final Path RQ2_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq2_variant_experiments");
+    public static final int  RQ2_SAMPLE_REPOS           = 50;
+    public static final int  RQ2_MERGES_PER_REPO        = 1;
 
     // ========== PHASE 3: VARIANT EXPERIMENTS ==========
     public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");

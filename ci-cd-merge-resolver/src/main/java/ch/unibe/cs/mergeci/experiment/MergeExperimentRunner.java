@@ -84,7 +84,7 @@ public class MergeExperimentRunner {
 
         // Prepare variant metadata (no disk writes yet)
         VariantProjectBuilder variantProjectBuilder = new VariantProjectBuilder(repoPath, tmpDir, tmpProjectDir);
-        VariantBuildContext context = variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit());
+        VariantBuildContext context = variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit(), info.getMergeId());
 
         // Create factory and run tests with just-in-time building
         long storedBaseline = storedBaselines.getOrDefault(info.getMergeCommit(), 0L);
@@ -117,7 +117,9 @@ public class MergeExperimentRunner {
                 coverageResult,
                 variantFinishSeconds,
                 variantSinceMergeStartSeconds,
-                factory.isBudgetExhausted()
+                factory.isBudgetExhausted(),
+                factory.getCacheWarmerKey(),
+                factory.getNumInFlightVariantsKilled()
         );
     }
 
@@ -166,7 +168,9 @@ public class MergeExperimentRunner {
                                           ExperimentTiming runExecutionTime, JacocoReportFinder.CoverageDTO coverageResult,
                                           Map<String, Double> variantFinishSeconds,
                                           Map<String, Double> variantSinceMergeStartSeconds,
-                                          boolean budgetExhausted) {
+                                          boolean budgetExhausted,
+                                          String cacheWarmerKey,
+                                          int numInFlightVariantsKilled) {
 
         public String getProjectName() {
                 return analyzer.getProjectName();

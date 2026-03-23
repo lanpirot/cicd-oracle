@@ -59,6 +59,7 @@ public class DatasetRowBuilder {
                 .modulesPassed(0)
                 .hasTestConflict(hasTestConflict)
                 .baselineBroken(true)
+                .mergeId("")
                 .build();
     }
 
@@ -92,6 +93,7 @@ public class DatasetRowBuilder {
                 .modulesPassed(result.getModulesPassed())
                 .hasTestConflict(hasTestConflict)
                 .baselineBroken(baselineBroken)
+                .mergeId("")
                 .build();
     }
 

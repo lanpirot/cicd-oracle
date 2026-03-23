@@ -5,6 +5,7 @@ import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +18,14 @@ import java.util.Map;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"mergeCommit", "parent1", "parent2",
+@JsonPropertyOrder({"mode", "mergeCommit", "parent1", "parent2",
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
-        "isMultiModule", "humanBaselineSeconds", "variantBudgetSeconds",
-        "totalExecutionTime", "variantsExecutionTimeSeconds",
-        "numVariantsAttempted", "budgetExhausted", "coverage", "variants"})
+        "isMultiModule", "budgetBasisSeconds", "variantBudgetSeconds",
+        "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
+        "variantsExecutionTimeSeconds", "coverage", "variants"})
 @ToString
 public class MergeOutputJSON {
+    private String mode;
     private String mergeCommit;
     private String parent1;
     private String parent2;
@@ -35,13 +37,14 @@ public class MergeOutputJSON {
 
     private JacocoReportFinder.CoverageDTO coverage;
 
-    private long humanBaselineSeconds;
+    /** Baseline build time used to size the variant budget. For variant modes this is read from
+     *  the prior human_baseline JSON (not re-measured); for human_baseline mode it is measured. */
+    private long budgetBasisSeconds;
 
     private long variantBudgetSeconds;
-    private boolean budgetExhausted;
-    private int numVariantsAttempted;
-
     private long totalExecutionTime;
+    private int numInFlightVariantsKilled;
+    private boolean budgetExhausted;
 
     private long variantsExecutionTimeSeconds;
     private List<Variant> variants;
@@ -81,14 +84,19 @@ public class MergeOutputJSON {
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonPropertyOrder({"variantIndex", "isCacheWarmer", "ownExecutionSeconds",
+            "totalTimeSinceMergeStartSeconds", "timedOut",
+            "compilationResult", "testResults", "conflictPatterns"})
     public static class Variant {
         private int variantIndex;
-        private CompilationResult compilationResult;
-        private TestTotal testResults;
-        private Map<String, List<String>> conflictPatterns;
+        @JsonProperty("isCacheWarmer")
+        private boolean isCacheWarmer;
         private Double ownExecutionSeconds;
         private Double totalTimeSinceMergeStartSeconds;
         private boolean timedOut;
+        private CompilationResult compilationResult;
+        private TestTotal testResults;
+        private Map<String, List<String>> conflictPatterns;
     }
 
 }

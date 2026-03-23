@@ -5,8 +5,6 @@ import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
-import ch.unibe.cs.mergeci.model.patterns.PatternStrategy;
-import ch.unibe.cs.mergeci.model.patterns.StrategySelector;
 import lombok.Getter;
 import org.eclipse.jgit.lib.ObjectId;
 
@@ -30,8 +28,10 @@ public class VariantBuildContext {
     private final Map<String, ObjectId> nonConflictObjects;
     private final Map<String, ObjectId> mergeCommitObjects;
 
-    // Lazy generation state
-    private final StrategySelector selector;
+    // ML-AR generation state
+    private final String mergeCommit;
+    private final List<List<String>> mlPredictions;
+    private int mlPredictionIndex = 0;
     private final Map<String, ConflictFile> conflictFileMap;
     private final int totalChunks;
 
@@ -43,48 +43,42 @@ public class VariantBuildContext {
             Path repositoryPath,
             Path projectTempDir,
             String projectName,
+            String mergeCommit,
             Map<String, ConflictFile> conflictFileMap,
             int totalChunks,
-            StrategySelector selector,
+            List<List<String>> mlPredictions,
             Map<String, ObjectId> nonConflictObjects,
             Map<String, ObjectId> mergeCommitObjects) {
         this.repositoryPath = repositoryPath;
         this.projectTempDir = projectTempDir;
         this.projectName = projectName;
+        this.mergeCommit = mergeCommit;
         this.conflictFileMap = conflictFileMap;
         this.totalChunks = totalChunks;
-        this.selector = selector;
+        this.mlPredictions = mlPredictions;
         this.nonConflictObjects = nonConflictObjects;
         this.mergeCommitObjects = mergeCommitObjects;
         this.conflictPatterns = new ArrayList<>();
     }
 
     /**
-     * Generate the next unique variant, or empty if all strategies are exhausted.
+     * Return the next ML-AR predicted variant, or empty when all predictions are exhausted.
+     * The time budget is the natural stopping condition; prediction exhaustion is an early-out.
      * Also appends the variant's conflict patterns to {@link #conflictPatterns}.
      */
     public Optional<VariantProject> nextVariant() {
-        while (!selector.allStrategiesExhausted(totalChunks)) {
-            PatternStrategy strategy = selector.selectStrategy(totalChunks);
-            if (strategy == null) break;
-
-            List<String> assignment = selector.generateAssignment(strategy, totalChunks);
-            if (assignment != null) {
-                VariantProject project = buildProjectFromAssignment(assignment);
-                conflictPatterns.add(project.extractPatterns());
-                return Optional.of(project);
-            } else {
-                selector.recordOuterFailure();
-            }
+        if (mlPredictionIndex >= mlPredictions.size()) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        List<String> assignment = mlPredictions.get(mlPredictionIndex++);
+        VariantProject project = buildProjectFromAssignment(assignment);
+        conflictPatterns.add(project.extractPatterns());
+        return Optional.of(project);
     }
 
     /**
-     * Eagerly generate up to {@code maxCount} variants (or until strategies are exhausted).
+     * Eagerly generate up to {@code maxCount} variants (or until predictions are exhausted).
      * Used by parallel runners that need all project directories upfront.
-     * A cap is required because for merges with many conflict chunks the assignment space is
-     * exponentially large and strategy exhaustion would never be reached.
      */
     public List<VariantProject> collectAllVariants(int maxCount) {
         List<VariantProject> all = new ArrayList<>();

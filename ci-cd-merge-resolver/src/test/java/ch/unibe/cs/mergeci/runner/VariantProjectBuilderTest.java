@@ -25,7 +25,8 @@ public class VariantProjectBuilderTest extends BaseTest {
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 
-        VariantBuildContext context = variantProjectBuilder.prepareVariants(MERGE, PARENT1, PARENT2);
+        // null mergeId: myTest is not in Java_chunks.csv, so no ML-AR predictions
+        VariantBuildContext context = variantProjectBuilder.prepareVariants(PARENT1, PARENT2, MERGE, null);
 
         MavenExecutionFactory factory = new MavenExecutionFactory(variantProjectBuilder.getLogDir());
         IJustInTimeRunner runner = factory.createJustInTimeRunner(true, false);

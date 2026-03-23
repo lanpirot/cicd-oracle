@@ -6,7 +6,9 @@ Writes two files next to the input CSV:
   RQ1-tab.tex     — aggregate rows weighted by merge count
   RQ1-tab-sz.tex  — aggregate rows weighted by merge count × chunk count
 
-Usage: python3 generate_rq1_table.py <cv_results.csv> [variant_cap]
+Usage: python3 generate_rq1_table.py <cv_results.csv> [variant_cap] [all_conflicts.csv]
+
+all_conflicts.csv defaults to ../all_conflicts.csv relative to cv_results.csv.
 """
 import csv
 import sys
@@ -65,6 +67,12 @@ def fmt_att_cell(v, is_best):
     return bold(s) if is_best else s
 
 
+def fmt_ceiling(v):
+    """Format a ceiling percentage as gray italic."""
+    s = fmt(v, 1)
+    return rf'\textcolor{{gray}}{{\textit{{{s}}}}}'
+
+
 def best_pct_mask(vals):
     """Bold all positions whose rounded display string matches the best."""
     displayed = [fmt(v, 1) for v in vals]
@@ -85,7 +93,7 @@ def best_att_mask(vals):
     return [c == mn for c in ceiled]
 
 
-def build_tex(bucket_stats, agg, variant_cap, size_weighted):
+def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg_ceiling):
     sz_suffix   = '--sz' if size_weighted else ''
     weight_note = 'size-weighted' if size_weighted else 'count-weighted'
 
@@ -95,20 +103,20 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted):
         (rf'\caption{{RQ1: Pattern heuristic cross-validation '
          rf'(cap\,=\,{variant_cap} variants, {weight_note})}}'),
         rf'\label{{tab:rq1{sz_suffix}}}',
-        r'\begin{tabular}{lr' + '|rr' * len(MODES) + '}',
+        r'\begin{tabular}{lr' + '|rr' * len(MODES) + '|rr}',
         r'\hline',
     ]
 
-    # Header row 1 — mode names spanning two sub-columns each
+    # Header row 1 — mode names spanning two sub-columns each, then PERFECT (1 col)
     hdr1 = r'\textbf{\#chunks} & \textbf{N}'
-    for i, name in enumerate(DISPLAY_NAMES):
-        sep = 'c|' if i < len(DISPLAY_NAMES) - 1 else 'c'
-        hdr1 += rf' & \multicolumn{{2}}{{{sep}}}{{\textbf{{{name}}}}}'
+    for name in DISPLAY_NAMES:
+        hdr1 += rf' & \multicolumn{{2}}{{c|}}{{\textbf{{{name}}}}}'
+    hdr1 += r' & \multicolumn{2}{c}{\textcolor{gray}{\textit{PERFECT}}}'
     lines.append(hdr1 + r' \\')
 
     # Header row 2 — sub-column labels
     lines.append(
-        r' & ' + r' & \% & \textit{att}' * len(MODES) + r' \\'
+        r' & ' + r' & \% & \textit{att}' * len(MODES) + r' & \textcolor{gray}{\textit{\%}} & \\'
     )
     lines.append(r'\hline')
 
@@ -124,9 +132,10 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted):
             atts.append(s['rank_sum'] / s['rank_count'] if s['rank_count'] else float('nan'))
         bp = best_pct_mask(pcts)
         ba = best_att_mask(atts)
-        row = f'{b} & {total}'
+        row = rf'{b} & \num{{{total}}}'
         for i in range(len(MODES)):
             row += f' & {fmt_cell(pcts[i], 1, bp[i])} & {fmt_att_cell(atts[i], ba[i])}'
+        row += f' & {fmt_ceiling(bucket_ceiling.get(b, float("nan")))} &'
         lines.append(row + r' \\')
 
     lines.append(r'\hline')
@@ -148,6 +157,8 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted):
         row = rf'\textbf{{{row_label}}} & '
         for i in range(len(MODES)):
             row += f' & {fmt_cell(pcts[i], 1, bp[i])} & {fmt_att_cell(atts[i], ba[i])}'
+        ceiling_val = agg_ceiling['mean'] if use_mean else agg_ceiling['median']
+        row += f' & {fmt_ceiling(ceiling_val)} &'
         lines.append(row + r' \\')
 
     lines += [r'\hline', r'\end{tabular}', r'\end{table*}']
@@ -281,6 +292,38 @@ def main():
         MODES         = [m for m in MODES         if m != ML_MODE]
         DISPLAY_NAMES = DISPLAY_NAMES[:len(MODES)]
 
+    # ── theoretical ceiling: merges with no CHUNK_NONCANONICAL chunk ────────
+    all_conflicts_path = (sys.argv[3] if len(sys.argv) > 3
+                          else os.path.join(out_dir, '..', 'all_conflicts.csv'))
+    all_conflicts_path = os.path.normpath(all_conflicts_path)
+    merge_has_noncanonical = set()
+    if os.path.exists(all_conflicts_path):
+        with open(all_conflicts_path, newline='') as f:
+            for r in csv.DictReader(f):
+                if r.get('y_conflictResolutionResult') == 'CHUNK_NONCANONICAL':
+                    merge_has_noncanonical.add(r['merge_id'])
+    else:
+        print(f'Warning: {all_conflicts_path} not found — PERFECT column will be blank.')
+
+    bucket_ceiling_acc = defaultdict(lambda: [0, 0])  # bucket -> [solvable, total]
+    ceiling_hits = []
+    for uid, modes_dict in merge_data.items():
+        _, merge_id = uid
+        n = next(iter(modes_dict.values()))['n']
+        b = bucket_of(n)
+        solvable = int(merge_id not in merge_has_noncanonical)
+        ceiling_hits.append(solvable)
+        bucket_ceiling_acc[b][0] += solvable
+        bucket_ceiling_acc[b][1] += 1
+    bucket_ceiling = {
+        b: 100.0 * v[0] / v[1] if v[1] else float('nan')
+        for b, v in bucket_ceiling_acc.items()
+    }
+    agg_ceiling = dict(
+        mean   = 100.0 * sum(ceiling_hits) / len(ceiling_hits) if ceiling_hits else float('nan'),
+        median = 100.0 * weighted_median(ceiling_hits, [1] * len(ceiling_hits)) if ceiling_hits else float('nan'),
+    )
+
     # ── per-mode aggregate stats ────────────────────────────────────────────
     agg = {}
     for m in MODES:
@@ -325,7 +368,7 @@ def main():
 
     # ── write both table files ───────────────────────────────────────────────
     for sw, fname in [(False, 'RQ1-tab.tex'), (True, 'RQ1-tab-sz.tex')]:
-        tex = build_tex(bucket_stats, agg, variant_cap, sw)
+        tex = build_tex(bucket_stats, agg, variant_cap, sw, bucket_ceiling, agg_ceiling)
         out = os.path.join(out_dir, fname)
         with open(out, 'w') as f:
             f.write(tex + '\n')

@@ -1,6 +1,8 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,6 +46,57 @@ public class MlAutoregressivePredictor {
             return new MlAutoregressivePredictor(Map.of());
         }
         return new MlAutoregressivePredictor(loadPredictions(predFile));
+    }
+
+    /**
+     * Load the fold assignment JSON ({@code autoregressive_fold_assignment.json}).
+     * The file maps each merge_id to its fold index (0-based integer).
+     *
+     * @param foldAssignmentJson path to the JSON file
+     * @return map of mergeId → foldIndex
+     */
+    public static Map<String, Integer> loadFoldAssignment(Path foldAssignmentJson) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(foldAssignmentJson.toFile(), new TypeReference<Map<String, Integer>>() {});
+    }
+
+    /**
+     * Build a predictor for a specific merge, routing to the correct fold's prediction file.
+     * Fold assignment is mandatory for correctness — using a prediction from the wrong fold
+     * would mean the model was trained on data that includes the merge being evaluated (leakage).
+     *
+     * @param mergeId        the merge commit hash to look up
+     * @param foldAssignment map of mergeId → foldIndex, loaded via {@link #loadFoldAssignment}
+     * @param predictionsDir directory containing per-fold prediction CSVs
+     * @param variantCap     maximum variants to load per merge
+     * @throws IllegalStateException if mergeId has no fold assignment or no predictions
+     */
+    public static MlAutoregressivePredictor forMerge(String mergeId, Map<String, Integer> foldAssignment,
+                                                     Path predictionsDir, int variantCap) throws IOException {
+        Integer fold = foldAssignment.get(mergeId);
+        if (fold == null) {
+            throw new IllegalStateException(
+                    "No fold assignment for merge " + mergeId + ". " +
+                    "This merge should not be in the evaluation set, or the fold assignment file is stale.");
+        }
+        Path predFile = predictionsDir.resolve("autoregressive_predictions_fold" + fold + ".csv");
+        if (!Files.exists(predFile)) {
+            throw new IllegalStateException(
+                    "Prediction file missing for fold " + fold + ": " + predFile + ". " +
+                    "Run ML inference before starting the pipeline.");
+        }
+        Map<String, List<List<String>>> all = loadPredictions(predFile);
+        List<List<String>> mergePreds = all.get(mergeId);
+        if (mergePreds == null || mergePreds.isEmpty()) {
+            throw new IllegalStateException(
+                    "No predictions found for merge " + mergeId + " in fold " + fold +
+                    " prediction file " + predFile + ". Re-run ML inference.");
+        }
+        // Cap to variantCap
+        if (mergePreds.size() > variantCap) {
+            mergePreds = mergePreds.subList(0, variantCap);
+        }
+        return new MlAutoregressivePredictor(Map.of(mergeId, mergePreds));
     }
 
     /** {@code true} if predictions were loaded successfully. */

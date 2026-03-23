@@ -40,6 +40,10 @@ public class MavenExecutionFactory {
     private Map<String, Double> variantSinceMergeStartSeconds;
     @Getter
     private boolean budgetExhausted;
+    @Getter
+    private String cacheWarmerKey;
+    @Getter
+    private int numInFlightVariantsKilled;
 
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
@@ -74,6 +78,8 @@ public class MavenExecutionFactory {
         variantFinishSeconds = new TreeMap<>();
         variantSinceMergeStartSeconds = new TreeMap<>();
         budgetExhausted = false;
+        cacheWarmerKey = null;
+        numInFlightVariantsKilled = 0;
 
         return new IJustInTimeRunner() {
             @Override
@@ -101,8 +107,8 @@ public class MavenExecutionFactory {
 
                 Instant variantsStart = Instant.now();
                 if (!skipVariants) {
-                    Instant deadline = Instant.now().plusSeconds(totalBudgetSeconds);
-                    runVariants(context, builder, deadline);
+                    Instant deadline = variantsStart.plusSeconds(totalBudgetSeconds);
+                    runVariants(context, builder, deadline, variantsStart);
                 }
                 experimentTiming.setVariantsExecutionTime(Duration.between(variantsStart, Instant.now()));
 
@@ -135,14 +141,13 @@ public class MavenExecutionFactory {
             }
 
             private void runVariants(VariantBuildContext context, VariantProjectBuilder builder,
-                                     Instant deadline) throws Exception {
+                                     Instant deadline, Instant variantsStart) throws Exception {
                 java.nio.file.Files.createDirectories(logDir);
                 String projectName = context.getProjectName();
                 MavenCommandResolver commandResolver = new MavenCommandResolver(false);
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
                 Path cacheWarmPath = null;
-                Instant variantsStart = Instant.now();
 
                 // Cache mode: run the very first variant synchronously to warm the local Maven cache.
                 if (isCache) {
@@ -154,20 +159,23 @@ public class MavenExecutionFactory {
                         cacheManager.injectCacheArtifacts(firstPath);
                         System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
                                 firstPath.getFileName(), timeout0);
+                        Instant warmStart = Instant.now();
                         new MavenProcessExecutor(timeout0).executeCommand(
                                 firstPath, logDir.resolve(firstPath.getFileName() + "_compilation"),
                                 AppConfig.buildCommand(commandResolver.resolveMavenCommand(firstPath),
                                         commandResolver.resolveMavenGoal(firstPath), firstPath));
+                        double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
                         cacheWarmPath = firstPath;
                         String warmKey = projectName + "_" + idx;
-                        collectResult(warmKey, firstPath, builder, variantsStart);
+                        MavenExecutionFactory.this.cacheWarmerKey = warmKey;
+                        collectResult(warmKey, firstPath, builder, variantsStart, warmWallClock);
                     }
                 }
                 final Path warmPath = cacheWarmPath;
 
                 if (isParallel) {
                     ExecutorService executor = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
-                    CompletionService<Map.Entry<String, Path>> cs = new ExecutorCompletionService<>(executor);
+                    CompletionService<TaskResult> cs = new ExecutorCompletionService<>(executor);
                     // Track every path we build so the finally block can clean up after an exception.
                     List<Path> allocatedPaths = new ArrayList<>();
                     if (warmPath != null) allocatedPaths.add(warmPath);
@@ -188,11 +196,11 @@ public class MavenExecutionFactory {
 
                         // Rolling: as each slot frees up, collect results and immediately fill the slot.
                         while (inFlight > 0) {
-                            Map.Entry<String, Path> done = drainOne(cs);
+                            TaskResult done = drainOne(cs);
                             inFlight--;
-                            collectResult(done.getKey(), done.getValue(), builder, variantsStart);
-                            if (!done.getValue().equals(warmPath) && done.getValue().toFile().exists()) {
-                                deleteWithRetry(done.getValue());
+                            collectResult(done.key(), done.path(), builder, variantsStart, done.wallClockSeconds());
+                            if (!done.path().equals(warmPath) && done.path().toFile().exists()) {
+                                deleteWithRetry(done.path());
                             }
                             if (!Instant.now().isAfter(deadline)) {
                                 Optional<VariantProject> next = context.nextVariant();
@@ -208,6 +216,9 @@ public class MavenExecutionFactory {
                         }
                     } finally {
                         executor.shutdownNow();
+                        // variants submitted but not yet collected when budget expired
+                        MavenExecutionFactory.this.numInFlightVariantsKilled =
+                                (globalVariantIndex - 1) - (compilationResults.size() - 1);
                         for (Path p : allocatedPaths) {
                             if (p != null && !p.equals(warmPath) && p.toFile().exists()) {
                                 try { FileUtils.deleteDirectory(p.toFile()); } catch (Exception ignored) {}
@@ -218,7 +229,6 @@ public class MavenExecutionFactory {
                         }
                     }
                 } else {
-                    double cumulativeSeconds = 0;
                     try {
                         while (true) {
                             int variantTimeout = remainingSeconds(deadline);
@@ -250,12 +260,12 @@ public class MavenExecutionFactory {
                                     new MavenRunner(logDir, false, variantTimeout).run_no_optimization(variantPath);
                                 }
                                 Instant variantFinish = Instant.now();
-                                cumulativeSeconds += Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
+                                double wallClockSeconds = Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
                                 builder.collectCompilationResult(variantKey).ifPresent(result ->
                                     compilationResults.put(variantKey, result)
                                 );
                                 testResults.put(variantKey, builder.collectTestResult(variantPath));
-                                variantFinishSeconds.put(variantKey, cumulativeSeconds);
+                                variantFinishSeconds.put(variantKey, wallClockSeconds);
                                 variantSinceMergeStartSeconds.put(variantKey,
                                         (double) Duration.between(variantsStart, variantFinish).getSeconds());
                             } finally {
@@ -272,11 +282,12 @@ public class MavenExecutionFactory {
                 }
             }
 
-            private void submitTask(CompletionService<Map.Entry<String, Path>> cs,
+            private void submitTask(CompletionService<TaskResult> cs,
                                     MavenCommandResolver commandResolver,
                                     MavenCacheManager cacheManager,
                                     Path warmPath, Path vPath, String key, Instant deadline) {
                 cs.submit(() -> {
+                    Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
                     if (timeout > 0) {
                         System.out.printf("[DEBUG] variant %s starting, timeout=%ds%n", vPath.getFileName(), timeout);
@@ -295,21 +306,22 @@ public class MavenExecutionFactory {
                                             commandResolver.resolveMavenGoal(vPath), vPath));
                         }
                     }
-                    return Map.entry(key, vPath);
+                    double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
+                    return new TaskResult(key, vPath, wallClockSeconds);
                 });
             }
 
-            private Map.Entry<String, Path> drainOne(CompletionService<Map.Entry<String, Path>> cs)
+            private TaskResult drainOne(CompletionService<TaskResult> cs)
                     throws InterruptedException, ExecutionException {
                 return cs.take().get();
             }
 
-            private void collectResult(String key, Path path, VariantProjectBuilder builder, Instant variantsStart) throws Exception {
+            private void collectResult(String key, Path path, VariantProjectBuilder builder,
+                                       Instant variantsStart, double wallClockSeconds) throws Exception {
                 Instant finish = Instant.now();
                 builder.collectCompilationResult(key).ifPresent(r -> compilationResults.put(key, r));
                 testResults.put(key, builder.collectTestResult(path));
-                CompilationResult cr = compilationResults.get(key);
-                variantFinishSeconds.put(key, cr != null ? (double) cr.getTotalTime() : 0.0);
+                variantFinishSeconds.put(key, wallClockSeconds);
                 variantSinceMergeStartSeconds.put(key, (double) Duration.between(variantsStart, finish).getSeconds());
             }
 
@@ -334,6 +346,9 @@ public class MavenExecutionFactory {
             }
         }
     }
+
+    /** Carries per-variant wall-clock timing out of parallel task lambdas. */
+    private record TaskResult(String key, Path path, double wallClockSeconds) {}
 
     /**
      * Normalize baseline duration to account for mass test failures.

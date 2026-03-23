@@ -48,6 +48,8 @@ public class DatasetReader {
                 // Defensive: older CSVs without this column default to false
                 int brokenCol = Utility.MERGECOLUMN.baselineBroken.getColumnNumber();
                 info.setBaselineBroken(fields.length > brokenCol && Boolean.parseBoolean(fields[brokenCol]));
+                int mergeIdCol = Utility.MERGECOLUMN.mergeId.getColumnNumber();
+                info.setMergeId(fields.length > mergeIdCol ? fields[mergeIdCol].trim() : null);
 
                 merges.add(info);
             }
@@ -95,6 +97,9 @@ public class DatasetReader {
         private float normalizedElapsedTime;
         private boolean hasTestConflict;
         private boolean baselineBroken;
+        private String mergeId;
+        private String remoteUrl;    // only populated when read from Java_chunks.csv
+        private String projectName;  // only populated when read from Java_chunks.csv
 
         /**
          * Get a short version of the merge commit hash (first 8 characters).

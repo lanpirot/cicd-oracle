@@ -9,8 +9,8 @@ produces two artefacts:
                         commit SHAs from the DB.
   all_conflicts.csv   — one row per conflict chunk with all ML-relevant
                         features derived directly from the SQL columns.
-                        Absorbs the logic formerly in add_file_lex_rank.py
-                        and add_maven_column.py — no post-processing needed.
+                        Absorbs the logic formerly in add_file_lex_rank.py — no
+                        post-processing needed.
 
 Usage:
     python3 extract_from_sql_dump.py [--sql PATH]
@@ -98,11 +98,9 @@ def parse_sql_row(line: str) -> list | None:
     Returns a list of string values (NULL becomes None).
     """
     line = line.strip()
-    if line.endswith(');'):
-        line = line[:-2]
-    elif line.endswith(','):
+    if line.endswith(';'):
         line = line[:-1]
-    elif line.endswith(';'):
+    if line.endswith(','):
         line = line[:-1]
 
     if not (line.startswith('(') and line.endswith(')')):

@@ -39,7 +39,9 @@ public class Utility {
         normalizedElapsedTime(15, "Normalized Elapsed Time"),
         hasTestConflict(16, "Has Test Conflict"),
         /** True when the human merge commit itself fails to compile; a variant may fix it. */
-        baselineBroken(17, "Baseline Broken");
+        baselineBroken(17, "Baseline Broken"),
+        /** Numeric merge_id from Java_chunks.csv; links this row to the ML fold assignment. */
+        mergeId(18, "Merge Id");
 
         private final int columnNumber;
         private final String columnName;

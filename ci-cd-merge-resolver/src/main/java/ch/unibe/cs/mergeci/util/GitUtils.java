@@ -389,6 +389,22 @@ public class GitUtils {
         return map;
     }
 
+    /**
+     * Returns the two parent commit SHAs of a merge commit.
+     * @throws IllegalStateException if the commit does not have exactly 2 parents
+     */
+    public static String[] getParentCommits(Path repoPath, String mergeCommit) throws Exception {
+        try (Git git = Git.open(repoPath.toFile());
+             RevWalk walk = new RevWalk(git.getRepository())) {
+            ObjectId id = git.getRepository().resolve(mergeCommit);
+            RevCommit commit = walk.parseCommit(id);
+            RevCommit[] parents = commit.getParents();
+            if (parents.length != 2) throw new IllegalStateException(
+                "Expected 2 parents for " + mergeCommit + " but got " + parents.length);
+            return new String[]{ parents[0].getName(), parents[1].getName() };
+        }
+    }
+
     public static QuietProgressMonitor cloneRepo(Path folderToClone, String url) {
 
         // then clone

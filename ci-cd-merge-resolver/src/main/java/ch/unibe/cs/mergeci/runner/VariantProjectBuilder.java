@@ -1,11 +1,11 @@
 package ch.unibe.cs.mergeci.runner;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.experiment.MlAutoregressivePredictor;
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.model.ConflictFile;
-import ch.unibe.cs.mergeci.model.patterns.PatternHeuristics;
-import ch.unibe.cs.mergeci.model.patterns.StrategySelector;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.FileUtils;
@@ -21,13 +21,13 @@ import org.eclipse.jgit.merge.ResolveMerger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @Getter
 @Setter
@@ -39,8 +39,7 @@ public class VariantProjectBuilder {
     private final Path logDir;
     private List<Map<String, List<String>>> conflictPatterns;
     private boolean isVerbose = false;
-    private final PatternHeuristics heuristics;
-    private final Random random;
+    private Map<String, Integer> foldAssignment; // loaded lazily in prepareVariants()
 
     public VariantProjectBuilder(Path repoPath, Path tempDir, Path projectTempDir) {
         this.repositoryPath = repoPath;
@@ -49,12 +48,6 @@ public class VariantProjectBuilder {
         this.projectTempDir = projectTempDir;
         this.logDir = tempDir.resolve("log");
         this.conflictPatterns = new ArrayList<>();
-        try {
-            this.heuristics = PatternHeuristics.loadFromResource("pattern-heuristics/learnt_historical_pattern_distribution.csv");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load pattern heuristics", e);
-        }
-        this.random = new Random();
     }
 
     /**
@@ -63,6 +56,19 @@ public class VariantProjectBuilder {
      * {@link VariantBuildContext#nextVariant()}, so no fixed cap is needed.
      */
     public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit) throws Exception {
+        return prepareVariants(commit1, commit2, mergeCommit, null);
+    }
+
+    /**
+     * Prepare the variant generation context without writing anything to disk.
+     *
+     * @param mergeId numeric merge_id from Java_chunks.csv; used to select the correct
+     *                ML cross-validation fold. Pass {@code null} for test repos or any
+     *                merge not sourced from Java_chunks.csv — ML-AR predictions are
+     *                skipped and the context will produce no variants.
+     */
+    public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit,
+                                               String mergeId) throws Exception {
         Git git = GitUtils.getGit(repositoryPath);
         ResolveMerger merger = GitUtils.makeMerge(commit1, commit2, git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
@@ -78,7 +84,21 @@ public class VariantProjectBuilder {
         }
 
         int totalChunks = countConflictChunks(conflictFileMap);
-        StrategySelector selector = new StrategySelector(heuristics, random);
+
+        List<List<String>> mlPredictions = List.of();
+        if (mergeId != null && !mergeId.isEmpty()) {
+            if (foldAssignment == null) {
+                try {
+                    foldAssignment = MlAutoregressivePredictor.loadFoldAssignment(AppConfig.RQ1_FOLD_ASSIGNMENT_FILE);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to load ML-AR fold assignment from "
+                            + AppConfig.RQ1_FOLD_ASSIGNMENT_FILE, e);
+                }
+            }
+            MlAutoregressivePredictor mlPredictor = MlAutoregressivePredictor.forMerge(
+                    mergeId, foldAssignment, AppConfig.RQ1_PREDICTIONS_DIR, AppConfig.ML_VARIANT_CAP);
+            mlPredictions = mlPredictor.getPredictions(mergeId);
+        }
 
         ObjectId branch1 = git.getRepository().resolve(commit1);
         ObjectId branch2 = git.getRepository().resolve(commit2);
@@ -89,9 +109,10 @@ public class VariantProjectBuilder {
                 repositoryPath,
                 projectTempDir,
                 projectName,
+                mergeCommit,
                 conflictFileMap,
                 totalChunks,
-                selector,
+                mlPredictions,
                 nonConflictObjects,
                 mergeCommitObjects
         );

@@ -82,7 +82,7 @@ class VariantResultCollectorTest extends BaseTest {
 
         MergeExperimentRunner.MergeAnalysisResult result = new MergeExperimentRunner.MergeAnalysisResult(
                 analyzer, compilationResults, testResults, 200L, timing, null, variantFinishSeconds,
-                null, false
+                null, false, null, 0
         );
 
         return MergeExperimentRunner.ProcessedMerge.completed(info, 2, result);
@@ -95,8 +95,8 @@ class VariantResultCollectorTest extends BaseTest {
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(false, Map.of());
         MergeOutputJSON output = new VariantResultCollector().collectResults(processed);
 
-        // humanBaselineSeconds populated
-        assertEquals(BASELINE_SECONDS, output.getHumanBaselineSeconds());
+        // budgetBasisSeconds populated
+        assertEquals(BASELINE_SECONDS, output.getBudgetBasisSeconds());
 
         // variants list is empty (no variants, only baseline was in compilationResults)
         assertNotNull(output.getVariants());
@@ -132,8 +132,8 @@ class VariantResultCollectorTest extends BaseTest {
         assertFalse(json.contains("\"compilationResult\""),
                 "variant-mode JSON must not serialise top-level compilationResult");
         // testResults is not a real field anymore — only the @JsonIgnore method exists
-        assertTrue(json.contains("\"humanBaselineSeconds\""),
-                "variant-mode JSON must contain humanBaselineSeconds");
+        assertTrue(json.contains("\"budgetBasisSeconds\""),
+                "variant-mode JSON must contain budgetBasisSeconds");
     }
 
     // ── collectBaselineResult (human_baseline mode) ───────────────────────────
@@ -143,7 +143,7 @@ class VariantResultCollectorTest extends BaseTest {
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(false, Map.of());
         MergeOutputJSON output = new VariantResultCollector().collectBaselineResult(processed);
 
-        assertEquals(BASELINE_SECONDS, output.getHumanBaselineSeconds());
+        assertEquals(BASELINE_SECONDS, output.getBudgetBasisSeconds());
 
         List<MergeOutputJSON.Variant> variants = output.getVariants();
         assertEquals(1, variants.size());
