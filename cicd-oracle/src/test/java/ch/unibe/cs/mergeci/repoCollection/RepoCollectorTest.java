@@ -14,18 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RepoCollectorTest extends BaseTest {
 
     @BeforeEach
-    void createTestCsvIfMissing() throws Exception {
-        if (!Files.exists(AppConfig.TEST_INPUT_PROJECT_CSV)) {
-            Files.createDirectories(AppConfig.TEST_INPUT_PROJECT_CSV.getParent());
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(AppConfig.TEST_INPUT_PROJECT_CSV.toFile()))) {
-                // Header row
-                writer.write("Repository,URL");
+    void createTestMergeCommitsCsvIfMissing() throws Exception {
+        if (!Files.exists(AppConfig.TEST_MERGE_COMMITS_CSV)) {
+            Files.createDirectories(AppConfig.TEST_MERGE_COMMITS_CSV.getParent());
+            String localRepoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toAbsolutePath().toString();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(AppConfig.TEST_MERGE_COMMITS_CSV.toFile()))) {
+                writer.write("merge_id,commit_id,project_id,project_name,remote_url,commit_time,is_maven");
                 writer.newLine();
-
-                // Data row - use myTest
-                String localRepoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toAbsolutePath().toString();
-                writer.write("test/myTest,file://" + localRepoPath);
+                writer.write("1,,1,test/myTest,file://" + localRepoPath + ",2024-01-01,True");
                 writer.newLine();
             }
         }
@@ -33,20 +29,17 @@ public class RepoCollectorTest extends BaseTest {
 
     @Test
     void processCsv() throws Exception {
-        // Use TEST_TMP_DIR/repos for cloning to ensure clean state between test runs
         RepoCollector repoCollector = new RepoCollector(
             AppConfig.TEST_TMP_DIR.resolve("repos"),
             AppConfig.TEST_TMP_DIR,
             AppConfig.TEST_DATASET_DIR
         );
 
-        // Verify input file exists
-        assertTrue(Files.exists(AppConfig.TEST_INPUT_PROJECT_CSV),
-            "Input CSV file should exist");
+        assertTrue(Files.exists(AppConfig.TEST_MERGE_COMMITS_CSV),
+            "Test merge_commits.csv should exist");
 
-        repoCollector.processCsv(AppConfig.TEST_INPUT_PROJECT_CSV);
+        repoCollector.processCsv(AppConfig.TEST_MERGE_COMMITS_CSV);
 
-        // Verify processing completed - dataset directory should exist and contain files
         assertTrue(Files.exists(AppConfig.TEST_DATASET_DIR),
             "Dataset directory should exist after processing");
     }

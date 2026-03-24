@@ -6,23 +6,19 @@ import ch.unibe.cs.mergeci.util.FileUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.RepositoryStatus;
 import ch.unibe.cs.mergeci.util.Utility;
-import ch.unibe.cs.mergeci.util.Utility.PROJECTCOLUMN;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class RepoCollector {
     private final Path cloneDir;
@@ -43,7 +39,7 @@ public class RepoCollector {
 
     public void processCsv() {
         try {
-            processCsv(AppConfig.INPUT_PROJECT_CSV);
+            processCsv(AppConfig.MERGE_COMMITS_CSV);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -57,31 +53,43 @@ public class RepoCollector {
         BuildFailureLog failureLog = BuildFailureLog.createOrNull(
                 AppConfig.DATA_BASE_DIR.resolve("build_failures.log"));
 
+        // Parse merge_commits.csv: header-based, columns project_name + remote_url
         List<String[]> rows = readCsv(csvFile);
-        ensureHeaders(rows);
-        flushCsv(csvFile, rows);
+        if (rows.isEmpty()) return;
 
-        int totalRepos = countUniqueRepos(rows);
-        printHeader(totalRepos);
+        String[] headers = rows.get(0);
+        int nameCol = indexOf(headers, "project_name");
+        int urlCol  = indexOf(headers, "remote_url");
+        if (nameCol < 0 || urlCol < 0) throw new IllegalStateException(
+                "merge_commits.csv missing required columns 'project_name' or 'remote_url'. " +
+                "Run extract_from_sql_dump.py first.");
 
-        Set<String> seen = new HashSet<>();
-        int currentRepo = 0;
-
+        // Collect unique repos in encounter order (keyed by URL)
+        Map<String, String> uniqueRepos = new LinkedHashMap<>();
         for (int i = 1; i < rows.size(); i++) {
             String[] row = rows.get(i);
-            if (row.length < 2 || row[0].isEmpty()) continue;
+            if (row.length <= Math.max(nameCol, urlCol)) continue;
+            String url = row[urlCol].trim();
+            if (url.isEmpty()) continue;
+            uniqueRepos.putIfAbsent(url, Utility.extractRepoName(url));
+        }
 
-            String repoName = Utility.extractRepoName(row[0].trim());
-            String repoUrl = row[1].trim();
+        printHeader(uniqueRepos.size());
 
-            if (repoName.isEmpty() || repoUrl.isEmpty()) continue;
-            if (!seen.add(repoUrl)) continue;
-
+        int currentRepo = 0;
+        for (Map.Entry<String, String> entry : uniqueRepos.entrySet()) {
             currentRepo++;
-            processRepo(rows, i, repoName, repoUrl, currentRepo, totalRepos, csvFile, failureLog);
+            processRepo(entry.getValue(), entry.getKey(), currentRepo, uniqueRepos.size(), failureLog);
         }
 
         if (failureLog != null) failureLog.close();
+    }
+
+    private static int indexOf(String[] headers, String name) {
+        for (int i = 0; i < headers.length; i++) {
+            if (name.equalsIgnoreCase(headers[i].trim())) return i;
+        }
+        return -1;
     }
 
     private void cleanForFreshRun() {
@@ -98,17 +106,6 @@ public class RepoCollector {
         repoManager.resetSuccessfulRepos();
     }
 
-    private int countUniqueRepos(List<String[]> rows) {
-        Set<String> seen = new HashSet<>();
-        int total = 0;
-        for (int i = 1; i < rows.size(); i++) {
-            String[] row = rows.get(i);
-            if (row.length < 2 || row[1].isEmpty()) continue;
-            if (seen.add(row[1].trim())) total++;
-        }
-        return total;
-    }
-
     private void printHeader(int totalRepos) {
         System.out.println("================================================================================");
         System.out.println("CI/CD Merge Resolver - Collection Phase");
@@ -116,8 +113,8 @@ public class RepoCollector {
         System.out.println("================================================================================\n");
     }
 
-    private void processRepo(List<String[]> rows, int rowIndex, String repoName, String repoUrl,
-                              int currentRepo, int totalRepos, Path csvFile,
+    private void processRepo(String repoName, String repoUrl,
+                              int currentRepo, int totalRepos,
                               BuildFailureLog failureLog) throws Exception {
         RepositoryStatus existingStatus = repoManager.getRepositoryStatus(repoName);
         if (!AppConfig.isFreshRun() && existingStatus != RepositoryStatus.NOT_PROCESSED
@@ -139,8 +136,6 @@ public class RepoCollector {
         } catch (IOException e) {
             System.out.printf("  ✗ Clone failed: %s\n", e.getMessage());
             if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_CLONE_FAILED", e.getMessage());
-            writeRepoRow(rows, rowIndex, "unknown", RepositoryStatus.REJECTED_CLONE_FAILED, null);
-            flushCsv(csvFile, rows);
             return;
         }
 
@@ -149,8 +144,6 @@ public class RepoCollector {
             System.out.printf("  ✗ Not a Maven project (build tool: %s) → REJECTED_NO_POM\n", buildTool);
             if (failureLog != null) failureLog.logRepoFailure(repoName, "REJECTED_NO_POM", "build tool: " + buildTool);
             repoManager.markRepositoryRejected(repoName, RepositoryStatus.REJECTED_NO_POM);
-            writeRepoRow(rows, rowIndex, buildTool, RepositoryStatus.REJECTED_NO_POM, null);
-            flushCsv(csvFile, rows);
             return;
         }
 
@@ -170,9 +163,6 @@ public class RepoCollector {
             repoManager.markRepositoryRejected(repoName, result.getStatus());
         }
 
-        writeRepoRow(rows, rowIndex, buildTool, result.getStatus(), result);
-        flushCsv(csvFile, rows);
-
         RepositoryCache.clear();
         WindowCache.reconfigure(new WindowCacheConfig());
         FileUtils.deleteDirectory(tempDir.resolve(repoName).toFile());
@@ -190,63 +180,6 @@ public class RepoCollector {
         if (Files.exists(repoFolder.resolve("BUILD")) || Files.exists(repoFolder.resolve("BUILD.bazel"))) found.add("bazel");
         if (found.isEmpty()) return "other";
         return String.join(",", found);
-    }
-
-    /** Write the new-column headers into row 0 if not already present. */
-    private void ensureHeaders(List<String[]> rows) {
-        String[] headerRow = rows.isEmpty() ? new String[0] : rows.get(0);
-        if (headerRow.length < PROJECTCOLUMN.values().length) {
-            headerRow = Arrays.copyOf(headerRow, PROJECTCOLUMN.values().length);
-            for (PROJECTCOLUMN col : PROJECTCOLUMN.values()) {
-                if (col.getColumnNumber() < 2) continue; // leave existing name/url headers as-is
-                if (headerRow[col.getColumnNumber()] == null || headerRow[col.getColumnNumber()].isEmpty()) {
-                    headerRow[col.getColumnNumber()] = col.getColumnName();
-                }
-            }
-            if (rows.isEmpty()) rows.add(headerRow);
-            else rows.set(0, headerRow);
-        }
-    }
-
-    /** Populate the stats columns for a processed (or rejected) repository row. */
-    private void writeRepoRow(List<String[]> rows, int rowIndex, String buildTool,
-                               RepositoryStatus status, CollectionResult result) {
-        String[] row = rows.get(rowIndex);
-        if (row.length < PROJECTCOLUMN.values().length) {
-            row = Arrays.copyOf(row, PROJECTCOLUMN.values().length);
-            rows.set(rowIndex, row);
-        }
-        row[PROJECTCOLUMN.buildTool.getColumnNumber()] = Utility.escapeCsvField(buildTool);
-        row[PROJECTCOLUMN.status.getColumnNumber()] = status.name();
-        if (result != null) {
-            row[PROJECTCOLUMN.totalCommits.getColumnNumber()]      = String.valueOf(result.getTotalCommits());
-            row[PROJECTCOLUMN.totalMerges.getColumnNumber()]       = String.valueOf(result.getTotalMerges());
-            row[PROJECTCOLUMN.conflictMerges.getColumnNumber()]    = String.valueOf(result.getMergesWithConflicts());
-            row[PROJECTCOLUMN.javaConflictMerges.getColumnNumber()] = String.valueOf(result.getMergesWithJavaConflicts());
-            row[PROJECTCOLUMN.analyzableMerges.getColumnNumber()]  = String.valueOf(result.getSuccessfulMerges());
-            row[PROJECTCOLUMN.maxModules.getColumnNumber()]        = String.valueOf(result.getMaxModules());
-            row[PROJECTCOLUMN.timedOut.getColumnNumber()]          = String.valueOf(result.getMergesTimedOut());
-            row[PROJECTCOLUMN.noTests.getColumnNumber()]           = String.valueOf(result.getMergesWithNoTests());
-        }
-    }
-
-    private void flushCsv(Path csvFile, List<String[]> rows) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.toFile()))) {
-            for (String[] row : rows) {
-                writer.write(rowToCsvLine(row));
-                writer.newLine();
-            }
-        }
-    }
-
-    private static String rowToCsvLine(String[] fields) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < fields.length; i++) {
-            if (i > 0) sb.append(',');
-            String value = fields[i] != null ? fields[i] : "";
-            sb.append(Utility.escapeCsvField(value));
-        }
-        return sb.toString();
     }
 
     static List<String[]> readCsv(Path csvFile) throws IOException {

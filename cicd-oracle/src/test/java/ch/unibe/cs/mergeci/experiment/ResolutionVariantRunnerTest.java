@@ -35,7 +35,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     @Test
     void runTestsNoCacheParallel() throws Exception {
         ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
-                AppConfig.INPUT_PROJECT_CSV,
+                AppConfig.MERGE_COMMITS_CSV,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
                 );
 
@@ -50,7 +50,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     @Test
     void runTestsCacheParallel() throws Exception {
         ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
-                AppConfig.INPUT_PROJECT_CSV,
+                AppConfig.MERGE_COMMITS_CSV,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 
@@ -65,7 +65,7 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     @Test
     void runTestsNoCacheNoParallel() throws Exception {
         ResolutionVariantRunner experimentRunner = new ResolutionVariantRunner(AppConfig.TEST_DATASET_DIR,
-                AppConfig.INPUT_PROJECT_CSV,
+                AppConfig.MERGE_COMMITS_CSV,
                 AppConfig.TEST_EXPERIMENTS_TEMP_DIR
         );
 

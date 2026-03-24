@@ -143,18 +143,25 @@ public class Utility {
      */
     public static Optional<String> getRepoUrlFromCsv(Path csvFile, String projectName) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile.toFile()))) {
+            String headerLine = reader.readLine();
+            if (headerLine == null) return Optional.empty();
+            String[] headers = parseCsvLine(headerLine);
+            int nameCol = -1, urlCol = -1;
+            for (int i = 0; i < headers.length; i++) {
+                if ("project_name".equalsIgnoreCase(headers[i].trim())) nameCol = i;
+                if ("remote_url".equalsIgnoreCase(headers[i].trim()))   urlCol  = i;
+            }
+            if (nameCol < 0 || urlCol < 0) return Optional.empty();
+
             String line;
-            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
-                if (firstLine) { firstLine = false; continue; } // skip header
                 if (line.isBlank()) continue;
-
                 String[] fields = parseCsvLine(line);
-                if (fields.length <= PROJECTCOLUMN.repoURL.getColumnNumber()) continue;
-
-                String repoName = fields[PROJECTCOLUMN.repoName.getColumnNumber()].split("/")[1].trim();
-                if (repoName.equals(projectName)) {
-                    return Optional.of(fields[PROJECTCOLUMN.repoURL.getColumnNumber()].trim());
+                if (fields.length <= Math.max(nameCol, urlCol)) continue;
+                String name = fields[nameCol].trim();
+                if (name.contains("/")) name = name.substring(name.lastIndexOf('/') + 1);
+                if (name.equals(projectName)) {
+                    return Optional.of(fields[urlCol].trim());
                 }
             }
         }

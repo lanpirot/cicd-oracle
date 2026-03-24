@@ -30,7 +30,7 @@ public class ResolutionVariantRunner {
     private final RepositoryManager repoManager;
 
     public ResolutionVariantRunner() {
-        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.INPUT_PROJECT_CSV, AppConfig.REPO_DIR);
+        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.MERGE_COMMITS_CSV, AppConfig.REPO_DIR);
     }
 
     public ResolutionVariantRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
