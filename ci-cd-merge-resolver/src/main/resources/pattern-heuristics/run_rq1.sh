@@ -7,8 +7,9 @@
 #   --from-step 1  (default) SQL extraction → everything
 #   --from-step 2  skip SQL extraction; start from heuristics learning
 #   --from-step 3  skip to fold generation
-#   --from-step 4  skip to model training + inference
-#   --from-step 5  skip to Java evaluation only
+#   --from-step 4  skip to ML-AR model training + inference
+#   --from-step 5  skip to RF model training + inference
+#   --from-step 6  skip to Java evaluation only
 
 set -euo pipefail
 
@@ -46,7 +47,7 @@ for arg in "$@"; do
             elif [[ -n "${PREV_ARG:-}" && "$PREV_ARG" == "--from-step" ]]; then
                 FROM_STEP="$arg"
             else
-                echo "Usage: $0 [--from-step N]  (N = 1..5)" >&2; exit 1
+                echo "Usage: $0 [--from-step N]  (N = 1..6)" >&2; exit 1
             fi
             ;;
     esac
@@ -57,7 +58,7 @@ done
 step_header() {
     echo
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "  Step $1 / 5 — $2"
+    echo "  Step $1 / 6 — $2"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
 
@@ -100,9 +101,16 @@ if skip_if_before 4; then
         --data-dir "$DATA_DIR"
 fi
 
-# ── Step 5: Evaluate with PatternMatchEvaluator ───────────────────────────────
+# ── Step 5: Train Random Forest + generate predictions ────────────────────────
 if skip_if_before 5; then
-    step_header 5 "Evaluate (PatternMatchEvaluator → cv_results.csv + tables + plots)"
+    step_header 5 "Train Random Forest + generate predictions  (~5-30 min)"
+    "$PYTHON" "$SCRIPT_DIR/train_rf_model.py" \
+        --data-dir "$DATA_DIR"
+fi
+
+# ── Step 6: Evaluate with PatternMatchEvaluator ───────────────────────────────
+if skip_if_before 6; then
+    step_header 6 "Evaluate (PatternMatchEvaluator → cv_results.csv + tables + plots)"
     cd "$MAVEN_MODULE"
     mvn -q compile exec:java \
         -Dexec.mainClass="ch.unibe.cs.mergeci.experiment.PatternMatchEvaluator"

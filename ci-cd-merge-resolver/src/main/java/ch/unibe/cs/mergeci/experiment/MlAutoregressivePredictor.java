@@ -19,7 +19,8 @@ import java.util.*;
  */
 public class MlAutoregressivePredictor {
 
-    private static final String SCRIPT_NAME = "train_autoregressive_model.py";
+    private static final String SCRIPT_NAME    = "train_autoregressive_model.py";
+    private static final String RF_SCRIPT_NAME = "train_rf_model.py";
 
     private final Map<String, List<List<String>>> predictions;
 
@@ -40,7 +41,24 @@ public class MlAutoregressivePredictor {
         Files.createDirectories(AppConfig.RQ1_PREDICTIONS_DIR);
         Path predFile = AppConfig.RQ1_PREDICTIONS_DIR.resolve("autoregressive_predictions_fold" + fold + ".csv");
         if (!Files.exists(predFile)) {
-            runPythonInference(scriptDir, fold, variantCap);
+            runPythonScript(scriptDir, SCRIPT_NAME, fold, variantCap);
+        }
+        if (!Files.exists(predFile)) {
+            return new MlAutoregressivePredictor(Map.of());
+        }
+        return new MlAutoregressivePredictor(loadPredictions(predFile));
+    }
+
+    /**
+     * Build a Random Forest predictor for {@code fold}, running Python inference if the
+     * prediction file is absent.
+     */
+    public static MlAutoregressivePredictor rfForFold(Path scriptDir, int fold, int variantCap)
+            throws IOException {
+        Files.createDirectories(AppConfig.RQ1_PREDICTIONS_DIR);
+        Path predFile = AppConfig.RQ1_PREDICTIONS_DIR.resolve("rf_predictions_fold" + fold + ".csv");
+        if (!Files.exists(predFile)) {
+            runPythonScript(scriptDir, RF_SCRIPT_NAME, fold, variantCap);
         }
         if (!Files.exists(predFile)) {
             return new MlAutoregressivePredictor(Map.of());
@@ -121,18 +139,16 @@ public class MlAutoregressivePredictor {
     // Internal helpers
     // -------------------------------------------------------------------------
 
-    private static void runPythonInference(Path scriptDir, int fold, int variantCap) {
-        Path script = scriptDir.resolve(SCRIPT_NAME);
+    private static void runPythonScript(Path scriptDir, String scriptName, int fold, int variantCap) {
+        Path script = scriptDir.resolve(scriptName);
         if (!Files.exists(script)) {
-            System.err.println("ML script not found, skipping ML_AUTOREGRESSIVE for fold "
-                    + fold + ": " + script);
+            System.err.println("Script not found, skipping fold " + fold + ": " + script);
             return;
         }
 
         String pythonExe = resolvePythonExecutable(scriptDir);
 
         try { Files.createDirectories(AppConfig.RQ1_CHECKPOINTS_DIR); } catch (Exception ignored) {}
-        Path checkpoint = AppConfig.RQ1_CHECKPOINTS_DIR.resolve("autoregressive_model_fold" + fold + ".pt");
         List<String> cmd = new ArrayList<>(List.of(
                 pythonExe, script.toAbsolutePath().toString(),
                 "--folds",            String.valueOf(fold),
@@ -142,22 +158,24 @@ public class MlAutoregressivePredictor {
                 "--predictions-dir",  AppConfig.RQ1_PREDICTIONS_DIR.toAbsolutePath().toString(),
                 "--variants",         String.valueOf(variantCap)
         ));
-        if (Files.exists(checkpoint)) {
-            cmd.add("--inference-only");
+        if (scriptName.equals(SCRIPT_NAME)) {
+            Path checkpoint = AppConfig.RQ1_CHECKPOINTS_DIR.resolve("autoregressive_model_fold" + fold + ".pt");
+            if (Files.exists(checkpoint)) {
+                cmd.add("--inference-only");
+            }
         }
 
-        Path predFile = AppConfig.RQ1_PREDICTIONS_DIR.resolve("autoregressive_predictions_fold" + fold + ".csv");
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.inheritIO();
         try {
             int exit = pb.start().waitFor();
             if (exit != 0) {
-                System.err.println("ML inference exited with code " + exit + " for fold " + fold);
-                try { Files.deleteIfExists(predFile); } catch (Exception ignored) {}
+                System.err.println("Python script exited with code " + exit
+                        + " (" + scriptName + ", fold " + fold + ")");
             }
         } catch (Exception e) {
-            System.err.println("Failed to run ML inference for fold " + fold + ": " + e.getMessage());
-            try { Files.deleteIfExists(predFile); } catch (Exception ignored) {}
+            System.err.println("Failed to run " + scriptName + " for fold " + fold
+                    + ": " + e.getMessage());
         }
     }
 

@@ -38,7 +38,7 @@ public class PatternMatchEvaluator {
         "BASEOURSTHEIRS", "BASETHEIRSOURS"
     );
 
-    enum Mode { HEURISTIC, RANDOM, GLOBAL_UNIFORM, GLOBAL, ML_AUTOREGRESSIVE }
+    enum Mode { HEURISTIC, RANDOM, GLOBAL_UNIFORM, GLOBAL, ML_AUTOREGRESSIVE, ML_RF }
 
     record EvalRow(String mergeId, int numChunks, String[] groundTruth) {}
 
@@ -80,14 +80,20 @@ public class PatternMatchEvaluator {
                 MlAutoregressivePredictor mlPredictor =
                     MlAutoregressivePredictor.forFold(AppConfig.RQ1_SCRIPTS_DIR, fold, variantCap);
                 if (mlPredictor.isAvailable()) {
-                    System.out.println("  ML predictions available for " + mlPredictor.mergeCount() + " merges.");
+                    System.out.println("  ML-AR predictions available for " + mlPredictor.mergeCount() + " merges.");
+                }
+                MlAutoregressivePredictor rfPredictor =
+                    MlAutoregressivePredictor.rfForFold(AppConfig.RQ1_SCRIPTS_DIR, fold, variantCap);
+                if (rfPredictor.isAvailable()) {
+                    System.out.println("  RF predictions available for " + rfPredictor.mergeCount() + " merges.");
                 }
 
                 for (EvalRow row : evalRows) {
                     for (Mode mode : Mode.values()) {
                         if (mode == Mode.ML_AUTOREGRESSIVE && !mlPredictor.isAvailable()) continue;
+                        if (mode == Mode.ML_RF && !rfPredictor.isAvailable()) continue;
                         Result result = evaluate(row, mode, heuristics, variantCap, fold, trajWriter,
-                                                 mlPredictor);
+                                                 mlPredictor, rfPredictor);
                         writer.printf("%d,%s,%d,%s,%d,%d,%d%n",
                             fold, row.mergeId(), row.numChunks(), mode,
                             result.minDist(), result.rankOfClosest(), result.variantsGenerated());
@@ -158,7 +164,8 @@ public class PatternMatchEvaluator {
 
     static Result evaluate(EvalRow row, Mode mode, PatternHeuristics heuristics, int variantCap,
                            int fold, PrintWriter trajWriter,
-                           MlAutoregressivePredictor mlPredictor) {
+                           MlAutoregressivePredictor mlPredictor,
+                           MlAutoregressivePredictor rfPredictor) {
         int n = row.numChunks();
         String[] groundTruth = row.groundTruth();
 
@@ -288,6 +295,19 @@ public class PatternMatchEvaluator {
 
             case ML_AUTOREGRESSIVE -> {
                 List<List<String>> preds = mlPredictor.getPredictions(row.mergeId());
+                for (List<String> assignment : preds) {
+                    if (variantsGenerated >= maxVariants || minDist == 0) break;
+                    variantsGenerated++;
+                    int dist = hammingDistance(assignment, groundTruth);
+                    if (dist < minDist) {
+                        minDist = dist; rankOfClosest = variantsGenerated;
+                        trajWriter.printf("%d,%s,%d,%s,%d,%d%n", fold, row.mergeId(), n, mode, variantsGenerated, dist);
+                    }
+                }
+            }
+
+            case ML_RF -> {
+                List<List<String>> preds = rfPredictor.getPredictions(row.mergeId());
                 for (List<String> assignment : preds) {
                     if (variantsGenerated >= maxVariants || minDist == 0) break;
                     variantsGenerated++;

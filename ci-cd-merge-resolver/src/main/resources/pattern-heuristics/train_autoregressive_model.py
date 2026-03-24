@@ -667,12 +667,14 @@ def load_data(csv_path: str, max_rows: int = 0):
     """
     Load all_conflicts.csv.
     max_rows: if > 0, stop after this many CSV rows (for quick tests).
-    Returns rows_by_merge, merge_ids_in_order, merge_time_median.
+    Returns rows_by_merge, merge_ids_in_order, merge_time_median, merge_commit_time.
+    merge_commit_time maps merge_id -> commitTime ISO string (for chronological fold ordering).
     """
     rows_by_merge      = defaultdict(list)
     merge_ids_in_order = []
     seen_mids          = set()
     merge_times        = []
+    merge_commit_time: dict[str, str] = {}
 
     with open(csv_path, newline="") as f:
         reader = csv.DictReader(f)
@@ -683,6 +685,7 @@ def load_data(csv_path: str, max_rows: int = 0):
             if mid not in seen_mids:
                 seen_mids.add(mid)
                 merge_ids_in_order.append(mid)
+                merge_commit_time[mid] = row.get("commitTime", "").strip()
             rows_by_merge[mid].append(row)
             try:
                 d = date.fromisoformat(row["commitTime"].strip().split(" ")[0])
@@ -695,19 +698,20 @@ def load_data(csv_path: str, max_rows: int = 0):
     for mid in rows_by_merge:
         rows_by_merge[mid].sort(key=lambda r: (r.get("filename", ""),
                                                 int(r.get("chunk_id", 0))))
-    return rows_by_merge, merge_ids_in_order, merge_time_median
+    return rows_by_merge, merge_ids_in_order, merge_time_median, merge_commit_time
 
 
-def make_folds(merge_ids_in_order: list[str], n_folds: int = 10):
+def make_folds(merge_ids_in_order: list[str], merge_commit_time: dict[str, str],
+               n_folds: int = 10):
     """
-    Replicate the exact fold split from learn_cv_folds.py (seed=42, merge_id-level).
+    Replicate the exact fold split from learn_cv_folds.py (chronological, merge_id-level).
+    Fold 0 = oldest merges, fold 9 = newest merges.
     All chunks of a merge always stay in the same fold — never split.
 
     RQ2/RQ3 convention: merge X is in fold k → use autoregressive_model_fold{k}.pt
     (the model trained WITHOUT fold k).
     """
-    ids = list(merge_ids_in_order)
-    random.Random(42).shuffle(ids)
+    ids = sorted(merge_ids_in_order, key=lambda m: merge_commit_time.get(m, ""))
     n, fold_size = len(ids), len(ids) // n_folds
     return [
         set(ids[k * fold_size : (k * fold_size + fold_size) if k < n_folds - 1 else n])
@@ -800,12 +804,12 @@ def main():
             print(f"Warning: could not load global weights ({e}); NON positions will be masked.", flush=True)
 
     print("Loading data…", flush=True)
-    rows_by_merge, merge_ids_in_order, merge_time_median = load_data(
+    rows_by_merge, merge_ids_in_order, merge_time_median, merge_commit_time = load_data(
         csv_path, max_rows=args.max_rows
     )
     print(f"  {len(merge_ids_in_order):,} unique merges", flush=True)
 
-    folds      = make_folds(merge_ids_in_order)
+    folds      = make_folds(merge_ids_in_order, merge_commit_time)
     all_mid_set = set(merge_ids_in_order)
 
     fold_assignment_path = os.path.join(checkpoints_dir, "autoregressive_fold_assignment.json")

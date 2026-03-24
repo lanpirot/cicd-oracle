@@ -18,10 +18,11 @@ from collections import defaultdict
 
 csv.field_size_limit(1_000_000)
 
-MODES         = ['RANDOM', 'GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_AUTOREGRESSIVE']
-DISPLAY_NAMES = ['RANDOM', 'GLOBAL', 'UNIFORM',         'HEURISTIC', 'ML-AR']
+MODES         = ['RANDOM', 'GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_AUTOREGRESSIVE', 'ML_RF']
+DISPLAY_NAMES = ['RANDOM', 'GLOBAL', 'UNIFORM',         'HEURISTIC', 'ML-AR',             'RF']
 BUCKET_ORDER  = [str(i) for i in range(1, 10)] + ['10--19', '20--49', '50+']
 ML_MODE       = 'ML_AUTOREGRESSIVE'
+RF_MODE       = 'ML_RF'
 
 
 def bucket_of(n):
@@ -290,6 +291,12 @@ def main():
         print('Note: no ML_AUTOREGRESSIVE rows in cv_results.csv — ML-AR column omitted.')
         global MODES, DISPLAY_NAMES
         MODES         = [m for m in MODES         if m != ML_MODE]
+        DISPLAY_NAMES = DISPLAY_NAMES[:len(MODES)]
+
+    # ── drop ML_RF column if cv_results.csv contains no RF rows ──────────────
+    if not any(r['mode'] == RF_MODE for r in rows):
+        print('Note: no ML_RF rows in cv_results.csv — RF column omitted.')
+        MODES         = [m for m in MODES         if m != RF_MODE]
         DISPLAY_NAMES = DISPLAY_NAMES[:len(MODES)]
 
     # ── theoretical ceiling: merges with no CHUNK_NONCANONICAL chunk ────────
