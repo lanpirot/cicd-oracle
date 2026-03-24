@@ -13,6 +13,14 @@
 
 set -euo pipefail
 
+# ── Load GITHUB_TOKEN from ~/.bashrc if not already in environment ─────────────
+# Non-interactive scripts skip ~/.bashrc; spawn an interactive subshell to read it.
+if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+    _token=$(bash -i -c 'printf "%s" "${GITHUB_TOKEN:-}"' 2>/dev/null || true)
+    [[ -n "$_token" ]] && export GITHUB_TOKEN="$_token"
+    unset _token
+fi
+
 # ── Resolve paths ─────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAVEN_MODULE="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
