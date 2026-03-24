@@ -18,8 +18,8 @@ from collections import defaultdict
 
 csv.field_size_limit(1_000_000)
 
-MODES         = ['RANDOM', 'GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_AUTOREGRESSIVE', 'ML_RF']
-DISPLAY_NAMES = ['RANDOM', 'GLOBAL', 'UNIFORM',         'HEURISTIC', 'ML-AR',             'RF']
+MODES         = ['GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_RF', 'ML_AUTOREGRESSIVE']
+DISPLAY_NAMES = ['GLOBAL', 'UNIFORM',        'HEURISTIC', r'MESTRE^{*}', 'ML-AR']
 BUCKET_ORDER  = [str(i) for i in range(1, 10)] + ['10--19', '20--49', '50+']
 ML_MODE       = 'ML_AUTOREGRESSIVE'
 RF_MODE       = 'ML_RF'
@@ -101,8 +101,8 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg
     lines = [
         r'\begin{table*}[ht]',
         r'\centering',
-        (rf'\caption{{RQ1: Pattern heuristic cross-validation '
-         rf'(cap\,=\,{variant_cap} variants, {weight_note})}}'),
+        (rf'\caption{{Target resolution hit rate and mean attempts (att.)\ '
+         rf'within {variant_cap} variants ({weight_note})}}'),
         rf'\label{{tab:rq1{sz_suffix}}}',
         r'\begin{tabular}{l r' + r' @{\hspace{2em}} r r' * len(MODES) + r' @{\hspace{2em}} r r}',
         r'\toprule',
@@ -112,7 +112,7 @@ def build_tex(bucket_stats, agg, variant_cap, size_weighted, bucket_ceiling, agg
     hdr1 = r'\textbf{\#chunks} & \textbf{N}'
     for name in DISPLAY_NAMES:
         hdr1 += rf' & \multicolumn{{2}}{{c}}{{\textbf{{{name}}}}}'
-    hdr1 += r' & \multicolumn{2}{c}{\textcolor{gray}{\textit{PERFECT}}}'
+    hdr1 += r' & \multicolumn{2}{c}{\textcolor{gray}{\textit{Reachable}}}'
     lines.append(hdr1 + r' \\')
 
     # Header row 2 — sub-column labels
@@ -223,8 +223,7 @@ def build_oneshot_tex(oneshot, variant_cap):
     lines = [
         r'\begin{table}[ht]',
         r'\centering',
-        (rf'\caption{{RQ1 one-shot chunk accuracy (first variant only, '
-         rf'cap\,=\,{variant_cap})}}'),
+        r'\caption{One-shot chunk accuracy (first variant only)}',
         r'\label{tab:rq1-oneshot}',
         r'\begin{tabular}{l|' + 'r' * len(MODES) + '}',
         r'\hline',
@@ -290,14 +289,14 @@ def main():
     if not any(r['mode'] == ML_MODE for r in rows):
         print('Note: no ML_AUTOREGRESSIVE rows in cv_results.csv — ML-AR column omitted.')
         global MODES, DISPLAY_NAMES
-        MODES         = [m for m in MODES         if m != ML_MODE]
-        DISPLAY_NAMES = DISPLAY_NAMES[:len(MODES)]
+        pairs = [(m, d) for m, d in zip(MODES, DISPLAY_NAMES) if m != ML_MODE]
+        MODES, DISPLAY_NAMES = map(list, zip(*pairs)) if pairs else ([], [])
 
     # ── drop ML_RF column if cv_results.csv contains no RF rows ──────────────
     if not any(r['mode'] == RF_MODE for r in rows):
         print('Note: no ML_RF rows in cv_results.csv — RF column omitted.')
-        MODES         = [m for m in MODES         if m != RF_MODE]
-        DISPLAY_NAMES = DISPLAY_NAMES[:len(MODES)]
+        pairs = [(m, d) for m, d in zip(MODES, DISPLAY_NAMES) if m != RF_MODE]
+        MODES, DISPLAY_NAMES = map(list, zip(*pairs)) if pairs else ([], [])
 
     # ── theoretical ceiling: merges with no CHUNK_NONCANONICAL chunk ────────
     all_conflicts_path = (sys.argv[3] if len(sys.argv) > 3

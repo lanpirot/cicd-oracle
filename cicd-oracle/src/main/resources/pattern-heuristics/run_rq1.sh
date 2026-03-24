@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_rq1.sh — Full RQ1 pipeline: extract → heuristics → folds → train → evaluate
+# run_rq1.sh — Full RQ1 pipeline: extract → heuristics → folds → train → evaluate → validate
 #
 # Usage (from repo root or any directory):
 #   ./src/main/resources/pattern-heuristics/run_rq1.sh [--from-step N]
@@ -10,6 +10,7 @@
 #   --from-step 4  skip to ML-AR model training + inference
 #   --from-step 5  skip to RF model training + inference
 #   --from-step 6  skip to Java evaluation only
+#   --from-step 7  skip to temporal integrity checks only
 
 set -euo pipefail
 
@@ -66,7 +67,7 @@ done
 step_header() {
     echo
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "  Step $1 / 6 — $2"
+    echo "  Step $1 / 7 — $2"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
 
@@ -124,11 +125,15 @@ if skip_if_before 6; then
         -Dexec.mainClass="ch.unibe.cs.mergeci.experiment.PatternMatchEvaluator"
 fi
 
+# ── Step 7: Temporal integrity checks ────────────────────────────────────────
+if skip_if_before 7; then
+    step_header 7 "Temporal integrity checks (fold membership, order, JSON, coverage, Spearman)"
+    "$PYTHON" "$SCRIPT_DIR/check_rq1_temporal_integrity.py" \
+        --data-dir "$DATA_DIR"
+fi
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Done.  Results in $RESULTS_DIR"
-echo "  Check temporal sanity: fold 9 (newest) should not"
-echo "  perform much worse than folds 0–8 in the printout"
-echo "  above (ML-AR hit rate per fold)."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
