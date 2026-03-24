@@ -1,4 +1,4 @@
-# CI/CD Merge Conflict Resolver
+# CI/CD as Oracle: Pattern-Based Merge Resolution with Learned Variant Generation
 
 Research pipeline that studies automated merge conflict resolution by brute-forcing resolution patterns and evaluating them via Maven builds and test suites.
 
