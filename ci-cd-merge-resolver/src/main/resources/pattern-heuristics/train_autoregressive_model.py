@@ -95,7 +95,6 @@ LOG1P_MERGE = {
     "mergeRangeCommitCountOurs", "mergeRangeCommitCountTheirs",
     "changedFilesOURS", "changedFilesTHEIRS", "filesConflictingMerged",
     "filesCleanMerged", "fileCount",
-    "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
     "num_chunks_in_merge",
 }
 LOG1P_CHUNK = {
@@ -126,26 +125,20 @@ MERGE_COLS = [
     "filesConflictingMerged",              # concurrentlyChangedFiles
     "filesCleanMerged",                    # clean (non-conflicting) files in merge
     "fileCount",                           # total files touched in merge
-    # LOC changes
-    "locAddedOURS", "locAddedTHEIRS", "locRemovedOURS", "locRemovedTHEIRS",
     # Duration / delay
     "branchDivergenceDays",                # abs(oursCommitTime - theirsCommitTime)
     "conclusionDelay",                     # conclusionDelayDays
     "mergeRangeDurationDays",              # commitTime - mergeRangeOldestCommitTime
     "is_maven",              # 0/1 feature (not a filter)
     "merge_time_days",       # engineered from commitTime
-    "devInt_ALL",            # one-hot from authorsIntersectionMergeRange
     "num_chunks_in_merge",   # computed: total conflict chunks in this merge
 ]
 CHUNK_COLS = [
     "selfConflict",                # 1 if authorsIntersectionMergeRange == 'ALL'
     "cyclomaticComplexityOURS", "cyclomaticComplexityTHEIRS", "cyclomaticComplexityFile",
     "chunkPositionQuarter",
-    "chunkIndex",                  # absolute 0-based chunk position within merge
     "lengthContextBefore",         # lines of context before chunk
     "lengthContextAfter",          # lines of context after chunk
-    "isStableContextBefore",       # bool: context before is unchanged on both branches
-    "isStableContextAfter",        # bool: context after is unchanged on both branches
     "lengthChunk",                 # = lengthOURS + lengthBASE + lengthTHEIRS (chunkAbsSize)
     "lengthRelativeOURSTHEIRS",    # chunkRelSize
     "lengthOURS",                  # chunkAbsSizeOURS
@@ -187,7 +180,6 @@ def extract_features(rows: list[dict], merge_time_median: float):
     """
     r0 = rows[0]
     mt = parse_merge_time(r0.get("commitTime", ""), merge_time_median)
-    dev_int_all = 1.0 if r0.get("authorsIntersectionMergeRange", "") == "ALL" else 0.0
     is_maven    = 1.0 if r0.get("is_maven", "False") == "True" else 0.0
 
     # Computed features (not present as CSV columns)
@@ -201,8 +193,6 @@ def extract_features(rows: list[dict], merge_time_median: float):
     for col in MERGE_COLS:
         if col == "merge_time_days":
             merge_vals.append(mt)
-        elif col == "devInt_ALL":
-            merge_vals.append(dev_int_all)
         elif col == "is_maven":
             merge_vals.append(is_maven)
         elif col == "num_chunks_in_merge":
@@ -218,8 +208,6 @@ def extract_features(rows: list[dict], merge_time_median: float):
             if col == "num_chunks_in_file":
                 v = float(file_chunk_counts.get(row.get("filename", ""), 1))
                 cv.append(_log1p_if(col, LOG1P_CHUNK, v))
-            elif col in ("isStableContextBefore", "isStableContextAfter"):
-                cv.append(1.0 if row.get(col, "False") == "True" else 0.0)
             else:
                 v = _safe_float(row.get(col, 0))
                 cv.append(_log1p_if(col, LOG1P_CHUNK, v))

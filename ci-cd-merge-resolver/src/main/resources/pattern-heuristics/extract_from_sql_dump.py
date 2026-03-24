@@ -592,7 +592,6 @@ ALL_CONFLICTS_HEADER = [
     'lengthChunk',                          # = lengthOURS + lengthBASE + lengthTHEIRS
     'lengthRelativeOURS', 'lengthRelativeTHEIRS', 'lengthRelativeOURSTHEIRS',
     'lengthContextBefore', 'lengthContextAfter',
-    'isStableContextBefore', 'isStableContextAfter',
     'chunkPositionQuarter',
     'cyclomaticComplexityOURS', 'cyclomaticComplexityTHEIRS',
 
@@ -606,7 +605,6 @@ CHUNK_SQL_COLS = [
     'lengthOURS', 'lengthBASE', 'lengthTHEIRS',
     'lengthRelativeOURS', 'lengthRelativeTHEIRS', 'lengthRelativeOURSTHEIRS',
     'lengthContextBefore', 'lengthContextAfter',
-    'isStableContextBefore', 'isStableContextAfter',
     'conflictResolutionResult',
     'chunkPositionQuarter',
     'cyclomaticComplexityOURS', 'cyclomaticComplexityTHEIRS',
@@ -754,7 +752,6 @@ def write_all_conflicts(sql_path: Path, projects: dict, merges: dict,
                     cv('lengthRelativeOURS'), cv('lengthRelativeTHEIRS'),
                     cv('lengthRelativeOURSTHEIRS'),
                     cv('lengthContextBefore'), cv('lengthContextAfter'),
-                    cv('isStableContextBefore'), cv('isStableContextAfter'),
                     cv('chunkPositionQuarter'),
                     cv('cyclomaticComplexityOURS'), cv('cyclomaticComplexityTHEIRS'),
 

@@ -21,7 +21,13 @@ RESULTS_DIR="$DATA_DIR/results"
 
 # ── Python: prefer repo venv (has GPU-enabled PyTorch) ────────────────────────
 PYTHON="python3"
-for candidate in "$MAVEN_MODULE/.venv/bin/python3" "$MAVEN_MODULE/.venv/bin/python"; do
+for candidate in \
+    "$SCRIPT_DIR/.venv/bin/python3" \
+    "$SCRIPT_DIR/.venv/bin/python" \
+    "$MAVEN_MODULE/../.venv/bin/python3" \
+    "$MAVEN_MODULE/../.venv/bin/python" \
+    "$MAVEN_MODULE/.venv/bin/python3" \
+    "$MAVEN_MODULE/.venv/bin/python"; do
     if [[ -x "$candidate" ]]; then
         PYTHON="$candidate"
         break
