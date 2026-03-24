@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.unibe.cs</groupId>
-    <artifactId>ci-cd-merge-resolver</artifactId>
+    <artifactId>cicd-oracle</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ci-cd-merge-resolver</name>
-    <description>ci-cd-merge-resolver</description>
+    <name>cicd-oracle</name>
+    <description>cicd-oracle</description>
     <url/>
     <licenses>
         <license/>

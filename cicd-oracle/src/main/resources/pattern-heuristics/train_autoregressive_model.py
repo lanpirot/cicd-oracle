@@ -1,4 +1,4 @@
-#!/usr/bin/env -S /home/lanpirot/projects/merge++/bruteforce/ci-cd-merge-resolver/.venv/bin/python3
+#!/usr/bin/env -S /home/lanpirot/projects/merge++/cicd-oracle/.venv/bin/python3
 """
 Train & evaluate an autoregressive transformer model for merge-conflict
 pattern prediction (RQ1).

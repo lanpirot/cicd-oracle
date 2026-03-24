@@ -16,7 +16,7 @@ This repository consists of three main components:
 Core logic for resolve merge conflicts
 
 📄 Documentation:  
-[README – CI/CD Core](ci-cd-merge-resolver/README.md)
+[README – CI/CD Core](cicd-oracle/README.md)
 
 ---
 

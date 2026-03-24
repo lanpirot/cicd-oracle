@@ -52,8 +52,8 @@ scripts/*.pdf
 **/src/test/**/test-merge-projects/
 temp/
 dataset_temp/
-/ci-cd-merge-resolver/repoCollector/*
-!/ci-cd-merge-resolver/repoCollector/datasets
-/ci-cd-merge-resolver/experiments/temp
-/ci-cd-merge-resolver/analysis
+/cicd-oracle/repoCollector/*
+!/cicd-oracle/repoCollector/datasets
+/cicd-oracle/experiments/temp
+/cicd-oracle/analysis
 
