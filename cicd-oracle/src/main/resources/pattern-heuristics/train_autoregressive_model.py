@@ -35,6 +35,12 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset, Sampler
 
+# Canonical fold-splitting lives in learn_cv_folds.py; import it so both scripts
+# always use identical fold boundaries.
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+from learn_cv_folds import make_folds  # noqa: E402
+
 csv.field_size_limit(1_000_000)
 
 # ---------------------------------------------------------------------------
@@ -701,23 +707,6 @@ def load_data(csv_path: str, max_rows: int = 0):
     return rows_by_merge, merge_ids_in_order, merge_time_median, merge_commit_time
 
 
-def make_folds(merge_ids_in_order: list[str], merge_commit_time: dict[str, str],
-               n_folds: int = 10):
-    """
-    Replicate the exact fold split from learn_cv_folds.py (chronological, merge_id-level).
-    Fold 0 = oldest merges, fold 9 = newest merges.
-    All chunks of a merge always stay in the same fold — never split.
-
-    RQ2/RQ3 convention: merge X is in fold k → use autoregressive_model_fold{k}.pt
-    (the model trained WITHOUT fold k).
-    """
-    ids = sorted(merge_ids_in_order, key=lambda m: merge_commit_time.get(m, ""))
-    n, fold_size = len(ids), len(ids) // n_folds
-    return [
-        set(ids[k * fold_size : (k * fold_size + fold_size) if k < n_folds - 1 else n])
-        for k in range(n_folds)
-    ]
-
 
 def save_fold_assignment(folds: list[set], path: str):
     import json
@@ -809,7 +798,7 @@ def main():
     )
     print(f"  {len(merge_ids_in_order):,} unique merges", flush=True)
 
-    folds      = make_folds(merge_ids_in_order, merge_commit_time)
+    folds      = make_folds(merge_commit_time)
     all_mid_set = set(merge_ids_in_order)
 
     fold_assignment_path = os.path.join(checkpoints_dir, "autoregressive_fold_assignment.json")

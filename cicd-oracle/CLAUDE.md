@@ -67,9 +67,11 @@ For **broken-baseline merges** (`baselineBroken=true`), the stored baseline wall
 
 A merge has N conflict chunks. Each variant assigns one pattern per chunk. Atomic patterns: `OURS`, `THEIRS`, `BASE`, `EMPTY`. Compound patterns combine atomics with colon notation (e.g., `OURS:BASE`). `StrategySelector` + `PatternHeuristics` (loaded from `src/main/resources/pattern-heuristics/learnt_historical_pattern_distribution.csv`) pick the order in which assignments are tried. For large N, the search space is exponential; the time budget is the natural stopping condition.
 
-RQ1 large artefacts (`Java_chunks.csv`, fold CSVs, `.pt` checkpoints, prediction CSVs, results) live under `~/data/bruteforcemerge/rq1/` with subdirs `cv_folds/`, `checkpoints/`, `predictions/`, `results/`. Python scripts remain in `src/main/resources/pattern-heuristics/`. Paths are defined in `AppConfig.RQ1_*`.
+RQ1 large artefacts (`all_conflicts.csv`, fold CSVs, `.pt` checkpoints, prediction CSVs, results) live under `~/data/bruteforcemerge/rq1/` with subdirs `cv_folds/`, `checkpoints/`, `predictions/`, `results/`. Python scripts remain in `src/main/resources/pattern-heuristics/`. Paths are defined in `AppConfig.RQ1_*`.
 
 `MergeFilter` loads `training_mergeIDs.csv` from the classpath and exposes `isTrainingMerge()`. `DatasetCollectionOrchestrator` skips training merges during dataset collection to prevent data leakage (the heuristics model was trained on those merges).
+
+**Fold-correct inference in RQ2 and RQ3.** Both pipelines use `MLARGeneratorFactory` → `MLARGenerator` → `predict_mlar.py`. For each merge, `predict_mlar.py` consults `autoregressive_fold_assignment.json` (written by `train_autoregressive_model.py`) to determine which fold the merge belongs to, then loads `autoregressive_model_fold{k}.pt` — the checkpoint trained *without* fold k. The heuristic variant generator similarly reads `learnt_historical_pattern_distribution_train{k}.csv` for fold k. This guarantees RQ2/3 never use a model or heuristic distribution that was trained on the merge being evaluated. `predict_mlar.py` exits with a hard error if the fold assignment file is missing or does not contain the requested merge ID; it must be (re-)generated before starting an RQ2/3 run.
 
 ### Key Configuration (`config/AppConfig.java`)
 

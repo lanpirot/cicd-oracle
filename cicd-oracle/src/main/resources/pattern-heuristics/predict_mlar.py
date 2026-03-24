@@ -76,12 +76,22 @@ def main():
         rows_by_merge[args.merge_id], merge_time_median
     )
 
-    # Select the checkpoint trained without this merge's fold
-    fold_k = 0  # fallback if assignment file is missing
-    if fold_assignment_path.exists():
-        with open(fold_assignment_path) as f:
-            assignment = json.load(f)
-        fold_k = assignment.get(args.merge_id, 0)
+    # Select the checkpoint trained without this merge's fold.
+    # Both conditions are hard errors: using the wrong checkpoint would silently
+    # evaluate the model on data it was trained on.
+    if not fold_assignment_path.exists():
+        print(f"ERROR: fold assignment file not found: {fold_assignment_path}", file=sys.stderr)
+        print("Run train_autoregressive_model.py first to generate it.", file=sys.stderr)
+        sys.exit(1)
+    with open(fold_assignment_path) as f:
+        assignment = json.load(f)
+    if args.merge_id not in assignment:
+        print(f"ERROR: merge_id={args.merge_id!r} has no entry in {fold_assignment_path}",
+              file=sys.stderr)
+        print("The fold assignment file may be stale — re-run train_autoregressive_model.py.",
+              file=sys.stderr)
+        sys.exit(1)
+    fold_k = assignment[args.merge_id]
 
     ckpt_path = checkpoints_dir / f"autoregressive_model_fold{fold_k}.pt"
     if not ckpt_path.exists():

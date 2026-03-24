@@ -43,6 +43,34 @@ def normalize_pattern(pattern):
             .replace('SEMI', ''))
 
 
+def make_folds(merge_commit_time: dict, n_folds: int = 10) -> list:
+    """
+    Split merge_ids into n_folds chronological folds.
+    Fold 0 = oldest merges, fold (n_folds-1) = newest merges.
+    All chunks of a merge always stay in the same fold — never split across train/test.
+
+    This is the canonical implementation.  train_autoregressive_model.py imports it
+    directly so both scripts always use identical fold boundaries.
+
+    RQ1/RQ2/RQ3 convention: a merge in fold k → use the artefacts trained WITHOUT fold k:
+      autoregressive_model_fold{k}.pt  and  learnt_historical_pattern_distribution_train{k}.csv
+
+    Args:
+        merge_commit_time: dict mapping merge_id → commitTime ISO string
+        n_folds: number of folds (default 10)
+
+    Returns:
+        list of sets of merge_ids, one per fold (index 0 = oldest)
+    """
+    ids = sorted(merge_commit_time.keys(), key=lambda m: merge_commit_time[m])
+    n = len(ids)
+    fold_size = n // n_folds
+    return [
+        set(ids[k * fold_size : (k * fold_size + fold_size) if k < n_folds - 1 else n])
+        for k in range(n_folds)
+    ]
+
+
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -86,13 +114,11 @@ def main():
     print(f"Date range: {merge_time[merge_ids[0]][:10]} → {merge_time[merge_ids[-1]][:10]}")
 
     # Step 3: Split into 10 chronological folds (fold 0 = oldest, fold 9 = newest)
-    n = len(merge_ids)
-    fold_size = n // 10
-    folds = []
+    folds = make_folds(merge_time)
+    n, fold_size = len(merge_ids), len(merge_ids) // 10
     for k in range(10):
         start = k * fold_size
         end = start + fold_size if k < 9 else n
-        folds.append(set(merge_ids[start:end]))
         fold_list = merge_ids[start:end]
         print(f"  Fold {k}: {len(fold_list)} merges  "
               f"{merge_time[fold_list[0]][:10]} → {merge_time[fold_list[-1]][:10]}")

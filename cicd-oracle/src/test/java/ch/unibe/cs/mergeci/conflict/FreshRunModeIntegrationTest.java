@@ -74,10 +74,10 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         Files.createDirectories(testInputExcel.getParent());
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(testInputExcel.toFile()))) {
-            writer.write("Repository,URL");
+            writer.write("merge_id,commit_id,project_id,project_name,remote_url,commit_time,is_maven");
             writer.newLine();
             String localRepoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest).toAbsolutePath().toString();
-            writer.write("test/myTest,file://" + localRepoPath);
+            writer.write("1,abc123,1,test/myTest,file://" + localRepoPath + ",2024-01-01,true");
             writer.newLine();
         }
     }
