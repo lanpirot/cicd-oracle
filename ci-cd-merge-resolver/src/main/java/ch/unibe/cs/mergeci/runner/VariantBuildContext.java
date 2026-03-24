@@ -28,8 +28,11 @@ public class VariantBuildContext {
     private final Map<String, ObjectId> nonConflictObjects;
     private final Map<String, ObjectId> mergeCommitObjects;
 
-    // ML-AR generation state
+    // Variant generation state
     private final String mergeCommit;
+    /** Optional generator injected by callers (e.g. MLARGenerator, HeuristicGenerator). */
+    private final IVariantGenerator generator;
+    /** Legacy: pre-loaded ML-AR predictions (used when generator is null). */
     private final List<List<String>> mlPredictions;
     private int mlPredictionIndex = 0;
     private final Map<String, ConflictFile> conflictFileMap;
@@ -49,6 +52,22 @@ public class VariantBuildContext {
             List<List<String>> mlPredictions,
             Map<String, ObjectId> nonConflictObjects,
             Map<String, ObjectId> mergeCommitObjects) {
+        this(repositoryPath, projectTempDir, projectName, mergeCommit, conflictFileMap, totalChunks,
+                mlPredictions, null, nonConflictObjects, mergeCommitObjects);
+    }
+
+    /** Constructor with explicit generator (takes precedence over mlPredictions). */
+    public VariantBuildContext(
+            Path repositoryPath,
+            Path projectTempDir,
+            String projectName,
+            String mergeCommit,
+            Map<String, ConflictFile> conflictFileMap,
+            int totalChunks,
+            List<List<String>> mlPredictions,
+            IVariantGenerator generator,
+            Map<String, ObjectId> nonConflictObjects,
+            Map<String, ObjectId> mergeCommitObjects) {
         this.repositoryPath = repositoryPath;
         this.projectTempDir = projectTempDir;
         this.projectName = projectName;
@@ -56,24 +75,31 @@ public class VariantBuildContext {
         this.conflictFileMap = conflictFileMap;
         this.totalChunks = totalChunks;
         this.mlPredictions = mlPredictions;
+        this.generator = generator;
         this.nonConflictObjects = nonConflictObjects;
         this.mergeCommitObjects = mergeCommitObjects;
         this.conflictPatterns = new ArrayList<>();
     }
 
     /**
-     * Return the next ML-AR predicted variant, or empty when all predictions are exhausted.
-     * The time budget is the natural stopping condition; prediction exhaustion is an early-out.
+     * Return the next variant, or empty when the generator is exhausted.
+     * If an {@link IVariantGenerator} was injected, it is used; otherwise falls back to the
+     * pre-loaded {@code mlPredictions} list.
      * Also appends the variant's conflict patterns to {@link #conflictPatterns}.
      */
     public Optional<VariantProject> nextVariant() {
-        if (mlPredictionIndex >= mlPredictions.size()) {
-            return Optional.empty();
-        }
-        List<String> assignment = mlPredictions.get(mlPredictionIndex++);
-        VariantProject project = buildProjectFromAssignment(assignment);
+        Optional<List<String>> assignmentOpt = (generator != null)
+                ? generator.nextVariant()
+                : nextFromMlPredictions();
+        if (assignmentOpt.isEmpty()) return Optional.empty();
+        VariantProject project = buildProjectFromAssignment(assignmentOpt.get());
         conflictPatterns.add(project.extractPatterns());
         return Optional.of(project);
+    }
+
+    private Optional<List<String>> nextFromMlPredictions() {
+        if (mlPredictionIndex >= mlPredictions.size()) return Optional.empty();
+        return Optional.of(mlPredictions.get(mlPredictionIndex++));
     }
 
     /**

@@ -56,7 +56,16 @@ public class VariantProjectBuilder {
      * {@link VariantBuildContext#nextVariant()}, so no fixed cap is needed.
      */
     public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit) throws Exception {
-        return prepareVariants(commit1, commit2, mergeCommit, null);
+        return prepareVariantsInternal(commit1, commit2, mergeCommit, null, null);
+    }
+
+    /**
+     * Prepare the variant generation context with an explicit {@link IVariantGenerator}.
+     * The generator takes precedence over any ML-AR predictions that might be loaded.
+     */
+    public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit,
+                                               IVariantGenerator generator) throws Exception {
+        return prepareVariantsInternal(commit1, commit2, mergeCommit, null, generator);
     }
 
     /**
@@ -69,6 +78,11 @@ public class VariantProjectBuilder {
      */
     public VariantBuildContext prepareVariants(String commit1, String commit2, String mergeCommit,
                                                String mergeId) throws Exception {
+        return prepareVariantsInternal(commit1, commit2, mergeCommit, mergeId, null);
+    }
+
+    private VariantBuildContext prepareVariantsInternal(String commit1, String commit2, String mergeCommit,
+                                                        String mergeId, IVariantGenerator generator) throws Exception {
         Git git = GitUtils.getGit(repositoryPath);
         ResolveMerger merger = GitUtils.makeMerge(commit1, commit2, git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
@@ -86,7 +100,7 @@ public class VariantProjectBuilder {
         int totalChunks = countConflictChunks(conflictFileMap);
 
         List<List<String>> mlPredictions = List.of();
-        if (mergeId != null && !mergeId.isEmpty()) {
+        if (generator == null && mergeId != null && !mergeId.isEmpty()) {
             if (foldAssignment == null) {
                 try {
                     foldAssignment = MlAutoregressivePredictor.loadFoldAssignment(AppConfig.RQ1_FOLD_ASSIGNMENT_FILE);
@@ -113,6 +127,7 @@ public class VariantProjectBuilder {
                 conflictFileMap,
                 totalChunks,
                 mlPredictions,
+                generator,
                 nonConflictObjects,
                 mergeCommitObjects
         );

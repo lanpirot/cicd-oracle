@@ -2,11 +2,13 @@ package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.conflict.ConflictFileSaver;
-import ch.unibe.cs.mergeci.runner.IJustInTimeRunner;
-import ch.unibe.cs.mergeci.runner.MavenExecutionFactory;
-import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
 import ch.unibe.cs.mergeci.runner.ExperimentTiming;
+import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
+import ch.unibe.cs.mergeci.runner.IVariantGenerator;
+import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
+import ch.unibe.cs.mergeci.runner.MavenVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
+import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
@@ -31,26 +33,33 @@ public class MergeExperimentRunner {
     private final boolean isCache;
     private final boolean skipVariants;
     private final Map<String, Long> storedBaselines;
+    private final IVariantGeneratorFactory generatorFactory;
+    private final IVariantEvaluator evaluator;
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap());
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap(), null, null);
     }
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap());
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap(), null, null);
     }
 
-    public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants, Map<String, Long> storedBaselines) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, storedBaselines);
+    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
+                                  boolean skipVariants, Map<String, Long> storedBaselines) {
+        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, null, null);
     }
 
-    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache, boolean skipVariants, Map<String, Long> storedBaselines) {
+    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
+                                  boolean skipVariants, Map<String, Long> storedBaselines,
+                                  IVariantGeneratorFactory generatorFactory, IVariantEvaluator evaluator) {
         this.repoPath = repoPath;
         this.tmpDir = tmpDir;
         this.isParallel = isParallel;
         this.isCache = isCache;
         this.skipVariants = skipVariants;
         this.storedBaselines = storedBaselines;
+        this.generatorFactory = generatorFactory;
+        this.evaluator = evaluator;
     }
 
     /**
@@ -63,8 +72,11 @@ public class MergeExperimentRunner {
     public ProcessedMerge processMerge(DatasetReader.MergeInfo info) throws Exception {
         int numConflictChunks = GitUtils.getTotalConflictChunks(repoPath, info.getParent1(), info.getParent2());
 
-        // Run merge analysis
-        MergeAnalysisResult result = runMergeAnalysis(info);
+        IVariantGenerator generator = (generatorFactory != null)
+                ? generatorFactory.create(info.getMergeId(), repoPath, numConflictChunks)
+                : null;
+
+        MergeAnalysisResult result = runMergeAnalysis(info, generator);
 
         return ProcessedMerge.completed(info, numConflictChunks, result);
     }
@@ -74,7 +86,8 @@ public class MergeExperimentRunner {
      * Variants are built on-demand and deleted immediately after testing,
      * dramatically reducing disk usage.
      */
-    private MergeAnalysisResult runMergeAnalysis(DatasetReader.MergeInfo info) throws Exception {
+    private MergeAnalysisResult runMergeAnalysis(DatasetReader.MergeInfo info,
+                                                   IVariantGenerator generator) throws Exception {
         // Clean up before starting
         Path tmpProjectDir = tmpDir.resolve("projects");
         FileUtils.deleteDirectory(tmpProjectDir.toFile());
@@ -84,42 +97,37 @@ public class MergeExperimentRunner {
 
         // Prepare variant metadata (no disk writes yet)
         VariantProjectBuilder variantProjectBuilder = new VariantProjectBuilder(repoPath, tmpDir, tmpProjectDir);
-        VariantBuildContext context = variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit(), info.getMergeId());
+        VariantBuildContext context = (generator != null)
+                ? variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit(), generator)
+                : variantProjectBuilder.prepareVariants(info.getParent1(), info.getParent2(), info.getMergeCommit(), info.getMergeId());
 
-        // Create factory and run tests with just-in-time building
+        // Run experiment using the evaluator (default: MavenVariantEvaluator)
         long storedBaseline = storedBaselines.getOrDefault(info.getMergeCommit(), 0L);
-        MavenExecutionFactory factory = new MavenExecutionFactory(variantProjectBuilder.getLogDir());
-        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaseline);
-
-        // Run tests (builds variants on-demand, deletes immediately after)
-        ExperimentTiming experimentTiming = variantProjectBuilder.runTestsJustInTime(context, runner);
+        IVariantEvaluator activeEvaluator = (evaluator != null)
+                ? evaluator
+                : new MavenVariantEvaluator(variantProjectBuilder.getLogDir());
+        ExperimentTiming experimentTiming = activeEvaluator.runExperiment(
+                context, variantProjectBuilder, isParallel, isCache, skipVariants, storedBaseline);
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
 
-        // Collect results (already collected during just-in-time execution)
-        Map<String, CompilationResult> compilationResults = factory.getCompilationResults();
-        Map<String, TestTotal> testResults = factory.getTestResults();
-        JacocoReportFinder.CoverageDTO coverageResult = factory.getCoverageResult();
-        Map<String, Double> variantFinishSeconds = factory.getVariantFinishSeconds();
-        Map<String, Double> variantSinceMergeStartSeconds = factory.getVariantSinceMergeStartSeconds();
-
         // Save human/tentative/variant file triplets for later inspection
-        ConflictFileSaver.save(context, testResults, compilationResults, info,
-                AppConfig.CONFLICT_FILES_DIR);
+        ConflictFileSaver.save(context, activeEvaluator.getTestResults(),
+                activeEvaluator.getCompilationResults(), info, AppConfig.CONFLICT_FILES_DIR);
 
         return new MergeAnalysisResult(
                 variantProjectBuilder,
-                compilationResults,
-                testResults,
+                activeEvaluator.getCompilationResults(),
+                activeEvaluator.getTestResults(),
                 timeElapsed,
                 experimentTiming,
-                coverageResult,
-                variantFinishSeconds,
-                variantSinceMergeStartSeconds,
-                factory.isBudgetExhausted(),
-                factory.getCacheWarmerKey(),
-                factory.getNumInFlightVariantsKilled()
+                activeEvaluator.getCoverageResult(),
+                activeEvaluator.getVariantFinishSeconds(),
+                activeEvaluator.getVariantSinceMergeStartSeconds(),
+                activeEvaluator.isBudgetExhausted(),
+                activeEvaluator.getCacheWarmerKey(),
+                activeEvaluator.getNumInFlightVariantsKilled()
         );
     }
 

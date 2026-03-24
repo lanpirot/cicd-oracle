@@ -1,6 +1,8 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
+import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.google.common.io.Files;
@@ -140,41 +142,54 @@ public class ResolutionVariantRunner {
         }
     }
 
-    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache) throws Exception {
-        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, false, AppConfig.TMP_DIR);
-    }
-
-    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir) throws Exception {
-        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, isParallel, isCache, skipVariants, tmpDir, "");
-    }
-
-    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir, String modeName) throws Exception {
+    /** Load dataset from a CSV file and delegate to {@link #makeAnalysisByMergeList}. */
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput,
+                                              boolean isParallel, boolean isCache,
+                                              boolean skipVariants, Path tmpDir, String modeName) throws Exception {
         List<DatasetReader.MergeInfo> mergeInfos = new DatasetReader().readMergeDataset(dataset);
         System.out.printf("\n→ Testing %d merges from %s\n", mergeInfos.size(), dataset.getFileName().toString());
-        String projectName = com.google.common.io.Files.getNameWithoutExtension(dataset.getFileName().toString());
-        makeAnalysisByMergeList(mergeInfos, projectName, repoPath, output, humanBaselineOutput, isParallel, isCache, skipVariants, tmpDir, modeName);
+        String projectName = Files.getNameWithoutExtension(dataset.getFileName().toString());
+        makeAnalysisByMergeList(mergeInfos, projectName, repoPath, output, humanBaselineOutput,
+                isParallel, isCache, skipVariants, tmpDir, modeName, null, null);
     }
 
-    public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName, Path repoPath, Path output, Path humanBaselineOutput, boolean isParallel, boolean isCache, boolean skipVariants, Path tmpDir, String modeName) throws Exception {
-        // For non-baseline modes, read stored baseline durations to skip re-running the baseline build.
+    /** Convenience overload used by tests (no generator/evaluator — uses defaults). */
+    public static void makeAnalysisByDataset(Path dataset, Path repoPath, Path output, Path humanBaselineOutput,
+                                              boolean isParallel, boolean isCache) throws Exception {
+        makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput,
+                isParallel, isCache, false, AppConfig.TMP_DIR, "");
+    }
+
+    /**
+     * Run experiments for a list of merges.
+     *
+     * @param generatorFactory factory that produces one {@link ch.unibe.cs.mergeci.runner.IVariantGenerator}
+     *                         per merge; {@code null} falls back to the pre-loaded ML-AR CSV predictions
+     * @param evaluator        evaluator to use; {@code null} defaults to {@link ch.unibe.cs.mergeci.runner.MavenVariantEvaluator}
+     */
+    public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName,
+                                                Path repoPath, Path output, Path humanBaselineOutput,
+                                                boolean isParallel, boolean isCache, boolean skipVariants,
+                                                Path tmpDir, String modeName,
+                                                IVariantGeneratorFactory generatorFactory,
+                                                IVariantEvaluator evaluator) throws Exception {
         Map<String, Long> storedBaselines = skipVariants ? Collections.emptyMap()
                 : loadStoredBaselines(humanBaselineOutput);
         boolean hasStoredBaselines = !storedBaselines.isEmpty();
 
-        // For broken-baseline merges, inject a meaningful budget derived from the project average
-        // (non-broken merges) so their variants get a fair shot, with 300s as fallback.
         if (!skipVariants) {
             injectFallbackBaselinesForBrokenMerges(mergeInfos, storedBaselines);
         }
 
-        MergeExperimentRunner processor = new MergeExperimentRunner(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines);
+        MergeExperimentRunner processor = new MergeExperimentRunner(
+                repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines,
+                generatorFactory, evaluator);
         VariantResultCollector collector = new VariantResultCollector();
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName);
 
         System.out.println(formatSummary(mergeInfos.size(), stats.results().size(), stats.skippedCount(), stats.totalTime()));
 
-        // Only write the baseline JSON if we actually ran the baseline (i.e., it wasn't stored already).
         if (!hasStoredBaselines) {
             new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
         }

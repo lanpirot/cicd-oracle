@@ -34,10 +34,11 @@ from datetime import date
 from pathlib import Path
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
-RQ1_DIR           = Path.home() / 'data/bruteforcemerge/rq1'
+DATA_BASE_DIR     = Path.home() / 'data/bruteforcemerge'
+RQ1_DIR           = DATA_BASE_DIR / 'rq1'
 DEFAULT_SQL_DUMP  = RQ1_DIR / 'Java_1767374472.sql'
 MAVEN_CACHE_FILE  = RQ1_DIR / 'maven_check_cache.json'
-MERGE_COMMITS_CSV = RQ1_DIR / 'merge_commits.csv'
+MERGE_COMMITS_CSV = DATA_BASE_DIR / 'merge_commits.csv'  # shared by RQ2 + RQ3
 ALL_CONFLICTS_CSV = RQ1_DIR / 'all_conflicts.csv'
 
 # ── HTTP config ────────────────────────────────────────────────────────────────
