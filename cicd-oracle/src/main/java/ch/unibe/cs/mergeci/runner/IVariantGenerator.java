@@ -8,8 +8,7 @@ import java.util.Optional;
  * Produces per-chunk pattern assignments (one string pattern name per conflict chunk)
  * until the generator's supply is exhausted or the time budget is reached.
  *
- * <p>Implementations: {@link HeuristicGenerator} (weighted-random heuristic),
- * {@link MLARGenerator} (autoregressive ML model via subprocess).
+ * <p>Implementations: {@link MLARGenerator} (autoregressive ML model via subprocess).
  */
 public interface IVariantGenerator {
 
