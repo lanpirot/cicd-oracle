@@ -18,7 +18,7 @@ import java.util.Map;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"mode", "mergeCommit", "parent1", "parent2",
+@JsonPropertyOrder({"mode", "projectName", "mergeCommit", "parent1", "parent2",
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
         "isMultiModule", "budgetBasisSeconds", "variantBudgetSeconds",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
@@ -26,6 +26,7 @@ import java.util.Map;
 @ToString
 public class MergeOutputJSON {
     private String mode;
+    private String projectName;
     private String mergeCommit;
     private String parent1;
     private String parent2;

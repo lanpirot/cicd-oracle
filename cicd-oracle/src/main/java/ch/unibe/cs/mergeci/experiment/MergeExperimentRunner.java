@@ -13,6 +13,7 @@ import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
+import org.eclipse.jgit.errors.MissingObjectException;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
@@ -70,15 +71,20 @@ public class MergeExperimentRunner {
      * @throws Exception if merge processing fails
      */
     public ProcessedMerge processMerge(DatasetReader.MergeInfo info) throws Exception {
-        int numConflictChunks = GitUtils.getTotalConflictChunks(repoPath, info.getParent1(), info.getParent2());
+        try {
+            int numConflictChunks = GitUtils.getTotalConflictChunks(repoPath, info.getParent1(), info.getParent2());
 
-        IVariantGenerator generator = (generatorFactory != null)
-                ? generatorFactory.create(info.getMergeId(), repoPath, numConflictChunks)
-                : null;
+            IVariantGenerator generator = (generatorFactory != null)
+                    ? generatorFactory.create(info.getMergeId(), repoPath, numConflictChunks)
+                    : null;
 
-        MergeAnalysisResult result = runMergeAnalysis(info, generator);
+            MergeAnalysisResult result = runMergeAnalysis(info, generator);
 
-        return ProcessedMerge.completed(info, numConflictChunks, result);
+            return ProcessedMerge.completed(info, numConflictChunks, result);
+        } catch (MissingObjectException e) {
+            System.err.println("SKIP " + info.getMergeCommit() + ": missing git object " + e.getObjectId().name());
+            return ProcessedMerge.skipped(info, 0, "missing git object: " + e.getObjectId().name());
+        }
     }
 
     /**

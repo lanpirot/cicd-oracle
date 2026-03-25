@@ -24,6 +24,25 @@ java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplicatio
 - **Git** (in `PATH`)
 - **Apache Maven 3.9+**
 
+## Prerequisites
+
+### Python virtual environment with GPU-enabled PyTorch (needed by RQ1 steps 4–5)
+
+The autoregressive model training is 10–50× faster on a GPU. A `.venv/` at the
+**repo root** (one level above `cicd-oracle/`) is auto-detected by `run_rq1.sh`.
+
+```bash
+# From the repo root (merge++/ parent directory)
+python3 -m venv .venv
+source .venv/bin/activate
+pip install torch --index-url https://download.pytorch.org/whl/cu121   # CUDA 12.1
+pip install -r cicd-oracle/src/main/resources/pattern-heuristics/requirements.txt
+```
+
+Replace the `cu121` wheel URL with the appropriate CUDA version for your GPU
+(see pytorch.org/get-started). RQ2 and RQ3 are pure Java and do **not** require
+the venv.
+
 ## Pipeline
 
 Three sequential phases coordinated by `CiCdMergeResolverApplication`:
@@ -124,21 +143,23 @@ All large artefacts for RQ1 live under `~/data/bruteforcemerge/rq1/` (`AppConfig
 
 **Prerequisites**
 
-- A GitHub personal access token (to probe projects not yet in `maven_check_cache.json`):
-  ```bash
-  echo 'export GITHUB_TOKEN=ghp_yourToken' >> ~/.bashrc && source ~/.bashrc
-  ```
-- The `.venv/` virtual environment at the repo root — contains PyTorch with CUDA.
-  The pipeline script activates it automatically. **Do not use the system `python3`** for training (CPU-only PyTorch, 10–50× slower).
+- The `.venv/` virtual environment at the repo root — see the Prerequisites section above.
+
+> **GitHub token** (`GITHUB_TOKEN`): only needed if you extend the dataset with projects
+> not covered by the shipped `maven_check_cache.json`. For the standard dataset the cache
+> is complete and no API calls are made.
+> ```bash
+> echo 'export GITHUB_TOKEN=ghp_yourToken' >> ~/.bashrc && source ~/.bashrc
+> ```
 
 **One-liner (full pipeline from scratch):**
 ```bash
-./src/main/resources/pattern-heuristics/run_rq1.sh
+./run_rq1.sh
 ```
 
 Resume from a specific step (e.g. after changing the model):
 ```bash
-./src/main/resources/pattern-heuristics/run_rq1.sh --from-step 4
+./run_rq1.sh --from-step 4
 ```
 
 | Step | What it does | Time |
@@ -156,9 +177,27 @@ Both pipelines are implemented as thin subclasses of `RQPipelineRunner` and diff
 | | RQ2 | RQ3 |
 |-|-----|-----|
 | Sampling | 50 projects × 1 merge (`JavaChunksReader.sample`) | 500 merges distributed across all projects (`JavaChunksReader.sampleDistributed`) |
-| Modes | All 5 | `human_baseline` + best mode (default: `cache_parallel`, override via `-Drq3BestMode=...`) |
+| Modes | All 5 | `human_baseline` + best mode (default: `cache_parallel`, override via `--best-mode`) |
 | Generator | ML-AR (`MLARGeneratorFactory`) | ML-AR (`MLARGeneratorFactory`) |
 | Input | `merge_commits.csv` | `merge_commits.csv` |
 | Output | `rq2_variant_experiments/` | `rq3_variant_experiments/` |
 
-The ML-AR generator spawns `predict_mlar.py` as a subprocess per merge, streaming variants as JSON lines (`{"assignment": ["OURS", "THEIRS", ...]}`). It selects the correct fold checkpoint from `rq1/checkpoints/autoregressive_fold_assignment.json` automatically.
+**Prerequisite:** RQ1 steps 1–4 must have completed so that
+`rq1/checkpoints/autoregressive_fold_assignment.json` and the per-fold `.pt` files exist.
+The ML-AR generator spawns `predict_mlar.py` as a subprocess per merge and selects the
+correct fold checkpoint automatically.
+
+### Running RQ2
+
+```bash
+./run_rq2.sh           # resume — skip already-processed merges
+./run_rq2.sh --fresh   # delete prior output and restart
+```
+
+### Running RQ3
+
+```bash
+./run_rq3.sh                             # resume (default best mode: cache_parallel)
+./run_rq3.sh --fresh                     # delete prior output and restart
+./run_rq3.sh --best-mode cache_parallel  # explicit best mode from RQ2 results
+```

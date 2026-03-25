@@ -2,10 +2,9 @@ package ch.unibe.cs.mergeci.conflict;
 
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.experiment.AllMergesJSON;
+import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 import ch.unibe.cs.mergeci.experiment.ResolutionVariantRunner;
 import ch.unibe.cs.mergeci.repoCollection.RepoCollector;
-import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -118,7 +118,7 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         System.out.printf("First run (FRESH_RUN=true) took %d ms%n", freshRunDuration);
 
         // Save results for comparison
-        AllMergesJSON freshRunResults = loadResults(freshResults[0]);
+        List<MergeOutputJSON> freshRunResults = loadResults(freshOutputDir);
 
         // ========== SECOND RUN: FRESH_RUN = false (Resume mode) ==========
         System.setProperty("freshRun", "false");
@@ -145,12 +145,12 @@ public class FreshRunModeIntegrationTest extends BaseTest {
         assertNotNull(resumeResults, "Resume run should preserve results");
         assertEquals(freshResults.length, resumeResults.length, "Same number of result files");
 
-        AllMergesJSON resumeRunResults = loadResults(resumeResults[0]);
+        List<MergeOutputJSON> resumeRunResults = loadResults(freshOutputDir);
 
         // Compare results
-        assertEquals(freshRunResults.getProjectName(), resumeRunResults.getProjectName(),
+        assertEquals(freshRunResults.get(0).getProjectName(), resumeRunResults.get(0).getProjectName(),
                 "Project names should match");
-        assertEquals(freshRunResults.getMerges().size(), resumeRunResults.getMerges().size(),
+        assertEquals(freshRunResults.size(), resumeRunResults.size(),
                 "Number of merges should match");
 
         // ========== PERFORMANCE VERIFICATION ==========
@@ -208,10 +208,17 @@ public class FreshRunModeIntegrationTest extends BaseTest {
     }
 
     /**
-     * Load experiment results from JSON file
+     * Load all merge results from JSON files in the directory.
      */
-    private AllMergesJSON loadResults(File resultFile) throws IOException {
+    private List<MergeOutputJSON> loadResults(Path dir) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(resultFile, AllMergesJSON.class);
+        List<MergeOutputJSON> results = new ArrayList<>();
+        File[] files = dir.toFile().listFiles((d, name) -> name.endsWith(".json"));
+        if (files != null) {
+            for (File file : files) {
+                results.add(mapper.readValue(file, MergeOutputJSON.class));
+            }
+        }
+        return results;
     }
 }

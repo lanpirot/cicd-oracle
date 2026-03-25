@@ -15,7 +15,7 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-    private static final boolean FRESH_RUN = false;
+    private static final boolean FRESH_RUN = true;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
@@ -220,12 +220,12 @@ public class AppConfig {
     public static final Path MERGE_COMMITS_CSV           = COMMON_DIR.resolve("merge_commits.csv");
 
     // ========== RQ2: JAVA CHUNKS PIPELINE ==========
-    public static final Path RQ2_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq2_variant_experiments");
+    public static final Path RQ2_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq2");
     public static final int  RQ2_SAMPLE_REPOS           = 50;
     public static final int  RQ2_MERGES_PER_REPO        = 1;
 
     // ========== RQ3: LARGE-SCALE PIPELINE ==========
-    public static final Path RQ3_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq3_variant_experiments");
+    public static final Path RQ3_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq3");
     public static final int  RQ3_SAMPLE_TOTAL           = 500;
     /** Best experiment mode from RQ2 to use in RQ3. Overridable via system property rq3BestMode. */
     public static String getRQ3BestMode() {

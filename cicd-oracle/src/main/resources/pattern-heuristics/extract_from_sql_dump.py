@@ -15,8 +15,9 @@ produces two artefacts:
 Usage:
     python3 extract_from_sql_dump.py [--sql PATH]
 
-GITHUB_TOKEN env var is used automatically when probing projects not yet in
-maven_check_cache.json.  Set it once:
+GITHUB_TOKEN env var is only needed when probing projects not yet in
+maven_check_cache.json (i.e. when extending the dataset beyond the shipped cache).
+Without a token the rate limit is 60 req/h; with one it is 5000 req/h.
     echo 'export GITHUB_TOKEN=ghp_yourToken' >> ~/.bashrc && source ~/.bashrc
 """
 

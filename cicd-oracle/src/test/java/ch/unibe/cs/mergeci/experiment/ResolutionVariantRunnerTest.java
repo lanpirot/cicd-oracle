@@ -5,6 +5,7 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.Utility;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -16,16 +17,17 @@ public class ResolutionVariantRunnerTest extends BaseTest {
     void makeAnalysisByDataset() throws Exception {
         Path dataset = AppConfig.TEST_DATASET_DIR.resolve(AppConfig.jacksonDatabind + AppConfig.CSV);
         Path repoPath = AppConfig.TEST_REPO_DIR.resolve(AppConfig.jacksonDatabind);
-        Path output = AppConfig.TEST_EXPERIMENTS_DIR.resolve( AppConfig.jacksonDatabind + AppConfig.JSON);
+        Path modeDir = AppConfig.TEST_EXPERIMENTS_DIR.resolve(AppConfig.jacksonDatabind);
 
         // Only run the test if dataset and repo exist
         if (Files.exists(dataset) && Files.exists(repoPath)) {
-            Path humanBaselineOutput = AppConfig.TEST_EXPERIMENTS_TEMP_DIR.resolve("human_baseline_test.json");
-            ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, output, humanBaselineOutput, false, false);
+            Path humanBaselineDir = AppConfig.TEST_EXPERIMENTS_TEMP_DIR.resolve("human_baseline_test");
+            ResolutionVariantRunner.makeAnalysisByDataset(dataset, repoPath, modeDir, humanBaselineDir, false, false);
 
-            // Verify output file was created
-            assertTrue(Files.exists(output),
-                "Output file should be created when inputs exist");
+            // Verify output directory contains JSON files
+            File[] outputFiles = modeDir.toFile().listFiles((d, name) -> name.endsWith(".json"));
+            assertTrue(outputFiles != null && outputFiles.length > 0,
+                "Output directory should contain JSON files when inputs exist");
         } else {
             // Skip test if required files don't exist
             System.out.println("Skipping makeAnalysisByDataset test - dataset or repo not found");

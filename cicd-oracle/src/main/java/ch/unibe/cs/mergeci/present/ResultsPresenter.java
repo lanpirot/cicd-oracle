@@ -2,7 +2,6 @@ package ch.unibe.cs.mergeci.present;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.conflict.MergeStatistics;
-import ch.unibe.cs.mergeci.experiment.AllMergesJSON;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +38,9 @@ public class ResultsPresenter {
         File[] files = dir.toFile().listFiles();
         if (files == null) return allMerges;
         for (File file : files) {
+            if (!file.getName().endsWith(AppConfig.JSON)) continue;
             try {
-                AllMergesJSON allMergesJSON = objectMapper.readValue(file, AllMergesJSON.class);
-                allMerges.addAll(allMergesJSON.getMerges());
+                allMerges.add(objectMapper.readValue(file, MergeOutputJSON.class));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

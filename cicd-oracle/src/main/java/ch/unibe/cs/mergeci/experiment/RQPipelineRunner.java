@@ -108,20 +108,13 @@ public abstract class RQPipelineRunner {
     private void runModes(String projectName, List<DatasetReader.MergeInfo> merges, Path repoPath) throws Exception {
         Path humanBaselineDir = experimentDir().resolve("human_baseline");
         humanBaselineDir.toFile().mkdirs();
-        Path humanBaselineOutput = humanBaselineDir.resolve(projectName + AppConfig.JSON);
 
         for (Utility.Experiments ex : modesToRun()) {
             Path modeDir = experimentDir().resolve(ex.getName());
             modeDir.toFile().mkdirs();
-            Path output = modeDir.resolve(projectName + AppConfig.JSON);
-
-            if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess() && output.toFile().exists()) {
-                System.out.printf("File %s already exists. Skipping...%n", output.getFileName());
-                continue;
-            }
 
             ResolutionVariantRunner.makeAnalysisByMergeList(
-                    merges, projectName, repoPath, output, humanBaselineOutput,
+                    merges, projectName, repoPath, modeDir, humanBaselineDir,
                     ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
                     AppConfig.TMP_DIR, ex.getName(),
                     generatorFactory(), evaluator());

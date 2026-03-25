@@ -76,6 +76,18 @@ skip_if_before() {
     [[ "$FROM_STEP" -le "$1" ]]
 }
 
+# ── Seed maven_check_cache.json from shipped copy (avoids GitHub API calls) ───
+# Only copies when the destination is absent or empty; never overwrites existing data.
+SHIPPED_CACHE="$SCRIPT_DIR/maven_check_cache.json"
+RUNTIME_CACHE="$COMMON_DIR/maven_check_cache.json"
+if [[ -f "$SHIPPED_CACHE" ]]; then
+    if [[ ! -s "$RUNTIME_CACHE" ]]; then
+        mkdir -p "$COMMON_DIR"
+        cp "$SHIPPED_CACHE" "$RUNTIME_CACHE"
+        echo "Seeded $RUNTIME_CACHE from shipped cache."
+    fi
+fi
+
 # ── Print config ──────────────────────────────────────────────────────────────
 echo "RQ1 pipeline  (from step $FROM_STEP)"
 echo "  Python:      $PYTHON"
