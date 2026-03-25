@@ -221,18 +221,18 @@ def compute_oneshot_accuracy(traj_path, modes):
 
 def build_oneshot_tex(oneshot, variant_cap):
     lines = [
-        r'\begin{table}[ht]',
+        r'\begin{table*}[ht]',
         r'\centering',
         r'\caption{One-shot chunk accuracy (first variant only)}',
         r'\label{tab:rq1-oneshot}',
-        r'\begin{tabular}{l|' + 'r' * len(MODES) + '}',
-        r'\hline',
+        r'\begin{tabular}{l' + 'r' * len(MODES) + '}',
+        r'\toprule',
     ]
     hdr = r'\textbf{metric}'
     for name in DISPLAY_NAMES:
         hdr += rf' & \textbf{{{name}}}'
     lines.append(hdr + r' \\')
-    lines.append(r'\hline')
+    lines.append(r'\midrule')
 
     for metric_key, label in [('pooled', 'pooled'), ('mean', 'mean'), ('median', 'median')]:
         vals = [oneshot[m][metric_key] for m in MODES]
@@ -245,7 +245,7 @@ def build_oneshot_tex(oneshot, variant_cap):
             row += f' & {cell}'
         lines.append(row + r' \\')
 
-    lines += [r'\hline', r'\end{tabular}', r'\end{table}']
+    lines += [r'\bottomrule', r'\end{tabular}', r'\end{table*}']
     return '\n'.join(lines)
 
 
@@ -300,7 +300,7 @@ def main():
 
     # ── theoretical ceiling: merges with no CHUNK_NONCANONICAL chunk ────────
     all_conflicts_path = (sys.argv[3] if len(sys.argv) > 3
-                          else os.path.join(out_dir, '..', 'all_conflicts.csv'))
+                          else os.path.join(out_dir, '..', '..', 'common', 'all_conflicts.csv'))
     all_conflicts_path = os.path.normpath(all_conflicts_path)
     merge_has_noncanonical = set()
     if os.path.exists(all_conflicts_path):

@@ -1,7 +1,6 @@
 package ch.unibe.cs.mergeci.util;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.repoCollection.SimpleProgressMonitor;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import lombok.Getter;
 import org.eclipse.jgit.api.Git;
@@ -37,18 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 public class GitUtils {
-
-    public Git GitUtils(File file) throws IOException {
-        return Git.open(file);
-    }
-
-    public Git GitUtils(String file) throws IOException {
-        return Git.open(new File(file));
-    }
 
     /**
      * Creates and executes a merge between two branches using the RECURSIVE strategy.
@@ -71,7 +61,7 @@ public class GitUtils {
         // RECURSIVE handles complex merge scenarios by recursively merging merge bases
         ResolveMerger merger = (ResolveMerger) MergeStrategy.RECURSIVE.newMerger(repo, true);
 
-        boolean isMergedWithoutConflicts = merger.merge(oursObject, theirsObject);
+        merger.merge(oursObject, theirsObject);
 
         return merger;
     }
@@ -145,72 +135,6 @@ public class GitUtils {
     }
 
 
-
-    public static Map<String, ObjectId> getNonConflictObjects2(ResolveMerger merger, ObjectId commit1, ObjectId commit2
-            , Git git) throws GitAPIException, IOException {
-
-        Repository repo = git.getRepository();
-        Map<String, MergeResult<? extends Sequence>> mergeResult = merger.getMergeResults();
-        DirCache dirCache = merger.getRepository().readDirCache();
-        merger.getResultTreeId();
-        Map<String, ObjectId> nonConflictObjects = new HashMap<>();
-
-//        dirCache.getCacheTree(true).
-
-        try (TreeWalk treeWalk = new TreeWalk(repo);) {
-            treeWalk.setRecursive(true);
-            treeWalk.addTree(new DirCacheIterator(dirCache));
-
-            List<String> conflictPaths = merger.getUnmergedPaths();
-            System.out.println("Non Conflict Paths:");
-            while (treeWalk.next()) {
-                System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
-
-                if (conflictPaths.stream().noneMatch(x -> x.equals(treeWalk.getPathString())))
-                    nonConflictObjects.put(treeWalk.getPathString(), treeWalk.getObjectId(0));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return nonConflictObjects;
-    }
-
-    public static Map<String, ObjectId> getNonConflictObjects(ResolveMerger merger, ObjectId commit1, ObjectId commit2
-            , Git git) throws IOException, GitAPIException {
-        Repository repo = git.getRepository();
-        RevWalk walk = new RevWalk(repo);
-        RevCommit revCommit1 = walk.parseCommit(commit1);
-        RevCommit revCommit2 = walk.parseCommit(commit2);
-        RevTree revTree1 = revCommit1.getTree();
-        RevTree revTree2 = revCommit2.getTree();
-        TreeWalk treeWalk = new TreeWalk(repo);
-        treeWalk.addTree(revTree1);
-        treeWalk.addTree(revTree2);
-
-        treeWalk.setRecursive(true);
-
-        Map<String, ObjectId> paths = new HashMap<>();
-        while (treeWalk.next()) {
-            System.out.println(treeWalk.getPathString() + "\t" + treeWalk.getObjectId(0).getName());
-            String path = treeWalk.getPathString();
-
-            if (treeWalk.getObjectId(0) != ObjectId.zeroId()) {
-                paths.put(path, treeWalk.getObjectId(0));
-            } else {
-                paths.put(path, treeWalk.getObjectId(1));
-            }
-        }
-
-        Set<String> mergePaths = merger.getMergeResults().keySet();
-
-
-        Map<String, ObjectId> nonMergedPaths = paths.entrySet().stream().filter(
-                        entry -> !mergePaths.contains(entry.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        return nonMergedPaths;
-    }
 
     public static Git getGit(String projectPath) throws IOException {
         return Git.open(new File(projectPath));

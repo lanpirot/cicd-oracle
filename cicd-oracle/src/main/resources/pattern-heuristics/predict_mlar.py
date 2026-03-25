@@ -41,7 +41,7 @@ def parse_args():
     p.add_argument("--variants",   type=int, default=1000, help="Max variants to generate")
     p.add_argument("--temp",       type=float, default=1.0, help="Sampling temperature")
     p.add_argument("--data-dir",   default=None,
-                   help="Dir containing all_conflicts.csv (default: ~/data/bruteforcemerge/rq1)")
+                   help="Dir containing all_conflicts.csv (default: ~/data/bruteforcemerge/common)")
     p.add_argument("--checkpoints-dir", default=None,
                    help="Dir with .pt checkpoints (default: data-dir/checkpoints)")
     return p.parse_args()
@@ -51,7 +51,7 @@ def main():
     args = parse_args()
 
     data_dir        = Path(args.data_dir) if args.data_dir \
-                      else Path.home() / "data/bruteforcemerge/rq1"
+                      else Path.home() / "data/bruteforcemerge/common"
     checkpoints_dir = Path(args.checkpoints_dir) if args.checkpoints_dir \
                       else data_dir / "checkpoints"
 
@@ -64,6 +64,13 @@ def main():
 
     m = _import_train()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Seed all RNGs so variant ordering is identical across subprocess invocations.
+    # Without this, GPU non-determinism in the transformer forward pass produces different
+    # softmax probabilities each run, causing different variant orderings per experiment mode.
+    torch.manual_seed(42)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(42)
 
     # Load all data — required for the correct global merge_time_median
     rows_by_merge, _, merge_time_median, _ = m.load_data(str(csv_path))

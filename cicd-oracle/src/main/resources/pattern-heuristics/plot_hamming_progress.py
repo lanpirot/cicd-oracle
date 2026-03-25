@@ -210,7 +210,7 @@ def plot_panel(ax, curves, x_values, use_mean):
     ylabel = 'Expected best Hamming distance' if use_mean else 'Median best Hamming distance'
     ax.set_xlabel('Number of attempts')
     ax.set_ylabel(ylabel)
-    ax.legend(loc='lower right')
+    ax.legend(loc='lower right', ncol=2)
     ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.6)
     ax.set_xscale('log')
     ax.set_xlim(left=1)

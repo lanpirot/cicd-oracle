@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Thread-safe log of build and test failures encountered during conflict collection.
- * Written fresh each run (overwrites previous log).
+ * Thread-safe log of build and test failures.
+ * Phase 1 (collection) creates it fresh; Phase 2 (human baseline) appends a new section.
  */
 public class BuildFailureLog {
 
@@ -19,24 +19,36 @@ public class BuildFailureLog {
 
     public static BuildFailureLog createOrNull(Path logFile) {
         try {
-            return new BuildFailureLog(logFile);
+            return new BuildFailureLog(logFile, false);
         } catch (IOException e) {
             System.err.println("Warning: could not create build failure log at " + logFile + ": " + e.getMessage());
             return null;
         }
     }
 
-    public BuildFailureLog(Path logFile) throws IOException {
-        logFile.getParent().toFile().mkdirs();
-        this.writer = new PrintWriter(new FileWriter(logFile.toFile(), false));
-        writeHeader();
+    public static BuildFailureLog createOrNullAppend(Path logFile) {
+        try {
+            return new BuildFailureLog(logFile, true);
+        } catch (IOException e) {
+            System.err.println("Warning: could not open build failure log at " + logFile + ": " + e.getMessage());
+            return null;
+        }
     }
 
-    private synchronized void writeHeader() {
-        writer.printf("=================================================================================%n");
-        writer.printf("CI/CD Merge Resolver - Build Failure Log - %s%n", now());
-        writer.printf("=================================================================================%n%n");
-        writer.flush();
+    public BuildFailureLog(Path logFile) throws IOException {
+        this(logFile, false);
+    }
+
+    private BuildFailureLog(Path logFile, boolean append) throws IOException {
+        logFile.getParent().toFile().mkdirs();
+        this.writer = new PrintWriter(new FileWriter(logFile.toFile(), append));
+        if (append) {
+            writer.printf("%n── Human Baseline Run - %s ──%n", now());
+        } else {
+            writer.printf("=================================================================================%n");
+            writer.printf("CI/CD Merge Resolver - Build Failure Log - %s%n", now());
+            writer.printf("=================================================================================%n%n");
+        }
     }
 
     /** Log a repo-level rejection (clone failure, no POM, etc.). */

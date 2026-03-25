@@ -39,7 +39,7 @@ See [cicd-oracle/README.md](cicd-oracle/README.md) for full configuration, RQ1/R
 |-----------|-------------|------|
 | `cicd-oracle/` | Core research pipeline (Java/Spring Boot) | [README](cicd-oracle/README.md) |
 | `maven-hook/` | Maven plugin that extends build/test lifecycles for cache support | [README](maven-hook/README.md) |
-| `demo/` | IntelliJ IDEA plugin — GUI for running conflict resolution interactively | [README](demo/README.md) |
+| `plugin/` | IntelliJ IDEA plugin — GUI for running conflict resolution interactively | [README](plugin/README.md) |
 
 ---
 

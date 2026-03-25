@@ -1,14 +1,20 @@
 package ch.unibe.cs.mergeci.experiment;
 
+import ch.unibe.cs.mergeci.config.AppConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Reads merge_commits.csv (one row per merge) and produces a sampled list of
@@ -38,6 +44,8 @@ public class JavaChunksReader {
      *         remoteUrl, and projectName populated (parent1/parent2 resolved later)
      */
     public List<DatasetReader.MergeInfo> sample(Path csvPath, int maxRepos, int mergesPerRepo) throws IOException {
+        Set<String> foldIds = loadFoldAssignedIds();
+
         // project_name → list of MergeRow — preserves first-seen project order
         Map<String, List<MergeRow>> byProject = new LinkedHashMap<>();
 
@@ -61,8 +69,10 @@ public class JavaChunksReader {
 
                 if (!"True".equalsIgnoreCase(fields[idxIsMaven].trim())) continue;
 
+                String mergeId    = fields[idxMergeId].trim();
+                if (!foldIds.isEmpty() && !foldIds.contains(mergeId)) continue;
+
                 String projectName = fields[idxProject].trim();
-                String mergeId     = fields[idxMergeId].trim();
                 String commitId    = fields[idxCommitId].trim();
                 String commitTime  = fields[idxCommitTime].trim();
                 String remoteUrl   = fields[idxRemoteUrl].trim();
@@ -72,10 +82,13 @@ public class JavaChunksReader {
             }
         }
 
+        List<Map.Entry<String, List<MergeRow>>> projects = new ArrayList<>(byProject.entrySet());
+        Collections.shuffle(projects, new Random(42));
+
         List<DatasetReader.MergeInfo> result = new ArrayList<>();
         int repoCount = 0;
 
-        for (Map.Entry<String, List<MergeRow>> entry : byProject.entrySet()) {
+        for (Map.Entry<String, List<MergeRow>> entry : projects) {
             if (repoCount >= maxRepos) break;
 
             List<MergeRow> rows = new ArrayList<>(entry.getValue());
@@ -110,6 +123,8 @@ public class JavaChunksReader {
      * @return list of up to {@code totalTarget} {@link DatasetReader.MergeInfo} objects
      */
     public List<DatasetReader.MergeInfo> sampleDistributed(Path csvPath, int totalTarget) throws IOException {
+        Set<String> foldIds = loadFoldAssignedIds();
+
         Map<String, List<MergeRow>> byProject = new LinkedHashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(csvPath.toFile()))) {
@@ -131,8 +146,10 @@ public class JavaChunksReader {
                 if (fields.length <= idxIsMaven) continue;
                 if (!"True".equalsIgnoreCase(fields[idxIsMaven].trim())) continue;
 
+                String mergeId    = fields[idxMergeId].trim();
+                if (!foldIds.isEmpty() && !foldIds.contains(mergeId)) continue;
+
                 String projectName = fields[idxProject].trim();
-                String mergeId     = fields[idxMergeId].trim();
                 String commitId    = fields[idxCommitId].trim();
                 String commitTime  = fields[idxCommitTime].trim();
                 String remoteUrl   = fields[idxRemoteUrl].trim();
@@ -142,12 +159,17 @@ public class JavaChunksReader {
             }
         }
 
+        // Shuffle projects with a fixed seed so encounter order in the CSV does not
+        // affect which projects receive the round-robin top-up in pass 2.
+        List<Map.Entry<String, List<MergeRow>>> projectEntries = new ArrayList<>(byProject.entrySet());
+        Collections.shuffle(projectEntries, new Random(42));
+
         // Sort each project's merges youngest-first
-        for (List<MergeRow> rows : byProject.values()) {
-            rows.sort(Comparator.comparing((MergeRow r) -> r.mergeTime).reversed());
+        for (Map.Entry<String, List<MergeRow>> entry : projectEntries) {
+            entry.getValue().sort(Comparator.comparing((MergeRow r) -> r.mergeTime).reversed());
         }
 
-        int numProjects = byProject.size();
+        int numProjects = projectEntries.size();
         if (numProjects == 0) return List.of();
 
         int fairShare = (int) Math.ceil((double) totalTarget / numProjects);
@@ -157,7 +179,7 @@ public class JavaChunksReader {
         List<DatasetReader.MergeInfo> result = new ArrayList<>();
 
         // First pass: up to fairShare per project
-        for (Map.Entry<String, List<MergeRow>> entry : byProject.entrySet()) {
+        for (Map.Entry<String, List<MergeRow>> entry : projectEntries) {
             String project = entry.getKey();
             List<MergeRow> rows = entry.getValue();
             int take = Math.min(rows.size(), fairShare);
@@ -171,7 +193,7 @@ public class JavaChunksReader {
         if (result.size() < totalTarget) {
             // Sort projects by remaining-merge count descending
             List<Map.Entry<String, List<MergeRow>>> withRemainder = new ArrayList<>();
-            for (Map.Entry<String, List<MergeRow>> entry : byProject.entrySet()) {
+            for (Map.Entry<String, List<MergeRow>> entry : projectEntries) {
                 int taken = takenPerProject.get(entry.getKey());
                 if (taken < entry.getValue().size()) {
                     withRemainder.add(entry);
@@ -255,6 +277,29 @@ public class JavaChunksReader {
         }
         result.add(field.toString());
         return result.toArray(new String[0]);
+    }
+
+    /**
+     * Load the set of merge IDs that have a fold assignment (i.e. are in the ML-AR
+     * evaluation set). Merges absent from this file cannot be run through the ML-AR
+     * generator (predict_mlar.py hard-errors on unknown IDs).
+     *
+     * @return set of merge_id strings, or an empty set with a warning if the file is missing
+     */
+    static Set<String> loadFoldAssignedIds() {
+        Path assignmentFile = AppConfig.RQ1_FOLD_ASSIGNMENT_FILE;
+        if (!assignmentFile.toFile().exists()) {
+            System.err.printf("Warning: fold assignment file not found at %s — fold filtering skipped%n", assignmentFile);
+            return Set.of();
+        }
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = new ObjectMapper().readValue(assignmentFile.toFile(), Map.class);
+            return map.keySet();
+        } catch (IOException e) {
+            System.err.printf("Warning: could not read fold assignment file %s: %s — fold filtering skipped%n", assignmentFile, e.getMessage());
+            return Set.of();
+        }
     }
 
     private record MergeRow(String mergeId, String mergeTime, String remoteUrl, String mergeCommit, String projectName) {}

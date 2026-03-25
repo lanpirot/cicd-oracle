@@ -5,15 +5,11 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.model.MergeInfo;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.diff.Sequence;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.merge.MergeResult;
-import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.merge.ResolveMerger;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,24 +34,6 @@ public class GitUtilsTest extends BaseTest {
             assertNotNull(entry.getKey(), "File path should not be null");
             assertNotNull(entry.getValue(), "Merge result should not be null");
             assertNotNull(entry.getValue().getSequences(), "Sequences should not be null");
-        }
-    }
-
-    @Test
-    void getNonConflictObjects() throws IOException, GitAPIException {
-
-
-        Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
-        ObjectId branch1 = git.getRepository().resolve("master");
-        ObjectId branch2 = git.getRepository().resolve("feature");
-        ResolveMerger merger = GitUtils.makeMerge("master", "feature", git);
-        Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
-
-        assertNotNull(map, "Non-conflict objects map should not be null");
-        assertFalse(map.isEmpty(), "Should have at least one non-conflicting file");
-        for (Map.Entry<String, ObjectId> entry : map.entrySet()) {
-            assertNotNull(entry.getKey(), "File path should not be null");
-            assertNotNull(entry.getValue(), "ObjectId should not be null");
         }
     }
 
@@ -128,28 +106,6 @@ public class GitUtilsTest extends BaseTest {
             assertNotNull(mergeInfo.getCommit2(), "Second parent commit should not be null");
             assertNotNull(mergeInfo.getConflictingFiles(), "Conflicting files map should not be null");
         }
-    }
-
-    @Test
-    void getNonConflictObjects2() throws IOException, GitAPIException {
-        Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
-        ObjectId branch1 = git.getRepository().resolve("26fcd8abe1e9a9ed95af8f4a9c853ae14cb50a61");
-        ObjectId branch2 = git.getRepository().resolve("ed4809f3570ef0a9213ffdde4e4e04dfe3e334ca");
-
-        Repository repo = git.getRepository();
-
-
-        ResolveMerger merger = (ResolveMerger) MergeStrategy.RESOLVE.newMerger(repo, true);
-        merger.setWorkingTreeIterator(new FileTreeIterator(repo));
-
-        DirCache dc = DirCache.newInCore(); // in-memory DirCache
-        merger.setDirCache(dc);
-
-        // Actually perform the merge (expected to have conflicts)
-        merger.merge(branch1, branch2);
-
-        Map<String, ObjectId> map =  GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
-        assertEquals(11, map.size());
     }
 
     @Test

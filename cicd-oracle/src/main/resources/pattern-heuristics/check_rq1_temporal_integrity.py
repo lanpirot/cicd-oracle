@@ -305,6 +305,8 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data-dir", default=os.path.join(
         os.path.expanduser("~"), "data", "bruteforcemerge", "rq1"))
+    ap.add_argument("--all-conflicts", default=None,
+                    help="Path to all_conflicts.csv (default: data-dir/all_conflicts.csv)")
     args = ap.parse_args()
 
     data_dir        = Path(args.data_dir)
@@ -312,7 +314,8 @@ def main():
     checkpoints_dir = data_dir / "checkpoints"
     predictions_dir = data_dir / "predictions"
     results_path    = data_dir / "results" / "cv_results.csv"
-    all_conflicts   = data_dir / "all_conflicts.csv"
+    all_conflicts   = Path(args.all_conflicts) if args.all_conflicts \
+                      else data_dir / "all_conflicts.csv"
 
     print(f"Data dir: {data_dir}")
 

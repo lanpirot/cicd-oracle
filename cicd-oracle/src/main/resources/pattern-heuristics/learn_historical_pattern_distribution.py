@@ -739,7 +739,7 @@ def main():
     from pathlib import Path
     p = argparse.ArgumentParser()
     p.add_argument('--data-dir',
-                   default=str(Path.home() / 'data/bruteforcemerge/rq1'),
+                   default=str(Path.home() / 'data/bruteforcemerge/common'),
                    help='Directory containing all_conflicts.csv')
     args = p.parse_args()
     csv_path = os.path.join(args.data_dir, 'all_conflicts.csv')

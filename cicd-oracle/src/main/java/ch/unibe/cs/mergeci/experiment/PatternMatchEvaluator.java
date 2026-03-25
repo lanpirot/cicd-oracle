@@ -131,7 +131,8 @@ public class PatternMatchEvaluator {
         ProcessBuilder pb = new ProcessBuilder(
             "python3", script.toAbsolutePath().toString(),
             csvPath.toAbsolutePath().toString(),
-            String.valueOf(variantCap)
+            String.valueOf(variantCap),
+            AppConfig.ALL_CONFLICTS_CSV.toAbsolutePath().toString()
         );
         pb.inheritIO();
         try {

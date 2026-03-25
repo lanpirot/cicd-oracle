@@ -6,6 +6,7 @@ import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.Utility;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
@@ -47,6 +48,14 @@ public abstract class RQPipelineRunner {
     /** Evaluator to use; {@code null} = default MavenVariantEvaluator. */
     protected IVariantEvaluator evaluator() { return null; }
 
+    /**
+     * Maximum number of projects to process successfully before stopping.
+     * Subclasses with oversampling (e.g. RQ2) override this to cap at the
+     * target count so that extra candidates are only used as fallback.
+     * Default: no limit.
+     */
+    protected int successLimit() { return Integer.MAX_VALUE; }
+
     public void run() throws Exception {
         List<DatasetReader.MergeInfo> allMerges = sampleMerges();
         System.out.printf("Pipeline: sampled %d merges across %d projects%n",
@@ -54,7 +63,15 @@ public abstract class RQPipelineRunner {
 
         Map<String, List<DatasetReader.MergeInfo>> byProject = groupByProject(allMerges);
 
+        if (AppConfig.isFreshRun()) {
+            cleanExperimentDirs();
+        }
+
+        int successes = 0;
+        int limit = successLimit();
         for (Map.Entry<String, List<DatasetReader.MergeInfo>> entry : byProject.entrySet()) {
+            if (successes >= limit) break;
+
             String projectName = entry.getKey();
             List<DatasetReader.MergeInfo> merges = entry.getValue();
 
@@ -74,12 +91,17 @@ public abstract class RQPipelineRunner {
 
             try {
                 runModes(projectName, merges, repoPath);
+                successes++;
             } catch (Exception e) {
                 System.err.println("Analysis failed for " + projectName + ": " + e.getMessage());
             } finally {
                 RepositoryCache.clear();
                 WindowCache.reconfigure(new WindowCacheConfig());
             }
+        }
+
+        if (limit < Integer.MAX_VALUE) {
+            System.out.printf("Pipeline finished: %d/%d projects succeeded.%n", successes, limit);
         }
     }
 
@@ -93,7 +115,7 @@ public abstract class RQPipelineRunner {
             modeDir.toFile().mkdirs();
             Path output = modeDir.resolve(projectName + AppConfig.JSON);
 
-            if (!AppConfig.isFreshRun() && output.toFile().exists()) {
+            if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess() && output.toFile().exists()) {
                 System.out.printf("File %s already exists. Skipping...%n", output.getFileName());
                 continue;
             }
@@ -103,6 +125,20 @@ public abstract class RQPipelineRunner {
                     ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
                     AppConfig.TMP_DIR, ex.getName(),
                     generatorFactory(), evaluator());
+        }
+    }
+
+    private void cleanExperimentDirs() {
+        for (Utility.Experiments ex : modesToRun()) {
+            Path modeDir = experimentDir().resolve(ex.getName());
+            if (modeDir.toFile().exists()) {
+                System.out.println("FRESH_RUN enabled: Cleaning experiment directory: " + modeDir);
+                try {
+                    FileUtils.deleteDirectory(modeDir.toFile());
+                } catch (IOException e) {
+                    System.err.println("Warning: could not delete " + modeDir + ": " + e.getMessage());
+                }
+            }
         }
     }
 

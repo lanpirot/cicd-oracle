@@ -75,38 +75,6 @@ public class ResultsPresenter {
         return statistics.getMultiModuleCount();
     }
 
-    /**
-     * Filter merges where variants have different test results than the original.
-     * This identifies "impact" merges where resolution choice affects test outcomes.
-     *
-     * @deprecated Use MergeStatistics.getImpactMerges() instead
-     */
-    public List<MergeOutputJSON> filterOutNoImpactMerges(List<MergeOutputJSON> merges) {
-        VariantResolutionAnalyzer analyzer = new VariantResolutionAnalyzer();
-        List<MergeOutputJSON> impactMerges = new ArrayList<>();
-
-        for (MergeOutputJSON merge : merges) {
-            if (merge.getNumConflictChunks() == 0) continue;
-
-            java.util.Optional<VariantScore> baselineScore =
-                    VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
-            if (baselineScore.isEmpty()) continue;
-
-            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
-                java.util.Optional<VariantScore> vs =
-                        VariantScore.of(variant.getCompilationResult(), variant.getTestResults());
-                if (vs.isEmpty()) continue; // timeout — excluded
-
-                if (!vs.get().equals(baselineScore.get())) {
-                    impactMerges.add(merge);
-                    break;
-                }
-            }
-        }
-
-        return impactMerges;
-    }
-
     public static List<MergeOutputJSON> getMultiModuleProjects(List<MergeOutputJSON> merges) {
         return merges.stream().filter(MergeOutputJSON::getIsMultiModule).toList();
     }

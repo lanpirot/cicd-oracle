@@ -1,0 +1,11 @@
+[INFO] Scanning for projects...
+[INFO]
+[INFO] -------------------------< com.example:my-app >-------------------------
+[INFO] Building my-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ my-app ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 42 source files with javac [debug parameters release 17] to target/classes
+
+[INFO] BUILD TIMEOUT

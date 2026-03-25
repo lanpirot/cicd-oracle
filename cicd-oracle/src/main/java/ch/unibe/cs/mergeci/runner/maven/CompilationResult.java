@@ -37,7 +37,7 @@ public class CompilationResult {
     @JsonProperty
     public int getSuccessfulModules() { return moduleResults == null ? 0 : getNumberOfSuccessfulModules(); }
 
-    @JsonProperty
+    @JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY)
     public List<String> getFailedModuleNames() {
         if (moduleResults == null) return List.of();
         return moduleResults.stream()
@@ -48,7 +48,7 @@ public class CompilationResult {
     private final Status buildStatus;
     private final float totalTime;
     private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+?)\\s\\.*\\s*(SUCCESS|FAILURE|SKIPPED)\\s(\\[\\s*([\\d.:]+) (min|s|ms)\\])?";
-    private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE)";
+    private final static String BUILD_STATUS_REGEX = "\\[INFO\\]\\sBUILD\\s(SUCCESS|FAILURE|TIMEOUT)";
     private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:\\s+([\\d.:]+) (min|s|ms)";
     private final static String REACTOR_BLOCK = "\\[INFO\\]\\s+Reactor Summary(?:.*?)?:\\s*((.*\\R)*?)\\[INFO\\]\\s+-+";
 
@@ -102,23 +102,21 @@ public class CompilationResult {
         if (buildMatcher.find()) {
             this.buildStatus = Status.valueOf(buildMatcher.group(1));
         } else {
-            // No BUILD SUCCESS/FAILURE found - likely timeout or process killed
-            // Check if build was properly terminated or interrupted
+            // No BUILD SUCCESS/FAILURE/TIMEOUT line found — process exited abnormally
+            // (e.g. POM resolution error, missing project, process interrupted).
+            // Real timeouts are detected via the "[INFO] BUILD TIMEOUT" sentinel written
+            // by MavenProcessExecutor.handleTimeout(), so this path is never a timeout.
             this.totalTime = 0;
-            if (string.contains("[INFO]") && !string.contains("BUILD")) {
-                // Has Maven output but no build termination = timeout
-                this.buildStatus = Status.TIMEOUT;
-            } else {
-                this.buildStatus = null;
-            }
+            this.buildStatus = null;
             return;
         }
 
 
         Pattern totalTimePAttern = Pattern.compile(TOTAL_TIME_REGEX);
         Matcher totalTimeMatcher = totalTimePAttern.matcher(buildStatusString);
-        totalTimeMatcher.find();
-        this.totalTime = parseTime(totalTimeMatcher.group(1), totalTimeMatcher.group(2));
+        this.totalTime = totalTimeMatcher.find()
+                ? parseTime(totalTimeMatcher.group(1), totalTimeMatcher.group(2))
+                : 0;
     }
 
 

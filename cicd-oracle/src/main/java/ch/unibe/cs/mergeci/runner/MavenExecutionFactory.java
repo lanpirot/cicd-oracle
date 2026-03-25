@@ -12,6 +12,7 @@ import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
+import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -25,6 +26,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MavenExecutionFactory {
     private final Path logDir;
@@ -87,28 +91,37 @@ public class MavenExecutionFactory {
                 ExperimentTiming experimentTiming = new ExperimentTiming();
 
                 long rawBaselineSeconds;
+                long peakBaselineRamBytes = 0;
                 if (storedBaselineSeconds > 0) {
                     experimentTiming.setHumanBaselineExecutionTime(Duration.ofSeconds(storedBaselineSeconds));
                     rawBaselineSeconds = storedBaselineSeconds;
                 } else {
-                    executeHumanBaseline(context, builder, experimentTiming);
+                    RamSampler ramSampler = new RamSampler();
+                    ramSampler.start();
+                    try {
+                        executeHumanBaseline(context, builder, experimentTiming);
+                    } finally {
+                        ramSampler.stop();
+                    }
+                    peakBaselineRamBytes = ramSampler.peakUsageBytes();
                     rawBaselineSeconds = experimentTiming.getHumanBaselineExecutionTime().getSeconds();
                 }
                 TestTotal baselineTests = testResults.get(context.getProjectName());
                 long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
 
-                if (skipVariants) {
-                    System.out.print("[∞] ");
+                int maxThreads = AppConfig.computeMaxThreads(peakBaselineRamBytes);
+                if (!skipVariants) {
+                    System.out.printf("[budget: %ds, threads: %d]%n", totalBudgetSeconds, maxThreads);
                 } else {
-                    System.out.printf("[budget: %ds]%n", totalBudgetSeconds);
+                    System.out.println();
                 }
                 System.out.flush();
 
                 Instant variantsStart = Instant.now();
                 if (!skipVariants) {
                     Instant deadline = variantsStart.plusSeconds(totalBudgetSeconds);
-                    runVariants(context, builder, deadline, variantsStart);
+                    runVariants(context, builder, deadline, variantsStart, maxThreads);
                 }
                 experimentTiming.setVariantsExecutionTime(Duration.between(variantsStart, Instant.now()));
 
@@ -120,8 +133,9 @@ public class MavenExecutionFactory {
                 Path mainProjectPath = builder.buildMainProject(context);
                 String projectName = context.getProjectName();
 
-                // No timeout for the baseline: its real duration sets the budget for all variant modes.
-                MavenRunner mainRunner = new MavenRunner(logDir, false, 0);
+                // Cap the baseline at MAVEN_BUILD_TIMEOUT so hung builds don't block the pipeline.
+                // The actual wall-clock duration (capped at this limit) sets the variant budget.
+                MavenRunner mainRunner = new MavenRunner(logDir, false, AppConfig.MAVEN_BUILD_TIMEOUT);
 
                 Instant start = Instant.now();
                 mainRunner.run_no_optimization(mainProjectPath);
@@ -141,7 +155,7 @@ public class MavenExecutionFactory {
             }
 
             private void runVariants(VariantBuildContext context, VariantProjectBuilder builder,
-                                     Instant deadline, Instant variantsStart) throws Exception {
+                                     Instant deadline, Instant variantsStart, int maxThreads) throws Exception {
                 java.nio.file.Files.createDirectories(logDir);
                 String projectName = context.getProjectName();
                 MavenCommandResolver commandResolver = new MavenCommandResolver(false);
@@ -149,8 +163,8 @@ public class MavenExecutionFactory {
                 int globalVariantIndex = 1;
                 Path cacheWarmPath = null;
 
-                // Cache mode: run the very first variant synchronously to warm the local Maven cache.
-                if (isCache) {
+                // Sequential cache mode: run the very first variant synchronously to warm the local Maven cache.
+                if (isCache && !isParallel) {
                     Optional<VariantProject> first = context.nextVariant();
                     int timeout0 = remainingSeconds(deadline);
                     if (first.isPresent() && timeout0 > 0) {
@@ -174,23 +188,26 @@ public class MavenExecutionFactory {
                 final Path warmPath = cacheWarmPath;
 
                 if (isParallel) {
-                    ExecutorService executor = Executors.newFixedThreadPool(AppConfig.MAX_THREADS);
+                    // In cache mode, the first submitted variant acts as the cache warmer;
+                    // subsequent variants copy from it if it has finished, or fall back to a normal build.
+                    AtomicReference<Path> warmPathRef = new AtomicReference<>(null);
+                    ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
                     CompletionService<TaskResult> cs = new ExecutorCompletionService<>(executor);
                     // Track every path we build so the finally block can clean up after an exception.
                     List<Path> allocatedPaths = new ArrayList<>();
-                    if (warmPath != null) allocatedPaths.add(warmPath);
 
                     try {
                         // Pre-fill the thread pool.
                         int inFlight = 0;
-                        while (inFlight < AppConfig.MAX_THREADS && !Instant.now().isAfter(deadline)) {
+                        while (inFlight < maxThreads && !Instant.now().isAfter(deadline)) {
                             Optional<VariantProject> next = context.nextVariant();
                             if (next.isEmpty()) break;
                             int idx = globalVariantIndex++;
                             String key = projectName + "_" + idx;
                             Path vPath = builder.buildVariant(context, next.get(), idx);
                             allocatedPaths.add(vPath);
-                            submitTask(cs, commandResolver, cacheManager, warmPath, vPath, key, deadline);
+                            boolean isWarmer = isCache && (inFlight == 0);
+                            submitTask(cs, commandResolver, cacheManager, warmPathRef, isWarmer, vPath, key, deadline);
                             inFlight++;
                         }
 
@@ -199,7 +216,8 @@ public class MavenExecutionFactory {
                             TaskResult done = drainOne(cs);
                             inFlight--;
                             collectResult(done.key(), done.path(), builder, variantsStart, done.wallClockSeconds());
-                            if (!done.path().equals(warmPath) && done.path().toFile().exists()) {
+                            Path currentWarm = warmPathRef.get();
+                            if (!done.path().equals(currentWarm) && done.path().toFile().exists()) {
                                 deleteWithRetry(done.path());
                             }
                             if (!Instant.now().isAfter(deadline)) {
@@ -209,7 +227,7 @@ public class MavenExecutionFactory {
                                     String key = projectName + "_" + idx;
                                     Path vPath = builder.buildVariant(context, next.get(), idx);
                                     allocatedPaths.add(vPath);
-                                    submitTask(cs, commandResolver, cacheManager, warmPath, vPath, key, deadline);
+                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, false, vPath, key, deadline);
                                     inFlight++;
                                 }
                             }
@@ -219,13 +237,14 @@ public class MavenExecutionFactory {
                         // variants submitted but not yet collected when budget expired
                         MavenExecutionFactory.this.numInFlightVariantsKilled =
                                 (globalVariantIndex - 1) - (compilationResults.size() - 1);
+                        Path finalWarm = warmPathRef.get();
                         for (Path p : allocatedPaths) {
-                            if (p != null && !p.equals(warmPath) && p.toFile().exists()) {
+                            if (p != null && !p.equals(finalWarm) && p.toFile().exists()) {
                                 try { FileUtils.deleteDirectory(p.toFile()); } catch (Exception ignored) {}
                             }
                         }
-                        if (warmPath != null && warmPath.toFile().exists()) {
-                            try { FileUtils.deleteDirectory(warmPath.toFile()); } catch (Exception ignored) {}
+                        if (finalWarm != null && finalWarm.toFile().exists()) {
+                            try { FileUtils.deleteDirectory(finalWarm.toFile()); } catch (Exception ignored) {}
                         }
                     }
                 } else {
@@ -285,25 +304,41 @@ public class MavenExecutionFactory {
             private void submitTask(CompletionService<TaskResult> cs,
                                     MavenCommandResolver commandResolver,
                                     MavenCacheManager cacheManager,
-                                    Path warmPath, Path vPath, String key, Instant deadline) {
+                                    AtomicReference<Path> warmPathRef,
+                                    boolean isWarmer,
+                                    Path vPath, String key, Instant deadline) {
                 cs.submit(() -> {
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
                     if (timeout > 0) {
-                        System.out.printf("[DEBUG] variant %s starting, timeout=%ds%n", vPath.getFileName(), timeout);
-                        if (isCache) {
+                        if (isWarmer) {
+                            System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
+                                    vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
-                            cacheManager.copyTargetDirectories(warmPath.toFile(), vPath.toFile());
-                            cacheManager.copyCacheDirectory(warmPath, vPath);
-                            new MavenProcessExecutor(timeout).executeCommand(
-                                    vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
-                                    AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath), vPath));
-                        } else {
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                     AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
                                             commandResolver.resolveMavenGoal(vPath), vPath));
+                            warmPathRef.set(vPath);
+                            MavenExecutionFactory.this.cacheWarmerKey = key;
+                        } else {
+                            Path warm = isCache ? warmPathRef.get() : null;
+                            System.out.printf("[DEBUG] variant %s starting%s, timeout=%ds%n",
+                                    vPath.getFileName(), warm != null ? " (cache ready)" : "", timeout);
+                            if (warm != null) {
+                                cacheManager.injectCacheArtifacts(vPath);
+                                cacheManager.copyTargetDirectories(warm.toFile(), vPath.toFile());
+                                cacheManager.copyCacheDirectory(warm, vPath);
+                                new MavenProcessExecutor(timeout).executeCommand(
+                                        vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                        AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
+                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                            } else {
+                                new MavenProcessExecutor(timeout).executeCommand(
+                                        vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                        AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
+                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                            }
                         }
                     }
                     double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
@@ -349,6 +384,52 @@ public class MavenExecutionFactory {
 
     /** Carries per-variant wall-clock timing out of parallel task lambdas. */
     private record TaskResult(String key, Path path, double wallClockSeconds) {}
+
+    /**
+     * Samples system free RAM every 200 ms while a build runs and reports the
+     * peak consumption as {@code initialFreeRam − minimumFreeRam}.
+     */
+    private static class RamSampler {
+        private final long initialFreeBytes;
+        private volatile long minFreeBytes;
+        private final ScheduledExecutorService scheduler;
+
+        RamSampler() {
+            long free = freeSystemRam();
+            this.initialFreeBytes = free;
+            this.minFreeBytes = free;
+            this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "ram-sampler");
+                t.setDaemon(true);
+                return t;
+            });
+        }
+
+        void start() {
+            scheduler.scheduleAtFixedRate(() -> {
+                long free = freeSystemRam();
+                if (free < minFreeBytes) minFreeBytes = free;
+            }, 0, 200, TimeUnit.MILLISECONDS);
+        }
+
+        void stop() {
+            scheduler.shutdownNow();
+        }
+
+        /** Peak RAM consumed during sampling: initialFree − lowestFree seen. */
+        long peakUsageBytes() {
+            return Math.max(0, initialFreeBytes - minFreeBytes);
+        }
+
+        private static long freeSystemRam() {
+            try {
+                return ((com.sun.management.OperatingSystemMXBean)
+                        ManagementFactory.getOperatingSystemMXBean()).getFreeMemorySize();
+            } catch (Exception e) {
+                return Runtime.getRuntime().freeMemory();
+            }
+        }
+    }
 
     /**
      * Normalize baseline duration to account for mass test failures.

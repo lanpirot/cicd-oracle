@@ -5,7 +5,6 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.merge.ResolveMerger;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,13 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileUtilsTest extends BaseTest {
 
     @Test
-    void saveFilesFromObjectId() throws GitAPIException, IOException {
+    void saveFilesFromObjectId() throws GitAPIException, IOException, InterruptedException {
         Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
-        ResolveMerger merger = GitUtils.makeMerge("master","feature", git);
-        //ResolveMerger merger = GitUtils.makeMerge("","", git);
-        Map<String, ObjectId> map = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
+        Map<String, ObjectId> map = GitUtils.getNonConflictObjects(git, branch1, branch2);
 
         assertNotNull(map, "Non-conflict objects map should not be null");
         assertFalse(map.isEmpty(), "Should have at least one non-conflicting file");

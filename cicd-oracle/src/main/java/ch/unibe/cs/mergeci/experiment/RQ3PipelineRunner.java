@@ -42,4 +42,8 @@ public class RQ3PipelineRunner extends RQPipelineRunner {
     protected IVariantGeneratorFactory generatorFactory() {
         return MLARGeneratorFactory.INSTANCE;
     }
+
+    public static void main(String[] args) throws Exception {
+        new RQ3PipelineRunner().run();
+    }
 }

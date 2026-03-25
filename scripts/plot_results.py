@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unified presentation layer for variant experiment results.
-Compares 4 execution modes: human_baseline, no_optimization, parallel, cache_parallel.
+Compares 5 execution modes: human_baseline, no_optimization, cache_sequential, parallel, cache_parallel.
 
 Charts produced (single PDF):
   1. Module build success rate over relative time
@@ -54,22 +54,25 @@ plt.rcParams.update({
 DEFAULT_VARIANT_DIR = Path("/home/lanpirot/data/bruteforcemerge/variant_experiments")
 DEFAULT_OUTPUT_PDF  = Path("plots.pdf")
 
-MODES = ["human_baseline", "no_optimization", "parallel", "cache_parallel"]
+MODES = ["human_baseline", "no_optimization", "cache_sequential", "parallel", "cache_parallel"]
 MODE_LABELS = {
     "human_baseline":  "Human Baseline",
     "no_optimization": "No Optimisation",
+    "cache_sequential": "Cache Only",
     "parallel":        "Parallel Only",
     "cache_parallel":  "Cache + Parallel",
 }
 MODE_COLORS = {
     "human_baseline":  "#2c7bb6",
     "no_optimization": "#d7191c",
+    "cache_sequential": "#984ea3",
     "parallel":        "#1a9641",
     "cache_parallel":  "#ff7f00",
 }
 MODE_MARKERS = {
     "human_baseline":  "D",
     "no_optimization": "o",
+    "cache_sequential": "v",
     "parallel":        "s",
     "cache_parallel":  "^",
 }
@@ -544,7 +547,7 @@ _MOCKUP_MERGES = [
          human_tests=320, human_modules=8),
 ]
 
-_MOCKUP_VARIANT_COUNTS = {"cache_parallel": 100, "parallel": 20, "no_optimization": 6}
+_MOCKUP_VARIANT_COUNTS = {"cache_parallel": 100, "cache_sequential": 15, "parallel": 20, "no_optimization": 6}
 
 
 def _mockup_module_results(passed: int, total: int, rng) -> list:

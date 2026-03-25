@@ -76,8 +76,11 @@ All paths, timeouts, and feature flags live in `AppConfig.java`. `JAVA_HOMES` ma
 
 ```
 /home/lanpirot/data/bruteforcemerge/
-  merge_commits.csv              # Shared input for RQ2 + RQ3 (from extract_from_sql_dump.py)
-  conflict_datasets/             # Per-project CSV files (Phase 1 output)
+  common/                        # Shared inputs (from extract_from_sql_dump.py)
+    Java_1767374472.sql          #   SQL dump
+    all_conflicts.csv            #   All conflict chunks (RQ1 training input)
+    merge_commits.csv            #   One row per merge (RQ2 + RQ3 input)
+    maven_check_cache.json       #   GitHub Maven-project probe cache
   variant_experiments/           # Phase 2 output for the main pipeline
   rq2_variant_experiments/       # RQ2 output (50 repos × 1 merge, all 5 modes)
   rq3_variant_experiments/       # RQ3 output (500 merges, human_baseline + best mode)

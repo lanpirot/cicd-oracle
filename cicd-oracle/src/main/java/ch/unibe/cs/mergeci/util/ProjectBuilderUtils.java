@@ -1,12 +1,9 @@
 package ch.unibe.cs.mergeci.util;
 
-import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.model.ConflictFile;
 import org.eclipse.jgit.api.CheckoutCommand;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.diff.Sequence;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.merge.MergeChunk;
 import org.eclipse.jgit.merge.MergeResult;
 
@@ -14,11 +11,6 @@ import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.NonConflictBlock;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,36 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ProjectBuilderUtils {
-    private Path gitRootPath;
-    private Path temp_path;
-
-    public ProjectBuilderUtils(Path gitRootPath, Path temp_path) {
-        this.gitRootPath = gitRootPath;
-        this.temp_path = temp_path;
-    }
-
-    public void saveProjects(List<VariantProject> projects, Map<String, ObjectId> nonConflictObjects) throws IOException {
-        int index = 0;
-
-        for (VariantProject project : projects) {
-            Path projectNewRootPath = temp_path.resolve(gitRootPath.getFileName().getFileName() + "_" + index);
-
-            Git git = GitUtils.getGit(gitRootPath);
-            FileUtils.saveFilesFromObjectId(projectNewRootPath, nonConflictObjects, git);
-            for (ConflictFile conflictFile : project.getClasses()) {
-
-                File filepath = projectNewRootPath.resolve(conflictFile.getClassPath().toString()).toFile();
-
-                if (filepath.getParentFile() != null) filepath.getParentFile().mkdirs();
-                try (OutputStream out = new FileOutputStream(filepath)) {
-                    out.write(conflictFile.toString().getBytes());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            index++;
-        }
-    }
 
     public static ConflictFile getProjectClass(MergeResult<? extends Sequence> mergeResult, String classPath) {
         ConflictFile conflictFile = new ConflictFile();

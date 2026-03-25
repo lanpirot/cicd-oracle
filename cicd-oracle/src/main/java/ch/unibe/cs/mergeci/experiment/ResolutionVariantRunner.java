@@ -1,8 +1,11 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog;
+import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog.MergeFailureType;
 import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
+import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.Utility;
 import com.google.common.io.Files;
@@ -13,15 +16,19 @@ import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class ResolutionVariantRunner {
     private final Path datasetsDir;
@@ -177,6 +184,9 @@ public class ResolutionVariantRunner {
                 : loadStoredBaselines(humanBaselineOutput);
         boolean hasStoredBaselines = !storedBaselines.isEmpty();
 
+        Set<String> timedOutBaselines = skipVariants ? Collections.emptySet()
+                : loadTimedOutBaselines(humanBaselineOutput);
+
         if (!skipVariants) {
             injectFallbackBaselinesForBrokenMerges(mergeInfos, storedBaselines);
         }
@@ -186,14 +196,23 @@ public class ResolutionVariantRunner {
                 generatorFactory, evaluator);
         VariantResultCollector collector = new VariantResultCollector();
 
-        MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName);
+        String header = modeName.isEmpty() ? "experiment" : modeName;
+        System.out.printf("%n  ── %s  [%s] ──%n", header, projectName);
+
+        BuildFailureLog failureLog = skipVariants
+                ? BuildFailureLog.createOrNullAppend(AppConfig.DATA_BASE_DIR.resolve("build_failures.log"))
+                : null;
+
+        MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, timedOutBaselines, failureLog);
+
+        if (failureLog != null) failureLog.close();
 
         System.out.println(formatSummary(mergeInfos.size(), stats.results().size(), stats.skippedCount(), stats.totalTime()));
 
+        new JsonResultWriter().writeResults(projectName, stats.results(), output);
         if (!hasStoredBaselines) {
             new JsonResultWriter().writeResults(projectName, stats.baselineResults(), humanBaselineOutput);
         }
-        new JsonResultWriter().writeResults(projectName, stats.results(), output);
     }
 
     /**
@@ -250,10 +269,39 @@ public class ResolutionVariantRunner {
         }
     }
 
+    /**
+     * Load the set of merge commits whose human baseline build timed out.
+     * These merges should be skipped in all other experiment modes to avoid
+     * running variants that will also exceed the time budget.
+     */
+    private static Set<String> loadTimedOutBaselines(Path humanBaselineOutput) {
+        if (humanBaselineOutput == null || !humanBaselineOutput.toFile().exists()) {
+            return Collections.emptySet();
+        }
+        try {
+            AllMergesJSON allMerges = new ObjectMapper().readValue(humanBaselineOutput.toFile(), AllMergesJSON.class);
+            if (allMerges.getMerges() == null) return Collections.emptySet();
+            Set<String> timedOut = new HashSet<>();
+            for (MergeOutputJSON merge : allMerges.getMerges()) {
+                if (merge.getMergeCommit() == null) continue;
+                CompilationResult baseline = merge.getCompilationResult();
+                if (baseline != null && baseline.getBuildStatus() == CompilationResult.Status.TIMEOUT) {
+                    timedOut.add(merge.getMergeCommit());
+                }
+            }
+            return timedOut;
+        } catch (IOException e) {
+            System.err.println("Warning: could not read timed-out baselines from " + humanBaselineOutput + ": " + e.getMessage());
+            return Collections.emptySet();
+        }
+    }
+
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
                                                MergeExperimentRunner processor,
                                                VariantResultCollector collector,
-                                               String modeName) throws Exception {
+                                               String modeName,
+                                               Set<String> timedOutBaselines,
+                                               BuildFailureLog failureLog) throws Exception {
         List<MergeOutputJSON> results = new ArrayList<>();
         List<MergeOutputJSON> baselineResults = new ArrayList<>();
         int skippedCount = 0;
@@ -264,6 +312,12 @@ public class ResolutionVariantRunner {
             int progress = (index * 100) / mergeInfos.size();
             System.out.printf("  [%d/%d|%3d%%] %s... ", index, mergeInfos.size(), progress, info.getShortCommit());
             System.out.flush();
+
+            if (timedOutBaselines.contains(info.getMergeCommit())) {
+                System.out.println("SKIPPED (baseline timed out)");
+                skippedCount++;
+                continue;
+            }
 
             MergeExperimentRunner.ProcessedMerge processed = processor.processMerge(info);
 
@@ -278,11 +332,31 @@ public class ResolutionVariantRunner {
             results.add(result);
             MergeOutputJSON baselineResult = collector.collectBaselineResult(processed);
             baselineResults.add(baselineResult);
+            logBaselineFailure(failureLog, processed);
             totalTime += processed.getAnalysisResult().executionTimeSeconds();
-            System.out.println(collector.getSuccessSummary(processed));
+            System.out.println("  " + collector.getSuccessSummary(processed));
         }
 
         return new MergeRunStats(results, baselineResults, skippedCount, totalTime);
+    }
+
+    private static void logBaselineFailure(BuildFailureLog failureLog,
+                                            MergeExperimentRunner.ProcessedMerge processed) {
+        if (failureLog == null) return;
+        String projectName = processed.getAnalysisResult().getProjectName();
+        String shortCommit = processed.getInfo().getShortCommit();
+        CompilationResult baseline = processed.getAnalysisResult().compilationResults().get(projectName);
+        if (baseline == null || baseline.getBuildStatus() == null) return;
+        switch (baseline.getBuildStatus()) {
+            case TIMEOUT  -> failureLog.logMergeFailure(projectName, shortCommit, MergeFailureType.TIMEOUT, "");
+            case FAILURE  -> failureLog.logMergeFailure(projectName, shortCommit, MergeFailureType.COMPILE_FAILURE, "");
+            case SUCCESS  -> {
+                TestTotal tests = processed.getAnalysisResult().testResults().get(projectName);
+                if (tests == null || tests.getRunNum() == 0)
+                    failureLog.logMergeFailure(projectName, shortCommit, MergeFailureType.NO_TESTS, "");
+            }
+            default -> {}
+        }
     }
 
     private record MergeRunStats(List<MergeOutputJSON> results, List<MergeOutputJSON> baselineResults, int skippedCount, long totalTime) {}

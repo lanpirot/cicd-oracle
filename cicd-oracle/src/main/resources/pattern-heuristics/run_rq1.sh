@@ -25,7 +25,8 @@ fi
 # ── Resolve paths ─────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAVEN_MODULE="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
-DATA_DIR="$HOME/data/bruteforcemerge/rq1"
+COMMON_DIR="$HOME/data/bruteforcemerge/common"   # SQL, all_conflicts.csv, merge_commits.csv, maven_check_cache.json
+DATA_DIR="$HOME/data/bruteforcemerge/rq1"        # fold CSVs, checkpoints, predictions, results
 CV_FOLDS_DIR="$DATA_DIR/cv_folds"
 RESULTS_DIR="$DATA_DIR/results"
 
@@ -78,7 +79,8 @@ skip_if_before() {
 # ── Print config ──────────────────────────────────────────────────────────────
 echo "RQ1 pipeline  (from step $FROM_STEP)"
 echo "  Python:      $PYTHON"
-echo "  Data dir:    $DATA_DIR"
+echo "  Common dir:  $COMMON_DIR"
+echo "  RQ1 dir:     $DATA_DIR"
 echo "  Maven module: $MAVEN_MODULE"
 
 # ── Step 1: Extract CSVs from SQL dump ────────────────────────────────────────
@@ -91,7 +93,7 @@ fi
 if skip_if_before 2; then
     step_header 2 "Learn global pattern distribution  (~30 s)"
     "$PYTHON" "$SCRIPT_DIR/learn_historical_pattern_distribution.py" \
-        --data-dir "$DATA_DIR"
+        --data-dir "$COMMON_DIR"
 fi
 
 # ── Step 3: Generate chronological 10-fold CV splits ─────────────────────────
@@ -99,7 +101,7 @@ if skip_if_before 3; then
     step_header 3 "Generate chronological 10-fold CV splits  (~2 min)"
     mkdir -p "$CV_FOLDS_DIR"
     "$PYTHON" "$SCRIPT_DIR/learn_cv_folds.py" \
-        --data-dir   "$DATA_DIR" \
+        --data-dir   "$COMMON_DIR" \
         --output-dir "$CV_FOLDS_DIR"
 fi
 
@@ -107,14 +109,20 @@ fi
 if skip_if_before 4; then
     step_header 4 "Train autoregressive model + generate predictions  (hours; GPU recommended)"
     "$PYTHON" "$SCRIPT_DIR/train_autoregressive_model.py" \
-        --data-dir "$DATA_DIR"
+        --data-dir        "$COMMON_DIR" \
+        --cv-folds-dir    "$DATA_DIR/cv_folds" \
+        --checkpoints-dir "$DATA_DIR/checkpoints" \
+        --predictions-dir "$DATA_DIR/predictions"
 fi
 
 # ── Step 5: Train Random Forest + generate predictions ────────────────────────
 if skip_if_before 5; then
     step_header 5 "Train Random Forest + generate predictions  (~5-30 min)"
     "$PYTHON" "$SCRIPT_DIR/train_rf_model.py" \
-        --data-dir "$DATA_DIR"
+        --data-dir        "$COMMON_DIR" \
+        --cv-folds-dir    "$DATA_DIR/cv_folds" \
+        --checkpoints-dir "$DATA_DIR/checkpoints" \
+        --predictions-dir "$DATA_DIR/predictions"
 fi
 
 # ── Step 6: Evaluate with PatternMatchEvaluator ───────────────────────────────
@@ -129,7 +137,8 @@ fi
 if skip_if_before 7; then
     step_header 7 "Temporal integrity checks (fold membership, order, JSON, coverage, Spearman)"
     "$PYTHON" "$SCRIPT_DIR/check_rq1_temporal_integrity.py" \
-        --data-dir "$DATA_DIR"
+        --data-dir       "$DATA_DIR" \
+        --all-conflicts  "$COMMON_DIR/all_conflicts.csv"
 fi
 
 # ── Done ──────────────────────────────────────────────────────────────────────

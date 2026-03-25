@@ -19,8 +19,16 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
 
     @Override
     protected List<DatasetReader.MergeInfo> sampleMerges() throws IOException {
+        // Sample all fold-assigned Maven projects; run() stops once successLimit() succeed.
         return new JavaChunksReader().sample(
-                AppConfig.MERGE_COMMITS_CSV, AppConfig.RQ2_SAMPLE_REPOS, AppConfig.RQ2_MERGES_PER_REPO);
+                AppConfig.MERGE_COMMITS_CSV,
+                Integer.MAX_VALUE,
+                AppConfig.RQ2_MERGES_PER_REPO);
+    }
+
+    @Override
+    protected int successLimit() {
+        return AppConfig.RQ2_SAMPLE_REPOS;
     }
 
     @Override
@@ -36,5 +44,9 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
     @Override
     protected IVariantGeneratorFactory generatorFactory() {
         return MLARGeneratorFactory.INSTANCE;
+    }
+
+    public static void main(String[] args) throws Exception {
+        new RQ2PipelineRunner().run();
     }
 }

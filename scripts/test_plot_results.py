@@ -2,9 +2,10 @@
 """
 Mockup test for plot_results.py.
 
-Simulates a single merge across all four modes:
+Simulates a single merge across all five modes:
   - human_baseline : 17 s, 77/90 tests passed, 79/92 modules built
   - cache_parallel : 100 variants, random finish times >= 0.9 × baseline
+  - cache_sequential:  15 variants, same
   - parallel       :  20 variants, same
   - no_optimization:   6 variants, same
 
@@ -33,9 +34,10 @@ MERGE_COMMIT          = "deadbeef" * 5          # 40-char hex-ish string
 PROJECT_NAME          = "mock-project"
 
 VARIANT_COUNTS = {
-    "cache_parallel":  100,
-    "parallel":         20,
-    "no_optimization":   6,
+    "cache_parallel":   100,
+    "cache_sequential":  15,
+    "parallel":          20,
+    "no_optimization":    6,
 }
 
 
@@ -156,7 +158,7 @@ class TestPlotResultsMockup(unittest.TestCase):
 
     # ── Data loading ──────────────────────────────────────────────────────────
 
-    def test_all_four_modes_loaded(self):
+    def test_all_five_modes_loaded(self):
         data = pr.load_all_data(self.tmp_path)
         for mode in pr.MODES:
             self.assertIn(mode, data, f"mode '{mode}' missing from loaded data")

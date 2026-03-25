@@ -35,11 +35,12 @@ from pathlib import Path
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 DATA_BASE_DIR     = Path.home() / 'data/bruteforcemerge'
+COMMON_DIR        = DATA_BASE_DIR / 'common'          # shared: SQL, CSVs, cache
 RQ1_DIR           = DATA_BASE_DIR / 'rq1'
-DEFAULT_SQL_DUMP  = RQ1_DIR / 'Java_1767374472.sql'
-MAVEN_CACHE_FILE  = RQ1_DIR / 'maven_check_cache.json'
-MERGE_COMMITS_CSV = DATA_BASE_DIR / 'merge_commits.csv'  # shared by RQ2 + RQ3
-ALL_CONFLICTS_CSV = RQ1_DIR / 'all_conflicts.csv'
+DEFAULT_SQL_DUMP  = COMMON_DIR / 'Java_1767374472.sql'
+MAVEN_CACHE_FILE  = COMMON_DIR / 'maven_check_cache.json'
+MERGE_COMMITS_CSV = COMMON_DIR / 'merge_commits.csv'  # shared by RQ2 + RQ3
+ALL_CONFLICTS_CSV = COMMON_DIR / 'all_conflicts.csv'
 
 # ── HTTP config ────────────────────────────────────────────────────────────────
 PROBE_TIMEOUT = 10

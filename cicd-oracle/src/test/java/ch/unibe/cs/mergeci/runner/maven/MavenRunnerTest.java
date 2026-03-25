@@ -29,7 +29,7 @@ public class MavenRunnerTest extends BaseTest {
     }
 
     @Test
-    void run() throws IOException, GitAPIException {
+    void run() throws IOException, GitAPIException, InterruptedException {
         Git git = GitUtils.getGit(AppConfig.TEST_REPO_DIR.resolve(AppConfig.myTest));
         ResolveMerger merger = GitUtils.makeMerge("master", "feature", git);
         Map<String, MergeResult<? extends Sequence>> mergeResultMap = GitUtils.getMergeResults(merger);
@@ -44,7 +44,7 @@ public class MavenRunnerTest extends BaseTest {
 
         ObjectId branch1 = git.getRepository().resolve("master");
         ObjectId branch2 = git.getRepository().resolve("feature");
-        Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects2(merger, branch1, branch2, git);
+        Map<String, ObjectId> nonConflictObjects = GitUtils.getNonConflictObjects(git, branch1, branch2);
         assertNotNull(nonConflictObjects, "Non-conflict objects should be retrievable");
 
         assertTrue(Files.exists(AppConfig.TEST_TMP_DIR.getParent()) || !Files.exists(AppConfig.TEST_TMP_DIR.getParent()),

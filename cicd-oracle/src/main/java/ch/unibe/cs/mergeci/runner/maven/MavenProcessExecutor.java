@@ -20,13 +20,13 @@ public class MavenProcessExecutor {
 
     /** Execute a command with timeout. */
     public void executeCommand(Path workingDirectory, Path outputFile, String... command) {
-        run(createProcessBuilder(workingDirectory, outputFile, null, command), command);
+        run(createProcessBuilder(workingDirectory, outputFile, null, command), outputFile, command);
     }
 
     /** Execute a command with timeout, overriding JAVA_HOME in the process environment. */
     public void executeCommandWithJavaHome(Path workingDirectory, Path outputFile,
                                            String javaHome, String... command) {
-        run(createProcessBuilder(workingDirectory, outputFile, javaHome, command), command);
+        run(createProcessBuilder(workingDirectory, outputFile, javaHome, command), outputFile, command);
     }
 
     private ProcessBuilder createProcessBuilder(Path workingDirectory, Path outputFile,
@@ -54,7 +54,7 @@ public class MavenProcessExecutor {
         return pb;
     }
 
-    private void run(ProcessBuilder pb, String... command) {
+    private void run(ProcessBuilder pb, Path outputFile, String... command) {
         Process process = null;
         try {
             process = startWithRetryOnTextFileBusy(pb, command);
@@ -63,7 +63,7 @@ public class MavenProcessExecutor {
             } else {
                 boolean completed = process.waitFor(timeoutSeconds, TimeUnit.SECONDS);
                 if (!completed) {
-                    handleTimeout(process, command);
+                    handleTimeout(process, outputFile, command);
                 }
             }
         } catch (IOException | InterruptedException e) {
@@ -111,9 +111,8 @@ public class MavenProcessExecutor {
         throw lastException; // unreachable, but satisfies the compiler
     }
 
-    private void handleTimeout(Process process, String... command) {
-        System.err.println("TIMEOUT: Build exceeded " + timeoutSeconds +
-                " seconds. Killing process: " + Arrays.toString(command));
+    private void handleTimeout(Process process, Path outputFile, String... command) {
+        System.err.println("TIMEOUT: build exceeded " + timeoutSeconds + "s");
 
         killProcessTree(process);
 
@@ -121,6 +120,17 @@ public class MavenProcessExecutor {
             process.waitFor();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+
+        // Append a sentinel so CompilationResult can reliably distinguish a real timeout
+        // from a quick Maven failure that also produces no BUILD SUCCESS/FAILURE line.
+        if (outputFile != null) {
+            try {
+                java.nio.file.Files.writeString(outputFile,
+                        "\n[INFO] BUILD TIMEOUT\n",
+                        java.nio.file.StandardOpenOption.APPEND,
+                        java.nio.file.StandardOpenOption.CREATE);
+            } catch (IOException ignored) {}
         }
     }
 

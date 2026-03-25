@@ -56,6 +56,16 @@ public class MLARGenerator implements IVariantGenerator, AutoCloseable {
             String line = stdout.readLine();
             if (line == null) {
                 exhausted = true;
+                try {
+                    int exitCode = subprocess.waitFor();
+                    if (exitCode != 0) {
+                        System.err.printf("MLARGenerator: predict_mlar.py exited with code %d for merge_id=%s" +
+                                " — zero variants produced (see [predict_mlar] lines above for details)%n",
+                                exitCode, mergeId);
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
                 return Optional.empty();
             }
             JsonNode node = MAPPER.readTree(line);
@@ -86,10 +96,11 @@ public class MLARGenerator implements IVariantGenerator, AutoCloseable {
     private void startSubprocess() throws IOException {
         Path scriptPath = AppConfig.RQ1_SCRIPTS_DIR.resolve("predict_mlar.py");
         ProcessBuilder pb = new ProcessBuilder(
-                "python3", scriptPath.toString(),
+                AppConfig.PYTHON_EXECUTABLE, scriptPath.toString(),
                 "--merge-id", mergeId,
                 "--num-chunks", String.valueOf(numChunks),
-                "--variants", String.valueOf(maxVariants)
+                "--variants", String.valueOf(maxVariants),
+                "--checkpoints-dir", AppConfig.RQ1_CHECKPOINTS_DIR.toString()
         );
         pb.redirectErrorStream(false);
         subprocess = pb.start();
