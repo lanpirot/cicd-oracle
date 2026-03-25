@@ -6,6 +6,7 @@ import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +117,7 @@ public class VariantResultCollector {
             variant.setCacheWarmer(key.equals(cacheWarmerKey));
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(key));
-            variant.setConflictPatterns(builder.getConflictPatterns().get(variants.size()));
+            variant.setConflictPatterns(builder.getConflictPatterns().get(variantIndex - 1));
             variant.setOwnExecutionSeconds(
                     variantFinishSeconds != null ? variantFinishSeconds.get(key) : null);
             variant.setTotalTimeSinceMergeStartSeconds(
@@ -126,6 +127,7 @@ public class VariantResultCollector {
             variants.add(variant);
         }
 
+        variants.sort(Comparator.comparingInt(MergeOutputJSON.Variant::getVariantIndex));
         return variants;
     }
 

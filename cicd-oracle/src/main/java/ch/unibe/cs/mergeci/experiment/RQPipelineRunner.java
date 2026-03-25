@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.present.CrossModeSanityChecker;
 import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.util.GitUtils;
@@ -103,6 +104,8 @@ public abstract class RQPipelineRunner {
         if (limit < Integer.MAX_VALUE) {
             System.out.printf("Pipeline finished: %d/%d projects succeeded.%n", successes, limit);
         }
+
+        CrossModeSanityChecker.check(experimentDir(), modesToRun());
     }
 
     private void runModes(String projectName, List<DatasetReader.MergeInfo> merges, Path repoPath) throws Exception {
