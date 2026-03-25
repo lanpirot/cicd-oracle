@@ -37,6 +37,9 @@ build/
 __pycache__/
 *.pyc
 
+### Runtime logs ###
+*.log
+
 ### Large data / generated files ###
 **/pattern-heuristics/autoregressive_model_fold*.pt
 **/pattern-heuristics/autoregressive_predictions_fold*.csv
