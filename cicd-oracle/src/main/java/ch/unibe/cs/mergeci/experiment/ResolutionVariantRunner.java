@@ -309,7 +309,7 @@ public class ResolutionVariantRunner {
 
         for (int index = 1; index <= mergeInfos.size(); index++) {
             DatasetReader.MergeInfo info = mergeInfos.get(index - 1);
-            System.out.printf("  [%d/%d] %s... ", index, mergeInfos.size(), info.getShortCommit());
+            System.out.printf("  [merge %d/%d] %s... ", index, mergeInfos.size(), info.getShortCommit());
             System.out.flush();
 
             if (timedOutBaselines.contains(info.getMergeCommit())) {
