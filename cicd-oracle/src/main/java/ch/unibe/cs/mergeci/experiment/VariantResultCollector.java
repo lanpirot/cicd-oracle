@@ -233,16 +233,23 @@ public class VariantResultCollector {
         CompilationResult compilation = result.compilationResults().get(projectName);
         TestTotal tests = result.testResults().get(projectName);
 
-        boolean compiled = compilation != null
-                && compilation.getBuildStatus() == CompilationResult.Status.SUCCESS;
-        String indicator = compiled ? "✓" : "✗";
-
-        if (tests != null && tests.getRunNum() > 0) {
-            int passed = tests.getRunNum() - tests.getFailuresNum() - tests.getErrorsNum();
-            return String.format("%s baseline %d/%d tests | %s",
-                    indicator, passed, tests.getRunNum(), formatTime(executionTime));
+        if (compilation == null || compilation.getBuildStatus() == null) {
+            return String.format("✗ baseline: no result | %s", formatTime(executionTime));
         }
-        return String.format("%s baseline | %s", indicator, formatTime(executionTime));
+        return switch (compilation.getBuildStatus()) {
+            case TIMEOUT -> String.format("⏱ baseline: timed out | %s", formatTime(executionTime));
+            case FAILURE -> String.format("✗ baseline: compile failed | %s", formatTime(executionTime));
+            case SUCCESS -> {
+                if (tests != null && tests.getRunNum() > 0) {
+                    int passed = tests.getRunNum() - tests.getFailuresNum() - tests.getErrorsNum();
+                    String indicator = (tests.getFailuresNum() + tests.getErrorsNum() == 0) ? "✓" : "◐";
+                    yield String.format("%s baseline: %d/%d tests | %s",
+                            indicator, passed, tests.getRunNum(), formatTime(executionTime));
+                }
+                yield String.format("✓ baseline: compiled, no tests | %s", formatTime(executionTime));
+            }
+            default -> String.format("? baseline | %s", formatTime(executionTime));
+        };
     }
 
     /**
