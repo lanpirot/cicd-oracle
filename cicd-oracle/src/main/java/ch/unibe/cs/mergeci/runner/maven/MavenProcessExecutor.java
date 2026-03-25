@@ -66,7 +66,14 @@ public class MavenProcessExecutor {
                     handleTimeout(process, outputFile, command);
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
+            // Normal cancellation path: the owning executor was shut down (deadline exceeded).
+            // Kill the child process and restore the interrupt flag — no stack trace needed.
+            if (process != null && process.isAlive()) {
+                killProcessTree(process);
+            }
+            Thread.currentThread().interrupt();
+        } catch (IOException e) {
             handleExecutionError(process, e);
         }
     }
