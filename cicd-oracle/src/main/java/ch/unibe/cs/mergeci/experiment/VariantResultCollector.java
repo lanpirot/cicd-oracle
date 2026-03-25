@@ -220,7 +220,7 @@ public class VariantResultCollector {
         // Format with success indicator
         String indicator = (successful == total) ? "✓" : (successful > 0 ? "◐" : "✗");
 
-        return String.format("%s %d/%d (%.0f%%) | %s",
+        return String.format("%s %d/%d variants (%.0f%%) | %s",
                 indicator,
                 successful,
                 total,

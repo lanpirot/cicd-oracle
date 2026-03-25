@@ -309,8 +309,7 @@ public class ResolutionVariantRunner {
 
         for (int index = 1; index <= mergeInfos.size(); index++) {
             DatasetReader.MergeInfo info = mergeInfos.get(index - 1);
-            int progress = (index * 100) / mergeInfos.size();
-            System.out.printf("  [%d/%d|%3d%%] %s... ", index, mergeInfos.size(), progress, info.getShortCommit());
+            System.out.printf("  [%d/%d] %s... ", index, mergeInfos.size(), info.getShortCommit());
             System.out.flush();
 
             if (timedOutBaselines.contains(info.getMergeCommit())) {
@@ -367,13 +366,12 @@ public class ResolutionVariantRunner {
     private static String formatSummary(int total, int successful, int skipped, long totalTime) {
         StringBuilder summary = new StringBuilder();
         summary.append("\n  ════════════════════════════════════════\n");
-        summary.append(String.format("  Summary: %d tested", successful));
+        summary.append(String.format("  Summary: %d/%d merges", successful, total));
 
         if (skipped > 0) {
-            summary.append(String.format(", %d skipped", skipped));
+            summary.append(String.format(" (%d skipped: baseline timed out)", skipped));
         }
 
-        summary.append(String.format(" (%.1f%% success rate)", (successful * 100.0 / total)));
         summary.append(String.format(" | Total: %s", formatTime(totalTime)));
 
         return summary.toString();
