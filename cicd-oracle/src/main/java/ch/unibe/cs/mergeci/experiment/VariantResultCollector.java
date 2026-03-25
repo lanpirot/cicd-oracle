@@ -211,45 +211,19 @@ public class VariantResultCollector {
         long executionTime = processed.getAnalysisResult().executionTimeSeconds();
 
         if (total == 0) {
-            return formatBaselineSummary(processed.getAnalysisResult(), executionTime);
+            // Human baseline: the single baseline build is the only result
+            String projectName = processed.getAnalysisResult().getProjectName();
+            CompilationResult baseline = processed.getAnalysisResult().compilationResults().get(projectName);
+            TestTotal tests = processed.getAnalysisResult().testResults().get(projectName);
+            successful = isVariantSuccessful(baseline, tests) ? 1 : 0;
+            total = 1;
         }
 
-        // Calculate success rate
         double successRate = successful * 100.0 / total;
-
-        // Format with success indicator
         String indicator = (successful == total) ? "✓" : (successful > 0 ? "◐" : "✗");
 
-        return String.format("%s %d/%d variants (%.0f%%) | %s",
-                indicator,
-                successful,
-                total,
-                successRate,
-                formatTime(executionTime));
-    }
-
-    private String formatBaselineSummary(MergeExperimentRunner.MergeAnalysisResult result, long executionTime) {
-        String projectName = result.getProjectName();
-        CompilationResult compilation = result.compilationResults().get(projectName);
-        TestTotal tests = result.testResults().get(projectName);
-
-        if (compilation == null || compilation.getBuildStatus() == null) {
-            return String.format("✗ baseline: no result | %s", formatTime(executionTime));
-        }
-        return switch (compilation.getBuildStatus()) {
-            case TIMEOUT -> String.format("⏱ baseline: timed out | %s", formatTime(executionTime));
-            case FAILURE -> String.format("✗ baseline: compile failed | %s", formatTime(executionTime));
-            case SUCCESS -> {
-                if (tests != null && tests.getRunNum() > 0) {
-                    int passed = tests.getRunNum() - tests.getFailuresNum() - tests.getErrorsNum();
-                    String indicator = (tests.getFailuresNum() + tests.getErrorsNum() == 0) ? "✓" : "◐";
-                    yield String.format("%s baseline: %d/%d tests | %s",
-                            indicator, passed, tests.getRunNum(), formatTime(executionTime));
-                }
-                yield String.format("✓ baseline: compiled, no tests | %s", formatTime(executionTime));
-            }
-            default -> String.format("? baseline | %s", formatTime(executionTime));
-        };
+        return String.format("%s %d/%d (%.0f%%) | %s",
+                indicator, successful, total, successRate, formatTime(executionTime));
     }
 
     /**
