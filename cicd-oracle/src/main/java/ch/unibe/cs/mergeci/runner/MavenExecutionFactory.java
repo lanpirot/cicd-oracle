@@ -162,6 +162,7 @@ public class MavenExecutionFactory {
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
                 Path cacheWarmPath = null;
+                boolean perfectFound = false;
 
                 // Sequential cache mode: run the very first variant synchronously to warm the local Maven cache.
                 if (isCache && !isParallel) {
@@ -169,8 +170,12 @@ public class MavenExecutionFactory {
                     int timeout0 = remainingSeconds(deadline);
                     if (first.isPresent() && timeout0 > 0) {
                         int idx = globalVariantIndex++;
-                        Path firstPath = builder.buildVariant(context, first.get(), idx);
+                        // T-1: non-conflict files; injectCacheArtifacts writes XML config (timestamp irrelevant);
+                        // T1: conflict files written last — no cache to copy yet so ordering only matters for
+                        // subsequent variants that copy from this warmer.
+                        Path firstPath = builder.buildVariantBase(context, idx);
                         cacheManager.injectCacheArtifacts(firstPath);
+                        builder.applyConflictResolution(firstPath, first.get());
                         System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
                                 firstPath.getFileName(), timeout0);
                         Instant warmStart = Instant.now();
@@ -183,6 +188,10 @@ public class MavenExecutionFactory {
                         String warmKey = projectName + "_" + idx;
                         MavenExecutionFactory.this.cacheWarmerKey = warmKey;
                         collectResult(warmKey, firstPath, builder, variantsStart, warmWallClock);
+                        if (isPerfect(compilationResults.get(warmKey), testResults.get(warmKey))) {
+                            System.out.printf("✓ Perfect variant found (cache-warmer #%d) — stopping early%n", idx);
+                            perfectFound = true;
+                        }
                     }
                 }
                 final Path warmPath = cacheWarmPath;
@@ -204,10 +213,11 @@ public class MavenExecutionFactory {
                             if (next.isEmpty()) break;
                             int idx = globalVariantIndex++;
                             String key = projectName + "_" + idx;
-                            Path vPath = builder.buildVariant(context, next.get(), idx);
+                            // T-1: non-conflict files only; applyConflictResolution called inside the task.
+                            Path vPath = builder.buildVariantBase(context, idx);
                             allocatedPaths.add(vPath);
                             boolean isWarmer = isCache && (inFlight == 0);
-                            submitTask(cs, commandResolver, cacheManager, warmPathRef, isWarmer, vPath, key, deadline);
+                            submitTask(cs, commandResolver, cacheManager, warmPathRef, isWarmer, vPath, next.get(), builder, key, deadline);
                             inFlight++;
                         }
 
@@ -216,18 +226,22 @@ public class MavenExecutionFactory {
                             TaskResult done = drainOne(cs);
                             inFlight--;
                             collectResult(done.key(), done.path(), builder, variantsStart, done.wallClockSeconds());
+                            if (!perfectFound && isPerfect(compilationResults.get(done.key()), testResults.get(done.key()))) {
+                                System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
+                                perfectFound = true;
+                            }
                             Path currentWarm = warmPathRef.get();
                             if (!done.path().equals(currentWarm) && done.path().toFile().exists()) {
                                 deleteWithRetry(done.path());
                             }
-                            if (!Instant.now().isAfter(deadline)) {
+                            if (!perfectFound && !Instant.now().isAfter(deadline)) {
                                 Optional<VariantProject> next = context.nextVariant();
                                 if (next.isPresent()) {
                                     int idx = globalVariantIndex++;
                                     String key = projectName + "_" + idx;
-                                    Path vPath = builder.buildVariant(context, next.get(), idx);
+                                    Path vPath = builder.buildVariantBase(context, idx);
                                     allocatedPaths.add(vPath);
-                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, false, vPath, key, deadline);
+                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, false, vPath, next.get(), builder, key, deadline);
                                     inFlight++;
                                 }
                             }
@@ -250,6 +264,7 @@ public class MavenExecutionFactory {
                 } else {
                     try {
                         while (true) {
+                            if (perfectFound) break;
                             int variantTimeout = remainingSeconds(deadline);
                             if (variantTimeout <= 0) {
                                 System.out.println("⚠ Timeout budget exhausted");
@@ -261,21 +276,26 @@ public class MavenExecutionFactory {
 
                             VariantProject variant = next.get();
                             int idx = globalVariantIndex++;
-                            Path variantPath = builder.buildVariant(context, variant, idx);
+                            // Build non-conflict files first (T-1); conflict files written after any cache copy.
+                            Path variantPath = builder.buildVariantBase(context, idx);
                             String variantKey = projectName + "_" + idx;
 
                             try {
                                 System.out.printf("[DEBUG] sequential variant %d: timeout=%ds%n", idx, variantTimeout);
                                 Instant variantStart = Instant.now();
                                 if (isCache) {
+                                    // T0: copy compiled artifacts from warmer (fresh timestamps, T0 > T-1).
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(warmPath.toFile(), variantPath.toFile());
                                     cacheManager.copyCacheDirectory(warmPath, variantPath);
+                                    // T1: conflict files written last (T1 > T0) so Maven recompiles only changed modules.
+                                    builder.applyConflictResolution(variantPath, variant);
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
                                             AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
                                                     commandResolver.resolveMavenGoal(variantPath), variantPath));
                                 } else {
+                                    builder.applyConflictResolution(variantPath, variant);
                                     new MavenRunner(logDir, false, variantTimeout).run_no_optimization(variantPath);
                                 }
                                 Instant variantFinish = Instant.now();
@@ -287,6 +307,10 @@ public class MavenExecutionFactory {
                                 variantFinishSeconds.put(variantKey, wallClockSeconds);
                                 variantSinceMergeStartSeconds.put(variantKey,
                                         (double) Duration.between(variantsStart, variantFinish).getSeconds());
+                                if (isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
+                                    System.out.printf("✓ Perfect variant found (#%d) — stopping early%n", idx);
+                                    break;
+                                }
                             } finally {
                                 if (!variantPath.equals(warmPath) && variantPath.toFile().exists()) {
                                     deleteWithRetry(variantPath);
@@ -306,15 +330,18 @@ public class MavenExecutionFactory {
                                     MavenCacheManager cacheManager,
                                     AtomicReference<Path> warmPathRef,
                                     boolean isWarmer,
-                                    Path vPath, String key, Instant deadline) {
+                                    Path vPath, VariantProject variant, VariantProjectBuilder builder,
+                                    String key, Instant deadline) {
                 cs.submit(() -> {
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
                     if (timeout > 0) {
                         if (isWarmer) {
+                            // No previous cache to copy from: write conflict files immediately (T1 after T-1).
                             System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
                                     vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
+                            builder.applyConflictResolution(vPath, variant);
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                     AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
@@ -326,14 +353,19 @@ public class MavenExecutionFactory {
                             System.out.printf("[DEBUG] variant %s starting%s, timeout=%ds%n",
                                     vPath.getFileName(), warm != null ? " (cache ready)" : "", timeout);
                             if (warm != null) {
+                                // T0: copy compiled artifacts (fresh timestamps, T0 > T-1).
                                 cacheManager.injectCacheArtifacts(vPath);
                                 cacheManager.copyTargetDirectories(warm.toFile(), vPath.toFile());
                                 cacheManager.copyCacheDirectory(warm, vPath);
+                                // T1: conflict files written last so Maven recompiles only changed modules.
+                                builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                         AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
                                                 commandResolver.resolveMavenGoal(vPath), vPath));
                             } else {
+                                // Cache not yet ready: write conflict files and build normally.
+                                builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                         AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
@@ -384,6 +416,20 @@ public class MavenExecutionFactory {
 
     /** Carries per-variant wall-clock timing out of parallel task lambdas. */
     private record TaskResult(String key, Path path, double wallClockSeconds) {}
+
+    /**
+     * Returns true when a variant is "perfect": all modules built successfully
+     * and all tests ran and passed.
+     */
+    private static boolean isPerfect(CompilationResult cr, TestTotal tt) {
+        if (cr == null) return false;
+        boolean buildOk = cr.getTotalModules() > 0
+                ? cr.getSuccessfulModules() == cr.getTotalModules()
+                : cr.getBuildStatus() == CompilationResult.Status.SUCCESS;
+        if (!buildOk) return false;
+        return tt != null && tt.getRunNum() > 0
+                && tt.getFailuresNum() == 0 && tt.getErrorsNum() == 0;
+    }
 
     /**
      * Samples system free RAM every 200 ms while a build runs and reports the

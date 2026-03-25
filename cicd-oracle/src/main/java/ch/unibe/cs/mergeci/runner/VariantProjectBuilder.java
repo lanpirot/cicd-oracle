@@ -157,19 +157,25 @@ public class VariantProjectBuilder {
     }
 
     /**
-     * Build the directory for a given variant.
-     *
-     * @param context      Variant build context (provides non-conflict objects)
-     * @param variant      The variant project (conflict file resolutions)
-     * @param variantIndex Numeric index used to name the directory
-     * @return Path to the created variant directory
+     * Build the non-conflict portion of a variant directory (source files from git, pom patches).
+     * The conflict-resolved files are NOT written yet — call {@link #applyConflictResolution}
+     * after any cache copying to achieve the T-1 < T0 < T1 timestamp ordering that Maven's
+     * incremental compiler needs to correctly skip unchanged modules and recompile changed ones.
      */
-    public Path buildVariant(VariantBuildContext context, VariantProject variant, int variantIndex) throws IOException {
+    public Path buildVariantBase(VariantBuildContext context, int variantIndex) throws IOException {
         Path variantPath = projectTempDir.resolve(projectName + "_" + variantIndex);
-
         Git git = GitUtils.getGit(repositoryPath);
         FileUtils.saveFilesFromObjectId(variantPath, context.getNonConflictObjects(), git);
+        FileUtils.enableTestsInAllPoms(variantPath);
+        return variantPath;
+    }
 
+    /**
+     * Write the conflict-resolved source files into an already-prepared variant directory.
+     * Must be called after any cache copy (target/ dirs) so that conflict files receive a
+     * timestamp T1 that is strictly newer than the copied class files (T0 > T-1).
+     */
+    public void applyConflictResolution(Path variantPath, VariantProject variant) throws IOException {
         for (ConflictFile conflictFile : variant.getClasses()) {
             File filepath = variantPath.resolve(conflictFile.getClassPath().toString()).toFile();
             if (filepath.getParentFile() != null) {
@@ -179,8 +185,15 @@ public class VariantProjectBuilder {
                 out.write(conflictFile.toString().getBytes());
             }
         }
+    }
 
-        FileUtils.enableTestsInAllPoms(variantPath);
+    /**
+     * Build the directory for a given variant (non-cache paths).
+     * Equivalent to {@link #buildVariantBase} followed immediately by {@link #applyConflictResolution}.
+     */
+    public Path buildVariant(VariantBuildContext context, VariantProject variant, int variantIndex) throws IOException {
+        Path variantPath = buildVariantBase(context, variantIndex);
+        applyConflictResolution(variantPath, variant);
         return variantPath;
     }
 

@@ -72,10 +72,6 @@ public class VariantResultCollector {
         Map<String, Double> variantFinishSeconds = result.variantFinishSeconds();
         Map<String, Double> variantSinceMergeStartSeconds = result.variantSinceMergeStartSeconds();
 
-        // Count successful variants
-        int totalVariants = compilationResults.size() - 1; // Exclude baseline
-        int successfulVariants = countSuccessfulVariants(compilationResults, testResults, projectName);
-
         // Build variant objects
         List<MergeOutputJSON.Variant> variants = buildVariants(
                 compilationResults,
@@ -91,42 +87,7 @@ public class VariantResultCollector {
         Duration variantsTime = result.runExecutionTime().getVariantsExecutionTime();
         long variantsExecutionTimeSeconds = variantsTime != null ? variantsTime.getSeconds() : 0;
 
-        return new VariantSummary(variants, variantsExecutionTimeSeconds, successfulVariants, totalVariants);
-    }
-
-    /**
-     * Count how many variants succeeded (compiled successfully and all tests passed).
-     */
-    private int countSuccessfulVariants(
-            Map<String, CompilationResult> compilationResults,
-            Map<String, TestTotal> testResults,
-            String projectName) {
-
-        int successCount = 0;
-
-        for (Map.Entry<String, CompilationResult> entry : compilationResults.entrySet()) {
-            if (entry.getKey().equals(projectName)) {
-                continue; // Skip baseline
-            }
-
-            if (isVariantSuccessful(entry.getValue(), testResults.get(entry.getKey()))) {
-                successCount++;
-            }
-        }
-
-        return successCount;
-    }
-
-    /**
-     * Check if a single variant was successful.
-     */
-    private boolean isVariantSuccessful(CompilationResult compilationResult, TestTotal testTotal) {
-        return compilationResult != null
-                && compilationResult.getBuildStatus() == CompilationResult.Status.SUCCESS
-                && testTotal != null
-                && testTotal.getRunNum() > 0
-                && testTotal.getFailuresNum() == 0
-                && testTotal.getErrorsNum() == 0;
+        return new VariantSummary(variants, variantsExecutionTimeSeconds);
     }
 
     /**
@@ -193,37 +154,117 @@ public class VariantResultCollector {
     /**
      * Summary of variant execution results.
      */
-    private record VariantSummary(List<MergeOutputJSON.Variant> variants, long variantsExecutionTimeSeconds,
-                                  int successfulVariants, int totalVariants) {
+    private record VariantSummary(List<MergeOutputJSON.Variant> variants, long variantsExecutionTimeSeconds) {
     }
 
     /**
      * Get a formatted summary string for logging.
+     * Shows the best variant's module and test stats rather than a simple success count.
+     * For the human baseline (no variants), shows the baseline result directly.
      */
     public String getSuccessSummary(MergeExperimentRunner.ProcessedMerge processed) {
         if (processed.wasSkipped()) {
             return processed.getSkipReason();
         }
 
-        VariantSummary summary = buildVariantSummary(processed.getAnalysisResult(), null);
-        int successful = summary.successfulVariants();
-        int total = summary.totalVariants();
-        long executionTime = processed.getAnalysisResult().executionTimeSeconds();
+        MergeExperimentRunner.MergeAnalysisResult result = processed.getAnalysisResult();
+        String projectName = result.getProjectName();
+        long executionTime = result.executionTimeSeconds();
+        Map<String, CompilationResult> compilationResults = result.compilationResults();
+        Map<String, TestTotal> testResults = result.testResults();
 
-        if (total == 0) {
-            // Human baseline: the single baseline build is the only result
-            String projectName = processed.getAnalysisResult().getProjectName();
-            CompilationResult baseline = processed.getAnalysisResult().compilationResults().get(projectName);
-            TestTotal tests = processed.getAnalysisResult().testResults().get(projectName);
-            successful = isVariantSuccessful(baseline, tests) ? 1 : 0;
-            total = 1;
+        boolean hasVariants = compilationResults.keySet().stream().anyMatch(k -> !k.equals(projectName));
+
+        if (!hasVariants) {
+            // Human baseline: single result
+            CompilationResult cr = compilationResults.get(projectName);
+            TestTotal tt = testResults.get(projectName);
+            return formatBuildStats(cr, tt) + " | " + formatTime(executionTime);
         }
 
-        double successRate = successful * 100.0 / total;
-        String indicator = (successful == total) ? "✓" : (successful > 0 ? "◐" : "✗");
+        // Find best variant: most successful modules → most passed tests → first to finish
+        String bestKey = findBestVariantKey(compilationResults, testResults, projectName,
+                result.variantSinceMergeStartSeconds());
+        CompilationResult bestCr = bestKey != null ? compilationResults.get(bestKey) : null;
+        TestTotal bestTt = bestKey != null ? testResults.get(bestKey) : null;
+        return "best: " + formatBuildStats(bestCr, bestTt) + " | " + formatTime(executionTime);
+    }
 
-        return String.format("%s %d/%d (%.0f%%) | %s",
-                indicator, successful, total, successRate, formatTime(executionTime));
+    /**
+     * Find the key of the best variant using the ranking:
+     * 1. Most successful modules (primary)
+     * 2. Most passed tests (tiebreaker)
+     * 3. First to finish, measured by time since merge start (final tiebreaker)
+     */
+    private String findBestVariantKey(Map<String, CompilationResult> compilationResults,
+                                      Map<String, TestTotal> testResults,
+                                      String projectName,
+                                      Map<String, Double> variantSinceMergeStartSeconds) {
+        String bestKey = null;
+        int bestModules = Integer.MIN_VALUE;
+        int bestTests = Integer.MIN_VALUE;
+        double bestFinish = Double.MAX_VALUE;
+
+        for (String key : compilationResults.keySet()) {
+            if (key.equals(projectName)) continue;
+            CompilationResult cr = compilationResults.get(key);
+            TestTotal tt = testResults.get(key);
+            int modules = effectiveSuccessfulModules(cr);
+            int tests = tt != null ? tt.getPassedTests() : 0;
+            double finish = (variantSinceMergeStartSeconds != null)
+                    ? variantSinceMergeStartSeconds.getOrDefault(key, Double.MAX_VALUE)
+                    : Double.MAX_VALUE;
+
+            if (bestKey == null
+                    || modules > bestModules
+                    || (modules == bestModules && tests > bestTests)
+                    || (modules == bestModules && tests == bestTests && finish < bestFinish)) {
+                bestKey = key;
+                bestModules = modules;
+                bestTests = tests;
+                bestFinish = finish;
+            }
+        }
+        return bestKey;
+    }
+
+    /**
+     * Effective successful module count for ranking purposes.
+     * Single-module projects produce no Reactor Summary, so we infer from build status.
+     */
+    private int effectiveSuccessfulModules(CompilationResult cr) {
+        if (cr == null) return -1;
+        if (cr.getTotalModules() > 0) return cr.getSuccessfulModules();
+        return (cr.getBuildStatus() == CompilationResult.Status.SUCCESS) ? 1 : 0;
+    }
+
+    /**
+     * Format module and test stats from a single build result.
+     */
+    private String formatBuildStats(CompilationResult cr, TestTotal tt) {
+        StringBuilder sb = new StringBuilder();
+
+        if (cr == null) {
+            sb.append("no result");
+        } else if (cr.getTotalModules() > 0) {
+            int s = cr.getSuccessfulModules();
+            int t = cr.getTotalModules();
+            sb.append(String.format("%d%% modules (%d/%d)", Math.round(s * 100f / t), s, t));
+        } else if (cr.getBuildStatus() == CompilationResult.Status.SUCCESS) {
+            sb.append("100% modules (1/1)");
+        } else if (cr.getBuildStatus() == CompilationResult.Status.TIMEOUT) {
+            sb.append("timeout");
+        } else {
+            sb.append("0% modules (0/1)");
+        }
+
+        if (tt != null && tt.getRunNum() > 0) {
+            int passed = tt.getPassedTests();
+            int total = tt.getRunNum();
+            sb.append(String.format(", %d%% tests (%d/%d)", Math.round(passed * 100f / total), passed, total));
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -235,11 +276,11 @@ public class VariantResultCollector {
         } else if (seconds < 3600) {
             long mins = seconds / 60;
             long secs = seconds % 60;
-            return String.format("%dm%ds", mins, secs);
+            return String.format("%dm %ds", mins, secs);
         } else {
             long hours = seconds / 3600;
             long mins = (seconds % 3600) / 60;
-            return String.format("%dh%dm", hours, mins);
+            return String.format("%dh %dm", hours, mins);
         }
     }
 }

@@ -6,8 +6,6 @@ import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectStream;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -132,18 +130,7 @@ public class FileUtils {
     private static void copyFile(File sourceFile, File destinationFile)
             throws IOException {
         if (destinationFile.getParentFile() != null) destinationFile.getParentFile().mkdirs();
-
-        try (InputStream in = new FileInputStream(sourceFile);
-             OutputStream out = new FileOutputStream(destinationFile)) {
-            byte[] buf = new byte[1024];
-            int length;
-            while ((length = in.read(buf)) > 0) {
-                out.write(buf, 0, length);
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(sourceFile.getAbsoluteFile());
-        }
+        Files.copy(sourceFile.toPath(), destinationFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**

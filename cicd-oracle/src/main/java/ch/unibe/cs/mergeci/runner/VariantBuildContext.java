@@ -92,7 +92,13 @@ public class VariantBuildContext {
                 ? generator.nextVariant()
                 : nextFromMlPredictions();
         if (assignmentOpt.isEmpty()) return Optional.empty();
-        VariantProject project = buildProjectFromAssignment(assignmentOpt.get());
+        List<String> assignment = assignmentOpt.get();
+        if (assignment.size() != totalChunks) {
+            System.err.printf("Warning: skipping all variants — assignment has %d patterns but merge has %d chunks (mergeCommit=%s)%n",
+                    assignment.size(), totalChunks, mergeCommit);
+            return Optional.empty();
+        }
+        VariantProject project = buildProjectFromAssignment(assignment);
         conflictPatterns.add(project.extractPatterns());
         return Optional.of(project);
     }
