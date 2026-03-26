@@ -30,7 +30,6 @@ public abstract class BaseTest {
      */
     @BeforeEach
     void setUpBase() throws IOException {
-        System.setProperty("coverageActivated", "false");
         System.setProperty("maxConflictMerges", "5");
         cleanTestDirectories();
     }
@@ -41,7 +40,6 @@ public abstract class BaseTest {
      */
     @AfterEach
     void tearDownBase() throws IOException {
-        System.clearProperty("coverageActivated");
         System.clearProperty("maxConflictMerges");
         cleanTestDirectories();
     }

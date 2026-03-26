@@ -18,9 +18,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class ResolutionVariantRunner {
     private final Path datasetsDir;
@@ -158,6 +162,8 @@ public class ResolutionVariantRunner {
      * @param generatorFactory factory that produces one {@link ch.unibe.cs.mergeci.runner.IVariantGenerator}
      *                         per merge; {@code null} falls back to the pre-loaded ML-AR CSV predictions
      * @param evaluator        evaluator to use; {@code null} defaults to {@link ch.unibe.cs.mergeci.runner.MavenVariantEvaluator}
+     * @param stopOnPerfect    when {@code false}, variant generation continues even after a perfect variant
+     *                         is found (required for fair RQ2 comparisons)
      */
     public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName,
                                                 Path repoPath, Path modeDir, Path humanBaselineDir,
@@ -165,6 +171,17 @@ public class ResolutionVariantRunner {
                                                 Path tmpDir, String modeName,
                                                 IVariantGeneratorFactory generatorFactory,
                                                 IVariantEvaluator evaluator) throws Exception {
+        makeAnalysisByMergeList(mergeInfos, projectName, repoPath, modeDir, humanBaselineDir,
+                isParallel, isCache, skipVariants, tmpDir, modeName, generatorFactory, evaluator, true);
+    }
+
+    public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName,
+                                                Path repoPath, Path modeDir, Path humanBaselineDir,
+                                                boolean isParallel, boolean isCache, boolean skipVariants,
+                                                Path tmpDir, String modeName,
+                                                IVariantGeneratorFactory generatorFactory,
+                                                IVariantEvaluator evaluator,
+                                                boolean stopOnPerfect) throws Exception {
         modeDir.toFile().mkdirs();
 
         Map<String, Long> storedBaselines = skipVariants ? Collections.emptyMap()
@@ -179,8 +196,12 @@ public class ResolutionVariantRunner {
 
         MergeExperimentRunner processor = new MergeExperimentRunner(
                 repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines,
-                generatorFactory, evaluator);
+                generatorFactory, evaluator, stopOnPerfect);
         VariantResultCollector collector = new VariantResultCollector();
+
+        Map<String, Map<String, List<String>>> groundTruthPatterns = skipVariants
+                ? loadGroundTruthPatterns(AppConfig.ALL_CONFLICTS_CSV)
+                : Collections.emptyMap();
 
         String header = modeName.isEmpty() ? "experiment" : modeName;
         System.out.printf("%n  ── %s  [%s] ──%n", header, projectName);
@@ -190,7 +211,7 @@ public class ResolutionVariantRunner {
                 : null;
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, skipVariants,
-                timedOutBaselines, failureLog, modeDir, projectName);
+                timedOutBaselines, failureLog, modeDir, projectName, groundTruthPatterns);
 
         if (failureLog != null) failureLog.close();
 
@@ -284,7 +305,8 @@ public class ResolutionVariantRunner {
                                                Set<String> timedOutBaselines,
                                                BuildFailureLog failureLog,
                                                Path modeDir,
-                                               String projectName) throws Exception {
+                                               String projectName,
+                                               Map<String, Map<String, List<String>>> groundTruthPatterns) throws Exception {
         int resultCount = 0;
         int skippedCount = 0;
         long totalTime = 0;
@@ -316,8 +338,9 @@ public class ResolutionVariantRunner {
                 continue;
             }
 
+            Map<String, List<String>> mergeGroundTruth = groundTruthPatterns.get(info.getMergeId());
             MergeOutputJSON result = skipVariants
-                    ? collector.collectBaselineResult(processed)
+                    ? collector.collectBaselineResult(processed, mergeGroundTruth)
                     : collector.collectResults(processed);
             result.setMode(modeName);
             result.setProjectName(projectName);
@@ -348,6 +371,77 @@ public class ResolutionVariantRunner {
             }
             default -> {}
         }
+    }
+
+    /**
+     * Load ground-truth conflict patterns from all_conflicts.csv.
+     * Returns mergeId → (filename → patterns ordered by chunkIndex).
+     * Returns an empty map if the file is absent or unreadable.
+     */
+    static Map<String, Map<String, List<String>>> loadGroundTruthPatterns(Path csvPath) {
+        if (csvPath == null || !csvPath.toFile().exists()) {
+            System.err.println("Warning: all_conflicts.csv not found at " + csvPath + " — baseline conflictPatterns will be null");
+            return Collections.emptyMap();
+        }
+        // mergeId → filename → (chunkIndex → normalizedPattern)
+        Map<String, Map<String, Map<Integer, String>>> raw = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvPath.toFile()))) {
+            String headerLine = reader.readLine();
+            if (headerLine == null) return Collections.emptyMap();
+            String[] headers = headerLine.split(",", -1);
+            int idxMergeId = indexOf(headers, "merge_id");
+            int idxFilename = indexOf(headers, "filename");
+            int idxChunkIndex = indexOf(headers, "chunkIndex");
+            int idxLabel = indexOf(headers, "y_conflictResolutionResult");
+            if (idxMergeId < 0 || idxFilename < 0 || idxChunkIndex < 0 || idxLabel < 0) {
+                System.err.println("Warning: all_conflicts.csv missing required columns — baseline conflictPatterns will be null");
+                return Collections.emptyMap();
+            }
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) continue;
+                String[] fields = DatasetReader.parseCsvLine(line);
+                if (fields.length <= idxLabel) continue;
+                String mergeId = fields[idxMergeId].trim();
+                String filename = fields[idxFilename].trim();
+                String rawLabel = fields[idxLabel].trim();
+                int chunkIdx;
+                try { chunkIdx = Integer.parseInt(fields[idxChunkIndex].trim()); }
+                catch (NumberFormatException e) { continue; }
+                String pattern = normalizeGroundTruthLabel(rawLabel);
+                raw.computeIfAbsent(mergeId, k -> new HashMap<>())
+                   .computeIfAbsent(filename, k -> new TreeMap<>())
+                   .put(chunkIdx, pattern);
+            }
+        } catch (IOException e) {
+            System.err.println("Warning: could not read all_conflicts.csv: " + e.getMessage());
+            return Collections.emptyMap();
+        }
+        // Flatten: for each merge/file, ordered list of patterns (TreeMap already sorted by chunkIndex)
+        Map<String, Map<String, List<String>>> result = new HashMap<>();
+        for (Map.Entry<String, Map<String, Map<Integer, String>>> mergeEntry : raw.entrySet()) {
+            Map<String, List<String>> fileMap = new HashMap<>();
+            for (Map.Entry<String, Map<Integer, String>> fileEntry : mergeEntry.getValue().entrySet()) {
+                fileMap.put(fileEntry.getKey(), new ArrayList<>(fileEntry.getValue().values()));
+            }
+            result.put(mergeEntry.getKey(), fileMap);
+        }
+        return result;
+    }
+
+    private static String normalizeGroundTruthLabel(String raw) {
+        return raw.replace("CHUNK_", "")
+                  .replace("CANONICAL_", "")
+                  .replace("SEMICANONICAL_", "")
+                  .replace("NONCANONICAL", "NON")
+                  .replace("SEMI", "");
+    }
+
+    private static int indexOf(String[] headers, String name) {
+        for (int i = 0; i < headers.length; i++) {
+            if (headers[i].trim().equalsIgnoreCase(name)) return i;
+        }
+        return -1;
     }
 
     private record MergeRunStats(int resultCount, int skippedCount, long totalTime) {}

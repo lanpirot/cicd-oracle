@@ -146,11 +146,7 @@ public class MergeCheckoutProcessor {
         String mvnCmd = r.getCommandResolver().resolveMavenCommand(projectPath);
         String[] cmd = {mvnCmd, "-B", "-fae", "-DskipTests=true", "-Dmaven.test.skip=true", "install"};
         Path logFile = r.getLogDir().resolve(projectPath.getFileName() + "_preinstall");
-        if (javaHome != null) {
-            r.getProcessExecutor().executeCommandWithJavaHome(projectPath, logFile, javaHome, cmd);
-        } else {
-            r.getProcessExecutor().executeCommand(projectPath, logFile, cmd);
-        }
+        r.getProcessExecutor().executeCommand(projectPath, logFile, javaHome, cmd);
     }
 
     private static boolean isSnapshotMultiModule(Path projectPath) {

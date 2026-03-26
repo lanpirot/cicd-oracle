@@ -19,7 +19,7 @@ from collections import defaultdict
 csv.field_size_limit(1_000_000)
 
 MODES         = ['GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_RF', 'ML_AUTOREGRESSIVE']
-DISPLAY_NAMES = ['GLOBAL', 'UNIFORM',        'HEURISTIC', r'MESTRE^{*}', 'ML-AR']
+DISPLAY_NAMES = ['GLOBAL', 'UNIFORM',        'HEURISTIC', r'MESTRE\textsuperscript{\textbf{*}}', 'ML-AR']
 BUCKET_ORDER  = [str(i) for i in range(1, 10)] + ['10--19', '20--49', '50+']
 ML_MODE       = 'ML_AUTOREGRESSIVE'
 RF_MODE       = 'ML_RF'

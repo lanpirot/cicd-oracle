@@ -10,7 +10,6 @@ import ch.unibe.cs.mergeci.runner.MavenVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
-import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -36,23 +35,31 @@ public class MergeExperimentRunner {
     private final Map<String, Long> storedBaselines;
     private final IVariantGeneratorFactory generatorFactory;
     private final IVariantEvaluator evaluator;
+    private final boolean stopOnPerfect;
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap(), null, null);
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap(), null, null, true);
     }
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap(), null, null);
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap(), null, null, true);
     }
 
     public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
                                   boolean skipVariants, Map<String, Long> storedBaselines) {
-        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, null, null);
+        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, null, null, true);
     }
 
     public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
                                   boolean skipVariants, Map<String, Long> storedBaselines,
                                   IVariantGeneratorFactory generatorFactory, IVariantEvaluator evaluator) {
+        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, generatorFactory, evaluator, true);
+    }
+
+    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
+                                  boolean skipVariants, Map<String, Long> storedBaselines,
+                                  IVariantGeneratorFactory generatorFactory, IVariantEvaluator evaluator,
+                                  boolean stopOnPerfect) {
         this.repoPath = repoPath;
         this.tmpDir = tmpDir;
         this.isParallel = isParallel;
@@ -61,6 +68,7 @@ public class MergeExperimentRunner {
         this.storedBaselines = storedBaselines;
         this.generatorFactory = generatorFactory;
         this.evaluator = evaluator;
+        this.stopOnPerfect = stopOnPerfect;
     }
 
     /**
@@ -72,15 +80,17 @@ public class MergeExperimentRunner {
      */
     public ProcessedMerge processMerge(DatasetReader.MergeInfo info) throws Exception {
         try {
-            int numConflictChunks = GitUtils.getTotalConflictChunks(repoPath, info.getParent1(), info.getParent2());
+            GitUtils.ConflictStats conflictStats = GitUtils.getConflictStats(repoPath, info.getParent1(), info.getParent2());
+            info.setNumConflictFiles(conflictStats.totalFiles());
+            info.setNumJavaFiles(conflictStats.javaFiles());
 
             IVariantGenerator generator = (generatorFactory != null)
-                    ? generatorFactory.create(info.getMergeId(), repoPath, numConflictChunks)
+                    ? generatorFactory.create(info.getMergeId(), repoPath, conflictStats.totalChunks())
                     : null;
 
             MergeAnalysisResult result = runMergeAnalysis(info, generator);
 
-            return ProcessedMerge.completed(info, numConflictChunks, result);
+            return ProcessedMerge.completed(info, conflictStats.totalChunks(), result);
         } catch (MissingObjectException e) {
             System.err.println("SKIP " + info.getMergeCommit() + ": missing git object " + e.getObjectId().name());
             return ProcessedMerge.skipped(info, 0, "missing git object: " + e.getObjectId().name());
@@ -111,7 +121,7 @@ public class MergeExperimentRunner {
         long storedBaseline = storedBaselines.getOrDefault(info.getMergeCommit(), 0L);
         IVariantEvaluator activeEvaluator = (evaluator != null)
                 ? evaluator
-                : new MavenVariantEvaluator(variantProjectBuilder.getLogDir());
+                : new MavenVariantEvaluator(variantProjectBuilder.getLogDir(), stopOnPerfect);
         ExperimentTiming experimentTiming = activeEvaluator.runExperiment(
                 context, variantProjectBuilder, isParallel, isCache, skipVariants, storedBaseline);
 
@@ -128,7 +138,6 @@ public class MergeExperimentRunner {
                 activeEvaluator.getTestResults(),
                 timeElapsed,
                 experimentTiming,
-                activeEvaluator.getCoverageResult(),
                 activeEvaluator.getVariantFinishSeconds(),
                 activeEvaluator.getVariantSinceMergeStartSeconds(),
                 activeEvaluator.isBudgetExhausted(),
@@ -179,7 +188,7 @@ public class MergeExperimentRunner {
          */
         public record MergeAnalysisResult(VariantProjectBuilder analyzer, Map<String, CompilationResult> compilationResults,
                                           Map<String, TestTotal> testResults, long executionTimeSeconds,
-                                          ExperimentTiming runExecutionTime, JacocoReportFinder.CoverageDTO coverageResult,
+                                          ExperimentTiming runExecutionTime,
                                           Map<String, Double> variantFinishSeconds,
                                           Map<String, Double> variantSinceMergeStartSeconds,
                                           boolean budgetExhausted,

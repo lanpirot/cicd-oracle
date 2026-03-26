@@ -3,12 +3,12 @@ package ch.unibe.cs.mergeci.runner;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
-import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.MavenCacheManager;
 import ch.unibe.cs.mergeci.runner.maven.MavenCommandResolver;
 import ch.unibe.cs.mergeci.runner.maven.MavenProcessExecutor;
 import ch.unibe.cs.mergeci.runner.maven.MavenRunner;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
+import ch.unibe.cs.mergeci.util.JavaVersionResolver;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
@@ -37,8 +37,6 @@ public class MavenExecutionFactory {
     @Getter
     private Map<String, TestTotal> testResults;
     @Getter
-    private JacocoReportFinder.CoverageDTO coverageResult;
-    @Getter
     private Map<String, Double> variantFinishSeconds;
     @Getter
     private Map<String, Double> variantSinceMergeStartSeconds;
@@ -48,6 +46,7 @@ public class MavenExecutionFactory {
     private String cacheWarmerKey;
     @Getter
     private int numInFlightVariantsKilled;
+    private String resolvedJavaHome;
 
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
@@ -76,14 +75,18 @@ public class MavenExecutionFactory {
      * its actual duration sets the variant budget via TIMEOUT_MULTIPLIER.
      */
     public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds) {
+        return createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaselineSeconds, true);
+    }
+
+    public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds, boolean stopOnPerfect) {
         compilationResults = new TreeMap<>();
         testResults = new TreeMap<>();
-        coverageResult = null;
         variantFinishSeconds = new TreeMap<>();
         variantSinceMergeStartSeconds = new TreeMap<>();
         budgetExhausted = false;
         cacheWarmerKey = null;
         numInFlightVariantsKilled = 0;
+        resolvedJavaHome = null;
 
         return new IJustInTimeRunner() {
             @Override
@@ -132,20 +135,15 @@ public class MavenExecutionFactory {
                                               ExperimentTiming experimentTiming) throws Exception {
                 Path mainProjectPath = builder.buildMainProject(context);
                 String projectName = context.getProjectName();
+                MavenExecutionFactory.this.resolvedJavaHome =
+                        JavaVersionResolver.resolveJavaHome(mainProjectPath).orElse(null);
 
                 // Cap the baseline at MAVEN_BUILD_TIMEOUT so hung builds don't block the pipeline.
                 // The actual wall-clock duration (capped at this limit) sets the variant budget.
                 MavenRunner mainRunner = new MavenRunner(logDir, false, AppConfig.MAVEN_BUILD_TIMEOUT);
 
                 Instant start = Instant.now();
-                mainRunner.run_no_optimization(mainProjectPath);
-                if (AppConfig.isCoverageActivated()) {
-                    try {
-                        coverageResult = JacocoReportFinder.getCoverageResults(mainProjectPath, List.of());
-                    } catch (Exception e) {
-                        System.err.println("Coverage collection failed for " + projectName + ": " + e.getMessage());
-                    }
-                }
+                mainRunner.run_no_optimization(MavenExecutionFactory.this.resolvedJavaHome, mainProjectPath);
                 experimentTiming.setHumanBaselineExecutionTime(Duration.between(start, Instant.now()));
 
                 builder.collectCompilationResult(projectName).ifPresent(result ->
@@ -174,6 +172,9 @@ public class MavenExecutionFactory {
                         // T1: conflict files written last — no cache to copy yet so ordering only matters for
                         // subsequent variants that copy from this warmer.
                         Path firstPath = builder.buildVariantBase(context, idx);
+                        if (MavenExecutionFactory.this.resolvedJavaHome == null)
+                            MavenExecutionFactory.this.resolvedJavaHome =
+                                    JavaVersionResolver.resolveJavaHome(firstPath).orElse(null);
                         cacheManager.injectCacheArtifacts(firstPath);
                         builder.applyConflictResolution(firstPath, first.get());
                         System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
@@ -181,6 +182,7 @@ public class MavenExecutionFactory {
                         Instant warmStart = Instant.now();
                         new MavenProcessExecutor(timeout0).executeCommand(
                                 firstPath, logDir.resolve(firstPath.getFileName() + "_compilation"),
+                                MavenExecutionFactory.this.resolvedJavaHome,
                                 AppConfig.buildCommand(commandResolver.resolveMavenCommand(firstPath),
                                         commandResolver.resolveMavenGoal(firstPath), firstPath));
                         double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
@@ -188,7 +190,7 @@ public class MavenExecutionFactory {
                         String warmKey = projectName + "_" + idx;
                         MavenExecutionFactory.this.cacheWarmerKey = warmKey;
                         collectResult(warmKey, firstPath, builder, variantsStart, warmWallClock);
-                        if (isPerfect(compilationResults.get(warmKey), testResults.get(warmKey))) {
+                        if (stopOnPerfect && isPerfect(compilationResults.get(warmKey), testResults.get(warmKey))) {
                             System.out.printf("✓ Perfect variant found (cache-warmer #%d) — stopping early%n", idx);
                             perfectFound = true;
                         }
@@ -215,9 +217,12 @@ public class MavenExecutionFactory {
                             String key = projectName + "_" + idx;
                             // T-1: non-conflict files only; applyConflictResolution called inside the task.
                             Path vPath = builder.buildVariantBase(context, idx);
+                            if (MavenExecutionFactory.this.resolvedJavaHome == null)
+                                MavenExecutionFactory.this.resolvedJavaHome =
+                                        JavaVersionResolver.resolveJavaHome(vPath).orElse(null);
                             allocatedPaths.add(vPath);
                             boolean isWarmer = isCache && (inFlight == 0);
-                            submitTask(cs, commandResolver, cacheManager, warmPathRef, isWarmer, vPath, next.get(), builder, key, deadline);
+                            submitTask(cs, commandResolver, cacheManager, warmPathRef, isWarmer, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                             inFlight++;
                         }
 
@@ -226,7 +231,7 @@ public class MavenExecutionFactory {
                             TaskResult done = drainOne(cs);
                             inFlight--;
                             collectResult(done.key(), done.path(), builder, variantsStart, done.wallClockSeconds());
-                            if (!perfectFound && isPerfect(compilationResults.get(done.key()), testResults.get(done.key()))) {
+                            if (stopOnPerfect && !perfectFound && isPerfect(compilationResults.get(done.key()), testResults.get(done.key()))) {
                                 System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
                                 perfectFound = true;
                             }
@@ -241,7 +246,7 @@ public class MavenExecutionFactory {
                                     String key = projectName + "_" + idx;
                                     Path vPath = builder.buildVariantBase(context, idx);
                                     allocatedPaths.add(vPath);
-                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, false, vPath, next.get(), builder, key, deadline);
+                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, false, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                                     inFlight++;
                                 }
                             }
@@ -278,6 +283,9 @@ public class MavenExecutionFactory {
                             int idx = globalVariantIndex++;
                             // Build non-conflict files first (T-1); conflict files written after any cache copy.
                             Path variantPath = builder.buildVariantBase(context, idx);
+                            if (MavenExecutionFactory.this.resolvedJavaHome == null)
+                                MavenExecutionFactory.this.resolvedJavaHome =
+                                        JavaVersionResolver.resolveJavaHome(variantPath).orElse(null);
                             String variantKey = projectName + "_" + idx;
 
                             try {
@@ -292,11 +300,13 @@ public class MavenExecutionFactory {
                                     builder.applyConflictResolution(variantPath, variant);
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
+                                            MavenExecutionFactory.this.resolvedJavaHome,
                                             AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
                                                     commandResolver.resolveMavenGoal(variantPath), variantPath));
                                 } else {
                                     builder.applyConflictResolution(variantPath, variant);
-                                    new MavenRunner(logDir, false, variantTimeout).run_no_optimization(variantPath);
+                                    new MavenRunner(logDir, false, variantTimeout).run_no_optimization(
+                                            MavenExecutionFactory.this.resolvedJavaHome, variantPath);
                                 }
                                 Instant variantFinish = Instant.now();
                                 double wallClockSeconds = Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
@@ -307,7 +317,7 @@ public class MavenExecutionFactory {
                                 variantFinishSeconds.put(variantKey, wallClockSeconds);
                                 variantSinceMergeStartSeconds.put(variantKey,
                                         (double) Duration.between(variantsStart, variantFinish).getSeconds());
-                                if (isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
+                                if (stopOnPerfect && isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
                                     System.out.printf("✓ Perfect variant found (#%d) — stopping early%n", idx);
                                     break;
                                 }
@@ -331,7 +341,7 @@ public class MavenExecutionFactory {
                                     AtomicReference<Path> warmPathRef,
                                     boolean isWarmer,
                                     Path vPath, VariantProject variant, VariantProjectBuilder builder,
-                                    String key, Instant deadline) {
+                                    String key, Instant deadline, String javaHome) {
                 cs.submit(() -> {
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
@@ -344,6 +354,7 @@ public class MavenExecutionFactory {
                             builder.applyConflictResolution(vPath, variant);
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                    javaHome,
                                     AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
                                             commandResolver.resolveMavenGoal(vPath), vPath));
                             warmPathRef.set(vPath);
@@ -361,6 +372,7 @@ public class MavenExecutionFactory {
                                 builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                        javaHome,
                                         AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
                                                 commandResolver.resolveMavenGoal(vPath), vPath));
                             } else {
@@ -368,6 +380,7 @@ public class MavenExecutionFactory {
                                 builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                        javaHome,
                                         AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
                                                 commandResolver.resolveMavenGoal(vPath), vPath));
                             }

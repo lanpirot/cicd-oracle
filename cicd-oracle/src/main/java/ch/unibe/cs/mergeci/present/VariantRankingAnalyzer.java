@@ -104,31 +104,6 @@ public class VariantRankingAnalyzer {
     }
 
     /**
-     * Rank merges by coverage threshold ranges.
-     *
-     * @return Map of coverage ranges to rankings
-     */
-    public Map<String, Map<String, Integer>> rankByCoverageThresholds(List<MergeOutputJSON> merges) {
-        List<Double> coverageThresholds = List.of(0.0, 0.15, 0.4, 0.6, 1.0);
-        Map<String, Map<String, Integer>> coverageRankings = new LinkedHashMap<>();
-
-        for (int i = 0; i < coverageThresholds.size() - 1; i++) {
-            double min = coverageThresholds.get(i);
-            double max = coverageThresholds.get(i + 1);
-
-            List<MergeOutputJSON> filtered = merges.stream()
-                    .filter(x -> x.getCoverage().lineCoverage() >= min
-                            && x.getCoverage().lineCoverage() < max)
-                    .toList();
-
-            String rangeKey = String.format("[%.2f, %.2f)", min, max);
-            coverageRankings.put(rangeKey, generateSortedRanking(filtered));
-        }
-
-        return coverageRankings;
-    }
-
-    /**
      * Rank merges grouped by number of conflict chunks.
      *
      * @return Map of conflict chunk count to rankings
@@ -144,33 +119,6 @@ public class VariantRankingAnalyzer {
         }
 
         return rankings;
-    }
-
-    /**
-     * Result container for coverage-based ranking.
-     */
-    public static class CoverageRanking {
-        private final String range;
-        private final Map<String, Integer> ranking;
-        private final int totalMerges;
-
-        public CoverageRanking(String range, Map<String, Integer> ranking, int totalMerges) {
-            this.range = range;
-            this.ranking = ranking;
-            this.totalMerges = totalMerges;
-        }
-
-        public String getRange() {
-            return range;
-        }
-
-        public Map<String, Integer> getRanking() {
-            return ranking;
-        }
-
-        public int getTotalMerges() {
-            return totalMerges;
-        }
     }
 
     /**

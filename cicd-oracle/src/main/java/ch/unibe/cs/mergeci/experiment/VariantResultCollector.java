@@ -59,7 +59,6 @@ public class VariantResultCollector {
                 ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
         output.setBudgetBasisSeconds(baselineSeconds);
         output.setVariantBudgetSeconds(baselineSeconds * ch.unibe.cs.mergeci.config.AppConfig.TIMEOUT_MULTIPLIER);
-        output.setCoverage(processed.getAnalysisResult().coverageResult());
     }
 
     /**
@@ -135,6 +134,15 @@ public class VariantResultCollector {
      * Collect baseline result for the human_baseline output file.
      */
     public MergeOutputJSON collectBaselineResult(MergeExperimentRunner.ProcessedMerge processed) {
+        return collectBaselineResult(processed, null);
+    }
+
+    /**
+     * Collect baseline result for the human_baseline output file,
+     * populating conflictPatterns from the provided ground-truth map (nullable).
+     */
+    public MergeOutputJSON collectBaselineResult(MergeExperimentRunner.ProcessedMerge processed,
+                                                  Map<String, List<String>> groundTruthPatterns) {
         MergeOutputJSON output = new MergeOutputJSON();
         populateBasicInfo(output, processed);
 
@@ -146,6 +154,7 @@ public class VariantResultCollector {
         variant.setCompilationResult(result.compilationResults().get(projectName));
         variant.setTestResults(result.testResults().get(projectName));
         variant.setOwnExecutionSeconds((double) output.getBudgetBasisSeconds());
+        variant.setConflictPatterns(groundTruthPatterns);
 
         output.setVariants(List.of(variant));
         output.setVariantsExecutionTimeSeconds(output.getBudgetBasisSeconds());

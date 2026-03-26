@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +29,8 @@ public class CompilationResultTest extends BaseTest {
     void parsesFailureWithReactorSummary() throws IOException {
         CompilationResult result = parse("compilation-result_3.txt");
         assertEquals(CompilationResult.Status.FAILURE, result.getBuildStatus());
-        assertFalse(result.getFailedModuleNames().isEmpty(), "should have failed modules");
+        assertTrue(result.getTotalModules() > 0, "multi-module failure should have modules");
+        assertTrue(result.getSuccessfulModules() < result.getTotalModules(), "failure should have fewer successful than total");
     }
 
     @Test
@@ -54,5 +56,19 @@ public class CompilationResultTest extends BaseTest {
         CompilationResult result = parse("compilation-result_2.txt");
         assertNotEquals(CompilationResult.Status.SUCCESS, result.getBuildStatus());
         assertNotEquals(CompilationResult.Status.TIMEOUT, result.getBuildStatus());
+    }
+
+    @Test
+    void singleModuleSuccessInferredAs1Of1() {
+        CompilationResult result = CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
+        assertEquals(1, result.getTotalModules(), "single-module SUCCESS should report 1 total");
+        assertEquals(1, result.getSuccessfulModules(), "single-module SUCCESS should report 1 successful");
+    }
+
+    @Test
+    void singleModuleFailureInferredAs0Of1() {
+        CompilationResult result = CompilationResult.forTest(CompilationResult.Status.FAILURE, List.of());
+        assertEquals(1, result.getTotalModules(), "single-module FAILURE should report 1 total");
+        assertEquals(0, result.getSuccessfulModules(), "single-module FAILURE should report 0 successful");
     }
 }

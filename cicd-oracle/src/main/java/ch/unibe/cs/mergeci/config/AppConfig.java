@@ -1,10 +1,8 @@
 package ch.unibe.cs.mergeci.config;
 
-import java.io.IOException;
 import java.nio.file.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Stream;
 
 
 public class AppConfig {
@@ -38,45 +36,23 @@ public class AppConfig {
     }
 
     /**
-     * Whether JaCoCo coverage measurement is enabled.
-     * When true, Jacoco goals are added to every Maven build and the coverage report
-     * for the main (human-resolved) project is stored in the experiment output JSON.
-     * Can be overridden via system property "coverageActivated" for testing.
-     */
-    public static boolean isCoverageActivated() {
-        return Boolean.parseBoolean(System.getProperty("coverageActivated", "true"));
-    }
-
-    /**
      * Build the full Maven command array for a normal build.
-     * JaCoCo goals are included when coverage is active.
      */
     public static String[] buildCommand(String mavenExecutable) {
         return buildCommand(mavenExecutable, "test");
     }
 
     public static String[] buildCommand(String mavenExecutable, String mavenGoal) {
-        return buildCommand(mavenExecutable, mavenGoal, null);
-    }
-
-    /**
-     * Build command for a specific project path. When the project already configures
-     * jacoco-maven-plugin in its pom.xml, our {@code prepare-agent} goal is omitted to
-     * avoid attaching two JaCoCo agents simultaneously (which causes a JVM crash).
-     */
-    public static String[] buildCommand(String mavenExecutable, String mavenGoal, Path projectPath) {
-        if (isCoverageActivated() && !projectHasJacocoPlugin(projectPath)) {
-            return concat(
-                    new String[]{mavenExecutable, MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
-                            SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
-                    SKIP_STATIC_ANALYSIS,
-                    new String[]{JACOCO_FULL + ":prepare-agent", JACOCO_EXCLUDES, mavenGoal, JACOCO_FULL + ":report"});
-        }
         return concat(
                 new String[]{mavenExecutable, MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
                 SKIP_STATIC_ANALYSIS,
                 new String[]{mavenGoal});
+    }
+
+    /** Overload for callers that previously passed a projectPath for JaCoCo detection (now ignored). */
+    public static String[] buildCommand(String mavenExecutable, String mavenGoal, @SuppressWarnings("unused") Path projectPath) {
+        return buildCommand(mavenExecutable, mavenGoal);
     }
 
     /**
@@ -87,17 +63,6 @@ public class AppConfig {
     }
 
     public static String[] buildCommandOffline(String mavenExecutable, String mavenGoal) {
-        return buildCommandOffline(mavenExecutable, mavenGoal, null);
-    }
-
-    public static String[] buildCommandOffline(String mavenExecutable, String mavenGoal, Path projectPath) {
-        if (isCoverageActivated() && !projectHasJacocoPlugin(projectPath)) {
-            return concat(
-                    new String[]{mavenExecutable, "-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
-                            SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
-                    SKIP_STATIC_ANALYSIS,
-                    new String[]{JACOCO_FULL + ":prepare-agent", JACOCO_EXCLUDES, mavenGoal, JACOCO_FULL + ":report"});
-        }
         return concat(
                 new String[]{mavenExecutable, "-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
@@ -105,25 +70,14 @@ public class AppConfig {
                 new String[]{mavenGoal});
     }
 
+    /** Overload for callers that previously passed a projectPath for JaCoCo detection (now ignored). */
+    public static String[] buildCommandOffline(String mavenExecutable, String mavenGoal, @SuppressWarnings("unused") Path projectPath) {
+        return buildCommandOffline(mavenExecutable, mavenGoal);
+    }
+
     @SafeVarargs
     private static String[] concat(String[]... parts) {
         return Arrays.stream(parts).flatMap(Arrays::stream).toArray(String[]::new);
-    }
-
-    /**
-     * Returns true when the project's root pom.xml already declares jacoco-maven-plugin.
-     * In that case we must not inject our own {@code prepare-agent} goal — doing so would
-     * attach two JaCoCo javaagents to the forked Surefire JVM, causing a SIGABRT crash.
-     */
-    public static boolean projectHasJacocoPlugin(Path projectPath) {
-        if (projectPath == null) return false;
-        Path pom = projectPath.resolve("pom.xml");
-        if (!pom.toFile().exists()) return false;
-        try {
-            return Files.readString(pom).contains("jacoco-maven-plugin");
-        } catch (IOException e) {
-            return false;
-        }
     }
 
     // ========== JAVA INSTALLATIONS ==========
@@ -177,7 +131,7 @@ public class AppConfig {
      * Builds exceeding this limit are killed; the wall-clock duration up to the kill
      * is still used as the budget basis for variant modes.
      */
-    public static final int MAVEN_BUILD_TIMEOUT = 600;
+    public static final int MAVEN_BUILD_TIMEOUT = 300;
 
     // ========== RQ1: PATTERN HEURISTICS / ML-AR ==========
     /** Root data directory for RQ1 artefacts (Java_chunks.csv, fold files, checkpoints …). */
@@ -327,7 +281,13 @@ public class AppConfig {
             // license-maven-plugin with update-file-header/update-project-license goals modifies
             // source files and generated sources during the build — skip it to avoid mutating the
             // checkout we are analysing.
-            "-Dlicense.skip=true"
+            "-Dlicense.skip=true",
+            // JaCoCo bound via a parent POM (e.g. commons-parent:47 uses 0.8.1) attaches an
+            // incompatible javaagent to the surefire forked JVM when the project is built on
+            // Java 17+.  The JVM crashes immediately (exit 134) and surefire reports 0 tests
+            // while Maven still exits BUILD SUCCESS due to -Dmaven.test.failure.ignore=true.
+            // The pipeline does not use JaCoCo coverage data, so skipping it globally is safe.
+            "-Djacoco.skip=true"
     };
 
     /**
@@ -335,7 +295,7 @@ public class AppConfig {
      * Timeout is calculated as: TIMEOUT_MULTIPLIER * normalizedElapsedTime
      * This allows dynamic timeouts based on the expected build time from the dataset.
      */
-    public static final int TIMEOUT_MULTIPLIER = 10;
+    public static final int TIMEOUT_MULTIPLIER = 0;
 
     /**
      * JVM heap size passed to spawned Maven processes via MAVEN_OPTS.
@@ -343,14 +303,6 @@ public class AppConfig {
      * Increase this if you see "OutOfMemoryError: Java heap space" in Maven subprocess output.
      */
     public static final String MAVEN_SUBPROCESS_HEAP = "-Xmx4g";
-
-    // Maven / JaCoCo plugin coordinates
-    public static final String JACOCO_PLUGIN = "org.jacoco:jacoco-maven-plugin";
-    public static final String JACOCO_VERSION = "0.8.14";
-    public static final String JACOCO_FULL = JACOCO_PLUGIN + ":" + JACOCO_VERSION;
-    // Exclude bytecode-manipulation frameworks from JaCoCo instrumentation to prevent
-    // double-instrumentation crashes (e.g. JaCoCo 0.8.14 + ByteBuddy/PowerMock, cglib).
-    public static final String JACOCO_EXCLUDES = "-Djacoco.excludes=net.bytebuddy.**:net.sf.cglib.**";
 
     // ========== UTILITY ==========
     // File extensions

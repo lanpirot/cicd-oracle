@@ -33,7 +33,14 @@ RQ3 asks: **How good are the generated variants, and can automated resolution ma
 - Spearman correlation between distance and quality score.
 - Expected: closer to human resolution = higher quality. Validates that the human resolution is a useful proximity signal.
 
-### 6. Manual exploration of notable cases
+### 6. Necessity of exotic (compound) patterns
+- "Exotic" patterns are the 12 compound assignments beyond the 4 atomics (OURS, THEIRS, BASE, EMPTY): the 6 ordered 2-combos (OURSTHEIRS, THEIRSOURS, ...) and 6 ordered 3-combos (OURSTHEIRSBASE, ...).
+- For each merge where the best variant improves on or matches the human baseline, check whether that variant's `conflictPatterns` assignment contains at least one exotic pattern in any chunk.
+- Report: % of successful/improving merges that required an exotic pattern to achieve their result. Broken down per mode and per quality tier.
+- Secondary: among merges where only atomic-pattern variants were tried, what quality tier was reached? Compares the ceiling achievable without compound patterns.
+- Motivation: if exotic patterns are rarely needed, the search space could be pruned to the 4 atomics (reducing P^N from 16^N to 4^N) without significant quality loss.
+
+### 7. Manual exploration of notable cases
 - Identify and inspect merges where:
   - A variant strictly exceeds the human baseline (human baseline broken or failing tests, variant passes).
   - No variant compiles despite many attempts (hard cases).

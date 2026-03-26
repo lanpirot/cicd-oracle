@@ -46,21 +46,21 @@ CV_MODES = {
     'GLOBAL_UNIFORM':    r'\textsc{Uniform}',
     'HEURISTIC':         r'\textsc{Heuristic}',
     'ML_AUTOREGRESSIVE': ML_LABEL,
-    'ML_RF':             r'\textsc{RF}',
+    'ML_RF':             r'MESTRE\textsuperscript{*}',
 }
 
 COLORS  = {
-    r'\textsc{Uniform}':   '#a6cee3',   # ColorBrewer Paired light blue
-    r'\textsc{Heuristic}': '#33a02c',   # ColorBrewer Paired dark green
-    r'\textsc{ML-AR}':     '#1f78b4',   # ColorBrewer Paired dark blue
-    r'\textsc{RF}':        '#b2df8a',   # ColorBrewer Paired light green (backup slot)
+    r'\textsc{Uniform}':          '#a6cee3',   # ColorBrewer Paired light blue
+    r'\textsc{Heuristic}':        '#33a02c',   # ColorBrewer Paired dark green
+    r'\textsc{ML-AR}':            '#1f78b4',   # ColorBrewer Paired dark blue
+    r'MESTRE\textsuperscript{*}': '#b2df8a',   # ColorBrewer Paired light green (backup slot)
 }
 # IQR band hatch patterns: /, \, - for the three methods
 HATCHES = {
-    r'\textsc{Uniform}':   '////',
-    r'\textsc{Heuristic}': '\\\\',
-    r'\textsc{ML-AR}':     '----',
-    r'\textsc{RF}':        '....',
+    r'\textsc{Uniform}':          '////',
+    r'\textsc{Heuristic}':        '\\\\',
+    r'\textsc{ML-AR}':            '----',
+    r'MESTRE\textsuperscript{*}': '....',
 }
 
 

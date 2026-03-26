@@ -18,14 +18,8 @@ public class MavenProcessExecutor {
         this.timeoutSeconds = timeoutSeconds;
     }
 
-    /** Execute a command with timeout. */
-    public void executeCommand(Path workingDirectory, Path outputFile, String... command) {
-        run(createProcessBuilder(workingDirectory, outputFile, null, command), outputFile, command);
-    }
-
-    /** Execute a command with timeout, overriding JAVA_HOME in the process environment. */
-    public void executeCommandWithJavaHome(Path workingDirectory, Path outputFile,
-                                           String javaHome, String... command) {
+    /** Execute a command with timeout. javaHome may be null to use the system default. */
+    public void executeCommand(Path workingDirectory, Path outputFile, String javaHome, String... command) {
         run(createProcessBuilder(workingDirectory, outputFile, javaHome, command), outputFile, command);
     }
 

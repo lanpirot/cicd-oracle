@@ -4,7 +4,6 @@ import ch.unibe.cs.mergeci.conflict.MergeConflictCollectorTest;
 import ch.unibe.cs.mergeci.conflict.ExcelWriterTest;
 import ch.unibe.cs.mergeci.present.ResultsPresenterTest;
 import ch.unibe.cs.mergeci.repoCollection.RepoCollectorTest;
-import ch.unibe.cs.mergeci.runner.maven.strategy.CoverageStrategyTest;
 import ch.unibe.cs.mergeci.experiment.ResolutionVariantRunnerTest;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilderTest;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResultTest;
@@ -45,7 +44,6 @@ import org.junit.platform.suite.api.Suite;
     RepoCollectorTest.class,
     MergeConflictCollectorTest.class,
     ResultsPresenterTest.class,
-    CoverageStrategyTest.class,
 
     // Run Runners last
     MavenRunnerTest.class,

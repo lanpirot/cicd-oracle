@@ -57,7 +57,7 @@ public class CacheParallelStrategy implements MavenExecutionStrategy {
         String projectName = project.getFileName().toString();
         Path logFile = logDir.resolve(projectName + "_compilation");
 
-        processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand, mavenGoal, project));
+        processExecutor.executeCommand(project, logFile, null, AppConfig.buildCommand(mavenCommand, mavenGoal, project));
     }
 
     private void buildRemainingProjectsInParallel(Path[] projects) {
@@ -95,7 +95,7 @@ public class CacheParallelStrategy implements MavenExecutionStrategy {
         String mavenGoal   = commandResolver.resolveMavenGoal(project);
         Path logFile = logDir.resolve(projectName + "_compilation");
 
-        processExecutor.executeCommand(project, logFile, AppConfig.buildCommandOffline(mavenCommand, mavenGoal, project));
+        processExecutor.executeCommand(project, logFile, null, AppConfig.buildCommandOffline(mavenCommand, mavenGoal, project));
     }
 
     @Override

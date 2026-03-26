@@ -50,6 +50,13 @@ public abstract class RQPipelineRunner {
     protected IVariantEvaluator evaluator() { return null; }
 
     /**
+     * Whether to stop variant generation as soon as a perfect variant is found.
+     * RQ2 overrides this to {@code false} so all modes explore the same time budget
+     * regardless of when (or whether) a perfect variant appears.
+     */
+    protected boolean stopOnPerfect() { return true; }
+
+    /**
      * Maximum number of projects to process successfully before stopping.
      * Subclasses with oversampling (e.g. RQ2) override this to cap at the
      * target count so that extra candidates are only used as fallback.
@@ -120,7 +127,7 @@ public abstract class RQPipelineRunner {
                     merges, projectName, repoPath, modeDir, humanBaselineDir,
                     ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
                     AppConfig.TMP_DIR, ex.getName(),
-                    generatorFactory(), evaluator());
+                    generatorFactory(), evaluator(), stopOnPerfect());
         }
     }
 

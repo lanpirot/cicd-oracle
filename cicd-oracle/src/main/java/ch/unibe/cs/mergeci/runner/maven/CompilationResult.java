@@ -25,26 +25,26 @@ import java.util.stream.Collectors;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"buildStatus", "totalTime", "totalModules", "successfulModules", "failedModuleNames"})
+@JsonPropertyOrder({"buildStatus", "totalTime", "totalModules", "successfulModules"})
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class CompilationResult {
     @Getter(onMethod_ = {@JsonIgnore})
     private final List<ModuleResult> moduleResults;
 
     @JsonProperty
-    public int getTotalModules() { return moduleResults == null ? 0 : moduleResults.size(); }
+    public int getTotalModules() {
+        if (moduleResults != null && !moduleResults.isEmpty()) return moduleResults.size();
+        // Single-module project: no Reactor Summary — infer 1 when build status is known
+        return (buildStatus == Status.SUCCESS || buildStatus == Status.FAILURE || buildStatus == Status.TIMEOUT) ? 1 : 0;
+    }
 
     @JsonProperty
-    public int getSuccessfulModules() { return moduleResults == null ? 0 : getNumberOfSuccessfulModules(); }
-
-    @JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY)
-    public List<String> getFailedModuleNames() {
-        if (moduleResults == null) return List.of();
-        return moduleResults.stream()
-                .filter(m -> m.getStatus() == Status.FAILURE)
-                .map(ModuleResult::getModuleName)
-                .toList();
+    public int getSuccessfulModules() {
+        if (moduleResults != null && !moduleResults.isEmpty()) return getNumberOfSuccessfulModules();
+        // Single-module project: successful iff BUILD SUCCESS
+        return (buildStatus == Status.SUCCESS) ? 1 : 0;
     }
+
     private final Status buildStatus;
     private final float totalTime;
     private final static String MODULE_REGEX = "\\[INFO\\]\\s(.+?)\\s\\.*\\s*(SUCCESS|FAILURE|SKIPPED)\\s(\\[\\s*([\\d.:]+) (min|s|ms)\\])?";

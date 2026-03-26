@@ -1,7 +1,6 @@
 package ch.unibe.cs.mergeci.runner;
 
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
-import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
 import java.util.Map;
@@ -35,7 +34,6 @@ public interface IVariantEvaluator {
 
     Map<String, CompilationResult> getCompilationResults();
     Map<String, TestTotal> getTestResults();
-    JacocoReportFinder.CoverageDTO getCoverageResult();
     Map<String, Double> getVariantFinishSeconds();
     Map<String, Double> getVariantSinceMergeStartSeconds();
     boolean isBudgetExhausted();

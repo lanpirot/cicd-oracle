@@ -58,7 +58,7 @@ public class DatasetReader {
         return merges;
     }
 
-    private static String[] parseCsvLine(String line) {
+    static String[] parseCsvLine(String line) {
         List<String> result = new ArrayList<>();
         StringBuilder field = new StringBuilder();
         boolean inQuotes = false;

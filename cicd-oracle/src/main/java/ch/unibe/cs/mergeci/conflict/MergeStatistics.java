@@ -2,7 +2,6 @@ package ch.unibe.cs.mergeci.conflict;
 
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 import ch.unibe.cs.mergeci.present.VariantScore;
-import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -78,12 +77,7 @@ public class MergeStatistics {
     private static MergeSubsets buildSubsets(
             List<MergeOutputJSON> impact,
             List<MergeOutputJSON> noImpact) {
-        return new MergeSubsets(
-                impact,
-                noImpact,
-                addCoverageInfo(impact),
-                addCoverageInfo(noImpact)
-        );
+        return new MergeSubsets(impact, noImpact);
     }
 
     private static List<MergeOutputJSON> filterImpactMerges(List<MergeOutputJSON> merges) {
@@ -124,20 +118,9 @@ public class MergeStatistics {
                 .collect(Collectors.toList());
     }
 
-    private static List<MergeOutputJSON> addCoverageInfo(List<MergeOutputJSON> merges) {
-        return merges.stream()
-                .peek(x -> {
-                    if (x.getCoverage() == null) {
-                        x.setCoverage(new JacocoReportFinder.CoverageDTO(Float.NaN, Float.NaN));
-                    }
-                })
-                .collect(Collectors.toList());
-    }
-
     /**
-         * Categorized subsets of merges (single-module or multi-module).
-         */
-        public record MergeSubsets(List<MergeOutputJSON> impact, List<MergeOutputJSON> noImpact,
-                                   List<MergeOutputJSON> impactWithCoverage, List<MergeOutputJSON> noImpactWithCoverage) {
+     * Categorized subsets of merges (single-module or multi-module).
+     */
+    public record MergeSubsets(List<MergeOutputJSON> impact, List<MergeOutputJSON> noImpact) {
     }
 }

@@ -550,29 +550,15 @@ def generate_sequences(model, merge_feat_np, chunk_feats_np,
                    greedy: bool = False,
                    exclude_per_chunk: list[int] | None = None) -> list[list[int]]:
         seqs: list[list[int]] = [[] for _ in range(batch_size)]
-        ctx_b = ctx.expand(batch_size, -1).unsqueeze(1)        # (B, 1, d_model)
+        ctx_b       = ctx.expand(batch_size, -1).unsqueeze(1)   # (B, 1, d_model)
+        accumulated = ctx_b                                      # grows to (B, t+1, d_model)
+        prev_labels = torch.full((batch_size, 1), BOS_IDX, dtype=torch.long, device=device)
 
         for t in range(T):
-            cf_t = cf_proj[:, t:t+1, :].expand(batch_size, -1, -1)
-            prev_idx = (
-                torch.full((batch_size, 1), BOS_IDX, dtype=torch.long, device=device)
-                if t == 0
-                else torch.tensor([[s[t - 1]] for s in seqs], dtype=torch.long, device=device)
-            )
-            lbl_emb_t = model.label_embed(prev_idx)
+            cf_t      = cf_proj[:, t:t+1, :].expand(batch_size, -1, -1)
+            lbl_emb_t = model.label_embed(prev_labels)           # (B, 1, embed_dim)
             step_t    = torch.cat([lbl_emb_t, cf_t], dim=-1) + pe[:, t:t+1, :].expand(batch_size, -1, -1)
-
-            if t == 0:
-                seq_in = torch.cat([ctx_b, step_t], dim=1)
-            else:
-                hist_idx = torch.tensor(
-                    [[BOS_IDX] + s[:t - 1] for s in seqs],
-                    dtype=torch.long, device=device,
-                )
-                hist_lbl  = model.label_embed(hist_idx)
-                hist_cf   = cf_proj[:, :t, :].expand(batch_size, -1, -1)
-                hist_step = torch.cat([hist_lbl, hist_cf], dim=-1) + pe[:, :t, :].expand(batch_size, -1, -1)
-                seq_in    = torch.cat([ctx_b, hist_step, step_t], dim=1)
+            seq_in    = torch.cat([accumulated, step_t], dim=1)
 
             sz     = seq_in.shape[1]
             causal = torch.triu(torch.ones(sz, sz, device=device, dtype=torch.bool), diagonal=1)
@@ -583,14 +569,18 @@ def generate_sequences(model, merge_feat_np, chunk_feats_np,
                 logits[:, exclude_per_chunk[t]] = float('-inf')
 
             if greedy:
-                for i in range(batch_size):
-                    seqs[i].append(int(logits[i].argmax().item()))
+                sampled = logits.argmax(dim=-1)                  # (B,)
             else:
                 if temp != 1.0:
                     logits = logits / temp
-                probs = torch.softmax(logits, dim=-1).cpu().numpy()
-                for i in range(batch_size):
-                    seqs[i].append(rng.choices(range(N_LABELS), weights=probs[i].tolist(), k=1)[0])
+                sampled = torch.multinomial(torch.softmax(logits, dim=-1), 1).squeeze(1)  # (B,)
+
+            sampled_list = sampled.cpu().tolist()
+            for i in range(batch_size):
+                seqs[i].append(sampled_list[i])
+
+            accumulated = torch.cat([accumulated, step_t], dim=1)
+            prev_labels = sampled.unsqueeze(1)                   # (B, 1) for next step
 
         return seqs
 

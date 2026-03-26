@@ -46,6 +46,9 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
         return MLARGeneratorFactory.INSTANCE;
     }
 
+    @Override
+    protected boolean stopOnPerfect() { return false; }
+
     public static void main(String[] args) throws Exception {
         new RQ2PipelineRunner().run();
     }

@@ -45,12 +45,10 @@ public class StatisticsReporter {
         printHeader();
         printOverviewStatistics(allMerges, impactMerges, noImpactMerges);
         printModuleBreakdown(allMerges, impactMerges, noImpactMerges);
-        printCoverageStatistics();
         printJavaRatioImpactChart(allMerges, impactMerges);
         printResolutionAnalysis(impactMerges);
         printRankings(impactMerges);
         printExecutionTimeAnalysis(impactMerges);
-        printCoverageRankings(impactMerges);
         printConflictChunksRankings(impactMerges);
         printFooter();
     }
@@ -134,48 +132,6 @@ public class StatisticsReporter {
                     impactMultiModule.size(),
                     countPercent(impactMerges.size(), impactMultiModule.size()));
         }
-    }
-
-    private void printCoverageStatistics() {
-        printSectionHeader("Code Coverage (Average Line Coverage %)");
-
-        // No impact coverage
-        List<MergeOutputJSON> noImpactWithCoverage = statistics.getNoImpactMerges();
-        List<MergeOutputJSON> noImpactSingleModuleCoverage = statistics.getSingleModule().noImpactWithCoverage();
-        List<MergeOutputJSON> noImpactMultiModuleCoverage = statistics.getMultiModule().noImpactWithCoverage();
-
-        System.out.println("  No Impact Merges:");
-        System.out.printf("  ├─ All:             %6.2f%%\n",
-                noImpactWithCoverage.stream()
-                        .mapToDouble(x -> x.getCoverage().lineCoverage())
-                        .average()
-                        .orElse(0.0));
-        System.out.printf("  ├─ Single-module:   %6.2f%%\n",
-                noImpactSingleModuleCoverage.stream()
-                        .mapToDouble(x -> x.getCoverage().lineCoverage())
-                        .average()
-                        .orElse(0.0));
-        System.out.printf("  └─ Multi-module:    %6.2f%%\n\n",
-                noImpactMultiModuleCoverage.stream()
-                        .mapToDouble(x -> x.getCoverage().lineCoverage())
-                        .average()
-                        .orElse(0.0));
-
-        // Impact coverage
-        List<MergeOutputJSON> impactSingleModuleCoverage = statistics.getSingleModule().impactWithCoverage();
-        List<MergeOutputJSON> impactMultiModuleCoverage = statistics.getMultiModule().impactWithCoverage();
-
-        System.out.println("  Impact Merges:");
-        System.out.printf("  ├─ Single-module:   %6.2f%%\n",
-                impactSingleModuleCoverage.stream()
-                        .mapToDouble(x -> x.getCoverage().lineCoverage())
-                        .average()
-                        .orElse(0.0));
-        System.out.printf("  └─ Multi-module:    %6.2f%%\n",
-                impactMultiModuleCoverage.stream()
-                        .mapToDouble(x -> x.getCoverage().lineCoverage())
-                        .average()
-                        .orElse(0.0));
     }
 
     private void printResolutionAnalysis(List<MergeOutputJSON> impactMerges) {
@@ -313,50 +269,6 @@ public class StatisticsReporter {
                 metrics.getAverageRatio());
         System.out.println("\n  Distribution by conflict chunks:");
         System.out.println("  " + metrics.getDistributionByConflictChunks());
-
-        long mergesWithCoverage = impactMerges.stream()
-                .filter(m -> m.getCoverage() != null && !Float.isNaN(m.getCoverage().lineCoverage()))
-                .count();
-
-        System.out.printf("\n  Merges with coverage data: %4d/%4d (%3d%%)\n",
-                mergesWithCoverage,
-                impactMerges.size(),
-                countPercent(impactMerges.size(), (int) mergesWithCoverage));
-    }
-
-    private void printCoverageRankings(List<MergeOutputJSON> impactMerges) {
-        if (impactMerges.isEmpty()) {
-            return;
-        }
-
-        printSectionHeader("Rankings by Coverage Threshold");
-
-        Map<String, Map<String, Integer>> coverageRankings =
-                rankingAnalyzer.rankByCoverageThresholds(impactMerges);
-
-        for (Map.Entry<String, Map<String, Integer>> rangeEntry : coverageRankings.entrySet()) {
-            String range = rangeEntry.getKey();
-            Map<String, Integer> ranking = rangeEntry.getValue();
-
-            // Count total merges in this range
-            int totalInRange = ranking.values().stream()
-                    .max(Integer::compareTo)
-                    .orElse(0);
-
-            if (totalInRange == 0) {
-                continue;
-            }
-
-            System.out.printf("\n  Coverage %s:\n", range);
-
-            for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
-                System.out.printf("    ├─ %-15s %4d/%4d (%5.2f%%)\n",
-                        entry.getKey() + ":",
-                        entry.getValue(),
-                        totalInRange,
-                        (float) entry.getValue() * 100 / totalInRange);
-            }
-        }
     }
 
     private void printConflictChunksRankings(List<MergeOutputJSON> impactMerges) {

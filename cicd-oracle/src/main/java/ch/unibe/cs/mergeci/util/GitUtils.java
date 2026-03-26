@@ -178,6 +178,22 @@ public class GitUtils {
         return conflictingFiles;
     }
 
+    /** Conflict counts derived in a single merge pass. */
+    public record ConflictStats(int totalFiles, int javaFiles, int totalChunks) {}
+
+    /**
+     * Compute all conflict counts (files, Java files, chunks) in one git merge pass.
+     */
+    public static ConflictStats getConflictStats(Path repo, String parent1, String parent2) throws IOException {
+        try (Git git = getGit(repo)) {
+            Map<String, Integer> map = countConflictChunks(parent1, parent2, git);
+            int totalChunks = map.values().stream().mapToInt(Integer::intValue).sum();
+            int totalFiles = map.size();
+            int javaFiles = (int) map.keySet().stream().filter(p -> p.endsWith(".java")).count();
+            return new ConflictStats(totalFiles, javaFiles, totalChunks);
+        }
+    }
+
     /**
      * Get the total number of conflict chunks across all conflicting files between two commits.
      * This is a convenience method that wraps countConflictChunks() and sums all values.

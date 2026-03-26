@@ -59,12 +59,12 @@ class VariantResultCollectorTest extends BaseTest {
         testResults.put(PROJECT_NAME, baselineTests);
 
         if (includeVariant) {
-            compilationResults.put(PROJECT_NAME + "_0", null);
+            compilationResults.put(PROJECT_NAME + "_1", null);
             TestTotal variantTests = new TestTotal();
             variantTests.setRunNum(90);
             variantTests.setFailuresNum(2);
             variantTests.setHasData(true);
-            testResults.put(PROJECT_NAME + "_0", variantTests);
+            testResults.put(PROJECT_NAME + "_1", variantTests);
         }
 
         // ExperimentTiming with known baseline duration
@@ -81,7 +81,7 @@ class VariantResultCollectorTest extends BaseTest {
         }
 
         MergeExperimentRunner.MergeAnalysisResult result = new MergeExperimentRunner.MergeAnalysisResult(
-                analyzer, compilationResults, testResults, 200L, timing, null, variantFinishSeconds,
+                analyzer, compilationResults, testResults, 200L, timing, variantFinishSeconds,
                 null, false, null, 0
         );
 
@@ -111,7 +111,7 @@ class VariantResultCollectorTest extends BaseTest {
 
     @Test
     void collectResults_variantHasFinishTime() throws Exception {
-        Map<String, Double> finishTimes = Map.of(PROJECT_NAME + "_0", VARIANT_FINISH_SECONDS);
+        Map<String, Double> finishTimes = Map.of(PROJECT_NAME + "_1", VARIANT_FINISH_SECONDS);
         MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(true, finishTimes);
         MergeOutputJSON output = new VariantResultCollector().collectResults(processed);
 

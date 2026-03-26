@@ -3,7 +3,6 @@ package ch.unibe.cs.mergeci.present;
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
-import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -161,33 +160,6 @@ class VariantRankingAnalyzerTest extends BaseTest {
     }
 
     @Test
-    void testRankByCoverageThresholds() {
-        // Create merges with different coverage levels
-        MergeOutputJSON lowCoverage = createMergeWithCoverage("merge1", 0.1f, 50, 30, 0, 1);
-        addVariant(lowCoverage, 50, 0, 0, Map.of("file1", List.of("OursPattern")));
-
-        MergeOutputJSON mediumCoverage = createMergeWithCoverage("merge2", 0.5f, 50, 30, 0, 1);
-        addVariant(mediumCoverage, 50, 0, 0, Map.of("file1", List.of("TheirsPattern")));
-
-        MergeOutputJSON highCoverage = createMergeWithCoverage("merge3", 0.8f, 50, 0, 0, 1);
-        addVariant(highCoverage, 50, 10, 0, Map.of("file1", List.of("OursPattern")));
-
-        Map<String, Map<String, Integer>> rankings = analyzer.rankByCoverageThresholds(
-                List.of(lowCoverage, mediumCoverage, highCoverage)
-        );
-
-        // Check coverage ranges
-        assertTrue(rankings.containsKey("[0.00, 0.15)"), "Should have low coverage range");
-        assertTrue(rankings.containsKey("[0.40, 0.60)"), "Should have medium coverage range");
-        assertTrue(rankings.containsKey("[0.60, 1.00)"), "Should have high coverage range");
-
-        // Verify rankings within ranges
-        assertEquals(1, rankings.get("[0.00, 0.15)").get("Ours"));
-        assertEquals(1, rankings.get("[0.40, 0.60)").get("Theirs"));
-        assertEquals(1, rankings.get("[0.60, 1.00)").get("Human"));
-    }
-
-    @Test
     void testRankByConflictChunks() {
         // Create merges with different conflict chunk counts
         MergeOutputJSON merge1 = createMerge("merge1", 50, 30, 0, 1);
@@ -214,16 +186,6 @@ class VariantRankingAnalyzerTest extends BaseTest {
         assertEquals(1, rankings.get(2).get("Ours"));
     }
 
-    @Test
-    void testCoverageRankingClass() {
-        Map<String, Integer> ranking = Map.of("Ours", 5, "Theirs", 3);
-        VariantRankingAnalyzer.CoverageRanking coverageRanking =
-                new VariantRankingAnalyzer.CoverageRanking("[0.00, 0.50)", ranking, 8);
-
-        assertEquals("[0.00, 0.50)", coverageRanking.getRange());
-        assertEquals(ranking, coverageRanking.getRanking());
-        assertEquals(8, coverageRanking.getTotalMerges());
-    }
 
     @Test
     void testConflictChunksRankingClass() {
@@ -264,13 +226,6 @@ class VariantRankingAnalyzerTest extends BaseTest {
         allVariants.add(baselineVariant);
         merge.setVariants(allVariants);
         merge.setNumConflictChunks(conflictChunks);
-        return merge;
-    }
-
-    private MergeOutputJSON createMergeWithCoverage(String commitHash, float lineCoverage,
-                                                     int runNum, int failuresNum, int errorsNum, int conflictChunks) {
-        MergeOutputJSON merge = createMerge(commitHash, runNum, failuresNum, errorsNum, conflictChunks);
-        merge.setCoverage(new JacocoReportFinder.CoverageDTO(lineCoverage, lineCoverage));
         return merge;
     }
 

@@ -51,6 +51,13 @@ RQ2 asks: **How efficiently do the different experiment modes explore the varian
 - A secondary plot of N alone (linear scale) is useful alongside P^N since N is more intuitive and P^N can be dominated by a few large outliers.
 - Shows where the exponential search space becomes the binding constraint regardless of mode, and frames why a smart ordering (RQ1) matters more as N grows — even the best mode can only cover a vanishing fraction of P^N for large N.
 
+### 9. Relative build time vs. search space exploration
+- For each variant, compute: relative build time = `ownExecutionSeconds / budgetBasisSeconds`, capped at 10.
+- Exploration percentage = `variantIndex / P^N * 100`, plotted on a log scale (since P^N grows exponentially, early variants cover a disproportionately large relative share).
+- Scatter plot (or binned median curve) of relative build time (y-axis, 0–10) vs. exploration % (x-axis, log scale), per mode.
+- Expected result: relative build time decreases as exploration % increases — later variants are cheaper because they fail earlier in the Maven lifecycle. This is a normalised, search-space-aware restatement of metric 7 that makes the cost reduction legible across merges with very different P^N values.
+- Separate curves per mode reveal whether cache flattens the curve (all variants cheap) vs. no-cache (steep early drop).
+
 ---
 
 ## Notes

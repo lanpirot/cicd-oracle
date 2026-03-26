@@ -238,51 +238,24 @@ def generate_rf_sequences(proba: np.ndarray, n_variants: int,
 
     seen: set[str] = set()
     unique_seqs: list[list[str]] = []
+    rng_np = np.random.default_rng(rng.getrandbits(64))
 
-    def _greedy(exclude_per_chunk: list[int] | None = None) -> list[str]:
-        seq = []
-        for i in range(T):
-            p = proba[i].copy()
-            if exclude_per_chunk is not None:
-                p[exclude_per_chunk[i]] = 0.0
-            total = p.sum()
-            if total <= 0:
-                p = np.ones(N_LABELS) / N_LABELS
-            seq.append(I2L[int(p.argmax())])
-        return seq
-
-    def _sample(temp: float) -> list[str]:
-        seq = []
-        for i in range(T):
-            p = proba[i].copy()
-            if temp != 1.0:
-                p = p ** (1.0 / temp)
-            total = p.sum()
-            if total <= 0:
-                p = np.ones(N_LABELS) / N_LABELS
-            else:
-                p = p / total
-            seq.append(I2L[rng.choices(range(N_LABELS), weights=p.tolist(), k=1)[0]])
-        return seq
-
-    # Phase 0: two greedy passes
-    pass1 = _greedy()
-    pass1_indices = [L2I[lbl] for lbl in pass1]
-    for exclude in (None, pass1_indices):
-        s = _greedy(exclude)
-        k = "|".join(s)
-        if k not in seen:
-            seen.add(k)
-            unique_seqs.append(s)
-
-    # Phase 1: stochastic sampling with dedup + adaptive temperature
+    # Phase 1: stochastic sampling with dedup + adaptive temperature.
+    # Vectorised: sample an entire batch of bs variants for all T chunks at once
+    # using the Gumbel-max trick (equivalent distribution to per-chunk categorical).
     cur_temp = temperature
     remaining = n_variants - len(unique_seqs)
     while remaining > 0:
         bs = min(remaining, _INF_BATCH)
+        p = proba ** (1.0 / cur_temp) if cur_temp != 1.0 else proba.copy()
+        row_sums = p.sum(axis=1, keepdims=True)
+        p = np.where(row_sums > 0, p / row_sums, 1.0 / N_LABELS)
+        log_p  = np.log(np.maximum(p, 1e-40))                          # (T, 16)
+        gumbel = -np.log(-np.log(rng_np.random((bs, T, N_LABELS)) + 1e-40))
+        batch_idx = np.argmax(log_p[np.newaxis] + gumbel, axis=2)      # (bs, T)
         new_count = 0
-        for _ in range(bs):
-            s = _sample(cur_temp)
+        for row in batch_idx:
+            s = [I2L[int(i)] for i in row]
             k = "|".join(s)
             if k not in seen:
                 seen.add(k)

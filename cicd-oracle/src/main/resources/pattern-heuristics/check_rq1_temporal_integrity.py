@@ -208,7 +208,12 @@ def check_temporal_performance(results_path: Path):
     performance should be stable or slightly declining (distribution shift, less
     training data for the earliest folds).
 
-    Threshold: rho > 0.5 AND p < 0.05  →  flag as suspicious.
+    Threshold: rho > 0.5 AND p < 0.025  →  flag as suspicious.
+
+    The p-value threshold is Bonferroni-corrected for the two actual ML models
+    (ML_AR, ML_RF).  Rule-based baselines (GLOBAL, HEURISTIC, etc.) are shown
+    for context but are excluded from the leakage family: they cannot overfit
+    to future data, so including them in the correction would inflate alpha.
     """
     print("\n── Check 5: Temporal performance Spearman correlation ───────────────")
 
@@ -283,7 +288,7 @@ def check_temporal_performance(results_path: Path):
             rho_diff, p_str = float('nan'), "     n/a"
 
         suspicious = (rho_diff == rho_diff and rho_diff > 0.5
-                      and p_diff is not None and p_diff < 0.05)
+                      and p_diff is not None and p_diff < 0.025)
         verdict = "SUSPICIOUS — model gains over random grow with time" if suspicious else "ok"
         if suspicious:
             ok = False

@@ -50,7 +50,7 @@ public class ParallelStrategy implements MavenExecutionStrategy {
         String projectName = project.getFileName().toString();
         Path logFile = logDir.resolve(projectName + "_compilation");
 
-        processExecutor.executeCommand(project, logFile, AppConfig.buildCommand(mavenCommand, mavenGoal, project));
+        processExecutor.executeCommand(project, logFile, null, AppConfig.buildCommand(mavenCommand, mavenGoal, project));
     }
 
     @Override

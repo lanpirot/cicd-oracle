@@ -1,7 +1,6 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
-import ch.unibe.cs.mergeci.runner.maven.JacocoReportFinder;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -22,7 +21,7 @@ import java.util.Map;
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
         "isMultiModule", "budgetBasisSeconds", "variantBudgetSeconds",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
-        "variantsExecutionTimeSeconds", "coverage", "variants"})
+        "variantsExecutionTimeSeconds", "variants"})
 @ToString
 public class MergeOutputJSON {
     private String mode;
@@ -35,8 +34,6 @@ public class MergeOutputJSON {
     private int numJavaConflictFiles;
     private int numConflictChunks;
     private Boolean isMultiModule;
-
-    private JacocoReportFinder.CoverageDTO coverage;
 
     /** Baseline build time used to size the variant budget. For variant modes this is read from
      *  the prior human_baseline JSON (not re-measured); for human_baseline mode it is measured. */
