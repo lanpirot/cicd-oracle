@@ -9,13 +9,15 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Thread-safe log of build and test failures.
- * Phase 1 (collection) creates it fresh; Phase 2 (human baseline) appends a new section.
+ * The legacy collection pipeline creates it fresh; the human baseline appends a new section.
  */
 public class BuildFailureLog {
 
     private static final DateTimeFormatter TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final PrintWriter writer;
+    private final boolean append;
+    private boolean headerWritten;
 
     public static BuildFailureLog createOrNull(Path logFile) {
         try {
@@ -42,6 +44,13 @@ public class BuildFailureLog {
     private BuildFailureLog(Path logFile, boolean append) throws IOException {
         logFile.getParent().toFile().mkdirs();
         this.writer = new PrintWriter(new FileWriter(logFile.toFile(), append));
+        this.append = append;
+        this.headerWritten = false;
+    }
+
+    private void ensureHeader() {
+        if (headerWritten) return;
+        headerWritten = true;
         if (append) {
             writer.printf("%n── Human Baseline Run - %s ──%n", now());
         } else {
@@ -53,6 +62,7 @@ public class BuildFailureLog {
 
     /** Log a repo-level rejection (clone failure, no POM, etc.). */
     public synchronized void logRepoFailure(String repoName, String status, String detail) {
+        ensureHeader();
         String detailStr = (detail != null && !detail.isEmpty()) ? "  " + detail : "";
         writer.printf("[%s]  %-45s  %-30s%s%n", now(), repoName, status, detailStr);
         writer.flush();
@@ -61,6 +71,7 @@ public class BuildFailureLog {
     /** Log a per-merge failure (timeout, no tests, compile error, Java version mismatch). */
     public synchronized void logMergeFailure(String repoName, String shortCommit,
                                              MergeFailureType type, String detail) {
+        ensureHeader();
         String detailStr = (detail != null && !detail.isEmpty()) ? "  " + detail : "";
         writer.printf("[%s]  %-45s  %s  %-18s%s%n", now(), repoName, shortCommit, type, detailStr);
         writer.flush();

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Saves human / tentative / variant file triplets to disk during Phase 2 analysis
+ * Saves human / tentative / variant file triplets to disk during variant experiment analysis
  * so merges can be inspected later without re-cloning.
  *
  * For each processed merge one directory is written:

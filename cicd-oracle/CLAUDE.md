@@ -25,23 +25,16 @@ mvn test -DcoverageActivated=false   # Disable JaCoCo
 
 ## Architecture Overview
 
-This is a **research pipeline** that studies automated merge conflict resolution. It runs three sequential phases:
+This is a **research pipeline** that studies automated merge conflict resolution. The RQ2 and RQ3 pipelines read merge data from a pre-computed `merge_commits.csv` (extracted from an SQL dump), clone repositories on demand, and run variant experiments directly — there is no separate collection phase.
 
 ```
-Phase 0/1: collect()              → RepoCollector → MergeConflictCollector
-Phase 2:   generateMergeVariants() → ResolutionVariantRunner
-Phase 3:   analyzeResults()       → ResultsPresenter
+RQ2/RQ3:  RQ2PipelineRunner / RQ3PipelineRunner → ResolutionVariantRunner
+Analysis: analyzeResults()                       → ResultsPresenter
 ```
 
-### Phase 0/1 — Repository Collection (`repoCollection`, `conflict`)
+A legacy collection pipeline (`RepoCollector` → `MergeConflictCollector`) still exists in the `repoCollection` and `conflict` packages but is not used by the current RQ pipelines. `BuildFailureClassifier` classifies failed builds into categories: **INFRA_FAILURE** (dead Maven repo, blocked mirror, missing system tool, unresolvable parent POM — permanently unfixable), **BROKEN_MERGE** (genuine `javac` errors in the merged source, e.g. committed conflict markers — a variant may fix it), and generic build failure. The RQ pipelines check for infra failures and zero-test builds after the human_baseline mode and skip projects that can never produce usable results.
 
-`RepoCollector` reads a CSV file of GitHub repositories, clones each, detects build tools, and for Maven projects invokes `MergeConflictCollector`. The conflict collector finds merge commits with Java conflicts, checks out each merge, runs a baseline Maven build (600s timeout), and writes a per-project dataset CSV file.
-
-Status is persisted in `.repo_status.json` so interrupted runs resume cleanly. `NOT_PROCESSED_BUT_CLONED` means the repo was cloned but processing never completed — it skips the clone but re-runs analysis.
-
-`BuildFailureClassifier` classifies failed builds into three categories: **INFRA_FAILURE** (dead Maven repo or frontend toolchain — skipped), **BROKEN_MERGE** (genuine `javac` errors in the merged source, e.g. committed conflict markers — included in the dataset with `baselineBroken=true`), and generic build failure (skipped). **Broken merges are valuable**: a generated variant may resolve the conflict differently and compile cleanly. Their dataset rows have `compilationSuccess=false`, zero test fields, and `baselineBroken=true`.
-
-### Phase 2 — Variant Experiments (`experiment`, `runner`)
+### Variant Experiments (`experiment`, `runner`)
 
 `ResolutionVariantRunner` iterates over 5 experiment modes defined in `Utility.Experiments` — a 2×2 matrix of (cache/no-cache) × (parallel/sequential), plus a baseline:
 
@@ -59,7 +52,7 @@ For every merge in a dataset, `MergeExperimentRunner` creates a `VariantBuildCon
 
 For **broken-baseline merges** (`baselineBroken=true`), the stored baseline wall-clock time is overridden with the project average of non-broken merges (300 s fallback) via `injectFallbackBaselinesForBrokenMerges()`, giving their variants a meaningful time budget.
 
-### Phase 3 — Analysis (`present`)
+### Analysis (`present`)
 
 `ResultsPresenter` loads all JSON files and delegates to specialized analyzers: `StatisticsReporter`, `VariantResolutionAnalyzer`, `VariantRankingAnalyzer`, `ExecutionTimeAnalyzer`.
 
@@ -95,8 +88,7 @@ Test directories (defined in `AppConfig`): `TEST_TMP_DIR`, `TEST_EXPERIMENTS_TEM
 
 ```
 /home/lanpirot/data/bruteforcemerge/
-  conflict_datasets/     # Per-project CSV datasets (Phase 1 output)
-  variant_experiments/   # Per-project JSON results, one subdir per mode (Phase 2 output)
+  variant_experiments/   # Per-project JSON results, one subdir per mode
   test/                  # All test output
 /home/lanpirot/tmp/
   bruteforce_repos/      # Cloned repositories

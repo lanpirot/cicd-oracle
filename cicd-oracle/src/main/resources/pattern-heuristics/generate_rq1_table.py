@@ -19,7 +19,7 @@ from collections import defaultdict
 csv.field_size_limit(1_000_000)
 
 MODES         = ['GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_RF', 'ML_AUTOREGRESSIVE']
-DISPLAY_NAMES = ['GLOBAL', 'UNIFORM',        'HEURISTIC', r'MESTRE\textsuperscript{\textbf{*}}', 'ML-AR']
+DISPLAY_NAMES = [r'\textsc{Global}', r'\textsc{Uniform}', r'\textsc{Prior\#}', r'\textsc{Mestre}', r'\textsc{ML-Ar}']
 BUCKET_ORDER  = [str(i) for i in range(1, 10)] + ['10--19', '20--49', '50+']
 ML_MODE       = 'ML_AUTOREGRESSIVE'
 RF_MODE       = 'ML_RF'
@@ -219,18 +219,21 @@ def compute_oneshot_accuracy(traj_path, modes):
     return result
 
 
-def build_oneshot_tex(oneshot, variant_cap):
+def build_oneshot_tex(oneshot, variant_cap, oneshot_ceiling=None):
+    if oneshot_ceiling is None:
+        oneshot_ceiling = dict(pooled=float('nan'), mean=float('nan'), median=float('nan'))
     lines = [
         r'\begin{table*}[ht]',
         r'\centering',
         r'\caption{One-shot chunk accuracy (first variant only)}',
         r'\label{tab:rq1-oneshot}',
-        r'\begin{tabular}{l' + 'r' * len(MODES) + '}',
+        r'\begin{tabular}{l' + 'r' * len(MODES) + r' @{\hspace{2em}} r}',
         r'\toprule',
     ]
     hdr = r'\textbf{metric}'
     for name in DISPLAY_NAMES:
         hdr += rf' & \textbf{{{name}}}'
+    hdr += r' & \textcolor{gray}{\textit{Reachable}}'
     lines.append(hdr + r' \\')
     lines.append(r'\midrule')
 
@@ -243,6 +246,7 @@ def build_oneshot_tex(oneshot, variant_cap):
         for v, s in zip(vals, best):
             cell = bold(s) if s == mx else s
             row += f' & {cell}'
+        row += f' & {fmt_ceiling(oneshot_ceiling[metric_key])}'
         lines.append(row + r' \\')
 
     lines += [r'\bottomrule', r'\end{tabular}', r'\end{table*}']
@@ -404,7 +408,45 @@ def main():
         for m, name in zip(MODES, DISPLAY_NAMES):
             o = oneshot[m]
             print(f"  {name:<20} {fmt(o['pooled'],1):>8} {fmt(o['mean'],1):>8} {fmt(o['median'],1):>8}")
-        tex = build_oneshot_tex(oneshot, variant_cap)
+
+        # chunk-level ceiling: fraction of chunks that are canonical (reachable)
+        noncanonical_per_merge = defaultdict(int)
+        chunks_per_merge_ac    = defaultdict(int)
+        if os.path.exists(all_conflicts_path):
+            with open(all_conflicts_path, newline='') as f:
+                for r in csv.DictReader(f):
+                    mid = r['merge_id']
+                    chunks_per_merge_ac[mid] += 1
+                    if r.get('y_conflictResolutionResult') == 'CHUNK_NONCANONICAL':
+                        noncanonical_per_merge[mid] += 1
+
+        # restrict to merges present in merge_data
+        eval_merges = {merge_id for (_, merge_id) in merge_data}
+        per_merge_ratios = []
+        total_canonical = 0
+        total_chunks_ceil = 0
+        for mid in eval_merges:
+            n = chunks_per_merge_ac.get(mid, 0)
+            if n == 0:
+                continue
+            nc = noncanonical_per_merge.get(mid, 0)
+            canonical = n - nc
+            per_merge_ratios.append(canonical / n)
+            total_canonical += canonical
+            total_chunks_ceil += n
+
+        if per_merge_ratios:
+            pooled_ceil = 100.0 * total_canonical / total_chunks_ceil
+            mean_ceil   = 100.0 * sum(per_merge_ratios) / len(per_merge_ratios)
+            sorted_r    = sorted(per_merge_ratios)
+            mid_idx     = len(sorted_r) // 2
+            median_ceil = 100.0 * (sorted_r[mid_idx] if len(sorted_r) % 2
+                                   else (sorted_r[mid_idx - 1] + sorted_r[mid_idx]) / 2)
+        else:
+            pooled_ceil = mean_ceil = median_ceil = float('nan')
+        oneshot_ceiling = dict(pooled=pooled_ceil, mean=mean_ceil, median=median_ceil)
+
+        tex = build_oneshot_tex(oneshot, variant_cap, oneshot_ceiling)
         out = os.path.join(out_dir, 'RQ1-oneshot.tex')
         with open(out, 'w') as f:
             f.write(tex + '\n')

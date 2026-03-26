@@ -120,6 +120,40 @@ public class BuildFailureClassifier {
             return true;
         }
 
+        // Maven could not even parse the POM or resolve a parent/import POM.
+        // Covers private Nexus repos (401), non-resolvable parent POMs, etc.
+        if (content.contains("ProjectBuildingException")
+                || content.contains("Non-resolvable parent POM")
+                || content.contains("Non-resolvable import POM")) {
+            return true;
+        }
+
+        // exec-maven-plugin invoked a system command (make, cargo, …) that is not installed.
+        // "Cannot run program" with "No such file or directory" is the JVM's ProcessBuilder
+        // reporting a missing executable — distinct from Exit value 127 (POSIX shell).
+        if (content.contains("Cannot run program") && content.contains("No such file or directory")) {
+            return true;
+        }
+
+        // maven-enforcer-plugin rejected the build environment (wrong JDK, banned dependency, etc.).
+        // When enforcer fires before compilation even starts, no variant can fix the environment.
+        if (content.contains("maven-enforcer-plugin") && content.contains("enforce")
+                && content.contains("BUILD FAILURE")) {
+            return true;
+        }
+
+        // Surefire forked VM terminated abnormally (JVM crash, OOM-killed, System.exit).
+        // The test infrastructure is broken — no variant can fix a JVM crash.
+        if (content.contains("The forked VM terminated without properly saying goodbye")) {
+            return true;
+        }
+
+        // javac's --release flag is not supported by the installed JDK (pre-Java 9).
+        // No variant can install a newer JDK.
+        if (content.contains("invalid flag: --release")) {
+            return true;
+        }
+
         return false;
     }
 

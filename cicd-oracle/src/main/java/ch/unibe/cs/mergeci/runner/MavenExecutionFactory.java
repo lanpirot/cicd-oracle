@@ -110,7 +110,8 @@ public class MavenExecutionFactory {
                     rawBaselineSeconds = experimentTiming.getHumanBaselineExecutionTime().getSeconds();
                 }
                 TestTotal baselineTests = testResults.get(context.getProjectName());
-                long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests);
+                CompilationResult baselineCompilation = compilationResults.get(context.getProjectName());
+                long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests, baselineCompilation);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
 
                 int maxThreads = AppConfig.computeMaxThreads(peakBaselineRamBytes);
@@ -141,6 +142,21 @@ public class MavenExecutionFactory {
                 // Cap the baseline at MAVEN_BUILD_TIMEOUT so hung builds don't block the pipeline.
                 // The actual wall-clock duration (capped at this limit) sets the variant budget.
                 MavenRunner mainRunner = new MavenRunner(logDir, false, AppConfig.MAVEN_BUILD_TIMEOUT);
+
+                // Pre-install SNAPSHOT inter-module dependencies so sibling artifacts are
+                // available in the local cache.  Without this, a cold checkout of a
+                // multi-module SNAPSHOT project fails dependency resolution immediately.
+                if (isSnapshotMultiModule(mainProjectPath)) {
+                    System.out.printf("  ⚙ SNAPSHOT multi-module — pre-installing to local cache...%n");
+                    MavenCommandResolver cmdResolver = new MavenCommandResolver(false);
+                    String mvnCmd = cmdResolver.resolveMavenCommand(mainProjectPath);
+                    String[] cmd = {mvnCmd, "-B", "-fae", "-DskipTests=true", "-Dmaven.test.skip=true", "install"};
+                    Path preInstallLog = logDir.resolve(mainProjectPath.getFileName() + "_preinstall");
+                    java.nio.file.Files.createDirectories(logDir);
+                    new MavenProcessExecutor(AppConfig.MAVEN_BUILD_TIMEOUT)
+                            .executeCommand(mainProjectPath, preInstallLog,
+                                    MavenExecutionFactory.this.resolvedJavaHome, cmd);
+                }
 
                 Instant start = Instant.now();
                 mainRunner.run_no_optimization(MavenExecutionFactory.this.resolvedJavaHome, mainProjectPath);
@@ -491,16 +507,51 @@ public class MavenExecutionFactory {
     }
 
     /**
-     * Normalize baseline duration to account for mass test failures.
-     * Falls back to raw duration when no test data is available.
+     * Normalize baseline duration to account for partial builds:
+     * <ol>
+     *   <li>Module normalization: if only some modules compiled, scale the raw time
+     *       by totalModules/successfulModules to estimate a full-module build.</li>
+     *   <li>Test normalization: if tests failed early, scale the test portion
+     *       by runTests/passedTests to estimate a fully-green run.</li>
+     * </ol>
+     * Falls back to raw duration when no data is available for either step.
      */
-    private static long normalizeBaselineSeconds(long rawSeconds, TestTotal testTotal) {
-        if (testTotal == null) return rawSeconds;
-        int runTests = testTotal.getRunNum();
-        int passedTests = runTests - testTotal.getFailuresNum() - testTotal.getErrorsNum();
-        float testElapsed = testTotal.getElapsedTime();
-        float compilationTime = Math.max(0, rawSeconds - testElapsed);
-        float normalized = TestTotal.normalizeElapsedTime(compilationTime, testElapsed, runTests, passedTests);
-        return Float.isNaN(normalized) ? rawSeconds : (long) normalized;
+    private static long normalizeBaselineSeconds(long rawSeconds, TestTotal testTotal,
+                                                  CompilationResult compilationResult) {
+        float seconds = rawSeconds;
+
+        // 1. Module normalization: scale up if only a fraction of modules succeeded
+        if (compilationResult != null) {
+            int total = compilationResult.getTotalModules();
+            int successful = compilationResult.getSuccessfulModules();
+            if (total > 1 && successful > 0 && successful < total) {
+                seconds = seconds * total / successful;
+            }
+        }
+
+        // 2. Test normalization: scale up if tests failed/errored
+        if (testTotal != null) {
+            int runTests = testTotal.getRunNum();
+            int passedTests = runTests - testTotal.getFailuresNum() - testTotal.getErrorsNum();
+            float testElapsed = testTotal.getElapsedTime();
+            float compilationTime = Math.max(0, seconds - testElapsed);
+            float normalized = TestTotal.normalizeElapsedTime(compilationTime, testElapsed, runTests, passedTests);
+            if (!Float.isNaN(normalized)) {
+                seconds = normalized;
+            }
+        }
+
+        return (long) seconds;
+    }
+
+    static boolean isSnapshotMultiModule(Path projectPath) {
+        Path pomFile = projectPath.resolve("pom.xml");
+        if (!pomFile.toFile().exists()) return false;
+        try {
+            String pom = java.nio.file.Files.readString(pomFile);
+            return pom.contains("-SNAPSHOT") && pom.contains("<modules>");
+        } catch (java.io.IOException e) {
+            return false;
+        }
     }
 }

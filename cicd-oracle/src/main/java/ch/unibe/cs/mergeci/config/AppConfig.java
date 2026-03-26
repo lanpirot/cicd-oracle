@@ -13,7 +13,7 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-    private static final boolean FRESH_RUN = true;
+    private static final boolean FRESH_RUN = false;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
@@ -99,7 +99,7 @@ public class AppConfig {
     // that have no effect on compilation or test execution. Discovered incrementally
     // by inspecting projects that fail before tests run.
 
-    // ========== PHASE 1: REPO COLLECTOR ==========
+    // ========== REPO COLLECTOR (legacy) / SHARED PATHS ==========
     /** Hard wall-clock timeout for a single git clone, in seconds. */
     public static final int CLONE_TIMEOUT_SECONDS = 600; // 10 minutes
     /** Per-operation socket timeout passed to JGit transport, in seconds. */
@@ -112,7 +112,7 @@ public class AppConfig {
     /** Shared input data: SQL dump, all_conflicts.csv, merge_commits.csv, maven_check_cache.json. */
     public static final Path COMMON_DIR = DATA_BASE_DIR.resolve("common");
 
-    // ========== PHASE 2: CONFLICT COLLECTION ==========
+    // ========== CONFLICT COLLECTION (legacy) ==========
     private static final int MAX_CONFLICT_MERGES_DEFAULT = 5;  // sample maximally this many merges per project to avoid bias towards giant projects
 
     /**
@@ -175,7 +175,7 @@ public class AppConfig {
 
     // ========== RQ2: JAVA CHUNKS PIPELINE ==========
     public static final Path RQ2_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq2");
-    public static final int  RQ2_SAMPLE_REPOS           = 50;
+    public static final int  RQ2_SAMPLE_REPOS           = 500;
     public static final int  RQ2_MERGES_PER_REPO        = 1;
 
     // ========== RQ3: LARGE-SCALE PIPELINE ==========
@@ -186,14 +186,14 @@ public class AppConfig {
         return System.getProperty("rq3BestMode", "cache_parallel");
     }
 
-    // ========== PHASE 3: VARIANT EXPERIMENTS ==========
+    // ========== VARIANT EXPERIMENTS ==========
     public static final Path VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("variant_experiments");
 
     // ========== INSPECTION: CONFLICT FILE TRIPLETS ==========
     /** Root directory for saved human/tentative/variant file triplets used by the viewer. */
     public static final Path CONFLICT_FILES_DIR = DATA_BASE_DIR.resolve("conflict_files");
 
-    // ========== PRESENTATION (PHASE 4) ==========
+    // ========== PRESENTATION ==========
     /** Python script that generates all paper-ready PDF charts with LaTeX fonts. */
     public static final Path PLOT_SCRIPT = Paths.get(
             "/home/lanpirot/projects/merge++/cicd-oracle/scripts/plot_results.py");

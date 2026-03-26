@@ -19,7 +19,8 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"mode", "projectName", "mergeCommit", "parent1", "parent2",
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
-        "isMultiModule", "budgetBasisSeconds", "variantBudgetSeconds",
+        "isMultiModule", "baselineBroken", "baselineFailureType", "buildFileConflictMarkers",
+        "budgetBasisSeconds", "variantBudgetSeconds",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
         "variantsExecutionTimeSeconds", "variants"})
 @ToString
@@ -34,6 +35,18 @@ public class MergeOutputJSON {
     private int numJavaConflictFiles;
     private int numConflictChunks;
     private Boolean isMultiModule;
+
+    /** True when the human baseline build fails to compile. */
+    private boolean baselineBroken;
+
+    /** Classification of the baseline failure: INFRA_FAILURE, BROKEN_MERGE, COMPILE_FAILURE,
+     *  TIMEOUT, NO_TESTS, or null when the baseline compiled and ran tests successfully. */
+    private String baselineFailureType;
+
+    /** True when build descriptor files (pom.xml, package.json, *.gradle) contain unresolved
+     *  git conflict markers.  An INFRA_FAILURE with this flag set is potentially fixable by
+     *  a variant that resolves the build file conflict differently. */
+    private boolean buildFileConflictMarkers;
 
     /** Baseline build time used to size the variant budget. For variant modes this is read from
      *  the prior human_baseline JSON (not re-measured); for human_baseline mode it is measured. */

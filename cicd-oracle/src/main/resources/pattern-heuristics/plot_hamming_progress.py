@@ -41,26 +41,26 @@ matplotlib.rcParams.update({
 csv.field_size_limit(1_000_000)
 
 # Modes from cv_trajectory.csv / cv_results.csv
-ML_LABEL = r'\textsc{ML-AR}'
+ML_LABEL = r'\textsc{ML-Ar}'
 CV_MODES = {
     'GLOBAL_UNIFORM':    r'\textsc{Uniform}',
-    'HEURISTIC':         r'\textsc{Heuristic}',
+    'HEURISTIC':         r'\textsc{Prior\#}',
     'ML_AUTOREGRESSIVE': ML_LABEL,
-    'ML_RF':             r'MESTRE\textsuperscript{*}',
+    'ML_RF':             r'\textsc{Mestre}',
 }
 
 COLORS  = {
-    r'\textsc{Uniform}':          '#a6cee3',   # ColorBrewer Paired light blue
-    r'\textsc{Heuristic}':        '#33a02c',   # ColorBrewer Paired dark green
-    r'\textsc{ML-AR}':            '#1f78b4',   # ColorBrewer Paired dark blue
-    r'MESTRE\textsuperscript{*}': '#b2df8a',   # ColorBrewer Paired light green (backup slot)
+    r'\textsc{Uniform}':   '#a6cee3',   # ColorBrewer Paired light blue
+    r'\textsc{Prior\#}':   '#33a02c',   # ColorBrewer Paired dark green
+    r'\textsc{ML-Ar}':     '#1f78b4',   # ColorBrewer Paired dark blue
+    r'\textsc{Mestre}':    '#b2df8a',   # ColorBrewer Paired light green (backup slot)
 }
 # IQR band hatch patterns: /, \, - for the three methods
 HATCHES = {
-    r'\textsc{Uniform}':          '////',
-    r'\textsc{Heuristic}':        '\\\\',
-    r'\textsc{ML-AR}':            '----',
-    r'MESTRE\textsuperscript{*}': '....',
+    r'\textsc{Uniform}':   '////',
+    r'\textsc{Prior\#}':   '\\\\',
+    r'\textsc{ML-Ar}':     '----',
+    r'\textsc{Mestre}':    '....',
 }
 
 

@@ -47,7 +47,7 @@ A pre-built zip is at `plugin/plugin-zip/demo-1.0-SNAPSHOT.zip` — install via 
 
 ## scripts/ (Python Analysis)
 
-Standalone scripts that read Phase 2/3 JSON output; all have defaults pointing to the runtime data directories.
+Standalone scripts that read experiment/analysis JSON output; all have defaults pointing to the runtime data directories.
 
 | Script | Purpose |
 |--------|---------|

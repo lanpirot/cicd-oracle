@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.conflict.BuildFailureClassifier;
 import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog;
 import ch.unibe.cs.mergeci.repoCollection.BuildFailureLog.MergeFailureType;
 import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
@@ -187,10 +188,11 @@ public class ResolutionVariantRunner {
         Map<String, Long> storedBaselines = skipVariants ? Collections.emptyMap()
                 : loadStoredBaselines(humanBaselineDir);
 
-        Set<String> timedOutBaselines = skipVariants ? Collections.emptySet()
-                : loadTimedOutBaselines(humanBaselineDir);
+        Map<String, String> skippedBaselines = skipVariants ? Collections.emptyMap()
+                : loadSkippedBaselines(humanBaselineDir);
 
         if (!skipVariants) {
+            markBrokenBaselines(mergeInfos, humanBaselineDir);
             injectFallbackBaselinesForBrokenMerges(mergeInfos, storedBaselines);
         }
 
@@ -211,11 +213,44 @@ public class ResolutionVariantRunner {
                 : null;
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, skipVariants,
-                timedOutBaselines, failureLog, modeDir, projectName, groundTruthPatterns);
+                skippedBaselines, failureLog, modeDir, projectName, groundTruthPatterns);
 
         if (failureLog != null) failureLog.close();
 
         System.out.println(formatSummary(mergeInfos.size(), stats.resultCount(), stats.skippedCount(), stats.totalTime()));
+    }
+
+    /**
+     * Detect broken baselines from human_baseline JSON files and set {@code baselineBroken=true}
+     * on the corresponding {@link DatasetReader.MergeInfo} objects.  This is necessary because
+     * the merge list may come from a CSV that lacks a {@code baselineBroken} column (e.g.
+     * {@code merge_commits.csv}), so the flag would otherwise stay {@code false}.
+     */
+    private static void markBrokenBaselines(List<DatasetReader.MergeInfo> mergeInfos, Path humanBaselineDir) {
+        if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) return;
+        File[] files = humanBaselineDir.toFile().listFiles((d, name) -> name.endsWith(AppConfig.JSON));
+        if (files == null) return;
+
+        Set<String> brokenCommits = new HashSet<>();
+        ObjectMapper mapper = new ObjectMapper();
+        for (File file : files) {
+            try {
+                MergeOutputJSON merge = mapper.readValue(file, MergeOutputJSON.class);
+                if (merge.getMergeCommit() == null) continue;
+                CompilationResult baseline = merge.getCompilationResult();
+                if (baseline != null && baseline.getBuildStatus() == CompilationResult.Status.FAILURE) {
+                    brokenCommits.add(merge.getMergeCommit());
+                }
+            } catch (IOException e) {
+                System.err.println("Warning: could not read baseline status from " + file + ": " + e.getMessage());
+            }
+        }
+
+        for (DatasetReader.MergeInfo info : mergeInfos) {
+            if (brokenCommits.contains(info.getMergeCommit())) {
+                info.setBaselineBroken(true);
+            }
+        }
     }
 
     /**
@@ -237,7 +272,7 @@ public class ResolutionVariantRunner {
                 }
             }
         }
-        long fallback = count > 0 ? sum / count : 300L;
+        long fallback = count > 0 ? sum / count : AppConfig.MAVEN_BUILD_TIMEOUT;
 
         for (DatasetReader.MergeInfo info : mergeInfos) {
             if (info.isBaselineBroken()) {
@@ -272,37 +307,60 @@ public class ResolutionVariantRunner {
     }
 
     /**
-     * Load the set of merge commits whose human baseline build timed out.
+     * Load the set of merge commits that should be skipped in variant modes, together with
+     * their failure type for consistent CLI logging.  A merge is skipped when:
+     * <ul>
+     *   <li>{@code TIMEOUT} — baseline build did not finish in time</li>
+     *   <li>{@code INFRA_FAILURE} — permanently broken infrastructure (dead repo, missing tool);
+     *       not set when build-file conflict markers are present (reclassified to BROKEN_MERGE)</li>
+     *   <li>{@code NO_TESTS} — baseline compiled but 0 tests ran, so variant quality cannot
+     *       be measured.  Only skipped when the baseline is not broken — a broken baseline that
+     *       ran 0 tests may still produce tests once a variant fixes the compilation.</li>
+     * </ul>
      */
-    private static Set<String> loadTimedOutBaselines(Path humanBaselineDir) {
+    private static Map<String, String> loadSkippedBaselines(Path humanBaselineDir) {
         if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) {
-            return Collections.emptySet();
+            return Collections.emptyMap();
         }
         File[] files = humanBaselineDir.toFile().listFiles((d, name) -> name.endsWith(AppConfig.JSON));
-        if (files == null) return Collections.emptySet();
-        Set<String> timedOut = new HashSet<>();
+        if (files == null) return Collections.emptyMap();
+
+        Map<String, String> skipped = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         for (File file : files) {
             try {
                 MergeOutputJSON merge = mapper.readValue(file, MergeOutputJSON.class);
-                if (merge.getMergeCommit() == null) continue;
-                CompilationResult baseline = merge.getCompilationResult();
-                if (baseline != null && baseline.getBuildStatus() == CompilationResult.Status.TIMEOUT) {
-                    timedOut.add(merge.getMergeCommit());
+                if (merge.getMergeCommit() == null || merge.getBaselineFailureType() == null) continue;
+                String type = merge.getBaselineFailureType();
+                switch (type) {
+                    case "TIMEOUT", "INFRA_FAILURE" -> skipped.put(merge.getMergeCommit(), type);
+                    case "NO_TESTS" -> {
+                        // Only skip when baseline compiled — broken baselines may unlock tests via variants
+                        if (!merge.isBaselineBroken()) {
+                            skipped.put(merge.getMergeCommit(), type);
+                        }
+                    }
+                    default -> { /* BROKEN_MERGE, COMPILE_FAILURE — variants may fix these */ }
                 }
             } catch (IOException e) {
-                System.err.println("Warning: could not read timed-out baseline from " + file + ": " + e.getMessage());
+                System.err.println("Warning: could not read baseline from " + file + ": " + e.getMessage());
             }
         }
-        return timedOut;
+        return skipped;
     }
+
+    private static final Map<String, String> SKIP_REASONS = Map.of(
+            "TIMEOUT", "baseline timed out",
+            "INFRA_FAILURE", "infrastructure failure",
+            "NO_TESTS", "baseline ran 0 tests"
+    );
 
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
                                                MergeExperimentRunner processor,
                                                VariantResultCollector collector,
                                                String modeName,
                                                boolean skipVariants,
-                                               Set<String> timedOutBaselines,
+                                               Map<String, String> skippedBaselines,
                                                BuildFailureLog failureLog,
                                                Path modeDir,
                                                String projectName,
@@ -324,8 +382,10 @@ public class ResolutionVariantRunner {
                 continue;
             }
 
-            if (timedOutBaselines.contains(info.getMergeCommit())) {
-                System.out.println("SKIPPED (baseline timed out)");
+            // Skip merges whose baseline is permanently unusable (timeout, infra failure, no tests)
+            String skipType = skippedBaselines.get(info.getMergeCommit());
+            if (skipType != null) {
+                System.out.println("SKIPPED (" + SKIP_REASONS.getOrDefault(skipType, skipType) + ")");
                 skippedCount++;
                 continue;
             }
@@ -344,8 +404,9 @@ public class ResolutionVariantRunner {
                     : collector.collectResults(processed);
             result.setMode(modeName);
             result.setProjectName(projectName);
+            classifyBaseline(result, processed);
             new JsonResultWriter().writeResult(result, modeDir);
-            logBaselineFailure(failureLog, processed);
+            logBaselineFailure(failureLog, result, info.getShortCommit());
             totalTime += processed.getAnalysisResult().executionTimeSeconds();
             resultCount++;
             System.out.println("  " + collector.getSuccessSummary(processed));
@@ -354,23 +415,65 @@ public class ResolutionVariantRunner {
         return new MergeRunStats(resultCount, skippedCount, totalTime);
     }
 
-    private static void logBaselineFailure(BuildFailureLog failureLog,
-                                            MergeExperimentRunner.ProcessedMerge processed) {
-        if (failureLog == null) return;
+    /**
+     * Classify the baseline build outcome and set {@code baselineBroken},
+     * {@code baselineFailureType}, and {@code buildFileConflictMarkers} on the JSON output.
+     *
+     * <p>When an infra failure coincides with conflict markers in build descriptor files
+     * (pom.xml, package.json, *.gradle), the failure is reclassified as {@code BROKEN_MERGE}
+     * because a variant that resolves the build file conflict differently may produce a
+     * clean build.
+     */
+    private static void classifyBaseline(MergeOutputJSON output,
+                                          MergeExperimentRunner.ProcessedMerge processed) {
         String projectName = processed.getAnalysisResult().getProjectName();
-        String shortCommit = processed.getInfo().getShortCommit();
+        Path repoPath = processed.getAnalysisResult().analyzer().getRepositoryPath();
         CompilationResult baseline = processed.getAnalysisResult().compilationResults().get(projectName);
         if (baseline == null || baseline.getBuildStatus() == null) return;
+
+        boolean hasBuildFileMarkers = BuildFailureClassifier.hasBuildFileConflictMarkers(repoPath);
+        output.setBuildFileConflictMarkers(hasBuildFileMarkers);
+
         switch (baseline.getBuildStatus()) {
-            case TIMEOUT  -> failureLog.logMergeFailure(projectName, shortCommit, MergeFailureType.TIMEOUT, "");
-            case FAILURE  -> failureLog.logMergeFailure(projectName, shortCommit, MergeFailureType.COMPILE_FAILURE, "");
-            case SUCCESS  -> {
-                TestTotal tests = processed.getAnalysisResult().testResults().get(projectName);
-                if (tests == null || tests.getRunNum() == 0)
-                    failureLog.logMergeFailure(projectName, shortCommit, MergeFailureType.NO_TESTS, "");
+            case TIMEOUT -> {
+                output.setBaselineBroken(true);
+                output.setBaselineFailureType(MergeFailureType.TIMEOUT.name());
             }
-            default -> {}
+            case FAILURE -> {
+                output.setBaselineBroken(true);
+                Path compilationLog = AppConfig.TMP_DIR.resolve("log")
+                        .resolve(projectName + "_compilation");
+                if (BuildFailureClassifier.isInfraFailure(compilationLog)) {
+                    // Infra failure caused by conflicted build files is fixable by a variant
+                    output.setBaselineFailureType(hasBuildFileMarkers
+                            ? MergeFailureType.BROKEN_MERGE.name()
+                            : MergeFailureType.INFRA_FAILURE.name());
+                } else if (BuildFailureClassifier.isGenuineCompilationError(compilationLog)) {
+                    output.setBaselineFailureType(MergeFailureType.BROKEN_MERGE.name());
+                } else {
+                    output.setBaselineFailureType(MergeFailureType.COMPILE_FAILURE.name());
+                }
+            }
+            case SUCCESS -> {
+                TestTotal tests = processed.getAnalysisResult().testResults().get(projectName);
+                if (tests == null || tests.getRunNum() == 0) {
+                    output.setBaselineFailureType(MergeFailureType.NO_TESTS.name());
+                }
+            }
         }
+    }
+
+    /**
+     * Write the baseline failure classification to the build_failures.log file.
+     * Reads from the already-classified {@code MergeOutputJSON} to stay consistent
+     * with JSON output and skip decisions.
+     */
+    private static void logBaselineFailure(BuildFailureLog failureLog,
+                                            MergeOutputJSON result,
+                                            String shortCommit) {
+        if (failureLog == null || result.getBaselineFailureType() == null) return;
+        MergeFailureType type = MergeFailureType.valueOf(result.getBaselineFailureType());
+        failureLog.logMergeFailure(result.getProjectName(), shortCommit, type, "");
     }
 
     /**
