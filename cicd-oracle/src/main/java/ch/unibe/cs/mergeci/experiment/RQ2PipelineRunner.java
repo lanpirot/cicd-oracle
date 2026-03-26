@@ -19,7 +19,7 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
 
     @Override
     protected List<DatasetReader.MergeInfo> sampleMerges() throws IOException {
-        // Sample all fold-assigned Maven projects; run() stops once successLimit() succeed.
+        // Sample all fold-assigned Maven projects; run() stops once processedLimit() are done.
         return new JavaChunksReader().sample(
                 AppConfig.MERGE_COMMITS_CSV,
                 Integer.MAX_VALUE,
@@ -27,7 +27,7 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
     }
 
     @Override
-    protected int successLimit() {
+    protected int processedLimit() {
         return AppConfig.RQ2_SAMPLE_REPOS;
     }
 

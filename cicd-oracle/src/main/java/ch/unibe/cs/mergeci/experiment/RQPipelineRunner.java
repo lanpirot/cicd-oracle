@@ -7,11 +7,13 @@ import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.Utility;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -57,12 +59,12 @@ public abstract class RQPipelineRunner {
     protected boolean stopOnPerfect() { return true; }
 
     /**
-     * Maximum number of projects to process successfully before stopping.
+     * Maximum number of projects to process before stopping.
      * Subclasses with oversampling (e.g. RQ2) override this to cap at the
      * target count so that extra candidates are only used as fallback.
      * Default: no limit.
      */
-    protected int successLimit() { return Integer.MAX_VALUE; }
+    protected int processedLimit() { return Integer.MAX_VALUE; }
 
     public void run() throws Exception {
         List<DatasetReader.MergeInfo> allMerges = sampleMerges();
@@ -75,10 +77,10 @@ public abstract class RQPipelineRunner {
             cleanExperimentDirs();
         }
 
-        int successes = 0;
-        int limit = successLimit();
+        int processed = 0;
+        int limit = processedLimit();
         for (Map.Entry<String, List<DatasetReader.MergeInfo>> entry : byProject.entrySet()) {
-            if (successes >= limit) break;
+            if (processed >= limit) break;
 
             String projectName = entry.getKey();
             List<DatasetReader.MergeInfo> merges = entry.getValue();
@@ -91,15 +93,14 @@ public abstract class RQPipelineRunner {
                 continue;
             }
 
-            for (DatasetReader.MergeInfo info : merges) {
-                String[] parents = GitUtils.getParentCommits(repoPath, info.getMergeCommit());
-                info.setParent1(parents[0]);
-                info.setParent2(parents[1]);
-            }
-
             try {
+                for (DatasetReader.MergeInfo info : merges) {
+                    String[] parents = GitUtils.getParentCommits(repoPath, info.getMergeCommit());
+                    info.setParent1(parents[0]);
+                    info.setParent2(parents[1]);
+                }
                 runModes(projectName, merges, repoPath);
-                successes++;
+                processed++;
             } catch (Exception e) {
                 System.err.println("Analysis failed for " + projectName + ": " + e.getMessage());
             } finally {
@@ -109,7 +110,7 @@ public abstract class RQPipelineRunner {
         }
 
         if (limit < Integer.MAX_VALUE) {
-            System.out.printf("Pipeline finished: %d/%d projects succeeded.%n", successes, limit);
+            System.out.printf("Pipeline finished: %d/%d projects processed.%n", processed, limit);
         }
 
         CrossModeSanityChecker.check(experimentDir(), modesToRun());
@@ -128,6 +129,58 @@ public abstract class RQPipelineRunner {
                     ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
                     AppConfig.TMP_DIR, ex.getName(),
                     generatorFactory(), evaluator(), stopOnPerfect());
+
+            // After the human_baseline build, check for problems that make this
+            // project permanently unusable.  Abort early so it does not waste a
+            // processed slot and variant modes are not attempted.
+            if (ex.isSkipVariants()) {
+                checkBaselineViability(projectName, merges, repoPath);
+            }
+        }
+    }
+
+    /**
+     * After the human_baseline mode, inspect the written JSON(s) for problems that make
+     * this project permanently unusable.  Uses the {@code baselineFailureType} field set
+     * by {@link ResolutionVariantRunner#classifyBaseline} — the single source of truth
+     * for baseline classification.
+     *
+     * <p>Aborts the project (throws) when <em>every</em> merge in the project is
+     * classified as permanently unusable (INFRA_FAILURE or NO_TESTS).  If at least one
+     * merge is viable, the project proceeds and the per-merge skip logic in
+     * {@link ResolutionVariantRunner} handles individual merges.
+     */
+    private void checkBaselineViability(String projectName, List<DatasetReader.MergeInfo> merges,
+                                         Path repoPath) throws IOException {
+        Path humanBaselineDir = experimentDir().resolve("human_baseline");
+        ObjectMapper mapper = new ObjectMapper();
+
+        int checked = 0;
+        int permanentlyBroken = 0;
+        String lastReason = null;
+
+        for (DatasetReader.MergeInfo info : merges) {
+            File jsonFile = humanBaselineDir.resolve(info.getMergeCommit() + AppConfig.JSON).toFile();
+            if (!jsonFile.exists()) continue;
+            try {
+                MergeOutputJSON result = mapper.readValue(jsonFile, MergeOutputJSON.class);
+                checked++;
+                String failureType = result.getBaselineFailureType();
+                if ("INFRA_FAILURE".equals(failureType)) {
+                    permanentlyBroken++;
+                    lastReason = "infrastructure failure (dead repository / blocked mirror)";
+                } else if ("NO_TESTS".equals(failureType) && !result.isBaselineBroken()) {
+                    permanentlyBroken++;
+                    lastReason = "build succeeded but 0 tests ran";
+                }
+            } catch (IOException e) {
+                System.err.println("Warning: could not read baseline JSON " + jsonFile + ": " + e.getMessage());
+            }
+        }
+
+        if (checked > 0 && permanentlyBroken == checked) {
+            throw new IOException(projectName + ": all " + checked + " merge(s) permanently unusable ("
+                    + lastReason + ") — skipping remaining modes");
         }
     }
 
