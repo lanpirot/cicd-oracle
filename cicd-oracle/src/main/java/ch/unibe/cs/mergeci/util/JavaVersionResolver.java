@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Detects Java version requirements from pom.xml and maps them to installed JDKs.
@@ -52,17 +53,59 @@ public class JavaVersionResolver {
     private static final Pattern PLUGIN_COMPAT_PATTERN =
             Pattern.compile("ExceptionInInitializerError|does not export .+ to unnamed module");
 
+    // Methods/types introduced in Java 9+ that appear in source code but are absent from
+    // the Java 8 class library.  When pom.xml declares source/target 1.8 but the source
+    // uses these APIs, compilation with Java 8 fails with "cannot find symbol".
+    // Used both for log-error detection and for pre-build source scanning.
+    private static final List<String> JAVA9_API_SYMBOLS = List.of(
+            ".getModule()",                // Class.getModule()               — Java 9
+            "privateLookupIn(",            // MethodHandles.privateLookupIn() — Java 9
+            "java.lang.Module",            // java.lang.Module                — Java 9
+            "Thread.onSpinWait()",         // Thread.onSpinWait()             — Java 9
+            ".transferTo("                 // InputStream.transferTo()        — Java 9
+    );
+
     /**
      * Returns the JAVA_HOME for the closest installed JDK that satisfies the project's
      * Java version requirement as declared in pom.xml. Empty if not detectable or already satisfied.
+     *
+     * <p>When pom.xml declares {@code source/target 1.8} but the source code uses Java 9+ APIs
+     * (e.g. {@code Class.getModule()}, {@code MethodHandles.privateLookupIn}), the declared
+     * version is bumped to 9 so that compilation succeeds with a Java 9+ JDK.
      */
     public static Optional<String> resolveJavaHome(Path projectPath) {
         int required = detectRequiredVersion(projectPath);
         if (required <= 0) return Optional.empty();
+        if (required <= 8 && sourceRequiresJava9(projectPath)) required = 9;
         int selected = selectClosestVersion(required);
         Path javaHome = AppConfig.JAVA_HOMES.get(selected);
         if (javaHome == null || !javaHome.toFile().exists()) return Optional.empty();
         return Optional.of(javaHome.toString());
+    }
+
+    /**
+     * Returns true when the project's Java source files reference APIs introduced in Java 9+.
+     * Only scans when pom.xml declared Java 8 or lower; skips {@code target/} and {@code .git/}.
+     */
+    private static boolean sourceRequiresJava9(Path projectPath) {
+        try (Stream<Path> walk = Files.walk(projectPath)) {
+            return walk
+                    .filter(p -> {
+                        String s = p.toString();
+                        return !s.contains("/target/") && !s.contains("/.git/");
+                    })
+                    .filter(p -> p.toString().endsWith(".java"))
+                    .anyMatch(p -> {
+                        try {
+                            String src = Files.readString(p);
+                            return JAVA9_API_SYMBOLS.stream().anyMatch(src::contains);
+                        } catch (IOException e) {
+                            return false;
+                        }
+                    });
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     /**
@@ -116,6 +159,22 @@ public class JavaVersionResolver {
             }
         } catch (IOException | NumberFormatException ignored) {}
         return 0;
+    }
+
+    /**
+     * Returns true when the build log contains "cannot find symbol" errors for APIs
+     * introduced in Java 9+.  This indicates the project declared {@code source 1.8}
+     * but its source code actually requires a Java 9+ JDK to compile.
+     * The same {@link #JAVA9_API_SYMBOLS} strings appear in both source code and javac error output.
+     */
+    public static boolean detectNewJdkApiError(Path logFile) {
+        if (logFile == null || !logFile.toFile().exists()) return false;
+        try {
+            String log = Files.readString(logFile);
+            if (!log.contains("cannot find symbol")) return false;
+            return JAVA9_API_SYMBOLS.stream().anyMatch(log::contains);
+        } catch (IOException ignored) {}
+        return false;
     }
 
     /**

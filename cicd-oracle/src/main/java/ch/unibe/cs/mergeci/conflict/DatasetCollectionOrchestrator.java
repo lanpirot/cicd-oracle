@@ -75,7 +75,6 @@ public class DatasetCollectionOrchestrator {
         int totalCommitCount = loadResult.totalCommitCount;
 
         int totalConflictCount = allMerges.size();
-        // Count Java conflicts for statistics (no longer used for filtering)
         int javaConflictCount = mergeFilter.countJavaConflicts(allMerges);
 
         if (totalConflictCount == 0) {

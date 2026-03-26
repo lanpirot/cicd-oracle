@@ -77,7 +77,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockCommandResolver).resolveMavenCommand(project);
 
         ArgumentCaptor<String[]> cmdCaptor = ArgumentCaptor.forClass(String[].class);
-        verify(mockProcessExecutor).executeCommand(eq(project), any(Path.class), cmdCaptor.capture());
+        verify(mockProcessExecutor).executeCommand(eq(project), any(Path.class), isNull(), cmdCaptor.capture());
         assertArrayEquals(AppConfig.buildCommand("mvn"), cmdCaptor.getValue());
 
         // No parallel execution should happen
@@ -106,7 +106,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockCacheManager, atLeastOnce()).injectCacheArtifacts(project1);
 
         ArgumentCaptor<String[]> cmdCaptor1 = ArgumentCaptor.forClass(String[].class);
-        verify(mockProcessExecutor).executeCommand(eq(project1), any(Path.class), cmdCaptor1.capture());
+        verify(mockProcessExecutor).executeCommand(eq(project1), any(Path.class), isNull(), cmdCaptor1.capture());
         assertArrayEquals(AppConfig.buildCommand("mvn"), cmdCaptor1.getValue());
 
         // Verify remaining projects built in parallel with offline mode
@@ -115,7 +115,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockCacheManager).copyCacheDirectory(project1, project2);
 
         ArgumentCaptor<String[]> cmdCaptor2 = ArgumentCaptor.forClass(String[].class);
-        verify(mockProcessExecutor).executeCommand(eq(project2), any(Path.class), cmdCaptor2.capture());
+        verify(mockProcessExecutor).executeCommand(eq(project2), any(Path.class), isNull(), cmdCaptor2.capture());
         assertArrayEquals(AppConfig.buildCommandOffline("mvn"), cmdCaptor2.getValue());
 
         verify(mockCacheManager, atLeastOnce()).injectCacheArtifacts(project3);
@@ -123,7 +123,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockCacheManager).copyCacheDirectory(project1, project3);
 
         ArgumentCaptor<String[]> cmdCaptor3 = ArgumentCaptor.forClass(String[].class);
-        verify(mockProcessExecutor).executeCommand(eq(project3), any(Path.class), cmdCaptor3.capture());
+        verify(mockProcessExecutor).executeCommand(eq(project3), any(Path.class), isNull(), cmdCaptor3.capture());
         assertArrayEquals(AppConfig.buildCommandOffline("mvn"), cmdCaptor3.getValue());
     }
 
@@ -149,6 +149,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockProcessExecutor, atLeastOnce()).executeCommand(
                 any(Path.class),
                 logFileCaptor.capture(),
+                isNull(),
                 any(String[].class)
         );
 
@@ -179,6 +180,7 @@ class CacheParallelStrategyTest extends BaseTest {
                 .when(mockProcessExecutor).executeCommand(
                         eq(project1),
                         any(),
+                        isNull(),
                         any(String[].class)
                 );
 
@@ -189,6 +191,7 @@ class CacheParallelStrategyTest extends BaseTest {
         verify(mockProcessExecutor).executeCommand(
                 eq(project1),
                 any(),
+                isNull(),
                 any(String[].class)
         );
 
@@ -212,12 +215,12 @@ class CacheParallelStrategyTest extends BaseTest {
 
         // Verify first project does NOT use offline mode
         ArgumentCaptor<String[]> cmdCaptor1 = ArgumentCaptor.forClass(String[].class);
-        verify(mockProcessExecutor).executeCommand(eq(project1), any(), cmdCaptor1.capture());
+        verify(mockProcessExecutor).executeCommand(eq(project1), any(), isNull(), cmdCaptor1.capture());
         assertArrayEquals(AppConfig.buildCommand("mvn"), cmdCaptor1.getValue());
 
         // Verify second project DOES use offline mode
         ArgumentCaptor<String[]> cmdCaptor2 = ArgumentCaptor.forClass(String[].class);
-        verify(mockProcessExecutor).executeCommand(eq(project2), any(), cmdCaptor2.capture());
+        verify(mockProcessExecutor).executeCommand(eq(project2), any(), isNull(), cmdCaptor2.capture());
         assertArrayEquals(AppConfig.buildCommandOffline("mvn"), cmdCaptor2.getValue());
     }
 }

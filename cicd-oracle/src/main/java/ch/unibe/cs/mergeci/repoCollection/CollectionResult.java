@@ -83,8 +83,8 @@ public class CollectionResult {
      * Get a summary line suitable for logging
      */
     public String getSummary() {
-        return String.format("%s: %s (processed %d/%d merges with Java conflicts)",
-                repoName, status, successfulMerges, mergesWithJavaConflicts);
+        return String.format("%s: %s (processed %d/%d merges with conflicts)",
+                repoName, status, successfulMerges, mergesWithConflicts);
     }
 
     /**

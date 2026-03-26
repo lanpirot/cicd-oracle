@@ -13,8 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Filters and validates merge commits based on conflict criteria.
- * Focuses on identifying merges with Java file conflicts.
+ * Filters merge commits: excludes training-set merges to prevent data leakage,
+ * and provides counting utilities for reporting.
  */
 public class MergeFilter {
 
@@ -56,27 +56,13 @@ public class MergeFilter {
     }
 
     /**
-     * Check if a merge has conflicts in Java files.
-     *
-     * @param merge Merge information to check
-     * @return true if the merge has Java file conflicts
-     */
-    public boolean hasJavaConflicts(MergeInfo merge) {
-        return merge.getConflictingFiles()
-                .keySet()
-                .stream()
-                .anyMatch(file -> file.endsWith(AppConfig.JAVA));
-    }
-
-    /**
-     * Count the number of merges with Java file conflicts.
-     *
-     * @param merges List of merges to count
-     * @return Number of merges with Java conflicts
+     * Count the number of merges that have at least one Java file conflict.
+     * Used for reporting only; does not gate processing.
      */
     public int countJavaConflicts(List<MergeInfo> merges) {
         return (int) merges.stream()
-                .filter(this::hasJavaConflicts)
+                .filter(m -> m.getConflictingFiles().keySet().stream()
+                        .anyMatch(f -> f.endsWith(AppConfig.JAVA)))
                 .count();
     }
 }
