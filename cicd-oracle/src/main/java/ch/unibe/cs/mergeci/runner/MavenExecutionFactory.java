@@ -112,6 +112,7 @@ public class MavenExecutionFactory {
                 TestTotal baselineTests = testResults.get(context.getProjectName());
                 CompilationResult baselineCompilation = compilationResults.get(context.getProjectName());
                 long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests, baselineCompilation);
+                experimentTiming.setNormalizedBaselineSeconds(baselineSeconds);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
 
                 int maxThreads = AppConfig.computeMaxThreads(peakBaselineRamBytes);
@@ -510,13 +511,13 @@ public class MavenExecutionFactory {
      * Normalize baseline duration to account for partial builds:
      * <ol>
      *   <li>Module normalization: if only some modules compiled, scale the raw time
-     *       by totalModules/successfulModules to estimate a full-module build.</li>
+     *       by totalModules/successfulModules to estimate a full-module build.
+     *       Falls back to {@link AppConfig#MAVEN_BUILD_TIMEOUT} when no modules succeeded.</li>
      *   <li>Test normalization: if tests failed early, scale the test portion
      *       by runTests/passedTests to estimate a fully-green run.</li>
      * </ol>
-     * Falls back to raw duration when no data is available for either step.
      */
-    private static long normalizeBaselineSeconds(long rawSeconds, TestTotal testTotal,
+    static long normalizeBaselineSeconds(long rawSeconds, TestTotal testTotal,
                                                   CompilationResult compilationResult) {
         float seconds = rawSeconds;
 
@@ -524,7 +525,10 @@ public class MavenExecutionFactory {
         if (compilationResult != null) {
             int total = compilationResult.getTotalModules();
             int successful = compilationResult.getSuccessfulModules();
-            if (total > 1 && successful > 0 && successful < total) {
+            if (total > 1 && successful == 0) {
+                return AppConfig.MAVEN_BUILD_TIMEOUT;
+            }
+            if (total > 1 && successful < total) {
                 seconds = seconds * total / successful;
             }
         }

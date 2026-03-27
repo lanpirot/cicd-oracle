@@ -10,4 +10,6 @@ import java.time.Duration;
 public class ExperimentTiming {
     private Duration humanBaselineExecutionTime;
     private Duration variantsExecutionTime;
+    /** Baseline seconds after module/test normalization — used as the budget basis. */
+    private long normalizedBaselineSeconds;
 }

@@ -55,8 +55,10 @@ public class VariantResultCollector {
         output.setIsMultiModule(info.isMultiModule());
         output.setTotalExecutionTime(processed.getAnalysisResult().executionTimeSeconds());
         ExperimentTiming timing = processed.getAnalysisResult().runExecutionTime();
-        long baselineSeconds = (timing != null && timing.getHumanBaselineExecutionTime() != null)
-                ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
+        long baselineSeconds = (timing != null && timing.getNormalizedBaselineSeconds() > 0)
+                ? timing.getNormalizedBaselineSeconds()
+                : (timing != null && timing.getHumanBaselineExecutionTime() != null)
+                        ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
         output.setBudgetBasisSeconds(baselineSeconds);
         output.setVariantBudgetSeconds(baselineSeconds * ch.unibe.cs.mergeci.config.AppConfig.TIMEOUT_MULTIPLIER);
     }

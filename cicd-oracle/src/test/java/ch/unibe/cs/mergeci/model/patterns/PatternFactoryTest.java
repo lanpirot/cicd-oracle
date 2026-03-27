@@ -152,6 +152,19 @@ class PatternFactoryTest {
     }
 
     @Test
+    void testColonSeparatedRoundTrip() {
+        // CompoundPattern.name() produces colon-separated names; fromName() must parse them back
+        CompoundPattern original = (CompoundPattern) PatternFactory.fromName("THEIRSOURS");
+        String colonName = original.name(); // "THEIRS:OURS"
+        assertEquals("THEIRS:OURS", colonName);
+
+        CompoundPattern roundTripped = (CompoundPattern) PatternFactory.fromName(colonName);
+        assertEquals(2, roundTripped.getAtomicPatterns().size());
+        assertInstanceOf(TheirsPattern.class, roundTripped.getAtomicPatterns().get(0));
+        assertInstanceOf(OursPattern.class,   roundTripped.getAtomicPatterns().get(1));
+    }
+
+    @Test
     void testComplexCompoundPatterns() {
         String[] complexPatterns = {
             "OURSTHEIRSOURS",

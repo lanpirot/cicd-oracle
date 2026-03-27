@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CrossModeSanityCheckerTest extends BaseTest {
 
@@ -25,6 +25,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
         assertEquals(1, result.variantsCompared());
         assertEquals(0, result.compilationMismatches());
         assertEquals(0, result.testMismatches());
+        assertTrue(result.passed());
     }
 
     @Test
@@ -42,6 +43,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
         assertEquals(2, result.variantsCompared());
         assertEquals(0, result.compilationMismatches());
         assertEquals(0, result.testMismatches());
+        assertTrue(result.passed());
     }
 
     // ---- timed-out exclusion ----
@@ -54,6 +56,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
         );
         assertEquals(0, result.variantsCompared());
         assertEquals(0, result.compilationMismatches());
+        assertTrue(result.passed());
     }
 
     @Test
@@ -65,12 +68,13 @@ class CrossModeSanityCheckerTest extends BaseTest {
         );
         assertEquals(0, result.variantsCompared());
         assertEquals(0, result.compilationMismatches());
+        assertTrue(result.passed());
     }
 
-    // ---- compilation mismatch ----
+    // ---- compilation mismatch (zero tolerance → FAIL) ----
 
     @Test
-    void compilationMismatch_counted() {
+    void compilationMismatch_failsCheck() {
         var result = check(
                 mode("a", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS, 10, 0, 0, 0, false))),
                 mode("b", merge("proj", "c1", variant(0, CompilationResult.Status.FAILURE,   0, 0, 0, 0, false)))
@@ -79,6 +83,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
         assertEquals(1, result.compilationMismatches());
         // test counts also differ (10 vs 0) because the failed build ran no tests
         assertEquals(1, result.testMismatches());
+        assertFalse(result.passed());
     }
 
     @Test
@@ -95,19 +100,67 @@ class CrossModeSanityCheckerTest extends BaseTest {
         var result = CrossModeSanityChecker.checkInMemory(byMode);
         assertEquals(1, result.variantsCompared());
         assertEquals(1, result.compilationMismatches());
+        assertFalse(result.passed());
     }
 
     // ---- test count mismatch (flaky tests) ----
 
     @Test
-    void testCountMismatch_flaggedAsFlaky() {
+    void testCountMismatch_smallDeviation() {
+        // 1 mismatch out of 1 variant = 100% rate → exceeds threshold → FAIL
         var result = check(
-                mode("a", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS, 10, 0, 0, 0, false))),
-                mode("b", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS,  9, 1, 0, 0, false)))
+                mode("a", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS, 100, 0, 0, 0, false))),
+                mode("b", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS,  100, 1, 0, 0, false)))
         );
         assertEquals(1, result.variantsCompared());
         assertEquals(0, result.compilationMismatches());
         assertEquals(1, result.testMismatches());
+        // deviation: |Δfail|=1 / max(run)=100 = 1%
+        assertEquals(0.01, result.maxTestDeviation(), 1e-9);
+        assertEquals(0.01, result.medianTestDeviation(), 1e-9);
+        assertFalse(result.passed()); // 1/1 = 100% mismatch rate > 1%
+    }
+
+    @Test
+    void testMismatchRate_withinThreshold_passes() {
+        // 200 variants, 1 has a test mismatch → 0.5% rate < 1% → PASS
+        var byMode = new LinkedHashMap<String, Map<String, MergeOutputJSON>>();
+        Map<String, MergeOutputJSON> modeA = new LinkedHashMap<>();
+        Map<String, MergeOutputJSON> modeB = new LinkedHashMap<>();
+        // 1 mismatched variant
+        modeA.put("proj/c0", mergeObj("proj", "c0",
+                variant(0, CompilationResult.Status.SUCCESS, 50, 0, 0, 0, false)));
+        modeB.put("proj/c0", mergeObj("proj", "c0",
+                variant(0, CompilationResult.Status.SUCCESS, 50, 1, 0, 0, false)));
+        // 199 consistent variants (across multiple merges with 1 variant each)
+        for (int i = 1; i <= 199; i++) {
+            String key = "proj/c" + i;
+            modeA.put(key, mergeObj("proj", "c" + i,
+                    variant(0, CompilationResult.Status.SUCCESS, 50, 0, 0, 0, false)));
+            modeB.put(key, mergeObj("proj", "c" + i,
+                    variant(0, CompilationResult.Status.SUCCESS, 50, 0, 0, 0, false)));
+        }
+        byMode.put("a", modeA);
+        byMode.put("b", modeB);
+
+        var result = CrossModeSanityChecker.checkInMemory(byMode);
+        assertEquals(200, result.variantsCompared());
+        assertEquals(1, result.testMismatches());
+        assertTrue(result.passed());
+        // deviation: |Δfail|=1 / 50 = 2%
+        assertEquals(0.02, result.maxTestDeviation(), 1e-9);
+    }
+
+    @Test
+    void testDeviation_magnitude_reported() {
+        // Large deviation: 50 tests differ out of 200
+        var result = check(
+                mode("a", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS, 200, 0, 0, 0, false))),
+                mode("b", merge("proj", "c1", variant(0, CompilationResult.Status.SUCCESS, 200, 50, 0, 0, false)))
+        );
+        assertEquals(1, result.testMismatches());
+        // deviation: |Δfail|=50 / max(run)=200 = 25%
+        assertEquals(0.25, result.maxTestDeviation(), 1e-9);
     }
 
     // ---- edge cases ----
@@ -118,6 +171,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
                 mergeObj("proj", "c1", variant(0, CompilationResult.Status.SUCCESS, 5, 0, 0, 0, false))));
         var result = CrossModeSanityChecker.checkInMemory(byMode);
         assertEquals(0, result.variantsCompared());
+        assertTrue(result.passed());
     }
 
     @Test
@@ -128,6 +182,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
                 mode("b", merge("proj", "c2", variant(0, CompilationResult.Status.SUCCESS, 5, 0, 0, 0, false)))
         );
         assertEquals(0, result.variantsCompared());
+        assertTrue(result.passed());
     }
 
     @Test
@@ -142,6 +197,7 @@ class CrossModeSanityCheckerTest extends BaseTest {
         );
         assertEquals(1, result.variantsCompared()); // only variant 0 compared
         assertEquals(0, result.compilationMismatches());
+        assertTrue(result.passed());
     }
 
     // ---- helpers ----

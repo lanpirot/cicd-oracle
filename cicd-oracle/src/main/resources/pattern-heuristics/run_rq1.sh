@@ -137,12 +137,12 @@ if skip_if_before 5; then
         --predictions-dir "$DATA_DIR/predictions"
 fi
 
-# ── Step 6: Evaluate with PatternMatchEvaluator ───────────────────────────────
+# ── Step 6: Evaluate with RQ1PipelineRunner ──────────────────────────────────
 if skip_if_before 6; then
-    step_header 6 "Evaluate (PatternMatchEvaluator → cv_results.csv + tables + plots)"
+    step_header 6 "Evaluate (RQ1PipelineRunner → cv_results.csv + tables + plots)"
     cd "$MAVEN_MODULE"
     mvn -q compile exec:java \
-        -Dexec.mainClass="ch.unibe.cs.mergeci.experiment.PatternMatchEvaluator"
+        -Dexec.mainClass="ch.unibe.cs.mergeci.experiment.RQ1PipelineRunner"
 fi
 
 # ── Step 7: Temporal integrity checks ────────────────────────────────────────

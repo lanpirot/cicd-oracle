@@ -2,7 +2,7 @@
 """
 Plot "lowest Hamming distance so far" vs. number of attempts for UNIFORM, HEURISTIC, ML-AR.
 
-Reads cv_trajectory.csv (produced by PatternMatchEvaluator) which records every
+Reads cv_trajectory.csv (produced by RQ1PipelineRunner) which records every
 distance improvement event plus the initial state at attempt 0.
 
 Produces two side-by-side plots saved as hamming_progress.pdf:

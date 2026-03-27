@@ -17,14 +17,19 @@ import java.util.Map;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"mode", "projectName", "mergeCommit", "parent1", "parent2",
+@JsonPropertyOrder({"processed", "mode", "projectName", "mergeCommit", "parent1", "parent2",
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
-        "isMultiModule", "baselineBroken", "baselineFailureType", "buildFileConflictMarkers",
+        "isMultiModule", "baselineBroken", "baselineFailureType", "variantsSkipped",
+        "buildFileConflictMarkers",
         "budgetBasisSeconds", "variantBudgetSeconds",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
         "variantsExecutionTimeSeconds", "variants"})
 @ToString
 public class MergeOutputJSON {
+    /** Set to {@code true} after the merge was fully processed and all results collected.
+     *  On restart, a JSON with {@code processed=false} is treated as incomplete and reprocessed. */
+    private boolean processed;
+
     private String mode;
     private String projectName;
     private String mergeCommit;
@@ -42,6 +47,11 @@ public class MergeOutputJSON {
     /** Classification of the baseline failure: INFRA_FAILURE, BROKEN_MERGE, COMPILE_FAILURE,
      *  TIMEOUT, NO_TESTS, or null when the baseline compiled and ran tests successfully. */
     private String baselineFailureType;
+
+    /** True when variant modes should skip this merge entirely.  Set in the human_baseline
+     *  JSON by {@code classifyBaseline} when the baseline outcome makes variants pointless
+     *  (timeout, infra failure, or 0 tests with a non-broken baseline). */
+    private boolean variantsSkipped;
 
     /** True when build descriptor files (pom.xml, package.json, *.gradle) contain unresolved
      *  git conflict markers.  An INFRA_FAILURE with this flag set is potentially fixable by

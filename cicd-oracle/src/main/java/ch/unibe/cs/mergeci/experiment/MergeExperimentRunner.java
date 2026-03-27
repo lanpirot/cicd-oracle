@@ -3,6 +3,7 @@ package ch.unibe.cs.mergeci.experiment;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.conflict.ConflictFileSaver;
 import ch.unibe.cs.mergeci.runner.ExperimentTiming;
+import ch.unibe.cs.mergeci.runner.ChunkMismatchException;
 import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.IVariantGenerator;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
@@ -94,6 +95,9 @@ public class MergeExperimentRunner {
         } catch (MissingObjectException e) {
             System.err.println("SKIP " + info.getMergeCommit() + ": missing git object " + e.getObjectId().name());
             return ProcessedMerge.skipped(info, 0, "missing git object: " + e.getObjectId().name());
+        } catch (ChunkMismatchException e) {
+            System.err.println("SKIP " + info.getMergeCommit() + ": " + e.getMessage());
+            return ProcessedMerge.skipped(info, 0, "chunk mismatch: " + e.getMessage());
         }
     }
 

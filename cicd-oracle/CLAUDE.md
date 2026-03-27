@@ -50,7 +50,7 @@ For every merge in a dataset, `MergeExperimentRunner` creates a `VariantBuildCon
 
 `human_baseline` results are written to JSON first; subsequent modes read `humanBaselineSeconds` from that JSON to skip re-running the baseline build. In cache modes, the first variant warms the Maven cache; subsequent variants copy from it.
 
-For **broken-baseline merges** (`baselineBroken=true`), the stored baseline wall-clock time is overridden with the project average of non-broken merges (300 s fallback) via `injectFallbackBaselinesForBrokenMerges()`, giving their variants a meaningful time budget.
+For **broken-baseline merges** (`baselineBroken=true`), the stored baseline is the module-normalized time from the merge's own build (e.g. 4 s with 1/2 modules → 8 s). When no modules succeeded, the fallback is `MAVEN_BUILD_TIMEOUT` (600 s).
 
 ### Analysis (`present`)
 

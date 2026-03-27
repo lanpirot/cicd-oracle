@@ -30,7 +30,7 @@ Quick reference:
 cd cicd-oracle
 mvn clean package
 mvn test -Dtest=ClassName#methodName
-java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.CiCdMergeResolverApplication
+java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
 ```
 
 ## plugin (IntelliJ Plugin)

@@ -12,7 +12,7 @@
 #   3  Generate 10-fold CV splits              (~2 min)
 #   4  Train autoregressive model + predict    (hours; GPU recommended)
 #   5  Train Random Forest + predict           (~5-30 min)
-#   6  Evaluate (PatternMatchEvaluator)        (~30 min)
+#   6  Evaluate (RQ1PipelineRunner)            (~30 min)
 #   7  Temporal integrity checks
 #
 # Prerequisites:

@@ -28,7 +28,7 @@ import java.util.*;
  * </ul>
  * Output: {@code cv_results.csv} in the same directory.
  */
-public class PatternMatchEvaluator {
+public class RQ1PipelineRunner {
 
     /** All 16 valid single-chunk patterns (4 atomics + 6 ordered 2-combos + 6 ordered 3-combos). */
     static final List<String> ALL_16_PATTERNS = List.of(

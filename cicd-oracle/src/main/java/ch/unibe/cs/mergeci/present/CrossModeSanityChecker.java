@@ -16,14 +16,28 @@ import java.util.*;
  * Verifies that identical variants produce identical build outcomes across all experiment modes.
  * Cache and parallelism optimizations must not change compilation status or test counts.
  * Timed-out variants are excluded — their outcome is undefined.
- * Remaining deviations indicate flaky tests (test mismatches) or infrastructure bugs
- * (compilation mismatches).
+ * <p>
+ * Compilation mismatches have zero tolerance — any mismatch is a hard failure.
+ * Test mismatches are allowed up to {@link #MAX_TEST_MISMATCH_RATE} (1%) to account for flaky
+ * tests; above that threshold a warning is emitted and the result is flagged.
  */
 public class CrossModeSanityChecker {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public record SanityCheckResult(int variantsCompared, int compilationMismatches, int testMismatches) {}
+    /** Maximum fraction of variant positions with test-count mismatches before flagging. */
+    static final double MAX_TEST_MISMATCH_RATE = 0.01;
+
+    /**
+     * @param variantsCompared        number of variant positions compared across ≥2 modes
+     * @param compilationMismatches   positions where compilation status differed (zero tolerance)
+     * @param testMismatches          positions where test counts differed
+     * @param maxTestDeviation        worst-case deviation: max |Δrun|+|Δfail|+|Δerr| as fraction of total tests
+     * @param medianTestDeviation     median deviation across all mismatched positions (0 if none)
+     * @param passed                  true iff compilationMismatches == 0 AND test mismatch rate ≤ threshold
+     */
+    public record SanityCheckResult(int variantsCompared, int compilationMismatches, int testMismatches,
+                                    double maxTestDeviation, double medianTestDeviation, boolean passed) {}
 
     /**
      * Loads JSON results from each mode subdirectory under {@code experimentDir} and runs the
@@ -44,7 +58,7 @@ public class CrossModeSanityChecker {
      * @param byMode mode-name → (mergeKey → MergeOutputJSON)
      */
     static SanityCheckResult checkInMemory(Map<String, Map<String, MergeOutputJSON>> byMode) {
-        if (byMode.size() < 2) return new SanityCheckResult(0, 0, 0);
+        if (byMode.size() < 2) return new SanityCheckResult(0, 0, 0, 0.0, 0.0, true);
 
         Set<String> allMergeKeys = new LinkedHashSet<>();
         byMode.values().forEach(m -> allMergeKeys.addAll(m.keySet()));
@@ -54,6 +68,7 @@ public class CrossModeSanityChecker {
         int testMismatches = 0;
         List<String> compilationDetails = new ArrayList<>();
         List<String> testDetails = new ArrayList<>();
+        List<Double> testDeviations = new ArrayList<>();
 
         for (String mergeKey : allMergeKeys) {
             List<Map.Entry<String, MergeOutputJSON>> presentModes = new ArrayList<>();
@@ -85,7 +100,7 @@ public class CrossModeSanityChecker {
                 variantsCompared++;
                 MergeOutputJSON.Variant ref = comparable.get(0).getValue();
 
-                // Check compilation status: all modes must agree
+                // Check compilation status: all modes must agree (zero tolerance)
                 CompilationResult.Status refStatus = ref.getCompilationResult() != null
                         ? ref.getCompilationResult().getBuildStatus() : null;
                 boolean compilationMismatch = false;
@@ -107,40 +122,68 @@ public class CrossModeSanityChecker {
                 // Check test counts: all modes must agree (where data is available)
                 TestTotal refTr = ref.getTestResults();
                 boolean testMismatch = false;
+                double worstDeviation = 0.0;
                 for (int i = 1; i < comparable.size(); i++) {
                     TestTotal tr = comparable.get(i).getValue().getTestResults();
                     if (refTr == null || tr == null) continue;
-                    if (refTr.getRunNum() != tr.getRunNum()
-                            || refTr.getFailuresNum() != tr.getFailuresNum()
-                            || refTr.getErrorsNum() != tr.getErrorsNum()
-                            || refTr.getSkippedNum() != tr.getSkippedNum()) {
+                    int deltaRun  = Math.abs(refTr.getRunNum()      - tr.getRunNum());
+                    int deltaFail = Math.abs(refTr.getFailuresNum() - tr.getFailuresNum());
+                    int deltaErr  = Math.abs(refTr.getErrorsNum()   - tr.getErrorsNum());
+                    if (deltaRun + deltaFail + deltaErr > 0) {
                         testMismatch = true;
+                        int maxTests = Math.max(refTr.getRunNum(), tr.getRunNum());
+                        double deviation = maxTests > 0
+                                ? (double) (deltaRun + deltaFail + deltaErr) / maxTests
+                                : 1.0;
+                        worstDeviation = Math.max(worstDeviation, deviation);
                         if (testDetails.size() < 10) {
                             testDetails.add(String.format(
-                                    "  %s variant %d: run=%d/%d fail=%d/%d err=%d/%d skip=%d/%d (%s vs %s)",
+                                    "  %s variant %d: run=%d/%d fail=%d/%d err=%d/%d skip=%d/%d (dev=%.1f%%, %s vs %s)",
                                     mergeKey, idx,
                                     refTr.getRunNum(), tr.getRunNum(),
                                     refTr.getFailuresNum(), tr.getFailuresNum(),
                                     refTr.getErrorsNum(), tr.getErrorsNum(),
                                     refTr.getSkippedNum(), tr.getSkippedNum(),
+                                    deviation * 100,
                                     comparable.get(0).getKey(), comparable.get(i).getKey()));
                         }
                     }
                 }
-                if (testMismatch) testMismatches++;
+                if (testMismatch) {
+                    testMismatches++;
+                    testDeviations.add(worstDeviation);
+                }
             }
         }
 
+        double maxDev = testDeviations.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
+        double medianDev = median(testDeviations);
+        double testMismatchRate = variantsCompared > 0 ? (double) testMismatches / variantsCompared : 0.0;
+        boolean passed = compilationMismatches == 0 && testMismatchRate <= MAX_TEST_MISMATCH_RATE;
+
         printReport(byMode.keySet(), variantsCompared, compilationMismatches, testMismatches,
-                compilationDetails, testDetails);
-        return new SanityCheckResult(variantsCompared, compilationMismatches, testMismatches);
+                compilationDetails, testDetails, maxDev, medianDev, passed);
+        return new SanityCheckResult(variantsCompared, compilationMismatches, testMismatches,
+                maxDev, medianDev, passed);
+    }
+
+    private static double median(List<Double> values) {
+        if (values.isEmpty()) return 0.0;
+        List<Double> sorted = new ArrayList<>(values);
+        Collections.sort(sorted);
+        int n = sorted.size();
+        return n % 2 == 0
+                ? (sorted.get(n / 2 - 1) + sorted.get(n / 2)) / 2.0
+                : sorted.get(n / 2);
     }
 
     private static void printReport(Set<String> modes, int variantsCompared,
                                     int compilationMismatches, int testMismatches,
-                                    List<String> compilationDetails, List<String> testDetails) {
+                                    List<String> compilationDetails, List<String> testDetails,
+                                    double maxTestDeviation, double medianTestDeviation,
+                                    boolean passed) {
         System.out.println("\n" + "═".repeat(80));
-        System.out.println("  CROSS-MODE SANITY CHECK");
+        System.out.printf("  CROSS-MODE SANITY CHECK  %s%n", passed ? "PASSED" : "FAILED");
         System.out.println("═".repeat(80));
         System.out.printf("  Modes compared:              %s%n", String.join(", ", modes));
         System.out.printf("  Variant positions compared:  %d%n", variantsCompared);
@@ -148,7 +191,7 @@ public class CrossModeSanityChecker {
         if (compilationMismatches == 0) {
             System.out.println("  Compilation outcomes:        OK (all consistent)");
         } else {
-            System.out.printf("  WARNING — Compilation mismatches: %d/%d (%.1f%%)%n",
+            System.out.printf("  FAIL — Compilation mismatches: %d/%d (%.1f%%) — zero tolerance%n",
                     compilationMismatches, variantsCompared,
                     100.0 * compilationMismatches / variantsCompared);
             compilationDetails.forEach(System.out::println);
@@ -157,9 +200,12 @@ public class CrossModeSanityChecker {
         if (testMismatches == 0) {
             System.out.println("  Test counts:                 OK (all consistent)");
         } else {
-            System.out.printf("  Test count mismatches (possibly flaky): %d/%d (%.1f%%)%n",
-                    testMismatches, variantsCompared,
-                    100.0 * testMismatches / variantsCompared);
+            double rate = 100.0 * testMismatches / variantsCompared;
+            String verdict = rate <= MAX_TEST_MISMATCH_RATE * 100 ? "OK (within threshold)" : "FAIL";
+            System.out.printf("  Test count mismatches: %s — %d/%d (%.2f%%, threshold %.0f%%)%n",
+                    verdict, testMismatches, variantsCompared, rate, MAX_TEST_MISMATCH_RATE * 100);
+            System.out.printf("  Deviation magnitude:         median=%.1f%%, max=%.1f%% of total tests%n",
+                    medianTestDeviation * 100, maxTestDeviation * 100);
             testDetails.forEach(System.out::println);
         }
         System.out.println("═".repeat(80) + "\n");

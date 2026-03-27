@@ -78,13 +78,18 @@ public class TestTotalXml {
         Element testSuite = doc.getDocumentElement(); // <testsuite>
 
         TestMetrics m = new TestMetrics();
-        m.run = Integer.parseInt(testSuite.getAttribute("tests"));
-        m.failures = Integer.parseInt(testSuite.getAttribute("failures"));
-        m.errors = Integer.parseInt(testSuite.getAttribute("errors"));
-        m.skipped = Integer.parseInt(testSuite.getAttribute("skipped"));
+        m.run = parseIntAttr(testSuite, "tests");
+        m.failures = parseIntAttr(testSuite, "failures");
+        m.errors = parseIntAttr(testSuite, "errors");
+        m.skipped = parseIntAttr(testSuite, "skipped");
         m.time = Float.parseFloat(testSuite.getAttribute("time"));
 
         return m;
+    }
+
+    /** Parse an integer attribute, tolerating locale-formatted thousands separators (e.g. "1,242"). */
+    private static int parseIntAttr(Element el, String attr) {
+        return Integer.parseInt(el.getAttribute(attr).replace(",", ""));
     }
 
     @Override

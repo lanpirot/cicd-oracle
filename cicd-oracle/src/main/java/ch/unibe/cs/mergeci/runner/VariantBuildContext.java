@@ -94,9 +94,9 @@ public class VariantBuildContext {
         if (assignmentOpt.isEmpty()) return Optional.empty();
         List<String> assignment = assignmentOpt.get();
         if (assignment.size() != totalChunks) {
-            System.err.printf("Warning: skipping all variants — assignment has %d patterns but merge has %d chunks (mergeCommit=%s)%n",
-                    assignment.size(), totalChunks, mergeCommit);
-            return Optional.empty();
+            throw new ChunkMismatchException(String.format(
+                    "assignment has %d patterns but merge has %d chunks (mergeCommit=%s)",
+                    assignment.size(), totalChunks, mergeCommit));
         }
         VariantProject project = buildProjectFromAssignment(assignment);
         conflictPatterns.add(project.extractPatterns());

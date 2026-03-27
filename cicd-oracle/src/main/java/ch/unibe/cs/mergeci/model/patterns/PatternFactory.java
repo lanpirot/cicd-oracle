@@ -97,7 +97,8 @@ public class PatternFactory {
      */
     private static List<String> parseToAtomicNames(String patternName) {
         List<String> names = new ArrayList<>();
-        String remaining = patternName;
+        // Accept both colon-separated (THEIRS:OURS) and concatenated (THEIRSOURS) notation.
+        String remaining = patternName.replace(":", "");
         // Sorted by length descending so "THEIRS" is tried before "OURS"
         List<String> atomicNames = List.of("THEIRS", "OURS", "BASE");
 

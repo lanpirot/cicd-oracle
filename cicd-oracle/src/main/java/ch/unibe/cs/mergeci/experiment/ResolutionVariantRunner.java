@@ -189,11 +189,10 @@ public class ResolutionVariantRunner {
                 : loadStoredBaselines(humanBaselineDir);
 
         Map<String, String> skippedBaselines = skipVariants ? Collections.emptyMap()
-                : loadSkippedBaselines(humanBaselineDir);
+                : loadSkippedBaselines(humanBaselineDir, mergeInfos);
 
         if (!skipVariants) {
             markBrokenBaselines(mergeInfos, humanBaselineDir);
-            injectFallbackBaselinesForBrokenMerges(mergeInfos, storedBaselines);
         }
 
         MergeExperimentRunner processor = new MergeExperimentRunner(
@@ -254,34 +253,6 @@ public class ResolutionVariantRunner {
     }
 
     /**
-     * For merges where the human baseline fails to compile ({@code baselineBroken=true}),
-     * override their stored baseline with the average of the non-broken merges in the same
-     * project, falling back to 300 s when no non-broken baselines are available.
-     */
-    private static void injectFallbackBaselinesForBrokenMerges(
-            List<DatasetReader.MergeInfo> mergeInfos,
-            Map<String, Long> storedBaselines) {
-
-        long sum = 0, count = 0;
-        for (DatasetReader.MergeInfo info : mergeInfos) {
-            if (!info.isBaselineBroken()) {
-                Long baseline = storedBaselines.get(info.getMergeCommit());
-                if (baseline != null && baseline > 0) {
-                    sum += baseline;
-                    count++;
-                }
-            }
-        }
-        long fallback = count > 0 ? sum / count : AppConfig.MAVEN_BUILD_TIMEOUT;
-
-        for (DatasetReader.MergeInfo info : mergeInfos) {
-            if (info.isBaselineBroken()) {
-                storedBaselines.put(info.getMergeCommit(), fallback);
-            }
-        }
-    }
-
-    /**
      * Load per-merge humanBaselineSeconds from per-merge JSON files in the human_baseline directory.
      * Returns an empty map if the directory does not exist or cannot be read.
      */
@@ -307,18 +278,13 @@ public class ResolutionVariantRunner {
     }
 
     /**
-     * Load the set of merge commits that should be skipped in variant modes, together with
-     * their failure type for consistent CLI logging.  A merge is skipped when:
-     * <ul>
-     *   <li>{@code TIMEOUT} — baseline build did not finish in time</li>
-     *   <li>{@code INFRA_FAILURE} — permanently broken infrastructure (dead repo, missing tool);
-     *       not set when build-file conflict markers are present (reclassified to BROKEN_MERGE)</li>
-     *   <li>{@code NO_TESTS} — baseline compiled but 0 tests ran, so variant quality cannot
-     *       be measured.  Only skipped when the baseline is not broken — a broken baseline that
-     *       ran 0 tests may still produce tests once a variant fixes the compilation.</li>
-     * </ul>
+     * Load the set of merge commits that should be skipped in variant modes.
+     * Reads the {@code variantsSkipped} flag from human_baseline JSONs (set by
+     * {@link #classifyBaseline}).  Merges with no human_baseline JSON at all
+     * (skipped or errored during baseline mode) are also included.
      */
-    private static Map<String, String> loadSkippedBaselines(Path humanBaselineDir) {
+    private static Map<String, String> loadSkippedBaselines(Path humanBaselineDir,
+                                                               List<DatasetReader.MergeInfo> mergeInfos) {
         if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) {
             return Collections.emptyMap();
         }
@@ -330,29 +296,51 @@ public class ResolutionVariantRunner {
         for (File file : files) {
             try {
                 MergeOutputJSON merge = mapper.readValue(file, MergeOutputJSON.class);
-                if (merge.getMergeCommit() == null || merge.getBaselineFailureType() == null) continue;
-                String type = merge.getBaselineFailureType();
-                switch (type) {
-                    case "TIMEOUT", "INFRA_FAILURE" -> skipped.put(merge.getMergeCommit(), type);
-                    case "NO_TESTS" -> {
-                        // Only skip when baseline compiled — broken baselines may unlock tests via variants
-                        if (!merge.isBaselineBroken()) {
-                            skipped.put(merge.getMergeCommit(), type);
-                        }
-                    }
-                    default -> { /* BROKEN_MERGE, COMPILE_FAILURE — variants may fix these */ }
+                if (merge.getMergeCommit() == null) continue;
+                if (merge.isVariantsSkipped()) {
+                    String reason = merge.getBaselineFailureType() != null
+                            ? merge.getBaselineFailureType() : "VARIANTS_SKIPPED";
+                    skipped.put(merge.getMergeCommit(), reason);
                 }
             } catch (IOException e) {
                 System.err.println("Warning: could not read baseline from " + file + ": " + e.getMessage());
             }
         }
+
+        // Merges with no human_baseline JSON were skipped/errored during baseline mode —
+        // no point running variants for them either.  Only applies when the baseline
+        // directory has at least one JSON (i.e. the baseline mode actually ran);
+        // an empty directory means this is a standalone run, not a restart.
+        if (files.length > 0) {
+            for (DatasetReader.MergeInfo info : mergeInfos) {
+                String mc = info.getMergeCommit();
+                if (!skipped.containsKey(mc)) {
+                    Path baselineJson = humanBaselineDir.resolve(mc + AppConfig.JSON);
+                    if (!baselineJson.toFile().exists()) {
+                        skipped.put(mc, "NO_BASELINE");
+                    }
+                }
+            }
+        }
+
         return skipped;
+    }
+
+    /** Try to parse a JSON file as {@link MergeOutputJSON}; returns null if corrupt or truncated. */
+    private static MergeOutputJSON readJsonOrNull(Path jsonFile) {
+        try {
+            return new ObjectMapper().readValue(jsonFile.toFile(), MergeOutputJSON.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private static final Map<String, String> SKIP_REASONS = Map.of(
             "TIMEOUT", "baseline timed out",
             "INFRA_FAILURE", "infrastructure failure",
-            "NO_TESTS", "baseline ran 0 tests"
+            "NO_TESTS", "baseline ran 0 tests",
+            "NO_BASELINE", "no human_baseline result",
+            "VARIANTS_SKIPPED", "variants skipped by baseline"
     );
 
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
@@ -374,12 +362,18 @@ public class ResolutionVariantRunner {
             System.out.printf("  [merge %d/%d] %s... ", index, mergeInfos.size(), info.getShortCommit());
             System.out.flush();
 
-            // Per-merge resume check
+            // Per-merge resume check — validate that existing JSON is complete (processed=true);
+            // incomplete or corrupt files are deleted and reprocessed.
             Path mergeOutputFile = modeDir.resolve(info.getMergeCommit() + AppConfig.JSON);
             if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess() && mergeOutputFile.toFile().exists()) {
-                System.out.println("SKIPPED (already processed)");
-                skippedCount++;
-                continue;
+                MergeOutputJSON existing = readJsonOrNull(mergeOutputFile);
+                if (existing != null && existing.isProcessed()) {
+                    System.out.println("SKIPPED (already processed)");
+                    skippedCount++;
+                    continue;
+                }
+                System.out.print("incomplete JSON, reprocessing... ");
+                mergeOutputFile.toFile().delete();
             }
 
             // Skip merges whose baseline is permanently unusable (timeout, infra failure, no tests)
@@ -405,6 +399,7 @@ public class ResolutionVariantRunner {
             result.setMode(modeName);
             result.setProjectName(projectName);
             classifyBaseline(result, processed);
+            result.setProcessed(true);
             new JsonResultWriter().writeResult(result, modeDir);
             logBaselineFailure(failureLog, result, info.getShortCommit());
             totalTime += processed.getAnalysisResult().executionTimeSeconds();
@@ -460,6 +455,13 @@ public class ResolutionVariantRunner {
                     output.setBaselineFailureType(MergeFailureType.NO_TESTS.name());
                 }
             }
+        }
+
+        // Mark whether variant modes should skip this merge entirely.
+        String ft = output.getBaselineFailureType();
+        if ("TIMEOUT".equals(ft) || "INFRA_FAILURE".equals(ft)
+                || ("NO_TESTS".equals(ft) && !output.isBaselineBroken())) {
+            output.setVariantsSkipped(true);
         }
     }
 

@@ -218,7 +218,7 @@ def check_temporal_performance(results_path: Path):
     print("\n── Check 5: Temporal performance Spearman correlation ───────────────")
 
     if not results_path.exists():
-        print(f"  {SKIP} {results_path} not found — run PatternMatchEvaluator first")
+        print(f"  {SKIP} {results_path} not found — run RQ1PipelineRunner first")
         return None
 
     fold_stats: dict[str, dict[int, list]] = defaultdict(lambda: defaultdict(lambda: [0, 0]))

@@ -66,7 +66,33 @@ public abstract class RQPipelineRunner {
      */
     protected int processedLimit() { return Integer.MAX_VALUE; }
 
+    private void printSplash() {
+        String modes = modesToRun().stream()
+                .map(Utility.Experiments::getName)
+                .collect(java.util.stream.Collectors.joining(", "));
+        int limit = processedLimit();
+
+        System.out.println("╔══════════════════════════════════════════════════════════╗");
+        System.out.println("║              " + getClass().getSimpleName() + " — Pipeline Settings");
+        System.out.println("╠══════════════════════════════════════════════════════════╣");
+        System.out.printf( "║  Fresh run           : %s%n", AppConfig.isFreshRun());
+        System.out.printf( "║  Project limit       : %s%n", limit == Integer.MAX_VALUE ? "unlimited" : limit);
+        System.out.printf( "║  Experiment modes    : %s%n", modes);
+        System.out.printf( "║  Stop on perfect     : %s%n", stopOnPerfect());
+        System.out.printf( "║  Generator           : %s%n",
+                generatorFactory() != null ? generatorFactory().getClass().getSimpleName() : "default (heuristic)");
+        System.out.printf( "║  Baseline timeout    : %d s%n", AppConfig.MAVEN_BUILD_TIMEOUT);
+        System.out.printf( "║  Timeout multiplier  : %dx%n", AppConfig.TIMEOUT_MULTIPLIER);
+        System.out.printf( "║  Max threads         : %d (initial, re-computed per merge)%n", AppConfig.MAX_THREADS);
+        System.out.printf( "║  Maven heap          : %s%n", AppConfig.MAVEN_SUBPROCESS_HEAP);
+        System.out.printf( "║  Output dir          : %s%n", experimentDir());
+        System.out.printf( "║  Repo dir            : %s%n", AppConfig.REPO_DIR);
+        System.out.println("╚══════════════════════════════════════════════════════════╝");
+    }
+
     public void run() throws Exception {
+        printSplash();
+
         List<DatasetReader.MergeInfo> allMerges = sampleMerges();
         System.out.printf("Pipeline: sampled %d merges across %d projects%n",
                 allMerges.size(), countDistinctProjects(allMerges));
@@ -165,13 +191,9 @@ public abstract class RQPipelineRunner {
             try {
                 MergeOutputJSON result = mapper.readValue(jsonFile, MergeOutputJSON.class);
                 checked++;
-                String failureType = result.getBaselineFailureType();
-                if ("INFRA_FAILURE".equals(failureType)) {
+                if (result.isVariantsSkipped()) {
                     permanentlyBroken++;
-                    lastReason = "infrastructure failure (dead repository / blocked mirror)";
-                } else if ("NO_TESTS".equals(failureType) && !result.isBaselineBroken()) {
-                    permanentlyBroken++;
-                    lastReason = "build succeeded but 0 tests ran";
+                    lastReason = result.getBaselineFailureType();
                 }
             } catch (IOException e) {
                 System.err.println("Warning: could not read baseline JSON " + jsonFile + ": " + e.getMessage());

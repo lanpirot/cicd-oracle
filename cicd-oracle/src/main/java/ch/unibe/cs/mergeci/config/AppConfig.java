@@ -131,7 +131,7 @@ public class AppConfig {
      * Builds exceeding this limit are killed; the wall-clock duration up to the kill
      * is still used as the budget basis for variant modes.
      */
-    public static final int MAVEN_BUILD_TIMEOUT = 300;
+    public static final int MAVEN_BUILD_TIMEOUT = 600;
 
     // ========== RQ1: PATTERN HEURISTICS / ML-AR ==========
     /** Root data directory for RQ1 artefacts (Java_chunks.csv, fold files, checkpoints …). */
@@ -175,7 +175,7 @@ public class AppConfig {
 
     // ========== RQ2: JAVA CHUNKS PIPELINE ==========
     public static final Path RQ2_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq2");
-    public static final int  RQ2_SAMPLE_REPOS           = 500;
+    public static final int  RQ2_SAMPLE_REPOS           = 50;
     public static final int  RQ2_MERGES_PER_REPO        = 1;
 
     // ========== RQ3: LARGE-SCALE PIPELINE ==========
@@ -295,7 +295,7 @@ public class AppConfig {
      * Timeout is calculated as: TIMEOUT_MULTIPLIER * normalizedElapsedTime
      * This allows dynamic timeouts based on the expected build time from the dataset.
      */
-    public static final int TIMEOUT_MULTIPLIER = 0;
+    public static final int TIMEOUT_MULTIPLIER = 10;
 
     /**
      * JVM heap size passed to spawned Maven processes via MAVEN_OPTS.

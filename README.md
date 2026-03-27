@@ -17,17 +17,15 @@ Requirements: **Java 21**, **Git**, **Apache Maven 3.9+**
 cd cicd-oracle
 mvn clean package
 
-# Fresh run (clears all prior output)
-java -DfreshRun=true -cp “target/*:target/lib/*” ch.unibe.cs.mergeci.CiCdMergeResolverApplication
+# RQ1 (pattern heuristic evaluation)
+java -cp “target/*:target/lib/*” ch.unibe.cs.mergeci.experiment.RQ1PipelineRunner
 
-# Resume (skips already-processed repos and merges)
-java -cp “target/*:target/lib/*” ch.unibe.cs.mergeci.CiCdMergeResolverApplication
+# RQ2 (variant experiments, fresh run clears all prior output)
+java -DfreshRun=true -cp “target/*:target/lib/*” ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
+
+# RQ3
+java -cp “target/*:target/lib/*” ch.unibe.cs.mergeci.experiment.RQ3PipelineRunner
 ```
-
-The pipeline runs three phases automatically:
-1. **Collect** — clone repos, find merge commits with Java conflicts, run baseline builds
-2. **Generate variants** — for each merge, try all resolution pattern combinations within a time budget
-3. **Analyse** — rank variants, compare to human baseline, produce statistics
 
 See [cicd-oracle/README.md](cicd-oracle/README.md) for full configuration, RQ1/RQ2/RQ3 pipeline details, and data directory layout.
 
