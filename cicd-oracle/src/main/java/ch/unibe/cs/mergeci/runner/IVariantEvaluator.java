@@ -39,4 +39,5 @@ public interface IVariantEvaluator {
     boolean isBudgetExhausted();
     String getCacheWarmerKey();
     int getNumInFlightVariantsKilled();
+    int getMaxThreads();
 }

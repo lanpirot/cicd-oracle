@@ -46,6 +46,8 @@ public class MavenExecutionFactory {
     private String cacheWarmerKey;
     @Getter
     private int numInFlightVariantsKilled;
+    @Getter
+    private int maxThreads;
     private String resolvedJavaHome;
 
     public MavenExecutionFactory(Path logDir) {
@@ -115,7 +117,8 @@ public class MavenExecutionFactory {
                 experimentTiming.setNormalizedBaselineSeconds(baselineSeconds);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
 
-                int maxThreads = AppConfig.computeMaxThreads(peakBaselineRamBytes);
+                int maxThreads = isParallel ? AppConfig.computeMaxThreads(peakBaselineRamBytes) : 1;
+                MavenExecutionFactory.this.maxThreads = maxThreads;
                 if (!skipVariants) {
                     System.out.printf("[budget: %ds, threads: %d]%n", totalBudgetSeconds, maxThreads);
                 } else {
@@ -333,7 +336,7 @@ public class MavenExecutionFactory {
                                 testResults.put(variantKey, builder.collectTestResult(variantPath));
                                 variantFinishSeconds.put(variantKey, wallClockSeconds);
                                 variantSinceMergeStartSeconds.put(variantKey,
-                                        (double) Duration.between(variantsStart, variantFinish).getSeconds());
+                                        Duration.between(variantsStart, variantFinish).toMillis() / 1000.0);
                                 if (stopOnPerfect && isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
                                     System.out.printf("✓ Perfect variant found (#%d) — stopping early%n", idx);
                                     break;
@@ -419,7 +422,7 @@ public class MavenExecutionFactory {
                 builder.collectCompilationResult(key).ifPresent(r -> compilationResults.put(key, r));
                 testResults.put(key, builder.collectTestResult(path));
                 variantFinishSeconds.put(key, wallClockSeconds);
-                variantSinceMergeStartSeconds.put(key, (double) Duration.between(variantsStart, finish).getSeconds());
+                variantSinceMergeStartSeconds.put(key, Duration.between(variantsStart, finish).toMillis() / 1000.0);
             }
 
             private int remainingSeconds(Instant deadline) {
@@ -462,8 +465,12 @@ public class MavenExecutionFactory {
     }
 
     /**
-     * Samples system free RAM every 200 ms while a build runs and reports the
-     * peak consumption as {@code initialFreeRam − minimumFreeRam}.
+     * Samples {@code MemAvailable} from {@code /proc/meminfo} every 200 ms while a build
+     * runs and reports peak consumption as {@code initialAvailable − minimumAvailable}.
+     * Uses {@code MemAvailable} instead of JMX {@code getFreeMemorySize()} because the
+     * latter reports {@code MemFree}, which conflates real memory consumption with page
+     * cache churn — during I/O-heavy Maven builds, {@code MemFree} can drop by gigabytes
+     * even when the build itself only allocates hundreds of megabytes.
      */
     private static class RamSampler {
         private final long initialFreeBytes;
@@ -498,6 +505,15 @@ public class MavenExecutionFactory {
         }
 
         private static long freeSystemRam() {
+            try (var br = new java.io.BufferedReader(new java.io.FileReader("/proc/meminfo"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith("MemAvailable:")) {
+                        return Long.parseLong(line.split("\\s+")[1]) * 1024; // kB → bytes
+                    }
+                }
+            } catch (Exception ignored) {}
+            // Fallback for non-Linux systems
             try {
                 return ((com.sun.management.OperatingSystemMXBean)
                         ManagementFactory.getOperatingSystemMXBean()).getFreeMemorySize();

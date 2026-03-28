@@ -41,4 +41,5 @@ public class MavenVariantEvaluator implements IVariantEvaluator {
     @Override public boolean isBudgetExhausted()                              { return factory.isBudgetExhausted(); }
     @Override public String getCacheWarmerKey()                               { return factory.getCacheWarmerKey(); }
     @Override public int getNumInFlightVariantsKilled()                       { return factory.getNumInFlightVariantsKilled(); }
+    @Override public int getMaxThreads()                                      { return factory.getMaxThreads(); }
 }

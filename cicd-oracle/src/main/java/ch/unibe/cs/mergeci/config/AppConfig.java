@@ -13,7 +13,7 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-    private static final boolean FRESH_RUN = false;
+private static final boolean FRESH_RUN = false;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
@@ -201,36 +201,50 @@ public class AppConfig {
     public static final Path PLOTS_OUTPUT_PDF = DATA_BASE_DIR.resolve("plots.pdf");
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
-    private static final int THREAD_FALLBACK         = 4;
-    private static final long RAM_PER_THREAD_DEFAULT = 10L * 1024 * 1024 * 1024; // 10 GB assumed when peak unknown
+    private static final int    THREAD_FALLBACK         = 4;
+    private static final long   RAM_HEADROOM            = 10L * 1024 * 1024 * 1024; // 10 GB reserved for OS + user tasks
+    private static final long   RAM_PER_THREAD_DEFAULT  = 10L * 1024 * 1024 * 1024; // 10 GB assumed when peak unknown
 
     /**
      * Compute the number of parallel Maven variant threads.
      *
-     * <ul>
-     *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build): uses
-     *       current <em>free</em> RAM divided by that peak to find how many builds fit.</li>
-     *   <li>When {@code peakBuildRamBytes == 0} (unknown): uses <em>total</em> RAM divided
-     *       by {@value #RAM_PER_THREAD_DEFAULT} bytes (10 GB) as a conservative estimate.</li>
-     * </ul>
-     * Result is capped at {@code availableProcessors − 4} (leaving headroom for OS/JVM)
-     * and floored at 1. Returns {@value #THREAD_FALLBACK} on any error.
+     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 4))}.
      *
-     * @param peakBuildRamBytes measured peak system RAM of one Maven build, in bytes; 0 = unknown
+     * <ul>
+     *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build via
+     *       {@code MemAvailable} sampling): divides spare RAM by the measured peak.</li>
+     *   <li>When {@code peakBuildRamBytes == 0} (unknown): divides spare RAM by
+     *       {@value #RAM_PER_THREAD_DEFAULT} bytes (10 GB) as a conservative estimate.</li>
+     * </ul>
+     * Spare RAM = {@code MemAvailable − 10 GB} headroom for OS and user tasks.
+     * Result is capped at {@code availableProcessors − 4} and floored at 1.
+     * Returns {@value #THREAD_FALLBACK} on any error (e.g. non-Linux systems).
+     *
+     * @param peakBuildRamBytes measured peak RAM of one Maven build, in bytes; 0 = unknown
      */
     public static int computeMaxThreads(long peakBuildRamBytes) {
         try {
-            var osBean = (com.sun.management.OperatingSystemMXBean)
-                    java.lang.management.ManagementFactory.getOperatingSystemMXBean();
-            long availableRam  = (peakBuildRamBytes > 0) ? osBean.getFreeMemorySize()
-                                                          : osBean.getTotalMemorySize();
-            long ramPerThread  = (peakBuildRamBytes > 0) ? Math.max(peakBuildRamBytes, 4L * 1024 * 1024 * 1024)
-                                                          : RAM_PER_THREAD_DEFAULT;
-            int coreCap = Math.max(1, Runtime.getRuntime().availableProcessors() - 4);
-            return Math.min(Math.max(1, (int)(availableRam / ramPerThread)), coreCap);
+            long memAvailable = readMemAvailable();
+            long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM);
+            long ramPerThread = (peakBuildRamBytes > 0) ? peakBuildRamBytes : RAM_PER_THREAD_DEFAULT;
+            int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 4);
+            return Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
         } catch (Exception e) {
             return THREAD_FALLBACK;
         }
+    }
+
+    /** Read {@code MemAvailable} from {@code /proc/meminfo} (Linux). */
+    static long readMemAvailable() throws Exception {
+        try (var br = new java.io.BufferedReader(new java.io.FileReader("/proc/meminfo"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("MemAvailable:")) {
+                    return Long.parseLong(line.split("\\s+")[1]) * 1024; // kB → bytes
+                }
+            }
+        }
+        throw new IllegalStateException("MemAvailable not found in /proc/meminfo");
     }
 
     /** Conservative thread count used before a baseline build is measured. */

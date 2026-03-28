@@ -21,7 +21,7 @@ import java.util.Map;
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
         "isMultiModule", "baselineBroken", "baselineFailureType", "variantsSkipped",
         "buildFileConflictMarkers",
-        "budgetBasisSeconds", "variantBudgetSeconds",
+        "budgetBasisSeconds", "variantBudgetSeconds", "threads",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
         "variantsExecutionTimeSeconds", "variants"})
 @ToString
@@ -44,8 +44,9 @@ public class MergeOutputJSON {
     /** True when the human baseline build fails to compile. */
     private boolean baselineBroken;
 
-    /** Classification of the baseline failure: INFRA_FAILURE, BROKEN_MERGE, COMPILE_FAILURE,
-     *  TIMEOUT, NO_TESTS, or null when the baseline compiled and ran tests successfully. */
+    /** Classification of the baseline/variant failure: INFRA_FAILURE, BROKEN_MERGE, COMPILE_FAILURE,
+     *  TIMEOUT, NO_TESTS, CHUNK_MISMATCH, MISSING_GIT_OBJECT, VARIANT_SKIP,
+     *  or null when the baseline compiled and ran tests successfully. */
     private String baselineFailureType;
 
     /** True when variant modes should skip this merge entirely.  Set in the human_baseline
@@ -63,6 +64,7 @@ public class MergeOutputJSON {
     private long budgetBasisSeconds;
 
     private long variantBudgetSeconds;
+    private int threads;
     private long totalExecutionTime;
     private int numInFlightVariantsKilled;
     private boolean budgetExhausted;

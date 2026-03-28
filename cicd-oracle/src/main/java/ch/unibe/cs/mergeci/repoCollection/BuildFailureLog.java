@@ -94,6 +94,8 @@ public class BuildFailureLog {
         /** Dead remote repository or incompatible frontend toolchain — permanently unfixable. */
         INFRA_FAILURE,
         /** Merge commit has genuine source-level errors; a variant may fix it. */
-        BROKEN_MERGE
+        BROKEN_MERGE,
+        /** Live git merge produces a different number of conflict chunks than all_conflicts.csv. */
+        CHUNK_MISMATCH
     }
 }

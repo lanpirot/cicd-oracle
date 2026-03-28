@@ -146,7 +146,8 @@ public class MergeExperimentRunner {
                 activeEvaluator.getVariantSinceMergeStartSeconds(),
                 activeEvaluator.isBudgetExhausted(),
                 activeEvaluator.getCacheWarmerKey(),
-                activeEvaluator.getNumInFlightVariantsKilled()
+                activeEvaluator.getNumInFlightVariantsKilled(),
+                activeEvaluator.getMaxThreads()
         );
     }
 
@@ -197,7 +198,8 @@ public class MergeExperimentRunner {
                                           Map<String, Double> variantSinceMergeStartSeconds,
                                           boolean budgetExhausted,
                                           String cacheWarmerKey,
-                                          int numInFlightVariantsKilled) {
+                                          int numInFlightVariantsKilled,
+                                          int maxThreads) {
 
         public String getProjectName() {
                 return analyzer.getProjectName();

@@ -212,7 +212,7 @@ public class ResolutionVariantRunner {
                 : null;
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, skipVariants,
-                skippedBaselines, failureLog, modeDir, projectName, groundTruthPatterns);
+                skippedBaselines, failureLog, modeDir, humanBaselineDir, projectName, groundTruthPatterns);
 
         if (failureLog != null) failureLog.close();
 
@@ -335,12 +335,15 @@ public class ResolutionVariantRunner {
         }
     }
 
-    private static final Map<String, String> SKIP_REASONS = Map.of(
-            "TIMEOUT", "baseline timed out",
-            "INFRA_FAILURE", "infrastructure failure",
-            "NO_TESTS", "baseline ran 0 tests",
-            "NO_BASELINE", "no human_baseline result",
-            "VARIANTS_SKIPPED", "variants skipped by baseline"
+    private static final Map<String, String> SKIP_REASONS = Map.ofEntries(
+            Map.entry("TIMEOUT", "baseline timed out"),
+            Map.entry("INFRA_FAILURE", "infrastructure failure"),
+            Map.entry("NO_TESTS", "baseline ran 0 tests"),
+            Map.entry("NO_BASELINE", "no human_baseline result"),
+            Map.entry("VARIANTS_SKIPPED", "variants skipped by baseline"),
+            Map.entry("CHUNK_MISMATCH", "CSV/git chunk count mismatch"),
+            Map.entry("MISSING_GIT_OBJECT", "missing git object"),
+            Map.entry("VARIANT_SKIP", "skipped during variant processing")
     );
 
     private static MergeRunStats processMerges(List<DatasetReader.MergeInfo> mergeInfos,
@@ -351,6 +354,7 @@ public class ResolutionVariantRunner {
                                                Map<String, String> skippedBaselines,
                                                BuildFailureLog failureLog,
                                                Path modeDir,
+                                               Path humanBaselineDir,
                                                String projectName,
                                                Map<String, Map<String, List<String>>> groundTruthPatterns) throws Exception {
         int resultCount = 0;
@@ -389,6 +393,10 @@ public class ResolutionVariantRunner {
             if (processed.wasSkipped()) {
                 System.out.println(processed.getSkipReason());
                 skippedCount++;
+                if (!skipVariants) {
+                    markBaselineSkipped(humanBaselineDir, info.getMergeCommit(),
+                            classifySkipReason(processed.getSkipReason()));
+                }
                 continue;
             }
 
@@ -476,6 +484,37 @@ public class ResolutionVariantRunner {
         if (failureLog == null || result.getBaselineFailureType() == null) return;
         MergeFailureType type = MergeFailureType.valueOf(result.getBaselineFailureType());
         failureLog.logMergeFailure(result.getProjectName(), shortCommit, type, "");
+    }
+
+    /**
+     * Map a skip reason from {@link MergeExperimentRunner.ProcessedMerge#getSkipReason()}
+     * to a {@link MergeFailureType} name for the baseline JSON.
+     */
+    private static String classifySkipReason(String skipReason) {
+        if (skipReason == null) return "VARIANT_SKIP";
+        if (skipReason.startsWith("chunk mismatch:")) return MergeFailureType.CHUNK_MISMATCH.name();
+        if (skipReason.startsWith("missing git object:")) return "MISSING_GIT_OBJECT";
+        return "VARIANT_SKIP";
+    }
+
+    /**
+     * Update a human_baseline JSON to mark a merge as permanently skipped.
+     * Called when a variant mode discovers a problem (e.g. chunk mismatch) that
+     * makes all variant modes pointless.  Subsequent modes will read the updated
+     * JSON and skip the merge via {@link #loadSkippedBaselines}.
+     */
+    private static void markBaselineSkipped(Path humanBaselineDir, String mergeCommit, String failureType) {
+        Path jsonFile = humanBaselineDir.resolve(mergeCommit + AppConfig.JSON);
+        if (!jsonFile.toFile().exists()) return;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            MergeOutputJSON baseline = mapper.readValue(jsonFile.toFile(), MergeOutputJSON.class);
+            baseline.setVariantsSkipped(true);
+            baseline.setBaselineFailureType(failureType);
+            new JsonResultWriter().writeResult(baseline, humanBaselineDir);
+        } catch (IOException e) {
+            System.err.println("Warning: could not update baseline JSON for " + mergeCommit + ": " + e.getMessage());
+        }
     }
 
     /**

@@ -200,7 +200,11 @@ public abstract class RQPipelineRunner {
             }
         }
 
-        if (checked > 0 && permanentlyBroken == checked) {
+        if (checked == 0) {
+            throw new IOException(projectName + ": no baseline JSON written for any of "
+                    + merges.size() + " merge(s) — skipping remaining modes");
+        }
+        if (permanentlyBroken == checked) {
             throw new IOException(projectName + ": all " + checked + " merge(s) permanently unusable ("
                     + lastReason + ") — skipping remaining modes");
         }
