@@ -197,8 +197,6 @@ private static final boolean FRESH_RUN = false;
     /** Python script that generates all paper-ready PDF charts with LaTeX fonts. */
     public static final Path PLOT_SCRIPT = Paths.get(
             "/home/lanpirot/projects/merge++/cicd-oracle/scripts/plot_results.py");
-    /** Output PDF written by the Python presentation script. */
-    public static final Path PLOTS_OUTPUT_PDF = DATA_BASE_DIR.resolve("plots.pdf");
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     private static final int    THREAD_FALLBACK         = 4;

@@ -159,11 +159,17 @@ def quality_score(variant: dict) -> tuple[int, int] | None:
     cr = variant.get("compilationResult")
     if cr is None or cr.get("buildStatus") == "TIMEOUT":
         return None
-    module_results = cr.get("moduleResults", [])
-    if module_results:
-        modules = sum(1 for m in module_results if m.get("status") == "SUCCESS")
+    # New flat format: totalModules / successfulModules
+    total_m = cr.get("totalModules")
+    if total_m is not None:
+        modules = cr.get("successfulModules", 0)
     else:
-        modules = 1 if cr.get("buildStatus") == "SUCCESS" else 0
+        # Legacy format: moduleResults array
+        module_results = cr.get("moduleResults", [])
+        if module_results:
+            modules = sum(1 for m in module_results if m.get("status") == "SUCCESS")
+        else:
+            modules = 1 if cr.get("buildStatus") == "SUCCESS" else 0
     if cr.get("buildStatus") == "SUCCESS":
         modules = max(1, modules)
     tr = variant.get("testResults")
@@ -186,7 +192,10 @@ def combined_score(modules: int, tests: int) -> float:
 # ── Data loading ──────────────────────────────────────────────────────────────
 
 def load_rq3_merges(rq3_dir: Path, mode: str) -> dict[str, dict]:
-    """Returns {mergeCommit -> merge_dict} for the given mode."""
+    """Returns {mergeCommit -> merge_dict} for the given mode.
+
+    Each JSON file is a single per-merge record (flat format, no 'merges' wrapper).
+    """
     mode_dir = rq3_dir / mode
     if not mode_dir.exists():
         print(f"Warning: {mode_dir} does not exist.", file=sys.stderr)
@@ -199,10 +208,9 @@ def load_rq3_merges(rq3_dir: Path, mode: str) -> dict[str, dict]:
         except Exception as e:
             print(f"Warning: could not read {json_file}: {e}", file=sys.stderr)
             continue
-        for merge in data.get("merges", []):
-            mc = merge.get("mergeCommit")
-            if mc:
-                merges[mc] = merge
+        mc = data.get("mergeCommit")
+        if mc:
+            merges[mc] = data
     return merges
 
 
@@ -213,7 +221,7 @@ def analyse_merge(merge: dict, gt: dict[str, list[str]]) -> list[tuple[int, floa
     For one merge, return a list of (hamming_distance, quality_score) pairs —
     one per non-timed-out, scoreable variant.
     """
-    variants = (merge.get("variantsExecution") or {}).get("variants", [])
+    variants = merge.get("variants", [])
     pairs = []
     for v in variants:
         if v.get("timedOut"):

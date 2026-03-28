@@ -55,13 +55,12 @@ def _module_results(passed: int, total: int = TOTAL_MODULES) -> list:
     return results
 
 
-def _variant(name: str, tests_passed: int, modules_passed: int,
+def _variant(index: int, tests_passed: int, modules_passed: int,
              finish_secs: float) -> dict:
     tests_failed  = TOTAL_TESTS   - tests_passed
-    modules_failed = TOTAL_MODULES - modules_passed
     build_ok = modules_passed > 0
     return {
-        "variantName": name,
+        "variantIndex": index,
         "compilationResult": {
             "moduleResults": _module_results(modules_passed),
             "buildStatus":   "SUCCESS" if build_ok else "FAILURE",
@@ -74,26 +73,24 @@ def _variant(name: str, tests_passed: int, modules_passed: int,
             "skippedNum":   0,
             "elapsedTime":  round(finish_secs * 0.4, 3),
         },
-        "finishedAfterFirstVariantStartSeconds": round(finish_secs, 3),
+        "totalTimeSinceMergeStartSeconds": round(finish_secs, 3),
     }
 
 
-def _all_merges_json(project: str, merge_variants: list, baseline_secs: int,
-                     variants_exec_secs: int) -> dict:
+def _merge_json(mode: str, merge_variants: list, baseline_secs: int,
+                variants_exec_secs: int) -> dict:
     return {
-        "projectName": project,
-        "merges": [{
-            "mergeCommit":          MERGE_COMMIT,
-            "parent1":              "a" * 40,
-            "parent2":              "b" * 40,
-            "numConflictChunks":    3,
-            "humanBaselineSeconds": baseline_secs,
-            "totalExecutionTime":   baseline_secs + variants_exec_secs,
-            "variantsExecution": {
-                "executionTimeSeconds": variants_exec_secs,
-                "variants":             merge_variants,
-            },
-        }],
+        "processed":                True,
+        "mode":                     mode,
+        "projectName":              PROJECT_NAME,
+        "mergeCommit":              MERGE_COMMIT,
+        "parent1":                  "a" * 40,
+        "parent2":                  "b" * 40,
+        "numConflictChunks":        3,
+        "budgetBasisSeconds":       baseline_secs,
+        "totalExecutionTime":       baseline_secs + variants_exec_secs,
+        "variantsExecutionTimeSeconds": variants_exec_secs,
+        "variants":                 merge_variants,
     }
 
 
@@ -104,14 +101,14 @@ def build_mock_experiment_dir(tmp_path: Path, rng: random.Random) -> Path:
     """
     # ── human_baseline ────────────────────────────────────────────────────────
     baseline_variant = _variant(
-        "human_baseline",
+        0,
         tests_passed   = HUMAN_TESTS_PASSED,
         modules_passed = HUMAN_MODULES_PASSED,
         finish_secs    = HUMAN_BASELINE_SECS,
     )
     _write_mode(tmp_path, "human_baseline",
-                _all_merges_json(PROJECT_NAME, [baseline_variant],
-                                 HUMAN_BASELINE_SECS, HUMAN_BASELINE_SECS))
+                _merge_json("human_baseline", [baseline_variant],
+                            HUMAN_BASELINE_SECS, HUMAN_BASELINE_SECS))
 
     # ── variant modes ─────────────────────────────────────────────────────────
     min_finish = 0.9 * HUMAN_BASELINE_SECS          # 15.3 s
@@ -123,23 +120,22 @@ def build_mock_experiment_dir(tmp_path: Path, rng: random.Random) -> Path:
             finish      = rng.uniform(min_finish, max_finish)
             tests_p     = rng.randint(0, TOTAL_TESTS)
             modules_p   = rng.randint(0, TOTAL_MODULES)
-            variants.append(_variant(
-                f"{PROJECT_NAME}_{i}", tests_p, modules_p, finish
-            ))
+            variants.append(_variant(i + 1, tests_p, modules_p, finish))
 
-        total_secs = int(max(v["finishedAfterFirstVariantStartSeconds"]
+        total_secs = int(max(v["totalTimeSinceMergeStartSeconds"]
                              for v in variants))
         _write_mode(tmp_path, mode,
-                    _all_merges_json(PROJECT_NAME, variants,
-                                     HUMAN_BASELINE_SECS, total_secs))
+                    _merge_json(mode, variants,
+                                HUMAN_BASELINE_SECS, total_secs))
 
     return tmp_path
 
 
 def _write_mode(base: Path, mode: str, data: dict) -> None:
+    """Write a single per-merge JSON file."""
     mode_dir = base / mode
     mode_dir.mkdir(parents=True, exist_ok=True)
-    with open(mode_dir / f"{PROJECT_NAME}.json", "w") as f:
+    with open(mode_dir / f"{MERGE_COMMIT}.json", "w") as f:
         json.dump(data, f, indent=2)
 
 
@@ -172,11 +168,9 @@ class TestPlotResultsMockup(unittest.TestCase):
     def test_variant_counts_per_mode(self):
         data = pr.load_all_data(self.tmp_path)
         self.assertEqual(
-            len(data["human_baseline"][MERGE_COMMIT]
-                ["variantsExecution"]["variants"]), 1)
+            len(data["human_baseline"][MERGE_COMMIT]["variants"]), 1)
         for mode, expected in VARIANT_COUNTS.items():
-            actual = len(data[mode][MERGE_COMMIT]
-                         ["variantsExecution"]["variants"])
+            actual = len(data[mode][MERGE_COMMIT]["variants"])
             self.assertEqual(actual, expected,
                              f"{mode}: expected {expected} variants, got {actual}")
 
@@ -184,23 +178,23 @@ class TestPlotResultsMockup(unittest.TestCase):
 
     def test_human_baseline_test_stats(self):
         data = pr.load_all_data(self.tmp_path)
-        v = data["human_baseline"][MERGE_COMMIT]["variantsExecution"]["variants"][0]
+        v = data["human_baseline"][MERGE_COMMIT]["variants"][0]
         passed, run = pr.test_stats(v)
         self.assertEqual(run,    TOTAL_TESTS)
         self.assertEqual(passed, HUMAN_TESTS_PASSED)
 
     def test_human_baseline_module_stats(self):
         data = pr.load_all_data(self.tmp_path)
-        v = data["human_baseline"][MERGE_COMMIT]["variantsExecution"]["variants"][0]
+        v = data["human_baseline"][MERGE_COMMIT]["variants"][0]
         passed, total = pr.module_stats(v)
         self.assertEqual(total,  TOTAL_MODULES)
         self.assertEqual(passed, HUMAN_MODULES_PASSED)
 
     def test_human_baseline_finish_time_equals_baseline(self):
         data = pr.load_all_data(self.tmp_path)
-        v = data["human_baseline"][MERGE_COMMIT]["variantsExecution"]["variants"][0]
+        v = data["human_baseline"][MERGE_COMMIT]["variants"][0]
         self.assertAlmostEqual(
-            v["finishedAfterFirstVariantStartSeconds"],
+            v["totalTimeSinceMergeStartSeconds"],
             HUMAN_BASELINE_SECS, places=2)
 
     # ── Variant finish times in range ─────────────────────────────────────────
@@ -209,17 +203,17 @@ class TestPlotResultsMockup(unittest.TestCase):
         data = pr.load_all_data(self.tmp_path)
         min_finish = 0.9 * HUMAN_BASELINE_SECS
         for mode in VARIANT_COUNTS:
-            for v in data[mode][MERGE_COMMIT]["variantsExecution"]["variants"]:
+            for v in data[mode][MERGE_COMMIT]["variants"]:
                 t = pr.get_finish_time(v)
                 self.assertGreaterEqual(
                     t, min_finish - 1e-6,
-                    f"{mode} variant '{v['variantName']}' finishes at {t:.2f}s "
+                    f"{mode} variant {v['variantIndex']} finishes at {t:.2f}s "
                     f"< minimum {min_finish}s")
 
     def test_variant_tests_within_bounds(self):
         data = pr.load_all_data(self.tmp_path)
         for mode in VARIANT_COUNTS:
-            for v in data[mode][MERGE_COMMIT]["variantsExecution"]["variants"]:
+            for v in data[mode][MERGE_COMMIT]["variants"]:
                 _, run = pr.test_stats(v)
                 self.assertLessEqual(run, TOTAL_TESTS,
                                      f"{mode}: runNum {run} > {TOTAL_TESTS}")
@@ -227,7 +221,7 @@ class TestPlotResultsMockup(unittest.TestCase):
     def test_variant_modules_within_bounds(self):
         data = pr.load_all_data(self.tmp_path)
         for mode in VARIANT_COUNTS:
-            for v in data[mode][MERGE_COMMIT]["variantsExecution"]["variants"]:
+            for v in data[mode][MERGE_COMMIT]["variants"]:
                 passed, total = pr.module_stats(v)
                 self.assertLessEqual(total, TOTAL_MODULES,
                                      f"{mode}: totalModules {total} > {TOTAL_MODULES}")
@@ -275,12 +269,21 @@ class TestPlotResultsMockup(unittest.TestCase):
 
     # ── PDF generation ────────────────────────────────────────────────────────
 
-    def test_pdf_is_created(self):
-        out_pdf = self.tmp_path / "test_output.pdf"
+    def test_results_directory_created(self):
+        results_dir = self.tmp_path / "results"
+        out_pdf = results_dir / "all_plots.pdf"
         pr.make_plots(self.tmp_path, out_pdf)
-        self.assertTrue(out_pdf.exists(), "output PDF was not created")
+        self.assertTrue(results_dir.is_dir(), "results directory was not created")
+        self.assertTrue(out_pdf.exists(), "combined PDF was not created")
         self.assertGreater(out_pdf.stat().st_size, 1000,
-                           "output PDF is suspiciously small")
+                           "combined PDF is suspiciously small")
+        # Check that individual chart PDFs and summary exist
+        self.assertTrue((results_dir / "summary.txt").exists(),
+                        "summary.txt was not created")
+        individual_pdfs = list(results_dir.glob("0*.pdf"))
+        # RQ2 (auto-detected from tmp dir name) produces charts 04-09 (7 files)
+        self.assertGreaterEqual(len(individual_pdfs), 6,
+                                f"expected at least 6 individual chart PDFs, got {len(individual_pdfs)}")
 
 
 if __name__ == "__main__":

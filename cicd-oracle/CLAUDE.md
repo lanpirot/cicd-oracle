@@ -38,13 +38,13 @@ A legacy collection pipeline (`RepoCollector` → `MergeConflictCollector`) stil
 
 `ResolutionVariantRunner` iterates over 5 experiment modes defined in `Utility.Experiments` — a 2×2 matrix of (cache/no-cache) × (parallel/sequential), plus a baseline:
 
-| Mode | Parallel | Cache | SkipVariants |
-|------|----------|-------|--------------|
-| `human_baseline` | — | — | true |
-| `cache_parallel` | ✓ | ✓ | — |
-| `cache_sequential` | — | ✓ | — |
-| `parallel` | ✓ | — | — |
-| `no_optimization` | — | — | — |
+| Mode | Display Name | Short | Parallel | Cache | SkipVariants |
+|------|-------------|-------|----------|-------|--------------|
+| `human_baseline` | Human Baseline | HB | — | — | true |
+| `no_optimization` | Sequential | S | — | — | — |
+| `cache_sequential` | Sequential + Cache | S+ | — | ✓ | — |
+| `parallel` | Parallel | P | ✓ | — | — |
+| `cache_parallel` | Parallel + Cache | P+ | ✓ | ✓ | — |
 
 For every merge in a dataset, `MergeExperimentRunner` creates a `VariantBuildContext` (lazy state, no disk I/O yet), then `MavenExecutionFactory` creates a just-in-time runner. Variants are generated on-demand via `context.nextVariant()` in batches of `MAX_THREADS`, built to disk, run through Maven, then immediately deleted. The time budget is `TIMEOUT_MULTIPLIER × normalizedBaselineTime`; the deadline is checked before each variant starts (ever-decreasing per-variant timeout = `deadline − now()`).
 
@@ -99,9 +99,22 @@ Test directories (defined in `AppConfig`): `TEST_TMP_DIR`, `TEST_EXPERIMENTS_TEM
 
 Use these colors consistently across all RQ plots:
 
+### RQ1 (variant generators)
+
 | Role       | Hex       | Description              |
 |------------|-----------|--------------------------|
 | Uniform    | `#a6cee3` | light blue               |
 | Heuristic  | `#33a02c` | dark green               |
 | ML-AR      | `#1f78b4` | dark blue                |
-| (backup)   | `#b2df8a` | light green (other plots)|
+
+### RQ2/RQ3 (execution modes)
+
+Hue encodes sequential (red) vs. parallel (green); shade encodes cache (lighter = with cache).
+
+| Mode               | Short | Hex       | Description    |
+|--------------------|-------|-----------|----------------|
+| Human Baseline     | HB    | `#a6cee3` | light blue     |
+| Sequential         | S     | `#e31a1c` | red            |
+| Sequential + Cache | S+    | `#fb9a99` | light red      |
+| Parallel           | P     | `#33a02c` | dark green     |
+| Parallel + Cache   | P+    | `#b2df8a` | light green    |

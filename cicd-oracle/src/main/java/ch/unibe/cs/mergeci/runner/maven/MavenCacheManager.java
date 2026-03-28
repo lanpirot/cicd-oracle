@@ -62,7 +62,37 @@ public class MavenCacheManager {
             return false;
         }
 
+        // Delete copied surefire/failsafe reports so stale results from the warmer
+        // are never picked up by TestTotal when a subsequent variant's build exits early.
+        deleteStaleTestReports(destinationProject.toPath());
+
         return true;
+    }
+
+    /**
+     * Remove surefire-reports and failsafe-reports directories from all target/ dirs
+     * under the given project root.  Called after copying target directories from the
+     * cache warmer so that only the current variant's own test output is collected.
+     */
+    private void deleteStaleTestReports(Path projectRoot) {
+        try (Stream<Path> walk = Files.walk(projectRoot)) {
+            walk.filter(path -> {
+                        String name = path.getFileName().toString();
+                        return path.toFile().isDirectory()
+                                && (name.equals("surefire-reports") || name.equals("failsafe-reports"))
+                                && path.getParent() != null
+                                && path.getParent().getFileName().toString().equals("target");
+                    })
+                    .forEach(reportDir -> {
+                        try {
+                            org.apache.commons.io.FileUtils.deleteDirectory(reportDir.toFile());
+                        } catch (IOException e) {
+                            System.err.println("Warning: could not delete stale reports: " + reportDir);
+                        }
+                    });
+        } catch (IOException e) {
+            System.err.println("Warning: could not scan for stale test reports: " + e.getMessage());
+        }
     }
 
     private void copyTargetDirectory(Path targetDir, File sourceProject, File destinationProject) {

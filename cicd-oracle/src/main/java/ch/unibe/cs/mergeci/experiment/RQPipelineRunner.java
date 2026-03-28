@@ -140,6 +140,52 @@ public abstract class RQPipelineRunner {
         }
 
         CrossModeSanityChecker.check(experimentDir(), modesToRun());
+        analyzeResults();
+    }
+
+    /**
+     * Final pipeline phase: console summary via {@link ResultsPresenter} for each
+     * mode, then paper-ready PDF via the Python presentation script.
+     */
+    private void analyzeResults() {
+        System.out.println("\n══════════════════════════════════════════════════════════");
+        System.out.println("  Analysis Phase");
+        System.out.println("══════════════════════════════════════════════════════════");
+
+        for (Utility.Experiments ex : modesToRun()) {
+            Path modeDir = experimentDir().resolve(ex.getName());
+            if (modeDir.toFile().exists()) {
+                new ch.unibe.cs.mergeci.present.ResultsPresenter(modeDir).presentFullResults();
+            }
+        }
+
+        generatePdfPlots();
+    }
+
+    /**
+     * Invoke the Python presentation script to produce paper-ready PDFs.
+     * Results are written to {@code experimentDir()/results/} — individual
+     * PDFs per chart plus a combined {@code all_plots.pdf} and {@code summary.txt}.
+     * Python is the single source of truth for all visual output; Java keeps
+     * StatisticsReporter only for quick console/development checks.
+     */
+    private void generatePdfPlots() {
+        Path resultsDir = experimentDir().resolve("results");
+        try {
+            System.out.printf("%nGenerating paper-ready results in: %s%n", resultsDir);
+            Process p = new ProcessBuilder(
+                    AppConfig.PYTHON_EXECUTABLE,
+                    AppConfig.PLOT_SCRIPT.toString(),
+                    experimentDir().toString(),
+                    resultsDir.resolve("all_plots.pdf").toString()
+            ).inheritIO().start();
+            int exit = p.waitFor();
+            if (exit != 0) {
+                System.err.printf("Warning: plot script exited with code %d%n", exit);
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: could not generate PDF plots: " + e.getMessage());
+        }
     }
 
     private void runModes(String projectName, List<DatasetReader.MergeInfo> merges, Path repoPath) throws Exception {

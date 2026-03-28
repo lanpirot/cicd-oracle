@@ -180,6 +180,7 @@ public class MavenExecutionFactory {
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
                 Path cacheWarmPath = null;
+                Path warmerDirToCleanUp = null;
                 boolean perfectFound = false;
 
                 // Sequential cache mode: run the very first variant synchronously to warm the local Maven cache.
@@ -206,10 +207,15 @@ public class MavenExecutionFactory {
                                 AppConfig.buildCommand(commandResolver.resolveMavenCommand(firstPath),
                                         commandResolver.resolveMavenGoal(firstPath), firstPath));
                         double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
-                        cacheWarmPath = firstPath;
                         String warmKey = projectName + "_" + idx;
                         MavenExecutionFactory.this.cacheWarmerKey = warmKey;
                         collectResult(warmKey, firstPath, builder, variantsStart, warmWallClock);
+                        warmerDirToCleanUp = firstPath;
+                        if (isWarmerUsable(compilationResults.get(warmKey))) {
+                            cacheWarmPath = firstPath;
+                        } else {
+                            System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
+                        }
                         if (stopOnPerfect && isPerfect(compilationResults.get(warmKey), testResults.get(warmKey))) {
                             System.out.printf("✓ Perfect variant found (cache-warmer #%d) — stopping early%n", idx);
                             perfectFound = true;
@@ -217,6 +223,7 @@ public class MavenExecutionFactory {
                     }
                 }
                 final Path warmPath = cacheWarmPath;
+                final Path seqWarmerCleanup = warmerDirToCleanUp;
 
                 if (isParallel) {
                     // In cache mode, the first submitted variant acts as the cache warmer;
@@ -311,7 +318,7 @@ public class MavenExecutionFactory {
                             try {
                                 System.out.printf("[DEBUG] sequential variant %d: timeout=%ds%n", idx, variantTimeout);
                                 Instant variantStart = Instant.now();
-                                if (isCache) {
+                                if (isCache && warmPath != null) {
                                     // T0: copy compiled artifacts from warmer (fresh timestamps, T0 > T-1).
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(warmPath.toFile(), variantPath.toFile());
@@ -351,6 +358,9 @@ public class MavenExecutionFactory {
                         if (warmPath != null && warmPath.toFile().exists()) {
                             try { FileUtils.deleteDirectory(warmPath.toFile()); } catch (Exception ignored) {}
                         }
+                        if (seqWarmerCleanup != null && seqWarmerCleanup.toFile().exists()) {
+                            try { FileUtils.deleteDirectory(seqWarmerCleanup.toFile()); } catch (Exception ignored) {}
+                        }
                     }
                 }
             }
@@ -377,8 +387,16 @@ public class MavenExecutionFactory {
                                     javaHome,
                                     AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
                                             commandResolver.resolveMavenGoal(vPath), vPath));
-                            warmPathRef.set(vPath);
                             MavenExecutionFactory.this.cacheWarmerKey = key;
+                            // Only advertise the cache if the warmer produced usable artifacts;
+                            // otherwise other threads will fall back to normal online builds.
+                            Path logPath = logDir.resolve(vPath.getFileName() + "_compilation");
+                            CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
+                            if (isWarmerUsable(warmCr)) {
+                                warmPathRef.set(vPath);
+                            } else {
+                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
+                            }
                         } else {
                             Path warm = isCache ? warmPathRef.get() : null;
                             System.out.printf("[DEBUG] variant %s starting%s, timeout=%ds%n",
@@ -462,6 +480,18 @@ public class MavenExecutionFactory {
         if (!buildOk) return false;
         return tt != null && tt.getRunNum() > 0
                 && tt.getFailuresNum() == 0 && tt.getErrorsNum() == 0;
+    }
+
+    /**
+     * Returns true when a cache warmer produced at least one successful module,
+     * meaning subsequent variants can benefit from copying its target directories.
+     * When the warmer compiled zero modules successfully, the cache contains nothing
+     * useful and offline builds would be doomed to fail.
+     */
+    private static boolean isWarmerUsable(CompilationResult cr) {
+        if (cr == null) return false;
+        return cr.getSuccessfulModules() > 0
+                || cr.getBuildStatus() == CompilationResult.Status.SUCCESS;
     }
 
     /**

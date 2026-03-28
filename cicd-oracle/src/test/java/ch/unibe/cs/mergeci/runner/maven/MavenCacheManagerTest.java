@@ -241,6 +241,41 @@ class MavenCacheManagerTest extends BaseTest {
     }
 
     @Test
+    void testCopyTargetDirectories_DeletesStaleTestReports(@TempDir Path tempDir) throws IOException {
+        // Create source with target containing surefire and failsafe reports
+        Path sourceDir = tempDir.resolve("source-project");
+        Path surefireDir = sourceDir.resolve("target/surefire-reports");
+        Path failsafeDir = sourceDir.resolve("module1/target/failsafe-reports");
+        Files.createDirectories(surefireDir);
+        Files.createDirectories(failsafeDir);
+        Files.writeString(surefireDir.resolve("TEST-com.example.FooTest.txt"), "Tests run: 5");
+        Files.writeString(failsafeDir.resolve("TEST-com.example.BarIT.txt"), "Tests run: 3");
+        // Also create a real artifact that should survive
+        Path rootClasses = sourceDir.resolve("target/classes");
+        Files.createDirectories(rootClasses);
+        Files.writeString(rootClasses.resolve("Foo.class"), "bytecode");
+        Path mod1Classes = sourceDir.resolve("module1/target/classes");
+        Files.createDirectories(mod1Classes);
+        Files.writeString(mod1Classes.resolve("Bar.class"), "bytecode");
+
+        Path destDir = tempDir.resolve("dest-project");
+
+        // Execute
+        boolean result = cacheManager.copyTargetDirectories(sourceDir.toFile(), destDir.toFile());
+
+        // Verify: reports deleted, compiled artifacts preserved
+        assertTrue(result);
+        assertFalse(destDir.resolve("target/surefire-reports").toFile().exists(),
+                "Surefire reports should be deleted from destination");
+        assertFalse(destDir.resolve("module1/target/failsafe-reports").toFile().exists(),
+                "Failsafe reports should be deleted from destination");
+        assertTrue(destDir.resolve("target/classes/Foo.class").toFile().exists(),
+                "Compiled class should be preserved");
+        assertTrue(destDir.resolve("module1/target/classes/Bar.class").toFile().exists(),
+                "Module compiled class should be preserved");
+    }
+
+    @Test
     void testCopyTargetDirectories_IgnoresNonTargetDirs(@TempDir Path tempDir) throws IOException {
         // Create source with various directories, only "target" should be copied
         Path sourceDir = tempDir.resolve("source-project");
