@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
  * If test reports are absent the test count defaults to 0, which is still dominated
  * by the module count and therefore does not distort cross-variant comparisons.
  *
- * <p>Tertiary key: simplicity score (higher = simpler/more common strategy).
+ * <p>Tertiary key: simplicity score (higher = better, i.e. simpler/more common strategy).
  * Product of the global-row pattern weights for each conflict chunk's resolution.
- * Only meaningful when comparing variants within the same merge (same chunk count).
+ * A variant whose chunks all use high-probability patterns (e.g. all OURS) scores higher
+ * than one using rare compound patterns. Only meaningful when comparing variants within
+ * the same merge (same chunk count).
  *
  * <p>Variants that timed out or whose compilation result is unavailable carry no score
  * and are excluded from quality comparisons. They are still counted in
@@ -72,7 +74,7 @@ public record VariantScore(int successfulModules, int passedTests,
      * @param conflictPatterns variant's conflict patterns (file → list of chunk patterns)
      * @param globalWeights    map from meso-strategy name (e.g. "OURS", "OURSBASE") to weight,
      *                         built via {@link #buildGlobalWeightMap(PatternHeuristics)}
-     * @return product of per-chunk weights
+     * @return product of per-chunk weights (higher = simpler/more common strategy)
      * @throws IllegalStateException if a chunk pattern is not found in the global distribution
      */
     public static double computeSimplicityScore(Map<String, List<String>> conflictPatterns,
