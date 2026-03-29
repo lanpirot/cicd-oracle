@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Extract merge_commits.csv and all_conflicts.csv from the SQL dump.
+Extract maven_conflicts.csv and all_conflicts.csv from the SQL dump.
 
 Reads Java_1767374472.sql (exported from calculon.inf.unibe.ch:5013) and
 produces two artefacts:
 
-  merge_commits.csv   — one row per merge, Maven projects only, with exact
+  maven_conflicts.csv   — one row per merge, Maven projects only, with exact
                         commit SHAs from the DB.
   all_conflicts.csv   — one row per conflict chunk with all ML-relevant
                         features derived directly from the SQL columns.
@@ -40,7 +40,7 @@ COMMON_DIR        = DATA_BASE_DIR / 'common'          # shared: SQL, CSVs, cache
 RQ1_DIR           = DATA_BASE_DIR / 'rq1'
 DEFAULT_SQL_DUMP  = COMMON_DIR / 'Java_1767374472.sql'
 MAVEN_CACHE_FILE  = COMMON_DIR / 'maven_check_cache.json'
-MERGE_COMMITS_CSV = COMMON_DIR / 'merge_commits.csv'  # shared by RQ2 + RQ3
+MAVEN_CONFLICTS_CSV = COMMON_DIR / 'maven_conflicts.csv'  # shared by RQ2 + RQ3
 ALL_CONFLICTS_CSV = COMMON_DIR / 'all_conflicts.csv'
 
 # ── HTTP config ────────────────────────────────────────────────────────────────
@@ -532,11 +532,11 @@ def build_chunk_ranks(sql_path: Path) -> dict[str, str]:
     return chunk_rank
 
 
-# ── Write merge_commits.csv ────────────────────────────────────────────────────
+# ── Write maven_conflicts.csv ────────────────────────────────────────────────────
 
-def write_merge_commits(projects: dict, merges: dict, maven_cache: dict,
+def write_maven_conflicts(projects: dict, merges: dict, maven_cache: dict,
                         out_path: Path):
-    """Write one row per Maven merge to merge_commits.csv."""
+    """Write one row per Maven merge to maven_conflicts.csv."""
     written = skipped = 0
     with open(out_path, 'w', newline='') as f:
         w = csv.writer(f)
@@ -551,7 +551,7 @@ def write_merge_commits(projects: dict, merges: dict, maven_cache: dict,
             w.writerow([mid, md.get('commitId', ''), pid, name, url,
                         md.get('commitTime', ''), 'True'])
             written += 1
-    print(f'merge_commits.csv: {written:,} Maven merges written, '
+    print(f'maven_conflicts.csv: {written:,} Maven merges written, '
           f'{skipped:,} non-Maven skipped')
 
 
@@ -798,15 +798,15 @@ def main():
     # Rank pass: collect chunk IDs per file for chunkRankInFile
     chunk_ranks = build_chunk_ranks(sql_path)
 
-    # Write merge_commits.csv
-    write_merge_commits(projects, merges, maven_cache, MERGE_COMMITS_CSV)
+    # Write maven_conflicts.csv
+    write_maven_conflicts(projects, merges, maven_cache, MAVEN_CONFLICTS_CSV)
 
     # Pass 2: write all_conflicts.csv
     write_all_conflicts(sql_path, projects, merges, files, maven_cache,
                         file_lex_ranks, chunk_ranks, ALL_CONFLICTS_CSV)
 
     print(f'\nDone.')
-    print(f'  {MERGE_COMMITS_CSV}')
+    print(f'  {MAVEN_CONFLICTS_CSV}')
     print(f'  {ALL_CONFLICTS_CSV}')
     print(f'  Columns: {len(ALL_CONFLICTS_HEADER)}')
 

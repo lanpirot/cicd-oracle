@@ -21,7 +21,7 @@ public class RQ3PipelineRunner extends RQPipelineRunner {
     @Override
     protected List<DatasetReader.MergeInfo> sampleMerges() throws IOException {
         return new JavaChunksReader().sampleDistributed(
-                AppConfig.MERGE_COMMITS_CSV, AppConfig.RQ3_SAMPLE_TOTAL);
+                AppConfig.MAVEN_CONFLICTS_CSV, AppConfig.RQ3_SAMPLE_TOTAL);
     }
 
     @Override

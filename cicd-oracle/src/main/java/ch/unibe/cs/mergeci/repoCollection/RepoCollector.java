@@ -39,7 +39,7 @@ public class RepoCollector {
 
     public void processCsv() {
         try {
-            processCsv(AppConfig.MERGE_COMMITS_CSV);
+            processCsv(AppConfig.MAVEN_CONFLICTS_CSV);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +53,7 @@ public class RepoCollector {
         BuildFailureLog failureLog = BuildFailureLog.createOrNull(
                 AppConfig.DATA_BASE_DIR.resolve("build_failures.log"));
 
-        // Parse merge_commits.csv: header-based, columns project_name + remote_url
+        // Parse maven_conflicts.csv: header-based, columns project_name + remote_url
         List<String[]> rows = readCsv(csvFile);
         if (rows.isEmpty()) return;
 
@@ -61,7 +61,7 @@ public class RepoCollector {
         int nameCol = indexOf(headers, "project_name");
         int urlCol  = indexOf(headers, "remote_url");
         if (nameCol < 0 || urlCol < 0) throw new IllegalStateException(
-                "merge_commits.csv missing required columns 'project_name' or 'remote_url'. " +
+                "maven_conflicts.csv missing required columns 'project_name' or 'remote_url'. " +
                 "Run extract_from_sql_dump.py first.");
 
         // Collect unique repos in encounter order (keyed by URL)

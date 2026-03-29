@@ -25,7 +25,7 @@ mvn test -DcoverageActivated=false   # Disable JaCoCo
 
 ## Architecture Overview
 
-This is a **research pipeline** that studies automated merge conflict resolution. The RQ2 and RQ3 pipelines read merge data from a pre-computed `merge_commits.csv` (extracted from an SQL dump), clone repositories on demand, and run variant experiments directly — there is no separate collection phase.
+This is a **research pipeline** that studies automated merge conflict resolution. The RQ2 and RQ3 pipelines read merge data from a pre-computed `maven_conflicts.csv` (extracted from an SQL dump), clone repositories on demand, and run variant experiments directly — there is no separate collection phase.
 
 ```
 RQ2/RQ3:  RQ2PipelineRunner / RQ3PipelineRunner → ResolutionVariantRunner

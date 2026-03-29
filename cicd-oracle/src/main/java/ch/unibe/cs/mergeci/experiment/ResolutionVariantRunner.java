@@ -41,7 +41,7 @@ public class ResolutionVariantRunner {
     private final RepositoryManager repoManager;
 
     public ResolutionVariantRunner() {
-        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.MERGE_COMMITS_CSV, AppConfig.REPO_DIR);
+        this(AppConfig.CONFLICT_DATASET_DIR, AppConfig.MAVEN_CONFLICTS_CSV, AppConfig.REPO_DIR);
     }
 
     public ResolutionVariantRunner(Path datasetsDir, Path repoDatasetsFile, Path tempDir) {
@@ -224,7 +224,7 @@ public class ResolutionVariantRunner {
      * Detect broken baselines from human_baseline JSON files and set {@code baselineBroken=true}
      * on the corresponding {@link DatasetReader.MergeInfo} objects.  This is necessary because
      * the merge list may come from a CSV that lacks a {@code baselineBroken} column (e.g.
-     * {@code merge_commits.csv}), so the flag would otherwise stay {@code false}.
+     * {@code maven_conflicts.csv}), so the flag would otherwise stay {@code false}.
      */
     private static void markBrokenBaselines(List<DatasetReader.MergeInfo> mergeInfos, Path humanBaselineDir) {
         if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) return;

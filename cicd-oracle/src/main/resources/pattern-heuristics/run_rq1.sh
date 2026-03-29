@@ -25,7 +25,7 @@ fi
 # ── Resolve paths ─────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAVEN_MODULE="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
-COMMON_DIR="$HOME/data/bruteforcemerge/common"   # SQL, all_conflicts.csv, merge_commits.csv, maven_check_cache.json
+COMMON_DIR="$HOME/data/bruteforcemerge/common"   # SQL, all_conflicts.csv, maven_conflicts.csv, maven_check_cache.json
 DATA_DIR="$HOME/data/bruteforcemerge/rq1"        # fold CSVs, checkpoints, predictions, results
 CV_FOLDS_DIR="$DATA_DIR/cv_folds"
 RESULTS_DIR="$DATA_DIR/results"

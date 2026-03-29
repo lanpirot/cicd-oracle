@@ -10,7 +10,7 @@ import java.nio.file.Path;
 public interface IVariantGeneratorFactory {
 
     /**
-     * @param mergeId    merge ID (from merge_commits.csv) — may be null for test repos
+     * @param mergeId    merge ID (from maven_conflicts.csv) — may be null for test repos
      * @param repoPath   path to the cloned repository
      * @param numChunks  total number of conflict chunks in this merge
      */

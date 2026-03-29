@@ -45,7 +45,7 @@ the venv.
 
 ## Pipeline
 
-The RQ2 and RQ3 pipelines read merge data from `merge_commits.csv` (extracted from an SQL dump), clone repositories on demand, and run variant experiments directly — there is no separate collection phase.
+The RQ2 and RQ3 pipelines read merge data from `maven_conflicts.csv` (extracted from an SQL dump), clone repositories on demand, and run variant experiments directly — there is no separate collection phase.
 
 ```
 RQ2/RQ3:  RQ2PipelineRunner / RQ3PipelineRunner → ResolutionVariantRunner
@@ -95,7 +95,7 @@ All paths, timeouts, and feature flags live in `AppConfig.java`. `JAVA_HOMES` ma
   common/                        # Shared inputs (from extract_from_sql_dump.py)
     Java_1767374472.sql          #   SQL dump
     all_conflicts.csv            #   All conflict chunks (RQ1 training input)
-    merge_commits.csv            #   One row per merge (RQ2 + RQ3 input)
+    maven_conflicts.csv            #   One row per merge (RQ2 + RQ3 input)
     maven_check_cache.json       #   GitHub Maven-project probe cache
   variant_experiments/           # Legacy main pipeline output
   rq2_variant_experiments/       # RQ2 output (50 repos × 1 merge, all 5 modes)
@@ -161,7 +161,7 @@ Resume from a specific step (e.g. after changing the model):
 
 | Step | What it does | Time |
 |------|-------------|------|
-| 1 | Extract `all_conflicts.csv` + `merge_commits.csv` from SQL dump | ≈2 min |
+| 1 | Extract `all_conflicts.csv` + `maven_conflicts.csv` from SQL dump | ≈2 min |
 | 2 | Learn global pattern distribution (`learnt_historical_pattern_distribution.csv`) | ≈30 s |
 | 3 | Generate chronological 10-fold CV splits | ≈2 min |
 | 4 | Train autoregressive model + generate per-fold predictions | hours (GPU) |
@@ -176,7 +176,7 @@ Both pipelines are implemented as thin subclasses of `RQPipelineRunner` and diff
 | Sampling | 50 projects × 1 merge (`JavaChunksReader.sample`) | 500 merges distributed across all projects (`JavaChunksReader.sampleDistributed`) |
 | Modes | All 5 | `human_baseline` + best mode (default: `cache_parallel`, override via `--best-mode`) |
 | Generator | ML-AR (`MLARGeneratorFactory`) | ML-AR (`MLARGeneratorFactory`) |
-| Input | `merge_commits.csv` | `merge_commits.csv` |
+| Input | `maven_conflicts.csv` | `maven_conflicts.csv` |
 | Output | `rq2_variant_experiments/` | `rq3_variant_experiments/` |
 
 **Prerequisite:** RQ1 steps 1–4 must have completed so that
