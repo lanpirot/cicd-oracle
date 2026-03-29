@@ -112,13 +112,16 @@ public class MergeOutputJSON {
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder({"variantIndex", "isCacheWarmer", "ownExecutionSeconds",
+    @JsonPropertyOrder({"variantIndex", "isCacheWarmer", "shouldUseCache", "didUseCache",
+            "ownExecutionSeconds",
             "totalTimeSinceMergeStartSeconds", "timedOut",
             "compilationResult", "testResults", "conflictPatterns"})
     public static class Variant {
         private int variantIndex;
         @JsonProperty("isCacheWarmer")
         private boolean isCacheWarmer;
+        private boolean shouldUseCache;
+        private boolean didUseCache;
         private Double ownExecutionSeconds;
         private Double totalTimeSinceMergeStartSeconds;
         private boolean timedOut;

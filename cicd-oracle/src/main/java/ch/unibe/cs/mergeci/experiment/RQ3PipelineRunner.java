@@ -1,6 +1,9 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
+import ch.unibe.cs.mergeci.conflict.MergeStatistics;
+import ch.unibe.cs.mergeci.present.ResultsPresenter;
+import ch.unibe.cs.mergeci.present.StatisticsReporter;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.runner.MLARGeneratorFactory;
 import ch.unibe.cs.mergeci.util.Utility;
@@ -41,6 +44,20 @@ public class RQ3PipelineRunner extends RQPipelineRunner {
     @Override
     protected IVariantGeneratorFactory generatorFactory() {
         return MLARGeneratorFactory.INSTANCE;
+    }
+
+    @Override
+    protected void analyzeResults() {
+        super.analyzeResults();
+
+        String bestMode = AppConfig.getRQ3BestMode();
+        Path bestModeDir = experimentDir().resolve(bestMode);
+        if (!bestModeDir.toFile().exists()) return;
+
+        ResultsPresenter presenter = new ResultsPresenter(bestModeDir);
+        MergeStatistics stats = presenter.getStatistics();
+        StatisticsReporter reporter = new StatisticsReporter(stats, bestMode);
+        reporter.exportRQ3LatexVariables(stats.getAllMerges());
     }
 
     public static void main(String[] args) throws Exception {

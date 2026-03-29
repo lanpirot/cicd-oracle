@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -82,7 +83,7 @@ class VariantResultCollectorTest extends BaseTest {
 
         MergeExperimentRunner.MergeAnalysisResult result = new MergeExperimentRunner.MergeAnalysisResult(
                 analyzer, compilationResults, testResults, 200L, timing, variantFinishSeconds,
-                null, false, null, 0, 9, 0L
+                null, false, null, Collections.emptySet(), 0, 9, 0L
         );
 
         return MergeExperimentRunner.ProcessedMerge.completed(info, 2, result);

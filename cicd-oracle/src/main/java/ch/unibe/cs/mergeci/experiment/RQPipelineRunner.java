@@ -100,21 +100,50 @@ public abstract class RQPipelineRunner {
         Map<String, List<DatasetReader.MergeInfo>> byProject = groupByProject(allMerges);
 
         if (AppConfig.isFreshRun()) {
+            System.out.println("\n⚠  FRESH_RUN is enabled — this will wipe all prior data in " + experimentDir());
+            System.out.print("Do you want to continue? [y/N] ");
+            String answer = new java.util.Scanner(System.in).nextLine().trim();
+            if (!answer.equalsIgnoreCase("y")) {
+                System.out.println("Aborted.");
+                return;
+            }
             cleanExperimentDirs();
         }
 
-        int limit = processedLimit();
-        for (Map.Entry<String, List<DatasetReader.MergeInfo>> entry : byProject.entrySet()) {
-            if (countBaselineJsons() >= limit) break;
+        try (AttemptedMergeLog mergeLog = new AttemptedMergeLog(
+                experimentDir().resolve("attempted_merges.csv"))) {
+            runProjects(byProject, mergeLog);
+        }
 
+        CrossModeSanityChecker.check(experimentDir(), modesToRun());
+        analyzeResults();
+    }
+
+    private void runProjects(Map<String, List<DatasetReader.MergeInfo>> byProject,
+                             AttemptedMergeLog mergeLog) throws Exception {
+        int limit = processedLimit();
+        int totalProjects = byProject.size();
+        int projectIndex = 0;
+        for (Map.Entry<String, List<DatasetReader.MergeInfo>> entry : byProject.entrySet()) {
+            int completed = countBaselineJsons();
+            if (completed >= limit) break;
+
+            projectIndex++;
             String projectName = entry.getKey();
             List<DatasetReader.MergeInfo> merges = entry.getValue();
+
+            System.out.println();
+            System.out.println("════════════════════════════════════════════════════════════");
+            System.out.printf("  Project %d/%d: %s  (%d merges)%n", projectIndex, totalProjects, projectName, merges.size());
+            System.out.printf("  Completed baselines: %d/%d%n", completed, limit == Integer.MAX_VALUE ? totalProjects : limit);
+            System.out.println("════════════════════════════════════════════════════════════");
 
             Path repoPath;
             try {
                 repoPath = repoManager.getRepositoryPath(projectName, merges.get(0).getRemoteUrl());
             } catch (IOException e) {
                 System.err.println("Skipping " + projectName + ": " + e.getMessage());
+                mergeLog.logProjectFailure(projectName, "clone failed: " + e.getMessage());
                 continue;
             }
 
@@ -124,7 +153,7 @@ public abstract class RQPipelineRunner {
                     info.setParent1(parents[0]);
                     info.setParent2(parents[1]);
                 }
-                runModes(projectName, merges, repoPath);
+                runModes(projectName, merges, repoPath, mergeLog);
             } catch (Exception e) {
                 System.err.println("Analysis failed for " + projectName + ": " + e.getMessage());
             } finally {
@@ -137,16 +166,14 @@ public abstract class RQPipelineRunner {
         if (limit < Integer.MAX_VALUE) {
             System.out.printf("Pipeline finished: %d/%d projects processed.%n", processed, limit);
         }
-
-        CrossModeSanityChecker.check(experimentDir(), modesToRun());
-        analyzeResults();
     }
 
     /**
      * Final pipeline phase: console summary via {@link ResultsPresenter} for each
      * mode, then paper-ready PDF via the Python presentation script.
+     * Subclasses may override to add RQ-specific analysis.
      */
-    private void analyzeResults() {
+    protected void analyzeResults() {
         System.out.println("\n══════════════════════════════════════════════════════════");
         System.out.println("  Analysis Phase");
         System.out.println("══════════════════════════════════════════════════════════");
@@ -187,7 +214,8 @@ public abstract class RQPipelineRunner {
         }
     }
 
-    private void runModes(String projectName, List<DatasetReader.MergeInfo> merges, Path repoPath) throws Exception {
+    private void runModes(String projectName, List<DatasetReader.MergeInfo> merges,
+                          Path repoPath, AttemptedMergeLog mergeLog) throws Exception {
         Path humanBaselineDir = experimentDir().resolve("human_baseline");
         humanBaselineDir.toFile().mkdirs();
 
@@ -199,7 +227,7 @@ public abstract class RQPipelineRunner {
                     merges, projectName, repoPath, modeDir, humanBaselineDir,
                     ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
                     AppConfig.TMP_DIR, ex.getName(),
-                    generatorFactory(), evaluator(), stopOnPerfect());
+                    generatorFactory(), evaluator(), stopOnPerfect(), mergeLog);
 
             // After the human_baseline build, check for problems that make this
             // project permanently unusable.  Abort early so it does not waste a

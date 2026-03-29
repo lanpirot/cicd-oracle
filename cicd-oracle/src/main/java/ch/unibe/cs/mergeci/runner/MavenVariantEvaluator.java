@@ -5,6 +5,7 @@ import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Maven-based implementation of {@link IVariantEvaluator}.
@@ -41,6 +42,7 @@ public class MavenVariantEvaluator implements IVariantEvaluator {
     @Override public Map<String, Double> getVariantSinceMergeStartSeconds()  { return factory.getVariantSinceMergeStartSeconds(); }
     @Override public boolean isBudgetExhausted()                              { return factory.isBudgetExhausted(); }
     @Override public String getCacheWarmerKey()                               { return factory.getCacheWarmerKey(); }
+    @Override public Set<String> getCacheHitKeys()                            { return factory.getCacheHitKeys(); }
     @Override public int getNumInFlightVariantsKilled()                       { return factory.getNumInFlightVariantsKilled(); }
     @Override public int getMaxThreads()                                      { return factory.getMaxThreads(); }
     @Override public long getPeakBaselineRamBytes()                           { return factory.getPeakBaselineRamBytes(); }

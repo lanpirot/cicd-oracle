@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Processes individual merge commits for variant testing.
@@ -152,6 +153,7 @@ public class MergeExperimentRunner {
                 activeEvaluator.getVariantSinceMergeStartSeconds(),
                 activeEvaluator.isBudgetExhausted(),
                 activeEvaluator.getCacheWarmerKey(),
+                activeEvaluator.getCacheHitKeys(),
                 activeEvaluator.getNumInFlightVariantsKilled(),
                 activeEvaluator.getMaxThreads(),
                 activeEvaluator.getPeakBaselineRamBytes()
@@ -205,6 +207,7 @@ public class MergeExperimentRunner {
                                           Map<String, Double> variantSinceMergeStartSeconds,
                                           boolean budgetExhausted,
                                           String cacheWarmerKey,
+                                          Set<String> cacheHitKeys,
                                           int numInFlightVariantsKilled,
                                           int maxThreads,
                                           long peakBaselineRamBytes) {

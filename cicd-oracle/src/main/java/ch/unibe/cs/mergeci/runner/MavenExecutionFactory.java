@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -44,6 +46,8 @@ public class MavenExecutionFactory {
     private boolean budgetExhausted;
     @Getter
     private String cacheWarmerKey;
+    @Getter
+    private Set<String> cacheHitKeys;
     @Getter
     private int numInFlightVariantsKilled;
     @Getter
@@ -89,6 +93,7 @@ public class MavenExecutionFactory {
         variantSinceMergeStartSeconds = new TreeMap<>();
         budgetExhausted = false;
         cacheWarmerKey = null;
+        cacheHitKeys = ConcurrentHashMap.newKeySet();
         numInFlightVariantsKilled = 0;
         resolvedJavaHome = null;
 
@@ -327,6 +332,7 @@ public class MavenExecutionFactory {
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(warmPath.toFile(), variantPath.toFile());
                                     cacheManager.copyCacheDirectory(warmPath, variantPath);
+                                    cacheHitKeys.add(variantKey);
                                     // T1: conflict files written last (T1 > T0) so Maven recompiles only changed modules.
                                     builder.applyConflictResolution(variantPath, variant);
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
@@ -410,6 +416,7 @@ public class MavenExecutionFactory {
                                 cacheManager.injectCacheArtifacts(vPath);
                                 cacheManager.copyTargetDirectories(warm.toFile(), vPath.toFile());
                                 cacheManager.copyCacheDirectory(warm, vPath);
+                                cacheHitKeys.add(key);
                                 // T1: conflict files written last so Maven recompiles only changed modules.
                                 builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(

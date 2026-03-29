@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Collects and aggregates variant testing results into a structured output format.
@@ -31,7 +32,7 @@ public class VariantResultCollector {
         MergeExperimentRunner.MergeAnalysisResult result = processed.getAnalysisResult();
 
         // Build and set variant results
-        VariantSummary variantSummary = buildVariantSummary(result, result.cacheWarmerKey());
+        VariantSummary variantSummary = buildVariantSummary(result, result.cacheWarmerKey(), result.cacheHitKeys());
         output.setVariants(variantSummary.variants());
         output.setVariantsExecutionTimeSeconds(variantSummary.variantsExecutionTimeSeconds());
         output.setBudgetExhausted(result.budgetExhausted());
@@ -75,7 +76,8 @@ public class VariantResultCollector {
      * Build complete variant summary including all variants and success metrics.
      */
     private VariantSummary buildVariantSummary(MergeExperimentRunner.MergeAnalysisResult result,
-                                               String cacheWarmerKey) {
+                                               String cacheWarmerKey,
+                                               Set<String> cacheHitKeys) {
         String projectName = result.getProjectName();
         Map<String, CompilationResult> compilationResults = result.compilationResults();
         Map<String, TestTotal> testResults = result.testResults();
@@ -90,7 +92,8 @@ public class VariantResultCollector {
                 projectName,
                 variantFinishSeconds,
                 variantSinceMergeStartSeconds,
-                cacheWarmerKey
+                cacheWarmerKey,
+                cacheHitKeys
         );
 
         // Calculate variants execution time
@@ -110,7 +113,8 @@ public class VariantResultCollector {
             String projectName,
             Map<String, Double> variantFinishSeconds,
             Map<String, Double> variantSinceMergeStartSeconds,
-            String cacheWarmerKey) {
+            String cacheWarmerKey,
+            Set<String> cacheHitKeys) {
 
         List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResults.size());
 
@@ -123,7 +127,11 @@ public class VariantResultCollector {
             String key = entry.getKey();
             int variantIndex = Integer.parseInt(key.substring(key.lastIndexOf('_') + 1));
             variant.setVariantIndex(variantIndex);
-            variant.setCacheWarmer(key.equals(cacheWarmerKey));
+            boolean isWarmer = key.equals(cacheWarmerKey);
+            variant.setCacheWarmer(isWarmer);
+            boolean didUse = cacheHitKeys != null && cacheHitKeys.contains(key);
+            variant.setShouldUseCache(!isWarmer && (cacheWarmerKey != null));
+            variant.setDidUseCache(didUse);
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(key));
             variant.setConflictPatterns(builder.getConflictPatterns().get(variantIndex - 1));

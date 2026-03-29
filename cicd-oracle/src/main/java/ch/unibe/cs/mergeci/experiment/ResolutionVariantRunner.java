@@ -173,7 +173,7 @@ public class ResolutionVariantRunner {
                                                 IVariantGeneratorFactory generatorFactory,
                                                 IVariantEvaluator evaluator) throws Exception {
         makeAnalysisByMergeList(mergeInfos, projectName, repoPath, modeDir, humanBaselineDir,
-                isParallel, isCache, skipVariants, tmpDir, modeName, generatorFactory, evaluator, true);
+                isParallel, isCache, skipVariants, tmpDir, modeName, generatorFactory, evaluator, true, null);
     }
 
     public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName,
@@ -183,6 +183,19 @@ public class ResolutionVariantRunner {
                                                 IVariantGeneratorFactory generatorFactory,
                                                 IVariantEvaluator evaluator,
                                                 boolean stopOnPerfect) throws Exception {
+        makeAnalysisByMergeList(mergeInfos, projectName, repoPath, modeDir, humanBaselineDir,
+                isParallel, isCache, skipVariants, tmpDir, modeName, generatorFactory, evaluator,
+                stopOnPerfect, null);
+    }
+
+    public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName,
+                                                Path repoPath, Path modeDir, Path humanBaselineDir,
+                                                boolean isParallel, boolean isCache, boolean skipVariants,
+                                                Path tmpDir, String modeName,
+                                                IVariantGeneratorFactory generatorFactory,
+                                                IVariantEvaluator evaluator,
+                                                boolean stopOnPerfect,
+                                                AttemptedMergeLog mergeLog) throws Exception {
         modeDir.toFile().mkdirs();
 
         StoredBaselines stored = skipVariants
@@ -213,7 +226,8 @@ public class ResolutionVariantRunner {
                 : null;
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, skipVariants,
-                skippedBaselines, failureLog, modeDir, humanBaselineDir, projectName, groundTruthPatterns);
+                skippedBaselines, failureLog, modeDir, humanBaselineDir, projectName, groundTruthPatterns,
+                mergeLog);
 
         if (failureLog != null) failureLog.close();
 
@@ -364,7 +378,8 @@ public class ResolutionVariantRunner {
                                                Path modeDir,
                                                Path humanBaselineDir,
                                                String projectName,
-                                               Map<String, Map<String, List<String>>> groundTruthPatterns) throws Exception {
+                                               Map<String, Map<String, List<String>>> groundTruthPatterns,
+                                               AttemptedMergeLog mergeLog) throws Exception {
         int resultCount = 0;
         int skippedCount = 0;
         long totalTime = 0;
@@ -381,6 +396,7 @@ public class ResolutionVariantRunner {
                 MergeOutputJSON existing = readJsonOrNull(mergeOutputFile);
                 if (existing != null && existing.isProcessed()) {
                     System.out.println("SKIPPED (already processed)");
+                    if (mergeLog != null) mergeLog.logSkipped(projectName, info.getMergeCommit(), modeName, "already processed");
                     skippedCount++;
                     continue;
                 }
@@ -391,7 +407,9 @@ public class ResolutionVariantRunner {
             // Skip merges whose baseline is permanently unusable (timeout, infra failure, no tests)
             String skipType = skippedBaselines.get(info.getMergeCommit());
             if (skipType != null) {
-                System.out.println("SKIPPED (" + SKIP_REASONS.getOrDefault(skipType, skipType) + ")");
+                String reason = SKIP_REASONS.getOrDefault(skipType, skipType);
+                System.out.println("SKIPPED (" + reason + ")");
+                if (mergeLog != null) mergeLog.logSkipped(projectName, info.getMergeCommit(), modeName, reason);
                 skippedCount++;
                 continue;
             }
@@ -400,6 +418,7 @@ public class ResolutionVariantRunner {
 
             if (processed.wasSkipped()) {
                 System.out.println(processed.getSkipReason());
+                if (mergeLog != null) mergeLog.logSkipped(projectName, info.getMergeCommit(), modeName, processed.getSkipReason());
                 skippedCount++;
                 if (!skipVariants) {
                     markBaselineSkipped(humanBaselineDir, info.getMergeCommit(),
@@ -424,6 +443,7 @@ public class ResolutionVariantRunner {
                 String reason = SKIP_REASONS.getOrDefault(result.getBaselineFailureType(), "unusable baseline");
                 System.out.println("SKIPPED (" + reason + ")");
                 logBaselineFailure(failureLog, result, info.getShortCommit());
+                if (mergeLog != null) mergeLog.logSkipped(projectName, info.getMergeCommit(), modeName, reason);
                 skippedCount++;
                 continue;
             }
@@ -431,6 +451,7 @@ public class ResolutionVariantRunner {
             result.setProcessed(true);
             new JsonResultWriter().writeResult(result, modeDir);
             logBaselineFailure(failureLog, result, info.getShortCommit());
+            if (mergeLog != null) mergeLog.logProcessed(result);
             totalTime += processed.getAnalysisResult().executionTimeSeconds();
             resultCount++;
             System.out.println("  " + collector.getSuccessSummary(processed));

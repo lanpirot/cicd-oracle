@@ -387,6 +387,99 @@ public class StatisticsReporter {
     }
 
     /**
+     * Export RQ3-specific fine-grained quality metrics as LaTeX variables.
+     * For each merge, finds the best variant (by {@link VariantScore}) and compares
+     * its build and test outcomes against the human baseline.
+     *
+     * @param allMerges all merges from the best-mode experiment directory
+     */
+    public void exportRQ3LatexVariables(List<MergeOutputJSON> allMerges) {
+        String prefix = "rqThree";
+        Map<String, String[]> vars = new LinkedHashMap<>();
+
+        int betterBuild = 0, betterOrEqualBuild = 0;
+        int betterTests = 0, betterOrEqualTests = 0;
+        int better = 0, betterOrEqual = 0;
+
+        int brokenBaselines = 0;
+        int buildFromBroken = 0;
+
+        int comparable = 0; // merges where both baseline and best variant are scoreable
+
+        for (MergeOutputJSON merge : allMerges) {
+            if (merge.isBaselineBroken()) brokenBaselines++;
+
+            Optional<VariantScore> baseOpt = VariantResolutionAnalyzer.baselineScore(merge);
+            Optional<VariantScore> bestOpt = VariantResolutionAnalyzer.bestVariantScore(merge);
+            if (baseOpt.isEmpty() || bestOpt.isEmpty()) continue;
+
+            comparable++;
+            VariantScore base = baseOpt.get();
+            VariantScore best = bestOpt.get();
+
+            if (best.successfulModules() > base.successfulModules()) betterBuild++;
+            if (best.successfulModules() >= base.successfulModules()) betterOrEqualBuild++;
+            if (best.passedTests() > base.passedTests()) betterTests++;
+            if (best.passedTests() >= base.passedTests()) betterOrEqualTests++;
+            if (best.isBetterThan(base)) better++;
+            if (best.isAtLeastAsGoodAs(base)) betterOrEqual++;
+
+            if (merge.isBaselineBroken() && best.successfulModules() > 0) buildFromBroken++;
+        }
+
+        vars.put(prefix + "MergeCount",
+                new String[]{String.valueOf(allMerges.size()), "Total RQ3 merges"});
+        vars.put(prefix + "ComparableCount",
+                new String[]{String.valueOf(comparable), "Merges with scoreable baseline and best variant"});
+        vars.put(prefix + "BrokenBaselineCount",
+                new String[]{String.valueOf(brokenBaselines), "Merges with broken human baseline"});
+
+        vars.put(prefix + "BetterBuildCount",
+                new String[]{String.valueOf(betterBuild), "Best variant has more successful modules than baseline"});
+        vars.put(prefix + "BetterBuildRate",
+                new String[]{String.valueOf(countPercent(comparable, betterBuild)),
+                        "Better-build rate (% of comparable)"});
+
+        vars.put(prefix + "BetterOrEqualBuildCount",
+                new String[]{String.valueOf(betterOrEqualBuild), "Best variant has >= successful modules"});
+        vars.put(prefix + "BetterOrEqualBuildRate",
+                new String[]{String.valueOf(countPercent(comparable, betterOrEqualBuild)),
+                        "Better-or-equal-build rate (% of comparable)"});
+
+        vars.put(prefix + "BuildFromBrokenCount",
+                new String[]{String.valueOf(buildFromBroken), "Broken-baseline merges where best variant builds"});
+        vars.put(prefix + "BuildFromBrokenRate",
+                new String[]{String.valueOf(countPercent(brokenBaselines, buildFromBroken)),
+                        "Build-from-broken rate (% of broken baselines)"});
+
+        vars.put(prefix + "BetterTestsCount",
+                new String[]{String.valueOf(betterTests), "Best variant passes more tests than baseline"});
+        vars.put(prefix + "BetterTestsRate",
+                new String[]{String.valueOf(countPercent(comparable, betterTests)),
+                        "Better-tests rate (% of comparable)"});
+
+        vars.put(prefix + "BetterOrEqualTestsCount",
+                new String[]{String.valueOf(betterOrEqualTests), "Best variant passes >= tests"});
+        vars.put(prefix + "BetterOrEqualTestsRate",
+                new String[]{String.valueOf(countPercent(comparable, betterOrEqualTests)),
+                        "Better-or-equal-tests rate (% of comparable)"});
+
+        vars.put(prefix + "BetterCount",
+                new String[]{String.valueOf(better), "Best variant strictly better overall (VariantScore)"});
+        vars.put(prefix + "BetterRate",
+                new String[]{String.valueOf(countPercent(comparable, better)),
+                        "Better rate (% of comparable)"});
+
+        vars.put(prefix + "BetterOrEqualCount",
+                new String[]{String.valueOf(betterOrEqual), "Best variant at least as good overall"});
+        vars.put(prefix + "BetterOrEqualRate",
+                new String[]{String.valueOf(countPercent(comparable, betterOrEqual)),
+                        "Better-or-equal rate (% of comparable)"});
+
+        LatexVariableWriter.putAll(vars);
+    }
+
+    /**
      * Convert an experiment mode name to a camelCase LaTeX variable prefix.
      * E.g. "no_optimization" → "seq", "cache_parallel" → "cachePar".
      */

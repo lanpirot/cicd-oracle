@@ -255,6 +255,40 @@ class VariantResolutionAnalyzerTest extends BaseTest {
         assertEquals(1, grouped.get("BASE"));
     }
 
+    @Test
+    void testBestVariantScore_picksBestOverall() {
+        MergeOutputJSON merge = createMerge("m1", 50, 0, 0);
+        // variant 1: 1 module, 45 passed tests
+        addVariant(merge, 1, 50, 5, 0, Map.of("f", List.of("OURS")));
+        // variant 2: 1 module, 50 passed tests (better)
+        addVariant(merge, 2, 50, 0, 0, Map.of("f", List.of("THEIRS")));
+
+        Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
+        assertTrue(best.isPresent());
+        assertEquals(50, best.get().passedTests());
+    }
+
+    @Test
+    void testBestVariantScore_emptyWhenNoVariants() {
+        MergeOutputJSON merge = createMerge("m1", 50, 0, 0);
+        // Only baseline variant (index 0), no real variants
+        Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
+        assertTrue(best.isEmpty());
+    }
+
+    @Test
+    void testBestVariantScore_prefersMoreModules() {
+        MergeOutputJSON merge = createMerge("m1", 10, 0, 0);
+        // variant 1: FAILURE with 0 modules but some tests
+        addVariantWithStatus(merge, 1, CompilationResult.Status.FAILURE, 0, 10, 0, 0);
+        // variant 2: SUCCESS with 1 module but 0 tests
+        addVariant(merge, 2, 0, 0, 0, Map.of("f", List.of("OURS")));
+
+        Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
+        assertTrue(best.isPresent());
+        assertEquals(1, best.get().successfulModules());
+    }
+
     // Helper methods to create test data
 
     private TestTotal createTestTotal(int runNum, int failuresNum, int errorsNum) {
@@ -287,11 +321,23 @@ class VariantResolutionAnalyzerTest extends BaseTest {
 
     private void addVariant(MergeOutputJSON merge, int variantIndex, int runNum, int failuresNum, int errorsNum,
                            Map<String, List<String>> conflictPatterns) {
+        addVariantWithStatus(merge, variantIndex, CompilationResult.Status.SUCCESS, 0, runNum, failuresNum, errorsNum);
+        merge.getVariants().getLast().setConflictPatterns(conflictPatterns);
+    }
+
+    private void addVariantWithStatus(MergeOutputJSON merge, int variantIndex,
+                                      CompilationResult.Status status, int successfulModules,
+                                      int runNum, int failuresNum, int errorsNum) {
         MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
         variant.setVariantIndex(variantIndex);
-        variant.setCompilationResult(successCR());
+
+        List<CompilationResult.ModuleResult> modules = new ArrayList<>();
+        for (int i = 0; i < successfulModules; i++) {
+            modules.add(CompilationResult.ModuleResult.builder()
+                    .moduleName("mod" + i).status(CompilationResult.Status.SUCCESS).build());
+        }
+        variant.setCompilationResult(CompilationResult.forTest(status, modules));
         variant.setTestResults(createTestTotal(runNum, failuresNum, errorsNum));
-        variant.setConflictPatterns(conflictPatterns);
 
         if (merge.getVariants() == null) {
             merge.setVariants(new ArrayList<>());

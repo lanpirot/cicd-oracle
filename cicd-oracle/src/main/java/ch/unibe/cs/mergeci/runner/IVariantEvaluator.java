@@ -4,6 +4,7 @@ import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for running variant build-and-test experiments.
@@ -40,6 +41,7 @@ public interface IVariantEvaluator {
     Map<String, Double> getVariantSinceMergeStartSeconds();
     boolean isBudgetExhausted();
     String getCacheWarmerKey();
+    Set<String> getCacheHitKeys();
     int getNumInFlightVariantsKilled();
     int getMaxThreads();
     long getPeakBaselineRamBytes();

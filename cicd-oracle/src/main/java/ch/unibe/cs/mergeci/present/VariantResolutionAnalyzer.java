@@ -4,6 +4,7 @@ import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -132,7 +133,20 @@ public class VariantResolutionAnalyzer {
         }
     }
 
-    private static Optional<VariantScore> baselineScore(MergeOutputJSON merge) {
+    /**
+     * Return the score of the best non-baseline variant in a merge,
+     * or empty if no variant produced a scoreable result.
+     */
+    static Optional<VariantScore> bestVariantScore(MergeOutputJSON merge) {
+        if (merge.getVariants() == null) return Optional.empty();
+        return merge.getVariants().stream()
+                .filter(v -> v.getVariantIndex() != 0)
+                .map(VariantResolutionAnalyzer::variantScore)
+                .flatMap(Optional::stream)
+                .max(Comparator.naturalOrder());
+    }
+
+    static Optional<VariantScore> baselineScore(MergeOutputJSON merge) {
         return VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
     }
 
