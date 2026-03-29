@@ -3,10 +3,9 @@ package ch.unibe.cs.mergeci.present;
 import ch.unibe.cs.mergeci.conflict.MergeStatistics;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import ch.unibe.cs.mergeci.util.LatexVariableWriter;
+
+import java.util.*;
 
 /**
  * Presents comprehensive statistics and analysis results for merge experiments.
@@ -51,6 +50,7 @@ public class StatisticsReporter {
         printExecutionTimeAnalysis(impactMerges);
         printConflictChunksRankings(impactMerges);
         printFooter();
+        exportLatexVariables(allMerges, impactMerges);
     }
 
     private void printHeader() {
@@ -343,6 +343,62 @@ public class StatisticsReporter {
             System.out.printf("  %s  %s  %5.1f%%  (%d/%d)\n",
                     labels[i], bar, impactRate * 100, impact, total);
         }
+    }
+
+    /**
+     * Export key statistics as LaTeX variables to the shared CSV.
+     * Variable names are prefixed with the experiment mode (e.g., {@code seqMergeCount}).
+     */
+    private void exportLatexVariables(List<MergeOutputJSON> allMerges,
+                                      List<MergeOutputJSON> impactMerges) {
+        String prefix = toLatexPrefix(experimentName);
+        Map<String, String[]> vars = new LinkedHashMap<>();
+
+        vars.put(prefix + "MergeCount",
+                new String[]{String.valueOf(allMerges.size()), "Total merges (" + experimentName + ")"});
+        vars.put(prefix + "MultiModuleCount",
+                new String[]{String.valueOf(statistics.getMultiModuleCount()), "Multi-module merges"});
+        vars.put(prefix + "SingleModuleCount",
+                new String[]{String.valueOf(allMerges.size() - statistics.getMultiModuleCount()), "Single-module merges"});
+        vars.put(prefix + "ImpactCount",
+                new String[]{String.valueOf(impactMerges.size()), "Impact merges"});
+        if (!allMerges.isEmpty()) {
+            vars.put(prefix + "ImpactRate",
+                    new String[]{String.valueOf(countPercent(allMerges.size(), impactMerges.size())), "Impact rate (%)"});
+        }
+
+        if (!impactMerges.isEmpty()) {
+            List<MergeOutputJSON> withResolution = resolutionAnalyzer.findMergesWithAtLeastOneResolution(impactMerges);
+            vars.put(prefix + "ResolvedCount",
+                    new String[]{String.valueOf(withResolution.size()), "Impact merges with >= 1 successful variant"});
+            vars.put(prefix + "ResolutionRate",
+                    new String[]{String.valueOf(countPercent(impactMerges.size(), withResolution.size())),
+                            "Resolution rate (% of impact)"});
+
+            List<MergeOutputJSON> better = resolutionAnalyzer.findMergesThatPerformBetter(impactMerges);
+            vars.put(prefix + "BetterCount",
+                    new String[]{String.valueOf(better.size()), "Merges performing better than original"});
+            vars.put(prefix + "BetterRate",
+                    new String[]{String.valueOf(countPercent(impactMerges.size(), better.size())),
+                            "Better-than-original rate (% of impact)"});
+        }
+
+        LatexVariableWriter.putAll(vars);
+    }
+
+    /**
+     * Convert an experiment mode name to a camelCase LaTeX variable prefix.
+     * E.g. "no_optimization" → "seq", "cache_parallel" → "cachePar".
+     */
+    static String toLatexPrefix(String experimentName) {
+        return switch (experimentName) {
+            case "human_baseline"   -> "hb";
+            case "no_optimization"  -> "seq";
+            case "cache_sequential" -> "cacheSeq";
+            case "parallel"         -> "par";
+            case "cache_parallel"   -> "cachePar";
+            default -> experimentName.replaceAll("[^a-zA-Z0-9]", "");
+        };
     }
 
     /**

@@ -28,6 +28,8 @@ import itertools
 from pathlib import Path
 from collections import defaultdict
 
+import latex_variables
+
 import matplotlib
 import matplotlib.ticker
 matplotlib.use("Agg")
@@ -212,7 +214,7 @@ def module_stats(variant: dict) -> tuple[int, int]:
     # New flat format: totalModules / successfulModules
     total_m = cr.get("totalModules")
     if total_m is not None:
-        return cr.get("successfulModules", 0), total_m
+        return cr.get("successfulModules", 0), max(1, total_m)
     # Legacy format: moduleResults array
     module_results = cr.get("moduleResults", [])
     if module_results:
@@ -987,14 +989,23 @@ def _get_threads(merge: dict, mode: str) -> int:
     return int(t) if t and t > 0 else 1
 
 
-def _ancova_cache_threads(groups: dict[str, list[float]],
-                          thread_counts: dict[str, list[int]]) -> dict | None:
-    """
-    Rank-based ANCOVA for the 2×2 design, replacing the binary 'parallel'
-    factor with the continuous 'threads' covariate (1 for sequential modes,
-    N for parallel modes).
+def _get_modules(merge: dict) -> int:
+    """Return the total module count for a merge from its baseline variant."""
+    variants = merge.get("variants", [])
+    if not variants:
+        return 1
+    cr = variants[0].get("compilationResult", {})
+    return max(1, cr.get("totalModules", 1))
 
-    Model:  metric ~ cache + threads + cache:threads
+
+def _ancova_cache_threads(groups: dict[str, list[float]],
+                          thread_counts: dict[str, list[int]],
+                          module_counts: dict[str, list[int]] | None = None,
+                          ) -> dict | None:
+    """
+    Rank-based ANCOVA for the 2×2 design with continuous covariates.
+
+    Model:  metric ~ cache + threads + modules + cache:threads + cache:modules
 
     Uses ranked residuals (Conover & Iman, 1982): rank all observations,
     then run OLS on the ranks.  Returns dict with t/p for each term, or None.
@@ -1013,30 +1024,48 @@ def _ancova_cache_threads(groups: dict[str, list[float]],
 
     # Stack observations
     y_raw = []
-    cache = []
-    threads = []
+    cache_vec = []
+    threads_vec = []
+    modules_vec = []
+    has_modules = module_counts is not None and all(m in module_counts for m in needed)
     for mode in needed:
         c = 1 if mode in ("cache_sequential", "cache_parallel") else 0
         for i in range(n):
             y_raw.append(groups[mode][i])
-            cache.append(c)
-            threads.append(thread_counts[mode][i])
+            cache_vec.append(c)
+            threads_vec.append(thread_counts[mode][i])
+            if has_modules:
+                modules_vec.append(module_counts[mode][i])
 
     y = np.array(y_raw, dtype=float)
-    cache = np.array(cache, dtype=float)
-    threads = np.array(threads, dtype=float)
+    cache = np.array(cache_vec, dtype=float)
+    threads = np.array(threads_vec, dtype=float)
 
     # Rank the response
     y_ranked = rankdata(y).astype(float)
 
-    # Design matrix: [intercept, cache, threads, cache*threads]
+    # Design matrix
     N = len(y_ranked)
-    X = np.column_stack([
-        np.ones(N),
-        cache,
-        threads,
-        cache * threads,
-    ])
+    if has_modules:
+        modules = np.array(modules_vec, dtype=float)
+        X = np.column_stack([
+            np.ones(N),
+            cache,
+            threads,
+            modules,
+            cache * threads,
+            cache * modules,
+        ])
+        labels = ["intercept", "cache", "threads", "modules",
+                  "cache:threads", "cache:modules"]
+    else:
+        X = np.column_stack([
+            np.ones(N),
+            cache,
+            threads,
+            cache * threads,
+        ])
+        labels = ["intercept", "cache", "threads", "cache:threads"]
 
     # OLS: beta = (X'X)^-1 X'y
     try:
@@ -1053,7 +1082,6 @@ def _ancova_cache_threads(groups: dict[str, list[float]],
     mse = np.sum(residuals ** 2) / df_resid
     se = np.sqrt(np.diag(XtX_inv) * mse)
 
-    labels = ["intercept", "cache", "threads", "cache:threads"]
     results = {}
     for i, label in enumerate(labels):
         if i == 0:
@@ -1068,6 +1096,9 @@ def _ancova_cache_threads(groups: dict[str, list[float]],
     # Report median threads for context
     par_threads = [t for m in ("parallel", "cache_parallel") for t in thread_counts.get(m, [])[:n]]
     results["_median_threads"] = int(np.median(par_threads)) if par_threads else 1
+    if has_modules:
+        all_modules = [m for mode in needed for m in module_counts.get(mode, [])[:n]]
+        results["_median_modules"] = int(np.median(all_modules)) if all_modules else 1
 
     return results
 
@@ -1090,6 +1121,29 @@ def _collect_thread_counts(all_data: dict, modes: list[str],
         for mode in modes:
             threads[mode].append(vals[mode])
     return threads
+
+
+def _collect_module_counts(all_data: dict, modes: list[str],
+                           valid_commits: list[str]) -> dict[str, list[int]]:
+    """Collect per-merge module counts aligned with _collect_paired_metric.
+    Module count is a merge-level property (same across modes), extracted
+    from the baseline variant's compilationResult.totalModules."""
+    modules: dict[str, list[int]] = {m: [] for m in modes}
+    for commit in valid_commits:
+        # Get module count from any mode that has this commit
+        mod_count = None
+        for mode in modes:
+            merge = all_data.get(mode, {}).get(commit)
+            if merge is None:
+                mod_count = None
+                break
+            if mod_count is None:
+                mod_count = _get_modules(merge)
+        if mod_count is None:
+            continue
+        for mode in modes:
+            modules[mode].append(mod_count)
+    return modules
 
 
 def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabel: str,
@@ -1147,15 +1201,16 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
     ax.set_xlim(-0.4, 1.4)
     ax.grid(True, axis="y", alpha=0.3)
 
-    # Rank-based ANCOVA: cache + threads + cache:threads
-    # Collect thread counts for the same valid commits used by the metric
+    # Rank-based ANCOVA: cache + threads + modules + cache:threads + cache:modules
     common = sorted(set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES)))
     tc = _collect_thread_counts(all_data, VARIANT_MODES, common)
-    ancova = _ancova_cache_threads(groups, tc)
+    mc = _collect_module_counts(all_data, VARIANT_MODES, common)
+    ancova = _ancova_cache_threads(groups, tc, mc)
     if ancova:
         med_t = ancova.pop("_median_threads", "?")
-        lines = [f"Rank ANCOVA (median threads={med_t}):"]
-        for term in ["cache", "threads", "cache:threads"]:
+        med_m = ancova.pop("_median_modules", "?")
+        lines = [f"Rank ANCOVA (med. threads={med_t}, med. modules={med_m}):"]
+        for term in ["cache", "threads", "modules", "cache:threads", "cache:modules"]:
             if term in ancova:
                 e = ancova[term]
                 p = e["p"]
@@ -1163,8 +1218,7 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
                 lines.append(f"  {term}: t={e['t']:.1f}, p={p:.4f} {sig}")
         _annotate_significance(ax, "\n".join(lines))
     else:
-        _annotate_significance(ax, "ANCOVA: threads covariate has\n"
-                                   "no variance (data lacks thread counts)")
+        _annotate_significance(ax, "ANCOVA: covariates have no variance")
 
 
 # ── RQ2 Chart: Variant index vs. build time (diminishing marginal cost) ───────
@@ -1447,16 +1501,19 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
     # Rank ANCOVA
     common = sorted(set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES)))
     tc = _collect_thread_counts(all_data, VARIANT_MODES, common)
-    ancova = _ancova_cache_threads(groups_throughput, tc)
+    mc = _collect_module_counts(all_data, VARIANT_MODES, common)
+    ancova = _ancova_cache_threads(groups_throughput, tc, mc)
     if ancova:
         med_t = ancova.pop("_median_threads", "?")
-        lines.append(f"\n--- Rank ANCOVA (cache + threads + cache:threads, median threads={med_t}) on throughput ---")
-        for term in ["cache", "threads", "cache:threads"]:
+        med_m = ancova.pop("_median_modules", "?")
+        lines.append(f"\n--- Rank ANCOVA (cache + threads + modules + interactions, "
+                     f"median threads={med_t}, median modules={med_m}) on throughput ---")
+        for term in ["cache", "threads", "modules", "cache:threads", "cache:modules"]:
             if term in ancova:
                 e = ancova[term]
                 lines.append(f"  {term}: t={e['t']:.3f}, p={e['p']:.6f}")
     else:
-        lines.append(f"\n--- Rank ANCOVA: skipped (threads covariate has no variance) ---")
+        lines.append(f"\n--- Rank ANCOVA: skipped (covariates have no variance) ---")
 
     # Cross-mode sanity check
     lines.append(_cross_mode_sanity_check(all_data))
@@ -1464,6 +1521,44 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
     lines.append("")
     path.write_text("\n".join(lines))
     print(f"  Summary written to: {path}")
+
+    _export_latex_variables(all_data, stats, rq)
+
+
+def _export_latex_variables(all_data: dict, stats: dict, rq: str):
+    """Export key statistics to the shared LaTeX variables CSV."""
+    prefix = "rqTwo" if rq == "rq2" else "rqThree" if rq == "rq3" else rq
+
+    lvars = {}
+
+    # Per-mode merge and variant counts
+    for mode in MODES:
+        short = MODE_SHORT.get(mode, mode)
+        n = len(all_data.get(mode, {}))
+        lvars[f"{prefix}{short}MergeCount"] = (str(n), f"Merges in {MODE_LABELS.get(mode, mode)}")
+
+    for mode in VARIANT_MODES:
+        short = MODE_SHORT.get(mode, mode)
+        total = sum(len(m.get("variants", [])) for m in all_data.get(mode, {}).values())
+        lvars[f"{prefix}{short}VariantCount"] = (str(total), f"Total variants in {MODE_LABELS.get(mode, mode)}")
+        merges = all_data.get(mode, {})
+        n_total = len(merges)
+        if n_total > 0:
+            n_exhausted = sum(1 for m in merges.values() if m.get("budgetExhausted"))
+            pct = round(100 * n_exhausted / n_total)
+            lvars[f"{prefix}{short}BudgetExhaustedPct"] = (
+                str(pct), f"Budget exhaustion % in {MODE_LABELS.get(mode, mode)}")
+
+    # Impact
+    if stats.get("impact_set"):
+        n_all = len(stats["all_merges"])
+        n_impact = len(stats["impact_set"])
+        lvars[f"{prefix}ImpactCount"] = (str(n_impact), "Impact merges")
+        lvars[f"{prefix}TotalMerges"] = (str(n_all), "Total merges across modes")
+        lvars[f"{prefix}ImpactPct"] = (str(round(100 * n_impact / n_all)), "Impact rate (%)")
+
+    latex_variables.put_all(lvars)
+    print(f"  LaTeX variables exported ({len(lvars)} entries)")
 
 
 def _cross_mode_sanity_check(all_data: dict) -> str:
@@ -1486,16 +1581,24 @@ def _cross_mode_sanity_check(all_data: dict) -> str:
     compilation_mismatches = 0
     test_mismatches = 0
     test_deviations = []
+    # Per-merge breakdown: commit -> {"project", "comp_mismatches", "test_mismatches", "variants_compared"}
+    per_merge_stats: dict[str, dict] = {}
 
     for commit in sorted(all_commits):
         # Collect modes that have this merge
         present = {}
+        project_name = None
         for mode in mode_names:
             merge = all_data[mode].get(commit)
             if merge and merge.get("variants"):
                 present[mode] = {v["variantIndex"]: v for v in merge["variants"]}
+                if project_name is None:
+                    project_name = merge.get("projectName", commit[:8])
         if len(present) < 2:
             continue
+
+        mstats = {"project": project_name, "comp_mismatches": 0,
+                  "test_mismatches": 0, "variants_compared": 0}
 
         # Collect all variant indices across modes
         all_indices = set()
@@ -1513,6 +1616,7 @@ def _cross_mode_sanity_check(all_data: dict) -> str:
                 continue
 
             variants_compared += 1
+            mstats["variants_compared"] += 1
             ref = comparable[0]
 
             # Compilation status
@@ -1524,6 +1628,7 @@ def _cross_mode_sanity_check(all_data: dict) -> str:
                     comp_mismatch = True
             if comp_mismatch:
                 compilation_mismatches += 1
+                mstats["comp_mismatches"] += 1
 
             # Test counts
             ref_tr = ref.get("testResults") or {}
@@ -1542,6 +1647,9 @@ def _cross_mode_sanity_check(all_data: dict) -> str:
             if test_mismatch:
                 test_mismatches += 1
                 test_deviations.append(worst_dev)
+                mstats["test_mismatches"] += 1
+
+        per_merge_stats[commit] = mstats
 
     test_rate = test_mismatches / variants_compared if variants_compared > 0 else 0.0
     max_dev = max(test_deviations) if test_deviations else 0.0
@@ -1564,6 +1672,21 @@ def _cross_mode_sanity_check(all_data: dict) -> str:
         out.append(f"  Test count mismatches: {verdict} — {test_mismatches}/{variants_compared} "
                    f"({100.0 * test_rate:.2f}%, threshold {MAX_TEST_MISMATCH_RATE * 100:.0f}%)")
         out.append(f"  Deviation magnitude:        median={med_dev * 100:.1f}%, max={max_dev * 100:.1f}%")
+
+    # Per-merge breakdown for merges with any mismatch
+    flagged = {c: s for c, s in per_merge_stats.items()
+               if s["comp_mismatches"] > 0 or s["test_mismatches"] > 0}
+    if flagged:
+        out.append(f"\n  Per-merge breakdown ({len(flagged)} merge(s) with mismatches):")
+        for commit, s in sorted(flagged.items(), key=lambda x: x[1]["test_mismatches"], reverse=True):
+            parts = []
+            if s["comp_mismatches"] > 0:
+                parts.append(f"comp={s['comp_mismatches']}")
+            if s["test_mismatches"] > 0:
+                parts.append(f"test={s['test_mismatches']}")
+            out.append(f"    {s['project']}  {commit[:8]}  "
+                       f"{' '.join(parts)}/{s['variants_compared']} variants compared")
+
     return "\n".join(out)
 
 

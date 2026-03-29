@@ -13,7 +13,7 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-private static final boolean FRESH_RUN = false;
+private static final boolean FRESH_RUN = true;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
@@ -111,6 +111,8 @@ private static final boolean FRESH_RUN = false;
     public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");                                // temporary working directory
     /** Shared input data: SQL dump, all_conflicts.csv, merge_commits.csv, maven_check_cache.json. */
     public static final Path COMMON_DIR = DATA_BASE_DIR.resolve("common");
+    /** Shared CSV of LaTeX variables populated by Java pipelines and Python scripts. */
+    public static final Path LATEX_VARIABLES_FILE = COMMON_DIR.resolve("latex_variables.csv");
 
     // ========== CONFLICT COLLECTION (legacy) ==========
     private static final int MAX_CONFLICT_MERGES_DEFAULT = 5;  // sample maximally this many merges per project to avoid bias towards giant projects
