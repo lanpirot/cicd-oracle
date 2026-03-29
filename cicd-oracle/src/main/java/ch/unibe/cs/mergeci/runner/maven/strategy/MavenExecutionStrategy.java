@@ -14,11 +14,4 @@ public interface MavenExecutionStrategy {
      * @param projects Array of project paths to build and test
      */
     void execute(Path... projects);
-
-    /**
-     * Get a descriptive name for this strategy.
-     *
-     * @return Strategy name (e.g., "Sequential", "Parallel", "Cache-Parallel")
-     */
-    String getName();
 }

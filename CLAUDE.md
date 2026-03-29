@@ -53,6 +53,7 @@ Standalone scripts that read experiment/analysis JSON output; all have defaults 
 |--------|---------|
 | `plot_results.py` | Produces a multi-chart PDF comparing all 5 experiment modes |
 | `rq3_hamming_quality_correlation.py` | RQ3 anti-correlation: Hamming distance vs. build quality (Spearman) |
+| `latex_variables.py` | Read-modify-write utility for the shared LaTeX variables CSV |
 | `view_noteworthy.py` | Inspects notable variants from experiment output |
 | `test_plot_results.py` | Unit tests for `plot_results.py` |
 | `test_rq3_hamming_quality_correlation.py` | Unit tests for `rq3_hamming_quality_correlation.py` |

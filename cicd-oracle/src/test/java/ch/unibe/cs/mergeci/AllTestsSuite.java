@@ -1,13 +1,9 @@
 package ch.unibe.cs.mergeci;
 
-import ch.unibe.cs.mergeci.conflict.MergeConflictCollectorTest;
-import ch.unibe.cs.mergeci.conflict.ExcelWriterTest;
 import ch.unibe.cs.mergeci.present.ResultsPresenterTest;
-import ch.unibe.cs.mergeci.repoCollection.RepoCollectorTest;
 import ch.unibe.cs.mergeci.experiment.ResolutionVariantRunnerTest;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilderTest;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResultTest;
-import ch.unibe.cs.mergeci.runner.maven.MavenRunnerTest;
 import ch.unibe.cs.mergeci.runner.maven.TestResultTest;
 import ch.unibe.cs.mergeci.runner.maven.TestTotalTest;
 import ch.unibe.cs.mergeci.runner.maven.TestTotalXmlTest;
@@ -38,16 +34,9 @@ import org.junit.platform.suite.api.Suite;
 
     // Service tests
     VariantProjectBuilderTest.class,
-
-    // Experiment setup tests
-    ExcelWriterTest.class,
-    RepoCollectorTest.class,
-    MergeConflictCollectorTest.class,
     ResultsPresenterTest.class,
 
     // Run Runners last
-    MavenRunnerTest.class,
-    RepoCollectorTest.class,
     ResolutionVariantRunnerTest.class
 })
 public class AllTestsSuite {

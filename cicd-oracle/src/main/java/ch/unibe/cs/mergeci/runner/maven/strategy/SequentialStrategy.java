@@ -44,8 +44,4 @@ public class SequentialStrategy implements MavenExecutionStrategy {
         }
     }
 
-    @Override
-    public String getName() {
-        return "Sequential";
-    }
 }

@@ -13,7 +13,7 @@ public class AppConfig {
      * If true: Delete all data/output directories and start from scratch
      * If false: Resume from where work was left off (skip completed repos/experiments)
      */
-private static final boolean FRESH_RUN = true;
+private static final boolean FRESH_RUN = false;
 
     /**
      * Get FRESH_RUN mode value. Can be overridden via system property "freshRun" for testing.
@@ -107,7 +107,7 @@ private static final boolean FRESH_RUN = true;
     public static final Path BASE_DIR = Paths.get("/home/lanpirot");
     public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");
     public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                             // directory to clone projects into
-    public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");               // datasets collected by RepoCollector / MergeConflictCollector
+    public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");
     public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");                                // temporary working directory
     /** Shared input data: SQL dump, all_conflicts.csv, maven_conflicts.csv, maven_check_cache.json. */
     public static final Path COMMON_DIR = DATA_BASE_DIR.resolve("common");
@@ -323,23 +323,22 @@ private static final boolean FRESH_RUN = true;
     public static final String CSV = ".csv";
     public static final String JSON = ".json";
     public static final String POMXML = "pom.xml";
-    public static final String JAVA = ".java";
-    public static final String XML = ".xml";
+
 
     // Test repo names
     public static final String myTest = "myTest";
-    public static final String brokenMergeTest = "broken-merge-test";
+
     public static final String jacksonDatabind = "jackson-databind";
     public static final String ruoyivuepro = "ruoyi-vue-pro";
-    public static final String Activiti = "Activiti";
+
     public static final String ripme = "ripme";
-    public static final String airlift = "airlift";
+
     public static final String zembereknlp = "zemberek-nlp";
     public static final String jitwatch = "jitwatch";
 
     // Test-specific directories (all test output goes here)
     public static final Path TEST_BASE_DIR = DATA_BASE_DIR.resolve("test");
-    public static final Path TEST_MAVEN_CONFLICTS_CSV = TEST_BASE_DIR.resolve("maven_conflicts.csv");
+
     public static final Path TEST_DATASET_DIR = TEST_BASE_DIR.resolve("dataset_temp");
     public static final Path TEST_REPO_DIR = Paths.get("src/test/resources/test-merge-projects");
     public static final Path TEST_EXPERIMENTS_DIR = TEST_BASE_DIR.resolve("experiments");

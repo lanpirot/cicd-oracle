@@ -1103,141 +1103,6 @@ def _ancova_cache_threads(groups: dict[str, list[float]],
     return results
 
 
-def _ancova_variant_level(all_data: dict,
-                          valid_commits: list[str] | None = None,
-                          ) -> dict | None:
-    """
-    Variant-level rank-based ANCOVA for the cache and parallelism effects on
-    per-variant build cost.
-
-    One observation per non-baseline, non-cache-warmer, non-timed-out variant
-    across all four variant modes.  Response is ``ownExecutionSeconds / threads``
-    (single-thread-normalised wall-clock cost per variant).
-
-    Uses ``didUseCache`` directly from each variant's JSON field (falls back to
-    mode-name heuristic for legacy data without the field).  ``isParallel`` is
-    derived from the mode (1 for parallel/cache_parallel, 0 otherwise).
-
-    Model::
-
-        normalised_time ~ didUseCache + isParallel + modules
-                          + didUseCache:isParallel
-                          + didUseCache:modules
-                          + isParallel:modules
-
-    Threads are already divided out of the response, so the raw thread count
-    does not appear as a covariate (collinear with the normalisation).
-    ``isParallel`` captures any residual overhead or benefit of concurrent builds
-    beyond what the normalisation removes.
-
-    Returns dict with t/p for each term, or None.
-    """
-    if not HAS_SCIPY:
-        return None
-
-    needed = ["no_optimization", "cache_sequential", "parallel", "cache_parallel"]
-    if any(m not in all_data for m in needed):
-        return None
-
-    if valid_commits is None:
-        valid_commits = _common_valid_commits(all_data, needed)
-    if len(valid_commits) < 3:
-        return None
-
-    import numpy as np
-    from scipy.stats import rankdata, t as t_dist
-
-    y_raw = []
-    cache_vec = []
-    parallel_vec = []
-    modules_vec = []
-
-    for commit in valid_commits:
-        for mode in needed:
-            merge = all_data.get(mode, {}).get(commit)
-            if merge is None:
-                continue
-            threads = _get_threads(merge, mode)
-            modules = _get_modules(merge)
-            is_par = 1 if mode in ("parallel", "cache_parallel") else 0
-
-            for v in merge.get("variants", []):
-                if v.get("variantIndex", 0) == 0:
-                    continue
-                if v.get("isCacheWarmer", False):
-                    continue
-                if v.get("timedOut", False):
-                    continue
-                own = v.get("ownExecutionSeconds")
-                if own is None or own <= 0:
-                    continue
-
-                if "didUseCache" in v:
-                    did_use = 1 if v["didUseCache"] else 0
-                else:
-                    did_use = 1 if mode in ("cache_sequential", "cache_parallel") else 0
-
-                y_raw.append(own / threads)
-                cache_vec.append(did_use)
-                parallel_vec.append(is_par)
-                modules_vec.append(modules)
-
-    if len(y_raw) < 10:
-        return None
-
-    y = np.array(y_raw, dtype=float)
-    cache = np.array(cache_vec, dtype=float)
-    parallel = np.array(parallel_vec, dtype=float)
-    modules = np.array(modules_vec, dtype=float)
-
-    y_ranked = rankdata(y).astype(float)
-
-    N = len(y_ranked)
-    X = np.column_stack([
-        np.ones(N),
-        cache,
-        parallel,
-        modules,
-        cache * parallel,
-        cache * modules,
-        parallel * modules,
-    ])
-    labels = ["intercept", "didUseCache", "isParallel", "modules",
-              "didUseCache:isParallel", "didUseCache:modules",
-              "isParallel:modules"]
-
-    try:
-        XtX_inv = np.linalg.inv(X.T @ X)
-    except np.linalg.LinAlgError:
-        return None
-
-    beta = XtX_inv @ (X.T @ y_ranked)
-    residuals = y_ranked - X @ beta
-    df_resid = N - X.shape[1]
-    if df_resid <= 0:
-        return None
-
-    mse = np.sum(residuals ** 2) / df_resid
-    se = np.sqrt(np.diag(XtX_inv) * mse)
-
-    results = {}
-    for i, label in enumerate(labels):
-        if i == 0:
-            continue
-        if se[i] == 0:
-            results[label] = {"t": float("inf"), "p": 0.0}
-        else:
-            t_val = beta[i] / se[i]
-            p_val = 2.0 * (1.0 - t_dist.cdf(abs(t_val), df_resid))
-            results[label] = {"t": round(float(t_val), 3), "p": round(float(p_val), 6)}
-
-    results["_n_variants"] = N
-    results["_n_cache_hit"] = int(np.sum(cache))
-    results["_n_parallel"] = int(np.sum(parallel))
-    results["_median_modules"] = int(np.median(modules))
-
-    return results
-
 
 def _collect_thread_counts(all_data: dict, modes: list[str],
                            valid_commits: list[str]) -> dict[str, list[int]]:
@@ -1350,21 +1215,6 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
         for term in ["cache", "threads", "modules", "cache:threads", "cache:modules"]:
             if term in ancova:
                 e = ancova[term]
-                p = e["p"]
-                sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else "ns"
-                ann_lines.append(f"  {term}: t={e['t']:.1f}, p={p:.4f} {sig}")
-    # Per-variant ANCOVA: time/threads ~ didUseCache + modules + interaction
-    v_ancova = _ancova_variant_level(all_data, common)
-    if v_ancova:
-        n_v = v_ancova.pop("_n_variants", "?")
-        n_hit = v_ancova.pop("_n_cache_hit", "?")
-        n_par = v_ancova.pop("_n_parallel", "?")
-        med_m = v_ancova.pop("_median_modules", "?")
-        ann_lines.append(f"Per-variant ANCOVA (N={n_v}, hits={n_hit}, par={n_par}, modules={med_m}):")
-        for term in ["didUseCache", "isParallel", "modules",
-                     "didUseCache:isParallel", "didUseCache:modules", "isParallel:modules"]:
-            if term in v_ancova:
-                e = v_ancova[term]
                 p = e["p"]
                 sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else "ns"
                 ann_lines.append(f"  {term}: t={e['t']:.1f}, p={p:.4f} {sig}")
@@ -1667,23 +1517,6 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
                 lines.append(f"  {term}: t={e['t']:.3f}, p={e['p']:.6f}")
     else:
         lines.append(f"\n--- Rank ANCOVA (per-merge): skipped (covariates have no variance) ---")
-
-    # Variant-level ANCOVA: time/threads ~ didUseCache + isParallel + modules + interactions
-    v_ancova = _ancova_variant_level(all_data, common)
-    if v_ancova:
-        n_v = v_ancova.pop("_n_variants", "?")
-        n_hit = v_ancova.pop("_n_cache_hit", "?")
-        n_par = v_ancova.pop("_n_parallel", "?")
-        med_m = v_ancova.pop("_median_modules", "?")
-        lines.append(f"\n--- Rank ANCOVA (per-variant: time/threads ~ didUseCache + isParallel + modules + interactions, "
-                     f"N={n_v}, cache hits={n_hit}, parallel={n_par}, median modules={med_m}) ---")
-        for term in ["didUseCache", "isParallel", "modules",
-                     "didUseCache:isParallel", "didUseCache:modules", "isParallel:modules"]:
-            if term in v_ancova:
-                e = v_ancova[term]
-                lines.append(f"  {term}: t={e['t']:.3f}, p={e['p']:.6f}")
-    else:
-        lines.append(f"\n--- Rank ANCOVA (per-variant): skipped (insufficient data) ---")
 
     # Cross-mode sanity check
     lines.append(_cross_mode_sanity_check(all_data))

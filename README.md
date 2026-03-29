@@ -48,5 +48,6 @@ All paths, timeouts, and feature flags are in `cicd-oracle/src/main/java/ch/unib
 | Property | Default | Effect |
 |----------|---------|--------|
 | `freshRun` | `false` | Delete all output and start from scratch |
-| `coverageActivated` | `true` | Collect JaCoCo coverage |
-| `maxConflictMerges` | `10` | Max qualifying merges per project |
+| `maxConflictMerges` | `5` | Max qualifying merges per project |
+| `reanalyzeSuccess` | `false` | Re-run analysis on previously successful repos |
+| `rq3BestMode` | `cache_parallel` | Best mode from RQ2 to use in RQ3 |
