@@ -48,6 +48,8 @@ public class MavenExecutionFactory {
     private int numInFlightVariantsKilled;
     @Getter
     private int maxThreads;
+    @Getter
+    private long peakBaselineRamBytes;
     private String resolvedJavaHome;
 
     public MavenExecutionFactory(Path logDir) {
@@ -77,10 +79,10 @@ public class MavenExecutionFactory {
      * its actual duration sets the variant budget via TIMEOUT_MULTIPLIER.
      */
     public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds) {
-        return createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaselineSeconds, true);
+        return createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaselineSeconds, 0L, true);
     }
 
-    public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds, boolean stopOnPerfect) {
+    public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds, long storedPeakRamBytes, boolean stopOnPerfect) {
         compilationResults = new TreeMap<>();
         testResults = new TreeMap<>();
         variantFinishSeconds = new TreeMap<>();
@@ -96,10 +98,11 @@ public class MavenExecutionFactory {
                 ExperimentTiming experimentTiming = new ExperimentTiming();
 
                 long rawBaselineSeconds;
-                long peakBaselineRamBytes = 0;
+                long measuredPeakRam = 0;
                 if (storedBaselineSeconds > 0) {
                     experimentTiming.setHumanBaselineExecutionTime(Duration.ofSeconds(storedBaselineSeconds));
                     rawBaselineSeconds = storedBaselineSeconds;
+                    measuredPeakRam = storedPeakRamBytes;
                 } else {
                     RamSampler ramSampler = new RamSampler();
                     ramSampler.start();
@@ -108,16 +111,17 @@ public class MavenExecutionFactory {
                     } finally {
                         ramSampler.stop();
                     }
-                    peakBaselineRamBytes = ramSampler.peakUsageBytes();
+                    measuredPeakRam = ramSampler.peakUsageBytes();
                     rawBaselineSeconds = experimentTiming.getHumanBaselineExecutionTime().getSeconds();
                 }
+                MavenExecutionFactory.this.peakBaselineRamBytes = measuredPeakRam;
                 TestTotal baselineTests = testResults.get(context.getProjectName());
                 CompilationResult baselineCompilation = compilationResults.get(context.getProjectName());
                 long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests, baselineCompilation);
                 experimentTiming.setNormalizedBaselineSeconds(baselineSeconds);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
 
-                int maxThreads = isParallel ? AppConfig.computeMaxThreads(peakBaselineRamBytes) : 1;
+                int maxThreads = isParallel ? AppConfig.computeMaxThreads(measuredPeakRam) : 1;
                 MavenExecutionFactory.this.maxThreads = maxThreads;
                 if (!skipVariants) {
                     System.out.printf("[budget: %ds, threads: %d]%n", totalBudgetSeconds, maxThreads);

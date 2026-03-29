@@ -21,7 +21,7 @@ import java.util.Map;
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
         "isMultiModule", "baselineBroken", "baselineFailureType", "variantsSkipped",
         "buildFileConflictMarkers",
-        "budgetBasisSeconds", "variantBudgetSeconds", "threads",
+        "budgetBasisSeconds", "peakBaselineRamBytes", "variantBudgetSeconds", "threads",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
         "variantsExecutionTimeSeconds", "variants"})
 @ToString
@@ -62,6 +62,11 @@ public class MergeOutputJSON {
     /** Baseline build time used to size the variant budget. For variant modes this is read from
      *  the prior human_baseline JSON (not re-measured); for human_baseline mode it is measured. */
     private long budgetBasisSeconds;
+
+    /** Peak RAM consumed by the baseline build (bytes), measured via MemAvailable sampling.
+     *  Stored in the human_baseline JSON so that variant modes can compute thread counts
+     *  without re-running the baseline. Zero when the baseline was not measured locally. */
+    private long peakBaselineRamBytes;
 
     private long variantBudgetSeconds;
     private int threads;

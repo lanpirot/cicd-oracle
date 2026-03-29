@@ -26,11 +26,13 @@ public interface IVariantEvaluator {
      * @param isCache              warm Maven cache before variants
      * @param skipVariants         run baseline only (human_baseline mode)
      * @param storedBaselineSeconds pre-recorded baseline time; 0 = run baseline fresh
+     * @param storedPeakRamBytes   pre-recorded peak RAM of baseline build (bytes); 0 = unknown
      * @return timing statistics
      */
     ExperimentTiming runExperiment(VariantBuildContext context, VariantProjectBuilder builder,
                                    boolean isParallel, boolean isCache,
-                                   boolean skipVariants, long storedBaselineSeconds) throws Exception;
+                                   boolean skipVariants, long storedBaselineSeconds,
+                                   long storedPeakRamBytes) throws Exception;
 
     Map<String, CompilationResult> getCompilationResults();
     Map<String, TestTotal> getTestResults();
@@ -40,4 +42,5 @@ public interface IVariantEvaluator {
     String getCacheWarmerKey();
     int getNumInFlightVariantsKilled();
     int getMaxThreads();
+    long getPeakBaselineRamBytes();
 }

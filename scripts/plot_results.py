@@ -1414,6 +1414,18 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
         total = sum(len(m.get("variants", [])) for m in all_data.get(mode, {}).values())
         lines.append(f"  {MODE_LABELS.get(mode, mode):25s}: {total} total variants")
 
+    # Budget exhaustion
+    lines.append(f"\nBudget exhaustion per mode:")
+    for mode in VARIANT_MODES:
+        merges = all_data.get(mode, {})
+        n_total = len(merges)
+        if n_total == 0:
+            continue
+        n_exhausted = sum(1 for m in merges.values() if m.get("budgetExhausted"))
+        pct = 100 * n_exhausted / n_total
+        lines.append(f"  {MODE_LABELS.get(mode, mode):25s}: "
+                     f"{n_exhausted}/{n_total} ({pct:.0f}%)")
+
     # Impact
     if stats.get("impact_set"):
         n_all = len(stats["all_merges"])

@@ -70,17 +70,17 @@ plt.rcParams.update({
 
 # ── Ground-truth loader ───────────────────────────────────────────────────────
 
+def _normalize_path(p: str) -> str:
+    """Normalize a repo-relative path for matching: strip leading './', collapse
+    separators, use forward slashes."""
+    return str(Path(p)).lstrip("./")
+
+
 def load_ground_truth(all_conflicts_csv: Path) -> dict[str, dict[str, list[str]]]:
     """
     Returns ground_truth[merge_id][filename] = [pattern_chunk0, pattern_chunk1, ...]
     sorted by chunkIndex (ascending, 1-based from the DB).
-
-    The variant's conflictPatterns[filename] list is assumed to follow the same
-    chunkIndex order.  Verify this assumption before drawing conclusions.
-
-    # TODO: confirm that VariantProjectBuilder writes conflictPatterns in the
-    #       same chunkIndex order as all_conflicts.csv.  If not, a sort-key
-    #       needs to be derived from the conflict file parsing order.
+    Filenames are normalized repo-relative paths.
     """
     # merge_id -> filename -> list of (chunkIndex, pattern)
     raw: dict[str, dict[str, list[tuple[int, str]]]] = defaultdict(lambda: defaultdict(list))
@@ -95,7 +95,7 @@ def load_ground_truth(all_conflicts_csv: Path) -> dict[str, dict[str, list[str]]
             except ValueError:
                 idx = 0
             if merge_id and filename and y:
-                raw[merge_id][filename].append((idx, y))
+                raw[merge_id][_normalize_path(filename)].append((idx, y))
 
     # Sort by chunkIndex and drop the index
     ground_truth: dict[str, dict[str, list[str]]] = {}
@@ -118,25 +118,15 @@ def hamming_distance(variant_patterns: dict[str, list[str]],
     variant_patterns: conflictPatterns from the JSON variant
                       {filename -> [pattern_per_chunk]}
     gt_patterns:      ground_truth[merge_id] as loaded above
+                      (filenames already normalized by load_ground_truth)
 
     Returns None if the filenames don't overlap (can't compare).
-
-    # TODO: filename normalisation — the JSON may use relative paths while
-    #       all_conflicts.csv stores bare filenames or repo-relative paths.
-    #       Add a normalisation step here if mismatches occur.
     """
     total_dist = 0
     matched_chunks = 0
 
     for fname, variant_list in variant_patterns.items():
-        # Try exact match first, then basename fallback
-        gt_list = gt_patterns.get(fname)
-        if gt_list is None:
-            basename = Path(fname).name
-            gt_list = next(
-                (v for k, v in gt_patterns.items() if Path(k).name == basename),
-                None
-            )
+        gt_list = gt_patterns.get(_normalize_path(fname))
         if gt_list is None:
             continue  # file not in ground truth — skip
 

@@ -185,7 +185,8 @@ public class ResolutionVariantRunner {
                                                 boolean stopOnPerfect) throws Exception {
         modeDir.toFile().mkdirs();
 
-        Map<String, Long> storedBaselines = skipVariants ? Collections.emptyMap()
+        StoredBaselines stored = skipVariants
+                ? new StoredBaselines(Collections.emptyMap(), Collections.emptyMap())
                 : loadStoredBaselines(humanBaselineDir);
 
         Map<String, String> skippedBaselines = skipVariants ? Collections.emptyMap()
@@ -196,8 +197,8 @@ public class ResolutionVariantRunner {
         }
 
         MergeExperimentRunner processor = new MergeExperimentRunner(
-                repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines,
-                generatorFactory, evaluator, stopOnPerfect);
+                repoPath, tmpDir, isParallel, isCache, skipVariants, stored.seconds(),
+                stored.peakRamBytes(), generatorFactory, evaluator, stopOnPerfect);
         VariantResultCollector collector = new VariantResultCollector();
 
         Map<String, Map<String, List<String>>> groundTruthPatterns = skipVariants
@@ -252,29 +253,36 @@ public class ResolutionVariantRunner {
         }
     }
 
+    /** Stored baseline info loaded from human_baseline JSON files. */
+    private record StoredBaselines(Map<String, Long> seconds, Map<String, Long> peakRamBytes) {}
+
     /**
-     * Load per-merge humanBaselineSeconds from per-merge JSON files in the human_baseline directory.
-     * Returns an empty map if the directory does not exist or cannot be read.
+     * Load per-merge humanBaselineSeconds and peakBaselineRamBytes from human_baseline JSON files.
+     * Returns empty maps if the directory does not exist or cannot be read.
      */
-    private static Map<String, Long> loadStoredBaselines(Path humanBaselineDir) {
+    private static StoredBaselines loadStoredBaselines(Path humanBaselineDir) {
         if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) {
-            return Collections.emptyMap();
+            return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap());
         }
         File[] files = humanBaselineDir.toFile().listFiles((d, name) -> name.endsWith(AppConfig.JSON));
-        if (files == null) return Collections.emptyMap();
-        Map<String, Long> map = new HashMap<>();
+        if (files == null) return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap());
+        Map<String, Long> seconds = new HashMap<>();
+        Map<String, Long> peakRam = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         for (File file : files) {
             try {
                 MergeOutputJSON merge = mapper.readValue(file, MergeOutputJSON.class);
                 if (merge.getMergeCommit() != null && merge.getBudgetBasisSeconds() > 0) {
-                    map.put(merge.getMergeCommit(), merge.getBudgetBasisSeconds());
+                    seconds.put(merge.getMergeCommit(), merge.getBudgetBasisSeconds());
+                    if (merge.getPeakBaselineRamBytes() > 0) {
+                        peakRam.put(merge.getMergeCommit(), merge.getPeakBaselineRamBytes());
+                    }
                 }
             } catch (IOException e) {
                 System.err.println("Warning: could not read stored baseline from " + file + ": " + e.getMessage());
             }
         }
-        return map;
+        return new StoredBaselines(seconds, peakRam);
     }
 
     /**
@@ -407,6 +415,19 @@ public class ResolutionVariantRunner {
             result.setMode(modeName);
             result.setProjectName(projectName);
             classifyBaseline(result, processed);
+
+            // During human_baseline mode, don't persist JSONs for merges that no variant
+            // mode will ever process.  Variant modes already skip merges without a
+            // baseline JSON (NO_BASELINE), so omitting the file keeps all 5 mode
+            // directories in sync.
+            if (skipVariants && result.isVariantsSkipped()) {
+                String reason = SKIP_REASONS.getOrDefault(result.getBaselineFailureType(), "unusable baseline");
+                System.out.println("SKIPPED (" + reason + ")");
+                logBaselineFailure(failureLog, result, info.getShortCommit());
+                skippedCount++;
+                continue;
+            }
+
             result.setProcessed(true);
             new JsonResultWriter().writeResult(result, modeDir);
             logBaselineFailure(failureLog, result, info.getShortCommit());
