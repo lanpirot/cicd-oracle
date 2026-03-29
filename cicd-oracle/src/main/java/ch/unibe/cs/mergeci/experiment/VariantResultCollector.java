@@ -52,7 +52,13 @@ public class VariantResultCollector {
         output.setNumConflictChunks(processed.getNumConflictChunks());
         output.setNumConflictFiles(info.getNumConflictFiles());
         output.setNumJavaConflictFiles(info.getNumJavaFiles());
-        output.setIsMultiModule(info.isMultiModule());
+        // Derive isMultiModule from the actual baseline build rather than the
+        // (potentially stale) CSV value: the baseline CompilationResult reflects
+        // the build that actually ran, while the CSV flag was set during the
+        // original collection build which may have failed before the reactor.
+        String projectName = processed.getAnalysisResult().getProjectName();
+        CompilationResult baselineCr = processed.getAnalysisResult().compilationResults().get(projectName);
+        output.setIsMultiModule(baselineCr != null && baselineCr.getTotalModules() > 1);
         output.setTotalExecutionTime(processed.getAnalysisResult().executionTimeSeconds());
         ExperimentTiming timing = processed.getAnalysisResult().runExecutionTime();
         long baselineSeconds = (timing != null && timing.getNormalizedBaselineSeconds() > 0)

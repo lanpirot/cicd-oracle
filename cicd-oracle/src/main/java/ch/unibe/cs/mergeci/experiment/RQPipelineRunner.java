@@ -103,10 +103,9 @@ public abstract class RQPipelineRunner {
             cleanExperimentDirs();
         }
 
-        int processed = 0;
         int limit = processedLimit();
         for (Map.Entry<String, List<DatasetReader.MergeInfo>> entry : byProject.entrySet()) {
-            if (processed >= limit) break;
+            if (countBaselineJsons() >= limit) break;
 
             String projectName = entry.getKey();
             List<DatasetReader.MergeInfo> merges = entry.getValue();
@@ -126,7 +125,6 @@ public abstract class RQPipelineRunner {
                     info.setParent2(parents[1]);
                 }
                 runModes(projectName, merges, repoPath);
-                processed++;
             } catch (Exception e) {
                 System.err.println("Analysis failed for " + projectName + ": " + e.getMessage());
             } finally {
@@ -134,6 +132,7 @@ public abstract class RQPipelineRunner {
                 WindowCache.reconfigure(new WindowCacheConfig());
             }
         }
+        int processed = countBaselineJsons();
 
         if (limit < Integer.MAX_VALUE) {
             System.out.printf("Pipeline finished: %d/%d projects processed.%n", processed, limit);
@@ -209,6 +208,44 @@ public abstract class RQPipelineRunner {
                 checkBaselineViability(projectName, merges, repoPath);
             }
         }
+
+        removeOrphanedBaselines(merges, humanBaselineDir);
+    }
+
+    /**
+     * After all modes complete for a project, delete any human_baseline JSON
+     * that has no corresponding JSON in any variant mode directory.
+     * This handles cases like chunk-count mismatches where the baseline succeeds
+     * but every variant mode skips the merge.
+     */
+    void removeOrphanedBaselines(List<DatasetReader.MergeInfo> merges, Path humanBaselineDir) {
+        List<Utility.Experiments> variantModes = modesToRun().stream()
+                .filter(ex -> !ex.isSkipVariants())
+                .toList();
+
+        for (DatasetReader.MergeInfo info : merges) {
+            String filename = info.getMergeCommit() + AppConfig.JSON;
+            File baselineFile = humanBaselineDir.resolve(filename).toFile();
+            if (!baselineFile.exists()) continue;
+
+            boolean hasVariant = variantModes.stream()
+                    .anyMatch(ex -> experimentDir().resolve(ex.getName()).resolve(filename).toFile().exists());
+
+            if (!hasVariant) {
+                System.out.printf("Removing orphaned human_baseline: %s (no variant mode produced a result)%n",
+                        info.getMergeCommit());
+                baselineFile.delete();
+            }
+        }
+    }
+
+    /** Count JSON files in the human_baseline directory. */
+    int countBaselineJsons() {
+        File[] files = experimentDir().resolve("human_baseline").toFile().listFiles();
+        if (files == null) return 0;
+        return (int) java.util.Arrays.stream(files)
+                .filter(f -> f.getName().endsWith(AppConfig.JSON))
+                .count();
     }
 
     /**

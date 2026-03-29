@@ -34,8 +34,8 @@ public class CompilationResult {
     @JsonProperty
     public int getTotalModules() {
         if (moduleResults != null && !moduleResults.isEmpty()) return moduleResults.size();
-        // Single-module project: no Reactor Summary — infer 1 when build status is known
-        return (buildStatus == Status.SUCCESS || buildStatus == Status.FAILURE || buildStatus == Status.TIMEOUT) ? 1 : 0;
+        // Single-module project: no Reactor Summary — always at least 1
+        return 1;
     }
 
     @JsonProperty
