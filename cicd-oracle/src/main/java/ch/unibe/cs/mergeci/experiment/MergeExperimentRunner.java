@@ -104,6 +104,9 @@ public class MergeExperimentRunner {
         } catch (ChunkMismatchException e) {
             System.err.println("SKIP " + info.getMergeCommit() + ": " + e.getMessage());
             return ProcessedMerge.skipped(info, 0, "chunk mismatch: " + e.getMessage());
+        } catch (org.eclipse.jgit.api.errors.GitAPIException e) {
+            System.err.println("SKIP " + info.getMergeCommit() + ": git error: " + e.getMessage());
+            return ProcessedMerge.skipped(info, 0, "git error: " + e.getMessage());
         }
     }
 

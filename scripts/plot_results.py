@@ -28,6 +28,8 @@ import itertools
 from pathlib import Path
 from collections import defaultdict
 
+import numpy as np
+
 import latex_variables
 
 import matplotlib
@@ -1460,6 +1462,88 @@ def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None
     ax.grid(True, alpha=0.3)
 
 
+# ── Setup overhead (Charts 10a, 10b) ─────────────────────────────────────────
+
+_OVERHEAD_MODES = ["no_optimization", "cache_sequential", "parallel", "cache_parallel"]
+
+
+def _load_first_batch_overhead(variant_dir: Path):
+    """
+    Load (absolute_wait_s, fraction) for every first-batch variant
+    (variantIndex 1..#threads) across all modes.
+    Returns dict: mode -> list of (abs_wait, frac).
+    """
+    result = {}
+    for mode in _OVERHEAD_MODES:
+        mode_dir = variant_dir / mode
+        if not mode_dir.is_dir():
+            continue
+        points = []
+        for fp in sorted(mode_dir.glob("*.json")):
+            with open(fp) as fh:
+                data = json.load(fh)
+            variants = data.get("variants", [])
+            threads = data.get("threads", 1)
+            for v in variants:
+                idx = v.get("variantIndex", 0)
+                if idx < 1 or idx > threads:
+                    continue
+                total = v.get("totalTimeSinceMergeStartSeconds", 0)
+                own = v.get("ownExecutionSeconds", 0)
+                if total <= 0:
+                    continue
+                wait = total - own
+                points.append((wait, wait / total))
+        if points:
+            result[mode] = points
+    return result
+
+
+def _draw_overhead_violin(ax, overhead_data, value_index, ylabel, ylim=None):
+    """Draw a violin for setup overhead. value_index: 0=absolute, 1=fraction."""
+    distributions = []
+    positions = []
+    colors = []
+    labels = []
+    for i, mode in enumerate(_OVERHEAD_MODES):
+        if mode not in overhead_data:
+            continue
+        ys = [p[value_index] for p in overhead_data[mode]]
+        distributions.append(ys)
+        positions.append(i + 1)
+        colors.append(MODE_COLORS[mode])
+        labels.append(MODE_LABELS[mode])
+
+    if not distributions:
+        return
+
+    parts = ax.violinplot(distributions, positions=positions,
+                          showmeans=True, showmedians=True, showextrema=False)
+    for i, pc in enumerate(parts["bodies"]):
+        pc.set_facecolor(colors[i])
+        pc.set_edgecolor("black")
+        pc.set_linewidth(0.5)
+        pc.set_alpha(0.7)
+    parts["cmeans"].set_color("black")
+    parts["cmeans"].set_linewidth(1)
+    parts["cmedians"].set_color("black")
+    parts["cmedians"].set_linewidth(0.8)
+    parts["cmedians"].set_linestyle("--")
+
+    ax.set_xticks(positions)
+    ax.set_xticklabels(labels, rotation=20, ha="right")
+    ax.set_ylabel(ylabel)
+    if ylim is not None:
+        ax.set_ylim(ylim)
+    ax.axhline(y=0, color="gray", linewidth=0.5, linestyle="--")
+
+    for i, ys in enumerate(distributions):
+        y_bot = ylim[0] if ylim else ax.get_ylim()[0]
+        span = (ylim[1] - ylim[0]) if ylim else (ax.get_ylim()[1] - ax.get_ylim()[0])
+        ax.text(positions[i], y_bot + 0.01 * span,
+                f"n={len(ys)}", ha="center", va="bottom", fontsize=7, color="gray")
+
+
 def _save_fig(fig, results_dir: Path, name: str, combined_pdf=None):
     """Save a figure as an individual PDF and optionally append to a combined PdfPages."""
     path = results_dir / f"{name}.pdf"
@@ -1600,6 +1684,30 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
                              "Time to Best Variant",
                              "Relative time (1.0 = baseline, median)")
         _save_fig(fig, results_dir, "09b_decomposition_time_to_best", pdf)
+
+        # Charts 10a/10b: Setup overhead (reads JSON files directly)
+        print("Drawing setup overhead charts ...")
+        overhead_data = _load_first_batch_overhead(variant_dir)
+        if overhead_data:
+            # Chart 10a: Absolute setup wait time
+            fig, ax = plt.subplots(figsize=(5, 4))
+            _draw_overhead_violin(ax, overhead_data, 0,
+                                  ylabel="Setup wait time (seconds)")
+            ax.set_title("(a) Absolute setup overhead per variant")
+            fig.tight_layout()
+            _save_fig(fig, results_dir, "10a_setup_overhead_absolute", pdf)
+
+            # Chart 10b: Relative overhead fraction
+            fig, ax = plt.subplots(figsize=(5, 4))
+            _draw_overhead_violin(ax, overhead_data, 1,
+                                  ylabel=("Setup overhead fraction\n"
+                                          + (r"$\frac{\mathrm{totalTime} - \mathrm{ownExecution}}"
+                                             r"{\mathrm{totalTime}}$" if USE_LATEX else
+                                             "(totalTime - ownExecution) / totalTime")),
+                                  ylim=(-0.05, 1.05))
+            ax.set_title("(b) Relative setup overhead per variant")
+            fig.tight_layout()
+            _save_fig(fig, results_dir, "10b_setup_overhead_relative", pdf)
 
     # Write console summary to text file
     _write_console_summary(results_dir, all_data, stats, rq)

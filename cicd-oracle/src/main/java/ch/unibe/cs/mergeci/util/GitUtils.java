@@ -80,6 +80,15 @@ public class GitUtils {
         try (RevWalk walk = new RevWalk(repo)) {
             RevCommit head = walk.parseCommit(commit1);
 
+            // Clean up stale temp branch from a prior crash, if present
+            if (repo.findRef(tempBranch) != null) {
+                try {
+                    git.branchDelete().setBranchNames(tempBranch).setForce(true).call();
+                } catch (GitAPIException ignored) {
+                    // If we can't delete it, the checkout below will fail and be caught
+                }
+            }
+
             // Checkout commit1 in a temp branch
 
             Ref checkout = git.checkout()
@@ -119,13 +128,18 @@ public class GitUtils {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IOException("Failed to compute non-conflict objects: " + e.getMessage(), e);
         } finally {
-            // Abort merge and delete temp branch
+            // Abort merge and restore original branch, then delete temp branch
             try {
                 git.reset().setMode(ResetCommand.ResetType.HARD).call();
-                git.checkout().setName(originalBranch.getName()).setForced(true).call();
-                git.branchDelete().setBranchNames(tempBranch).setForce(true).call();
+                // Only switch back if we're not already on the original branch
+                if (!repo.getBranch().equals(originalBranch.getName())) {
+                    git.checkout().setName(originalBranch.getName()).setForced(true).call();
+                }
+                if (repo.findRef(tempBranch) != null) {
+                    git.branchDelete().setBranchNames(tempBranch).setForce(true).call();
+                }
             } catch (GitAPIException e) {
                 throw new RuntimeException(e);
             }
