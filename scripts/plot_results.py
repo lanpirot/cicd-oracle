@@ -459,7 +459,7 @@ def draw_search_space_coverage(ax, all_data: dict, num_patterns: int = 16):
     rng = _random.Random(0)
     for i, (vals, mode) in enumerate(zip(data, plot_modes)):
         xs = [i + rng.gauss(0, 0.07) for _ in vals]
-        ax.scatter(xs, vals, color=MODE_COLORS[mode], s=8, alpha=0.40,
+        ax.scatter(xs, vals, color="#222222", s=8, alpha=0.50,
                    edgecolors="none", zorder=3)
 
     ax.set_xticks(positions)
@@ -502,6 +502,49 @@ def draw_search_space_coverage(ax, all_data: dict, num_patterns: int = 16):
         if USE_LATEX else
         "Equiv. # conflicts c  (exhaustive at this fraction)"
     )
+
+
+# ── Smoothing helpers ─────────────────────────────────────────────────────────
+
+
+def _lowess(xs: list[float], ys: list[float], frac: float = 0.3) -> list[float]:
+    """
+    LOWESS (locally weighted scatterplot smoothing).
+    For each point, fits a weighted linear regression using a tri-cube
+    kernel over the nearest `frac` fraction of points.
+    Returns smoothed y-values at the same x positions.
+    """
+    import numpy as np
+    xs = np.asarray(xs, dtype=float)
+    ys = np.asarray(ys, dtype=float)
+    n = len(xs)
+    k = max(2, int(np.ceil(frac * n)))
+    smoothed = np.empty(n)
+    for i in range(n):
+        dists = np.abs(xs - xs[i])
+        idx = np.argsort(dists)[:k]
+        max_dist = dists[idx[-1]]
+        if max_dist == 0:
+            smoothed[i] = np.median(ys[idx])
+            continue
+        u = dists[idx] / max_dist
+        w = (1 - u ** 3) ** 3  # tri-cube kernel
+        # Weighted linear regression: y = a + b*x
+        xw = xs[idx]
+        yw = ys[idx]
+        sw = w.sum()
+        mx = (w * xw).sum() / sw
+        my = (w * yw).sum() / sw
+        cov_xy = (w * (xw - mx) * (yw - my)).sum()
+        var_x = (w * (xw - mx) ** 2).sum()
+        if var_x > 0:
+            b = cov_xy / var_x
+            a = my - b * mx
+            smoothed[i] = a + b * xs[i]
+        else:
+            smoothed[i] = my
+    return smoothed.tolist()
+
 
 
 # ── RQ2 mode comparison: statistical helpers ─────────────────────────────────
@@ -586,7 +629,8 @@ def _annotate_significance(ax, text: str):
     """Place a multi-line significance annotation in the upper-left, on top of all data."""
     ax.text(0.02, 0.98, text, transform=ax.transAxes, fontsize=7,
             verticalalignment="top", fontfamily="monospace", zorder=99,
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="wheat", alpha=0.8))
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="wheat", alpha=1.0,
+                      edgecolor="tan", linewidth=0.5))
 
 
 def _significance_summary(friedman_p: float | None,
@@ -684,11 +728,13 @@ def _collect_paired_metric(all_data: dict, modes: list[str],
 # ── RQ2 Chart: Variants completed per mode ────────────────────────────────────
 
 def _count_completed_variants(merge: dict) -> float | None:
-    """Count non-baseline, non-timed-out variants."""
+    """Count non-baseline, non-timed-out variants.  Returns 0 when all timed out."""
     variants = merge.get("variants", [])
+    if not variants:
+        return None
     count = sum(1 for v in variants
                 if v.get("variantIndex", 0) != 0 and not v.get("timedOut", False))
-    return float(count) if count > 0 else None
+    return float(count)
 
 
 def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None = None):
@@ -709,7 +755,7 @@ def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None 
         patch.set_facecolor(MODE_COLORS[mode])
         patch.set_alpha(0.7)
 
-    ax.set_yscale("log")
+    ax.set_yscale("symlog", linthresh=1)
     ax.set_xticks(positions)
     ax.set_xticklabels([f"{MODE_LABELS[m]} ({MODE_SHORT[m]})\nn={len(groups[m])}"
                         for m in plot_modes])
@@ -770,7 +816,11 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
 
         if ratios:
             box_data.append(ratios)
-            box_labels.append(f"{MODE_LABELS[mode]} ({MODE_SHORT[mode]})\nn={len(ratios)}")
+            # Label shows the ratio being computed, e.g. "Sequential (S+ / S)"
+            noncache = "S" if mode == "cache_sequential" else "P"
+            cache_short = MODE_SHORT[mode]
+            box_labels.append(
+                f"Cache Speedup ({cache_short} / {noncache})\nn={len(ratios)}")
             box_colors.append(MODE_COLORS[mode])
 
             if len(cold_times) >= 3 and HAS_SCIPY:
@@ -780,7 +830,7 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
                     med_ratio = sorted(ratios)[len(ratios) // 2]
                     sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else "ns"
                     sig_lines.append(
-                        f"{MODE_SHORT[mode]}: median ratio={med_ratio:.2f}x, "
+                        f"{cache_short}/{noncache}: med={med_ratio:.2f}x, "
                         f"p={p:.4f}{sig}, d={d:+.2f} ({_cliffs_delta_label(d)})"
                     )
                 except ValueError:
@@ -1082,16 +1132,22 @@ def _ancova_cache_threads(groups: dict[str, list[float]],
     mse = np.sum(residuals ** 2) / df_resid
     se = np.sqrt(np.diag(XtX_inv) * mse)
 
+    ss_resid = float(np.sum(residuals ** 2))
+
     results = {}
     for i, label in enumerate(labels):
         if i == 0:
             continue  # skip intercept
         if se[i] == 0:
-            results[label] = {"t": float("inf"), "p": 0.0}
+            results[label] = {"t": float("inf"), "p": 0.0, "eta2p": 1.0}
         else:
             t_val = beta[i] / se[i]
             p_val = 2.0 * (1.0 - t_dist.cdf(abs(t_val), df_resid))
-            results[label] = {"t": round(float(t_val), 3), "p": round(float(p_val), 6)}
+            # Partial eta-squared: t^2 / (t^2 + df_resid)
+            eta2p = float(t_val ** 2 / (t_val ** 2 + df_resid))
+            results[label] = {"t": round(float(t_val), 3),
+                              "p": round(float(p_val), 6),
+                              "eta2p": round(eta2p, 4)}
 
     # Report median threads for context
     par_threads = [t for m in ("parallel", "cache_parallel") for t in thread_counts.get(m, [])[:n]]
@@ -1166,7 +1222,7 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
 
     factor_lines = [
         (("no_optimization", "parallel"), "No Cache", "#e31a1c", "o", -0.02),
-        (("cache_sequential", "cache_parallel"), "Cache", "#33a02c", "s", 0.02),
+        (("cache_sequential", "cache_parallel"), "Cache", "#1f78b4", "s", 0.02),
     ]
 
     for (seq_mode, par_mode), label, color, marker, x_offset in factor_lines:
@@ -1217,7 +1273,10 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
                 e = ancova[term]
                 p = e["p"]
                 sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else "ns"
-                ann_lines.append(f"  {term}: t={e['t']:.1f}, p={p:.4f} {sig}")
+                eta2p = e.get("eta2p", 0.0)
+                ann_lines.append(
+                    f"  {term}: t={e['t']:.1f}, p={p:.4f}{sig}, eta2p={eta2p:.3f}"
+                )
     if ann_lines:
         _annotate_significance(ax, "\n".join(ann_lines))
     else:
@@ -1226,35 +1285,29 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
 
 # ── RQ2 Chart: Variant index vs. build time (diminishing marginal cost) ───────
 
-def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None = None):
+def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None = None,
+                            per_thread: bool = False):
     """
     For each mode, plot variant ordinal index (x) vs. ownExecutionSeconds (y).
     Shows that RQ1 predictions order variants well (early variants are
     the most promising) and that each additional variant is cheap.
+
+    If per_thread=True, divide each parallel variant's time by its merge's
+    thread count, showing the per-core cost.
 
     Each merge contributes one line (thin, semi-transparent); a thick median
     line per mode summarises the trend.
     """
     import numpy as np
 
-    SMOOTH_HALF = 5  # rolling mean window = ±5 positions (11-wide)
     max_x = 0       # track longest median curve for x-axis limit
-
-    def _rolling_median(vals: list[float], half: int) -> list[float]:
-        """Centred rolling median with shrinking window at edges."""
-        n = len(vals)
-        out = []
-        for i in range(n):
-            lo = max(0, i - half)
-            hi = min(n, i + half + 1)
-            window = sorted(vals[lo:hi])
-            out.append(window[len(window) // 2])
-        return out
+    max_y = 0.0     # track tallest plotted value for dynamic y-axis
 
     for mode in VARIANT_MODES:
         color = MODE_COLORS[mode]
         marker = MODE_MARKERS[mode]
         label = MODE_LABELS[mode]
+        is_parallel = mode in ("parallel", "cache_parallel")
 
         # Collect per-merge series: ordinal -> ownExecutionSeconds
         all_series = []
@@ -1267,6 +1320,7 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
             budget = merge.get("budgetBasisSeconds", 0)
             if budget <= 0:
                 continue
+            threads = _get_threads(merge, mode) if per_thread and is_parallel else 1
             series = []
             for v in merge.get("variants", []):
                 if v.get("variantIndex", 0) == 0:
@@ -1275,41 +1329,133 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
                 if own is None:
                     continue
                 # Normalise by baseline so projects are comparable
-                series.append(own / budget)
+                series.append(own / budget / threads)
             if series:
                 all_series.append(series)
 
         if not all_series:
             continue
 
-        # Median curve: at each ordinal position, take median across merges
+        # Median at each ordinal position, then LOWESS smoothing.
         max_len = max(len(s) for s in all_series)
-        median_curve = []
+        median_xs = []
+        median_ys = []
         for i in range(max_len):
             vals = [s[i] for s in all_series if i < len(s)]
             if len(vals) >= 3:  # need at least 3 merges at this position
-                median_curve.append(np.median(vals))
+                median_xs.append(i + 1)
+                median_ys.append(np.median(vals))
             else:
                 break
 
-        if median_curve:
-            smoothed = _rolling_median(median_curve, SMOOTH_HALF)
-            # Trim the last SMOOTH_HALF points (incomplete window)
-            plot_len = max(1, len(smoothed) - SMOOTH_HALF)
-            xs = list(range(1, plot_len + 1))
-            ax.plot(xs, smoothed[:plot_len], color=color, linewidth=2.2,
+        if len(median_ys) >= 3:
+            plotted = _lowess(median_xs, median_ys, frac=0.2)
+            ax.plot(median_xs, plotted, color=color, linewidth=2.2,
                     marker=marker, markersize=4,
-                    markevery=max(1, plot_len // 15),
+                    markevery=max(1, len(plotted) // 15),
                     label=label, zorder=4, alpha=0.9)
-            max_x = max(max_x, plot_len)
+            max_x = max(max_x, median_xs[-1])
+            max_y = max(max_y, max(plotted))
 
     ax.set_xlabel("Variant ordinal (1 = first variant tried)")
-    ax.set_ylabel("Build time (relative to baseline, 1.0 = baseline duration)")
-    ax.set_title("Marginal Cost of Additional Variants")
+    if per_thread:
+        ax.set_ylabel("Build time per thread (relative to baseline)")
+        ax.set_title("Marginal Cost of Additional Variants (Per Thread)")
+    else:
+        ax.set_ylabel("Build time (relative to baseline, 1.0 = baseline duration)")
+        ax.set_title("Marginal Cost of Additional Variants")
     ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
                label="baseline build time")
     ax.set_xlim(left=0, right=max_x + 1 if max_x > 0 else None)
-    ax.set_ylim(bottom=0, top=2.5)
+    # Dynamic y-axis: accommodate the tallest median curve with 15% headroom
+    if per_thread:
+        y_top = max(max_y * 1.15, 1.1)  # tighter crop for per-thread view
+    else:
+        y_top = max(max_y * 1.15, 1.5)  # keep baseline line comfortably visible
+    ax.set_ylim(bottom=0, top=y_top)
+    ax.legend(loc="upper right", fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+
+def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None = None):
+    """
+    Like the marginal cost curve but for cache modes only, split by didUseCache.
+    Four series: S+ warm, S+ cold, P+ warm, P+ cold.
+    """
+    import numpy as np
+
+    max_x = 0
+    max_y = 0.0
+
+    # (mode, didUseCache, label, color, marker, zorder)
+    # Cold lines drawn first; warm lines on top so they're visible.
+    series_defs = [
+        ("cache_sequential", False, "S+ (no cache)",    "#e31a1c", "o", 4),
+        ("cache_parallel",   False, "P+ (no cache)",    "#33a02c", "s", 4),
+        ("cache_sequential", True,  "S+ (warm cache)",  "#fb9a99", "v", 5),
+        ("cache_parallel",   True,  "P+ (warm cache)",  "#b2df8a", "^", 5),
+    ]
+
+    for mode, use_cache, label, color, marker, z in series_defs:
+        # Collect per-merge: variantIndex -> normalised build time,
+        # only for variants matching the didUseCache flag.
+        # key = variantIndex, value = list of normalised times across merges
+        from collections import defaultdict as _defaultdict
+        index_vals: dict[int, list[float]] = _defaultdict(list)
+        n_merges = 0
+        merges = all_data.get(mode, {})
+        commits = valid_commits if valid_commits is not None else sorted(merges.keys())
+        for commit in commits:
+            merge = merges.get(commit)
+            if merge is None:
+                continue
+            budget = merge.get("budgetBasisSeconds", 0)
+            if budget <= 0:
+                continue
+            found = False
+            for v in merge.get("variants", []):
+                idx = v.get("variantIndex", 0)
+                if idx == 0:
+                    continue
+                if v.get("didUseCache", False) != use_cache:
+                    continue
+                own = v.get("ownExecutionSeconds")
+                if own is None:
+                    continue
+                index_vals[idx].append(own / budget)
+                found = True
+            if found:
+                n_merges += 1
+
+        if not index_vals:
+            continue
+
+        # Median at each variant index with >= 3 data points, then LOWESS
+        median_xs = []
+        median_ys = []
+        for idx in sorted(index_vals):
+            vals = index_vals[idx]
+            if len(vals) >= 3:
+                median_xs.append(idx)
+                median_ys.append(np.median(vals))
+
+        if len(median_ys) >= 3:
+            plotted = _lowess(median_xs, median_ys, frac=0.3)
+            ax.plot(median_xs, plotted, color=color, linewidth=2.2,
+                    marker=marker, markersize=4,
+                    markevery=max(1, len(plotted) // 15),
+                    label=f"{label} (n={n_merges})", zorder=z, alpha=0.9)
+            max_x = max(max_x, median_xs[-1])
+            max_y = max(max_y, max(plotted))
+
+    ax.set_xlabel("Variant ordinal (1 = first variant tried)")
+    ax.set_ylabel("Build time (relative to baseline, 1.0 = baseline duration)")
+    ax.set_title("Cache Effect on Variant Build Time")
+    ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
+               label="baseline build time")
+    ax.set_xlim(left=0, right=max_x + 1 if max_x > 0 else None)
+    y_top = max(max_y * 1.15, 1.5)
+    ax.set_ylim(bottom=0, top=y_top)
     ax.legend(loc="upper right", fontsize=8)
     ax.grid(True, alpha=0.3)
 
@@ -1428,6 +1574,18 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         draw_variant_cost_curve(ax, all_data)
         _save_fig(fig, results_dir, "08_variant_cost_curve", pdf)
 
+        # Chart 8a: Variant cost curve per thread (parallel times / thread count)
+        print("Drawing variant cost curve (per thread) ...")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        draw_variant_cost_curve(ax, all_data, per_thread=True)
+        _save_fig(fig, results_dir, "08a_variant_cost_per_thread", pdf)
+
+        # Chart 8b: Cache effect on variant build times
+        print("Drawing cache variant time chart ...")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        draw_cache_variant_times(ax, all_data)
+        _save_fig(fig, results_dir, "08b_cache_variant_times", pdf)
+
         # Chart 9a: Technique decomposition — variant throughput
         print("Drawing technique decomposition charts ...")
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -1483,6 +1641,52 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
         lines.append(f"  {MODE_LABELS.get(mode, mode):25s}: "
                      f"{n_exhausted}/{n_total} ({pct:.0f}%)")
 
+    # Thread counts in parallel modes
+    import numpy as np
+    lines.append(f"\nThread counts (parallel modes):")
+    for mode in ["parallel", "cache_parallel"]:
+        merges = all_data.get(mode, {})
+        thread_vals = [m.get("threads") for m in merges.values() if m.get("threads")]
+        if thread_vals:
+            arr = np.array(thread_vals, dtype=float)
+            lines.append(f"  {MODE_LABELS.get(mode, mode):25s}: "
+                         f"mean={np.mean(arr):.1f}, median={np.median(arr):.0f}, "
+                         f"std={np.std(arr):.1f}, n={len(arr)}")
+
+    # Cache effectiveness in caching modes
+    lines.append(f"\nCache effectiveness (caching modes):")
+    for mode in ["cache_sequential", "cache_parallel"]:
+        merges = all_data.get(mode, {})
+        n_total = len(merges)
+        n_with_cache = 0
+        warm_ratios = []
+        all_ratios = []  # includes merges where no variant used the cache
+        for m in merges.values():
+            variants = m.get("variants", [])
+            non_baseline = [v for v in variants if v.get("variantIndex", 0) != 0]
+            if not non_baseline:
+                continue
+            did_use = [v for v in non_baseline if v.get("didUseCache", False)]
+            ratio = len(did_use) / len(non_baseline)
+            all_ratios.append(ratio)
+            if did_use:
+                n_with_cache += 1
+                warm_ratios.append(ratio)
+        lines.append(f"  {MODE_LABELS.get(mode, mode):25s}: "
+                     f"{n_with_cache}/{n_total} merges with working cache")
+        if warm_ratios:
+            arr = np.array(warm_ratios)
+            lines.append(f"    warm-cache variant ratio (successful merges only): "
+                         f"mean={np.mean(arr):.3f}, median={np.median(arr):.3f}, "
+                         f"std={np.std(arr):.3f}, n={len(arr)}"
+                         f"  (includes the cache warmer itself)")
+        if all_ratios:
+            arr = np.array(all_ratios)
+            lines.append(f"    warm-cache variant ratio (all merges):             "
+                         f"mean={np.mean(arr):.3f}, median={np.median(arr):.3f}, "
+                         f"std={np.std(arr):.3f}, n={len(arr)}"
+                         f"  (includes the cache warmer itself)")
+
     # Impact
     if stats.get("impact_set"):
         n_all = len(stats["all_merges"])
@@ -1514,7 +1718,8 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
         for term in ["cache", "threads", "modules", "cache:threads", "cache:modules"]:
             if term in ancova:
                 e = ancova[term]
-                lines.append(f"  {term}: t={e['t']:.3f}, p={e['p']:.6f}")
+                eta2p = e.get("eta2p", 0.0)
+                lines.append(f"  {term}: t={e['t']:.3f}, p={e['p']:.6f}, eta2p={eta2p:.4f}")
     else:
         lines.append(f"\n--- Rank ANCOVA (per-merge): skipped (covariates have no variance) ---")
 
