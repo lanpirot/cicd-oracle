@@ -60,11 +60,12 @@ public class StatisticsReporter {
     }
 
     private String formatExperimentName(String name) {
-        // Convert experiment names to readable format
         return switch (name) {
-            case "no_optimization" -> "No Optimization (Sequential, No Cache)";
-            case "parallel" -> "Parallel Execution (No Cache)";
-            case "cache_parallel" -> "Cache + Parallel Execution";
+            case "human_baseline" -> "Human Baseline";
+            case "no_optimization" -> "Sequential";
+            case "cache_sequential" -> "Sequential + Cache";
+            case "parallel" -> "Parallel";
+            case "cache_parallel" -> "Parallel + Cache";
             default -> name.replace("_", " ").toUpperCase();
         };
     }
