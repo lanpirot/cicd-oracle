@@ -199,7 +199,7 @@ public class ResolutionVariantRunner {
         modeDir.toFile().mkdirs();
 
         StoredBaselines stored = skipVariants
-                ? new StoredBaselines(Collections.emptyMap(), Collections.emptyMap())
+                ? new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap())
                 : loadStoredBaselines(humanBaselineDir);
 
         Map<String, String> skippedBaselines = skipVariants ? Collections.emptyMap()
@@ -227,7 +227,7 @@ public class ResolutionVariantRunner {
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, skipVariants,
                 skippedBaselines, failureLog, modeDir, humanBaselineDir, projectName, groundTruthPatterns,
-                mergeLog);
+                mergeLog, stored.multiModule());
 
         if (failureLog != null) failureLog.close();
 
@@ -268,20 +268,23 @@ public class ResolutionVariantRunner {
     }
 
     /** Stored baseline info loaded from human_baseline JSON files. */
-    private record StoredBaselines(Map<String, Long> seconds, Map<String, Long> peakRamBytes) {}
+    private record StoredBaselines(Map<String, Long> seconds, Map<String, Long> peakRamBytes,
+                                   Map<String, Boolean> multiModule) {}
 
     /**
-     * Load per-merge humanBaselineSeconds and peakBaselineRamBytes from human_baseline JSON files.
+     * Load per-merge humanBaselineSeconds, peakBaselineRamBytes, and isMultiModule
+     * from human_baseline JSON files.
      * Returns empty maps if the directory does not exist or cannot be read.
      */
     private static StoredBaselines loadStoredBaselines(Path humanBaselineDir) {
         if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) {
-            return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap());
+            return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
         }
         File[] files = humanBaselineDir.toFile().listFiles((d, name) -> name.endsWith(AppConfig.JSON));
-        if (files == null) return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap());
+        if (files == null) return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
         Map<String, Long> seconds = new HashMap<>();
         Map<String, Long> peakRam = new HashMap<>();
+        Map<String, Boolean> multiModule = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         for (File file : files) {
             try {
@@ -291,12 +294,15 @@ public class ResolutionVariantRunner {
                     if (merge.getPeakBaselineRamBytes() > 0) {
                         peakRam.put(merge.getMergeCommit(), merge.getPeakBaselineRamBytes());
                     }
+                    if (merge.getIsMultiModule() != null) {
+                        multiModule.put(merge.getMergeCommit(), merge.getIsMultiModule());
+                    }
                 }
             } catch (IOException e) {
                 System.err.println("Warning: could not read stored baseline from " + file + ": " + e.getMessage());
             }
         }
-        return new StoredBaselines(seconds, peakRam);
+        return new StoredBaselines(seconds, peakRam, multiModule);
     }
 
     /**
@@ -379,7 +385,8 @@ public class ResolutionVariantRunner {
                                                Path humanBaselineDir,
                                                String projectName,
                                                Map<String, Map<String, List<String>>> groundTruthPatterns,
-                                               AttemptedMergeLog mergeLog) throws Exception {
+                                               AttemptedMergeLog mergeLog,
+                                               Map<String, Boolean> storedMultiModule) throws Exception {
         int resultCount = 0;
         int skippedCount = 0;
         long totalTime = 0;
@@ -431,6 +438,13 @@ public class ResolutionVariantRunner {
             MergeOutputJSON result = skipVariants
                     ? collector.collectBaselineResult(processed, mergeGroundTruth)
                     : collector.collectResults(processed);
+            // When the baseline build was skipped (variant modes reuse stored timing),
+            // isMultiModule could not be derived from the CompilationResult — restore
+            // it from the human_baseline JSON.
+            Boolean storedMM = storedMultiModule.get(info.getMergeCommit());
+            if (storedMM != null) {
+                result.setIsMultiModule(storedMM);
+            }
             result.setMode(modeName);
             result.setProjectName(projectName);
             classifyBaseline(result, processed);
