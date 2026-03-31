@@ -83,7 +83,7 @@ class VariantResultCollectorTest extends BaseTest {
 
         MergeExperimentRunner.MergeAnalysisResult result = new MergeExperimentRunner.MergeAnalysisResult(
                 analyzer, compilationResults, testResults, 200L, timing, variantFinishSeconds,
-                null, false, null, Collections.emptySet(), 0, 9, 0L
+                null, false, null, Collections.emptySet(), 0, 9, 0L, 0L
         );
 
         return MergeExperimentRunner.ProcessedMerge.completed(info, 2, result);

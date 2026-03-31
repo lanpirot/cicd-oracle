@@ -157,6 +157,38 @@ public class VariantProjectBuilder {
     }
 
     /**
+     * Build the shared base directory for overlay-based variant builds.
+     * Called once per merge on the overlay temp directory (potentially tmpfs).
+     * The base contains all non-conflict files and patched pom.xml — identical
+     * for every variant. Individual variants overlay their conflict resolutions on top.
+     *
+     * @param context       variant build context with non-conflict objects
+     * @param overlayTmpDir directory for overlay bases (may be tmpfs-backed)
+     * @return path to the base directory (the overlay lowerdir)
+     */
+    public Path buildBase(VariantBuildContext context, Path overlayTmpDir) throws IOException {
+        Path basePath = overlayTmpDir.resolve("projects").resolve(projectName + "_base");
+        java.nio.file.Files.createDirectories(basePath.getParent());
+        Git git = GitUtils.getGit(repositoryPath);
+        FileUtils.saveFilesFromObjectId(basePath, context.getNonConflictObjects(), git);
+        FileUtils.enableTestsInAllPoms(basePath);
+        return basePath;
+    }
+
+    /**
+     * Create a fuse-overlayfs mount for one variant, backed by the shared base.
+     * The mount point serves as Maven's working directory — non-conflict files are
+     * visible from the base; writes (conflict files, target/, cache) land in the upperdir.
+     *
+     * @param basePath     shared base directory (lowerdir)
+     * @param variantIndex variant number (used to name mount dirs)
+     * @return an overlay mount; caller must close it after collecting results
+     */
+    public OverlayMount buildVariantOverlay(Path basePath, int variantIndex) throws IOException {
+        return OverlayMount.create(basePath, basePath.getParent(), projectName + "_" + variantIndex);
+    }
+
+    /**
      * Build the non-conflict portion of a variant directory (source files from git, pom patches).
      * The conflict-resolved files are NOT written yet — call {@link #applyConflictResolution}
      * after any cache copying to achieve the T-1 < T0 < T1 timestamp ordering that Maven's

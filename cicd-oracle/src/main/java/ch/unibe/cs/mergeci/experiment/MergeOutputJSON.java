@@ -21,7 +21,8 @@ import java.util.Map;
         "numConflictFiles", "numJavaConflictFiles", "numConflictChunks",
         "isMultiModule", "baselineBroken", "baselineFailureType", "variantsSkipped",
         "buildFileConflictMarkers",
-        "budgetBasisSeconds", "peakBaselineRamBytes", "variantBudgetSeconds", "threads",
+        "budgetBasisSeconds", "peakBaselineRamBytes", "baselineDirGrowthBytes",
+        "variantBudgetSeconds", "threads",
         "totalExecutionTime", "numInFlightVariantsKilled", "budgetExhausted",
         "variantsExecutionTimeSeconds", "variants"})
 @ToString
@@ -67,6 +68,10 @@ public class MergeOutputJSON {
      *  Stored in the human_baseline JSON so that variant modes can compute thread counts
      *  without re-running the baseline. Zero when the baseline was not measured locally. */
     private long peakBaselineRamBytes;
+
+    /** Bytes written by Maven during one build (target/, surefire-reports, etc.).
+     *  On tmpfs these become per-variant RAM overhead. Stored in human_baseline JSON. */
+    private long baselineDirGrowthBytes;
 
     private long variantBudgetSeconds;
     private int threads;

@@ -23,12 +23,12 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
         return new JavaChunksReader().sample(
                 AppConfig.MAVEN_CONFLICTS_CSV,
                 Integer.MAX_VALUE,
-                AppConfig.RQ2_MERGES_PER_REPO);
+                AppConfig.getRQ2MergesPerRepo());
     }
 
     @Override
     protected int processedLimit() {
-        return AppConfig.RQ2_SAMPLE_REPOS;
+        return AppConfig.getRQ2SampleRepos();
     }
 
     @Override

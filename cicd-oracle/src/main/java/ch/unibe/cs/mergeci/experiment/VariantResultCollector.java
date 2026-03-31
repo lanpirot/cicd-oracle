@@ -70,6 +70,7 @@ public class VariantResultCollector {
         output.setVariantBudgetSeconds(baselineSeconds * ch.unibe.cs.mergeci.config.AppConfig.TIMEOUT_MULTIPLIER);
         output.setThreads(processed.getAnalysisResult().maxThreads());
         output.setPeakBaselineRamBytes(processed.getAnalysisResult().peakBaselineRamBytes());
+        output.setBaselineDirGrowthBytes(processed.getAnalysisResult().baselineDirGrowthBytes());
     }
 
     /**

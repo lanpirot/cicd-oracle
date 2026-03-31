@@ -54,6 +54,8 @@ public class MavenExecutionFactory {
     private int maxThreads;
     @Getter
     private long peakBaselineRamBytes;
+    @Getter
+    private long baselineDirGrowthBytes;
     private String resolvedJavaHome;
 
     public MavenExecutionFactory(Path logDir) {
@@ -83,10 +85,12 @@ public class MavenExecutionFactory {
      * its actual duration sets the variant budget via TIMEOUT_MULTIPLIER.
      */
     public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds) {
-        return createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaselineSeconds, 0L, true);
+        return createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaselineSeconds, 0L, 0L, true);
     }
 
-    public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants, long storedBaselineSeconds, long storedPeakRamBytes, boolean stopOnPerfect) {
+    public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants,
+                                                     long storedBaselineSeconds, long storedPeakRamBytes,
+                                                     long storedDirGrowthBytes, boolean stopOnPerfect) {
         compilationResults = new TreeMap<>();
         testResults = new TreeMap<>();
         variantFinishSeconds = new TreeMap<>();
@@ -101,18 +105,24 @@ public class MavenExecutionFactory {
             @Override
             public ExperimentTiming run(VariantBuildContext context, VariantProjectBuilder builder) throws Exception {
                 ExperimentTiming experimentTiming = new ExperimentTiming();
+                boolean useOverlay = OverlayMount.isAvailable();
+                if (useOverlay) {
+                    OverlayMount.cleanupStaleMounts(AppConfig.OVERLAY_TMP_DIR);
+                }
 
                 long rawBaselineSeconds;
                 long measuredPeakRam = 0;
+                long measuredDirGrowth = 0;
                 if (storedBaselineSeconds > 0) {
                     experimentTiming.setHumanBaselineExecutionTime(Duration.ofSeconds(storedBaselineSeconds));
                     rawBaselineSeconds = storedBaselineSeconds;
                     measuredPeakRam = storedPeakRamBytes;
+                    measuredDirGrowth = storedDirGrowthBytes;
                 } else {
                     RamSampler ramSampler = new RamSampler();
                     ramSampler.start();
                     try {
-                        executeHumanBaseline(context, builder, experimentTiming);
+                        measuredDirGrowth = executeHumanBaseline(context, builder, experimentTiming);
                     } finally {
                         ramSampler.stop();
                     }
@@ -120,13 +130,31 @@ public class MavenExecutionFactory {
                     rawBaselineSeconds = experimentTiming.getHumanBaselineExecutionTime().getSeconds();
                 }
                 MavenExecutionFactory.this.peakBaselineRamBytes = measuredPeakRam;
+                MavenExecutionFactory.this.baselineDirGrowthBytes = measuredDirGrowth;
                 TestTotal baselineTests = testResults.get(context.getProjectName());
                 CompilationResult baselineCompilation = compilationResults.get(context.getProjectName());
                 long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests, baselineCompilation);
                 experimentTiming.setNormalizedBaselineSeconds(baselineSeconds);
                 long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
 
-                int maxThreads = isParallel ? AppConfig.computeMaxThreads(measuredPeakRam) : 1;
+                // Build overlay base (once per merge) on OVERLAY_TMP_DIR (potentially tmpfs)
+                Path basePath = null;
+                long baseSizeBytes = 0;
+                if (useOverlay && !skipVariants) {
+                    basePath = builder.buildBase(context, AppConfig.OVERLAY_TMP_DIR);
+                    baseSizeBytes = org.apache.commons.io.FileUtils.sizeOfDirectory(basePath.toFile());
+                    System.out.printf("[overlay] base: %d MB, dir growth: %d MB%n",
+                            baseSizeBytes / 1024 / 1024, measuredDirGrowth / 1024 / 1024);
+                }
+
+                int maxThreads;
+                if (!isParallel) {
+                    maxThreads = 1;
+                } else if (useOverlay) {
+                    maxThreads = AppConfig.computeMaxThreads(measuredPeakRam + measuredDirGrowth, baseSizeBytes);
+                } else {
+                    maxThreads = AppConfig.computeMaxThreads(measuredPeakRam);
+                }
                 MavenExecutionFactory.this.maxThreads = maxThreads;
                 if (!skipVariants) {
                     System.out.printf("[budget: %ds, threads: %d]%n", totalBudgetSeconds, maxThreads);
@@ -136,16 +164,31 @@ public class MavenExecutionFactory {
                 System.out.flush();
 
                 Instant variantsStart = Instant.now();
-                if (!skipVariants) {
-                    Instant deadline = variantsStart.plusSeconds(totalBudgetSeconds);
-                    runVariants(context, builder, deadline, variantsStart, maxThreads);
+                try {
+                    if (!skipVariants) {
+                        Instant deadline = variantsStart.plusSeconds(totalBudgetSeconds);
+                        if (useOverlay) {
+                            runVariantsOverlay(context, builder, deadline, variantsStart, maxThreads, basePath);
+                        } else {
+                            runVariants(context, builder, deadline, variantsStart, maxThreads);
+                        }
+                    }
+                } finally {
+                    // Clean up overlay base
+                    if (basePath != null && basePath.toFile().exists()) {
+                        try { FileUtils.deleteDirectory(basePath.toFile()); } catch (Exception ignored) {}
+                    }
                 }
                 experimentTiming.setVariantsExecutionTime(Duration.between(variantsStart, Instant.now()));
 
                 return experimentTiming;
             }
 
-            private void executeHumanBaseline(VariantBuildContext context, VariantProjectBuilder builder,
+            /**
+             * Run the human baseline on HDD and return the dir growth in bytes
+             * (how much Maven wrote during the build: target/, surefire-reports, etc.).
+             */
+            private long executeHumanBaseline(VariantBuildContext context, VariantProjectBuilder builder,
                                               ExperimentTiming experimentTiming) throws Exception {
                 Path mainProjectPath = builder.buildMainProject(context);
                 String projectName = context.getProjectName();
@@ -171,14 +214,21 @@ public class MavenExecutionFactory {
                                     MavenExecutionFactory.this.resolvedJavaHome, cmd);
                 }
 
+                // Measure dir size before Maven to compute dir growth (= per-variant tmpfs overhead)
+                long dirSizeBefore = FileUtils.sizeOfDirectory(mainProjectPath.toFile());
+
                 Instant start = Instant.now();
                 mainRunner.run_no_optimization(MavenExecutionFactory.this.resolvedJavaHome, mainProjectPath);
                 experimentTiming.setHumanBaselineExecutionTime(Duration.between(start, Instant.now()));
+
+                long dirSizeAfter = FileUtils.sizeOfDirectory(mainProjectPath.toFile());
 
                 builder.collectCompilationResult(projectName).ifPresent(result ->
                     compilationResults.put(projectName, result)
                 );
                 testResults.put(projectName, builder.collectTestResult(mainProjectPath));
+
+                return Math.max(0, dirSizeAfter - dirSizeBefore);
             }
 
             private void runVariants(VariantBuildContext context, VariantProjectBuilder builder,
@@ -375,6 +425,257 @@ public class MavenExecutionFactory {
                 }
             }
 
+            // ── Overlay-aware variant execution ──────────────────────────────────
+
+            private void runVariantsOverlay(VariantBuildContext context, VariantProjectBuilder builder,
+                                            Instant deadline, Instant variantsStart, int maxThreads,
+                                            Path basePath) throws Exception {
+                java.nio.file.Files.createDirectories(logDir);
+                String projectName = context.getProjectName();
+                MavenCommandResolver commandResolver = new MavenCommandResolver(false);
+                MavenCacheManager cacheManager = new MavenCacheManager();
+                int globalVariantIndex = 1;
+                OverlayMount warmerOverlay = null;
+                boolean warmerUsable = false;
+                boolean perfectFound = false;
+
+                // Sequential cache mode: first variant warms the cache
+                if (isCache && !isParallel) {
+                    Optional<VariantProject> first = context.nextVariant();
+                    int timeout0 = remainingSeconds(deadline);
+                    if (first.isPresent() && timeout0 > 0) {
+                        int idx = globalVariantIndex++;
+                        String key = projectName + "_" + idx;
+                        OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
+                        Path vPath = overlay.mountPoint();
+                        try {
+                            if (MavenExecutionFactory.this.resolvedJavaHome == null)
+                                MavenExecutionFactory.this.resolvedJavaHome =
+                                        JavaVersionResolver.resolveJavaHome(vPath).orElse(null);
+                            cacheManager.injectCacheArtifacts(vPath);
+                            builder.applyConflictResolution(vPath, first.get());
+                            System.out.printf("[DEBUG] variant %s starting (cache-warmer, overlay), timeout=%ds%n",
+                                    key, timeout0);
+                            Instant warmStart = Instant.now();
+                            new MavenProcessExecutor(timeout0).executeCommand(
+                                    vPath, logDir.resolve(key + "_compilation"),
+                                    MavenExecutionFactory.this.resolvedJavaHome,
+                                    AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
+                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                            double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
+                            MavenExecutionFactory.this.cacheWarmerKey = key;
+                            collectResult(key, vPath, builder, variantsStart, warmWallClock);
+                            if (isWarmerUsable(compilationResults.get(key))) {
+                                warmerOverlay = overlay;
+                                warmerUsable = true;
+                            } else {
+                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
+                                overlay.close();
+                            }
+                        } catch (Exception e) {
+                            overlay.close();
+                            throw e;
+                        }
+                        if (stopOnPerfect && isPerfect(compilationResults.get(key), testResults.get(key))) {
+                            System.out.printf("✓ Perfect variant found (cache-warmer #%d) — stopping early%n", idx);
+                            perfectFound = true;
+                        }
+                    }
+                }
+                final OverlayMount seqWarmerOverlay = warmerOverlay;
+
+                if (isParallel) {
+                    AtomicReference<OverlayMount> warmOverlayRef = new AtomicReference<>(null);
+                    ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
+                    CompletionService<OverlayTaskResult> cs = new ExecutorCompletionService<>(executor);
+                    List<OverlayMount> allocatedOverlays = new ArrayList<>();
+
+                    try {
+                        int inFlight = 0;
+                        while (inFlight < maxThreads && !Instant.now().isAfter(deadline)) {
+                            Optional<VariantProject> next = context.nextVariant();
+                            if (next.isEmpty()) break;
+                            int idx = globalVariantIndex++;
+                            String key = projectName + "_" + idx;
+                            OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
+                            Path vPath = overlay.mountPoint();
+                            if (MavenExecutionFactory.this.resolvedJavaHome == null)
+                                MavenExecutionFactory.this.resolvedJavaHome =
+                                        JavaVersionResolver.resolveJavaHome(vPath).orElse(null);
+                            allocatedOverlays.add(overlay);
+                            boolean isWarmer = isCache && (inFlight == 0);
+                            submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef, isWarmer,
+                                    overlay, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
+                            inFlight++;
+                        }
+
+                        while (inFlight > 0) {
+                            OverlayTaskResult done = cs.take().get();
+                            inFlight--;
+                            collectResult(done.key(), done.overlay().mountPoint(), builder, variantsStart, done.wallClockSeconds());
+                            if (stopOnPerfect && !perfectFound && isPerfect(compilationResults.get(done.key()), testResults.get(done.key()))) {
+                                System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
+                                perfectFound = true;
+                            }
+                            OverlayMount currentWarm = warmOverlayRef.get();
+                            if (done.overlay() != currentWarm) {
+                                done.overlay().close();
+                            }
+                            if (!perfectFound && !Instant.now().isAfter(deadline)) {
+                                Optional<VariantProject> next = context.nextVariant();
+                                if (next.isPresent()) {
+                                    int idx = globalVariantIndex++;
+                                    String key = projectName + "_" + idx;
+                                    OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
+                                    allocatedOverlays.add(overlay);
+                                    submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef, false,
+                                            overlay, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
+                                    inFlight++;
+                                }
+                            }
+                        }
+                    } finally {
+                        executor.shutdownNow();
+                        MavenExecutionFactory.this.numInFlightVariantsKilled =
+                                (globalVariantIndex - 1) - (compilationResults.size() - 1);
+                        OverlayMount finalWarm = warmOverlayRef.get();
+                        for (OverlayMount o : allocatedOverlays) {
+                            if (o != null && o != finalWarm) {
+                                try { o.close(); } catch (Exception ignored) {}
+                            }
+                        }
+                        if (finalWarm != null) {
+                            try { finalWarm.close(); } catch (Exception ignored) {}
+                        }
+                    }
+                } else {
+                    try {
+                        while (true) {
+                            if (perfectFound) break;
+                            int variantTimeout = remainingSeconds(deadline);
+                            if (variantTimeout <= 0) {
+                                System.out.println("⚠ Timeout budget exhausted");
+                                MavenExecutionFactory.this.budgetExhausted = true;
+                                break;
+                            }
+                            Optional<VariantProject> next = context.nextVariant();
+                            if (next.isEmpty()) break;
+
+                            VariantProject variant = next.get();
+                            int idx = globalVariantIndex++;
+                            String variantKey = projectName + "_" + idx;
+                            OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
+                            Path variantPath = overlay.mountPoint();
+
+                            try {
+                                if (MavenExecutionFactory.this.resolvedJavaHome == null)
+                                    MavenExecutionFactory.this.resolvedJavaHome =
+                                            JavaVersionResolver.resolveJavaHome(variantPath).orElse(null);
+                                System.out.printf("[DEBUG] sequential variant %d (overlay): timeout=%ds%n", idx, variantTimeout);
+                                Instant variantStart = Instant.now();
+                                if (isCache && warmerUsable) {
+                                    cacheManager.injectCacheArtifacts(variantPath);
+                                    cacheManager.copyTargetDirectories(seqWarmerOverlay.mountPoint().toFile(), variantPath.toFile());
+                                    cacheManager.copyCacheDirectory(seqWarmerOverlay.mountPoint(), variantPath);
+                                    cacheHitKeys.add(variantKey);
+                                    builder.applyConflictResolution(variantPath, variant);
+                                    new MavenProcessExecutor(variantTimeout).executeCommand(
+                                            variantPath, logDir.resolve(variantKey + "_compilation"),
+                                            MavenExecutionFactory.this.resolvedJavaHome,
+                                            AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
+                                                    commandResolver.resolveMavenGoal(variantPath), variantPath));
+                                } else {
+                                    builder.applyConflictResolution(variantPath, variant);
+                                    new MavenRunner(logDir, false, variantTimeout).run_no_optimization(
+                                            MavenExecutionFactory.this.resolvedJavaHome, variantPath);
+                                }
+                                Instant variantFinish = Instant.now();
+                                double wallClockSeconds = Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
+                                // Collect results BEFORE closing overlay — surefire XML lives in the mountpoint
+                                builder.collectCompilationResult(variantKey).ifPresent(result ->
+                                    compilationResults.put(variantKey, result)
+                                );
+                                testResults.put(variantKey, builder.collectTestResult(variantPath));
+                                variantFinishSeconds.put(variantKey, wallClockSeconds);
+                                variantSinceMergeStartSeconds.put(variantKey,
+                                        Duration.between(variantsStart, variantFinish).toMillis() / 1000.0);
+                                if (stopOnPerfect && isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
+                                    System.out.printf("✓ Perfect variant found (#%d) — stopping early%n", idx);
+                                    break;
+                                }
+                            } finally {
+                                overlay.close();
+                            }
+                        }
+                    } finally {
+                        if (seqWarmerOverlay != null) {
+                            try { seqWarmerOverlay.close(); } catch (Exception ignored) {}
+                        }
+                    }
+                }
+            }
+
+            private void submitOverlayTask(CompletionService<OverlayTaskResult> cs,
+                                            MavenCommandResolver commandResolver,
+                                            MavenCacheManager cacheManager,
+                                            AtomicReference<OverlayMount> warmOverlayRef,
+                                            boolean isWarmer,
+                                            OverlayMount overlay, VariantProject variant,
+                                            VariantProjectBuilder builder,
+                                            String key, Instant deadline, String javaHome) {
+                cs.submit(() -> {
+                    Path vPath = overlay.mountPoint();
+                    Instant taskStart = Instant.now();
+                    int timeout = remainingSeconds(deadline);
+                    if (timeout > 0) {
+                        if (isWarmer) {
+                            System.out.printf("[DEBUG] variant %s starting (cache-warmer, overlay), timeout=%ds%n",
+                                    key, timeout);
+                            cacheManager.injectCacheArtifacts(vPath);
+                            builder.applyConflictResolution(vPath, variant);
+                            new MavenProcessExecutor(timeout).executeCommand(
+                                    vPath, logDir.resolve(key + "_compilation"),
+                                    javaHome,
+                                    AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
+                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                            MavenExecutionFactory.this.cacheWarmerKey = key;
+                            Path logPath = logDir.resolve(key + "_compilation");
+                            CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
+                            if (isWarmerUsable(warmCr)) {
+                                warmOverlayRef.set(overlay);
+                            } else {
+                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
+                            }
+                        } else {
+                            OverlayMount warm = isCache ? warmOverlayRef.get() : null;
+                            System.out.printf("[DEBUG] variant %s starting%s (overlay), timeout=%ds%n",
+                                    key, warm != null ? " (cache ready)" : "", timeout);
+                            if (warm != null) {
+                                cacheManager.injectCacheArtifacts(vPath);
+                                cacheManager.copyTargetDirectories(warm.mountPoint().toFile(), vPath.toFile());
+                                cacheManager.copyCacheDirectory(warm.mountPoint(), vPath);
+                                cacheHitKeys.add(key);
+                                builder.applyConflictResolution(vPath, variant);
+                                new MavenProcessExecutor(timeout).executeCommand(
+                                        vPath, logDir.resolve(key + "_compilation"),
+                                        javaHome,
+                                        AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
+                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                            } else {
+                                builder.applyConflictResolution(vPath, variant);
+                                new MavenProcessExecutor(timeout).executeCommand(
+                                        vPath, logDir.resolve(key + "_compilation"),
+                                        javaHome,
+                                        AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
+                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                            }
+                        }
+                    }
+                    double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
+                    return new OverlayTaskResult(key, overlay, wallClockSeconds);
+                });
+            }
+
             private void submitTask(CompletionService<TaskResult> cs,
                                     MavenCommandResolver commandResolver,
                                     MavenCacheManager cacheManager,
@@ -478,6 +779,9 @@ public class MavenExecutionFactory {
 
     /** Carries per-variant wall-clock timing out of parallel task lambdas. */
     private record TaskResult(String key, Path path, double wallClockSeconds) {}
+
+    /** Overlay variant of TaskResult — carries the mount so it can be closed after result collection. */
+    private record OverlayTaskResult(String key, OverlayMount overlay, double wallClockSeconds) {}
 
     /**
      * Returns true when a variant is "perfect": all modules built successfully

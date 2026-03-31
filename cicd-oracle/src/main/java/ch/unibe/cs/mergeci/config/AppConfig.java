@@ -109,6 +109,10 @@ private static final boolean FRESH_RUN = false;
     public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                             // directory to clone projects into
     public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");
     public static final Path TMP_DIR = BASE_DIR.resolve("tmp/bruteforce_tmp");                                // temporary working directory
+    /** Overlay/variant build directory — point to tmpfs (e.g. /dev/shm) for RAM-backed I/O.
+     *  When unset, defaults to TMP_DIR (HDD) — variants still benefit from overlayfs CoW. */
+    public static final Path OVERLAY_TMP_DIR = Path.of(
+            System.getProperty("overlayTmpDir", TMP_DIR.toString()));
     /** Shared input data: SQL dump, all_conflicts.csv, maven_conflicts.csv, maven_check_cache.json. */
     public static final Path COMMON_DIR = DATA_BASE_DIR.resolve("common");
     /** Shared CSV of LaTeX variables populated by Java pipelines and Python scripts. */
@@ -177,8 +181,14 @@ private static final boolean FRESH_RUN = false;
 
     // ========== RQ2: JAVA CHUNKS PIPELINE ==========
     public static final Path RQ2_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq2");
-    public static final int  RQ2_SAMPLE_REPOS           = 50;
-    public static final int  RQ2_MERGES_PER_REPO        = 1;
+    private static final int  RQ2_SAMPLE_REPOS_DEFAULT   = 50;
+    public static int getRQ2SampleRepos() {
+        return Integer.parseInt(System.getProperty("rq2SampleRepos", String.valueOf(RQ2_SAMPLE_REPOS_DEFAULT)));
+    }
+    private static final int  RQ2_MERGES_PER_REPO_DEFAULT = 1;
+    public static int getRQ2MergesPerRepo() {
+        return Integer.parseInt(System.getProperty("rq2MergesPerRepo", String.valueOf(RQ2_MERGES_PER_REPO_DEFAULT)));
+    }
 
     // ========== RQ3: LARGE-SCALE PIPELINE ==========
     public static final Path RQ3_VARIANT_EXPERIMENT_DIR = DATA_BASE_DIR.resolve("rq3");
@@ -223,10 +233,23 @@ private static final boolean FRESH_RUN = false;
      * @param peakBuildRamBytes measured peak RAM of one Maven build, in bytes; 0 = unknown
      */
     public static int computeMaxThreads(long peakBuildRamBytes) {
+        return computeMaxThreads(peakBuildRamBytes, 0);
+    }
+
+    /**
+     * Compute parallel Maven variant threads accounting for a persistent RAM reservation
+     * (e.g. a shared overlay base on tmpfs).
+     *
+     * <p>Formula: {@code max(1, min((MemAvailable − headroom − persistentRamBytes) / perThread, cores − 4))}.
+     *
+     * @param perThreadRamBytes   measured per-build RAM (peak heap + Maven disk writes on tmpfs); 0 = unknown
+     * @param persistentRamBytes  RAM pinned for shared state (e.g. overlay base dir on tmpfs); 0 = none
+     */
+    public static int computeMaxThreads(long perThreadRamBytes, long persistentRamBytes) {
         try {
             long memAvailable = readMemAvailable();
-            long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM);
-            long ramPerThread = (peakBuildRamBytes > 0) ? peakBuildRamBytes : RAM_PER_THREAD_DEFAULT;
+            long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM - persistentRamBytes);
+            long ramPerThread = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
             int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 4);
             return Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
         } catch (Exception e) {

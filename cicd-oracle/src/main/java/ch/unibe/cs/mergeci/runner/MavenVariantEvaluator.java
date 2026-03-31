@@ -30,9 +30,11 @@ public class MavenVariantEvaluator implements IVariantEvaluator {
     public ExperimentTiming runExperiment(VariantBuildContext context, VariantProjectBuilder builder,
                                           boolean isParallel, boolean isCache,
                                           boolean skipVariants, long storedBaselineSeconds,
-                                          long storedPeakRamBytes) throws Exception {
+                                          long storedPeakRamBytes,
+                                          long storedDirGrowthBytes) throws Exception {
         factory = new MavenExecutionFactory(logDir);
-        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache, skipVariants, storedBaselineSeconds, storedPeakRamBytes, stopOnPerfect);
+        IJustInTimeRunner runner = factory.createJustInTimeRunner(isParallel, isCache, skipVariants,
+                storedBaselineSeconds, storedPeakRamBytes, storedDirGrowthBytes, stopOnPerfect);
         return builder.runTestsJustInTime(context, runner);
     }
 
@@ -46,4 +48,5 @@ public class MavenVariantEvaluator implements IVariantEvaluator {
     @Override public int getNumInFlightVariantsKilled()                       { return factory.getNumInFlightVariantsKilled(); }
     @Override public int getMaxThreads()                                      { return factory.getMaxThreads(); }
     @Override public long getPeakBaselineRamBytes()                           { return factory.getPeakBaselineRamBytes(); }
+    @Override public long getBaselineDirGrowthBytes()                        { return factory.getBaselineDirGrowthBytes(); }
 }

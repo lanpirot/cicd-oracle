@@ -199,7 +199,7 @@ public class ResolutionVariantRunner {
         modeDir.toFile().mkdirs();
 
         StoredBaselines stored = skipVariants
-                ? new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap())
+                ? new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap())
                 : loadStoredBaselines(humanBaselineDir);
 
         Map<String, String> skippedBaselines = skipVariants ? Collections.emptyMap()
@@ -211,7 +211,8 @@ public class ResolutionVariantRunner {
 
         MergeExperimentRunner processor = new MergeExperimentRunner(
                 repoPath, tmpDir, isParallel, isCache, skipVariants, stored.seconds(),
-                stored.peakRamBytes(), generatorFactory, evaluator, stopOnPerfect);
+                stored.peakRamBytes(), stored.dirGrowthBytes(),
+                generatorFactory, evaluator, stopOnPerfect);
         VariantResultCollector collector = new VariantResultCollector();
 
         Map<String, Map<String, List<String>>> groundTruthPatterns = skipVariants
@@ -269,7 +270,8 @@ public class ResolutionVariantRunner {
 
     /** Stored baseline info loaded from human_baseline JSON files. */
     private record StoredBaselines(Map<String, Long> seconds, Map<String, Long> peakRamBytes,
-                                   Map<String, Boolean> multiModule) {}
+                                   Map<String, Boolean> multiModule,
+                                   Map<String, Long> dirGrowthBytes) {}
 
     /**
      * Load per-merge humanBaselineSeconds, peakBaselineRamBytes, and isMultiModule
@@ -278,13 +280,14 @@ public class ResolutionVariantRunner {
      */
     private static StoredBaselines loadStoredBaselines(Path humanBaselineDir) {
         if (humanBaselineDir == null || !humanBaselineDir.toFile().exists()) {
-            return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
+            return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
         }
         File[] files = humanBaselineDir.toFile().listFiles((d, name) -> name.endsWith(AppConfig.JSON));
-        if (files == null) return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
+        if (files == null) return new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
         Map<String, Long> seconds = new HashMap<>();
         Map<String, Long> peakRam = new HashMap<>();
         Map<String, Boolean> multiModule = new HashMap<>();
+        Map<String, Long> dirGrowth = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         for (File file : files) {
             try {
@@ -297,12 +300,15 @@ public class ResolutionVariantRunner {
                     if (merge.getIsMultiModule() != null) {
                         multiModule.put(merge.getMergeCommit(), merge.getIsMultiModule());
                     }
+                    if (merge.getBaselineDirGrowthBytes() > 0) {
+                        dirGrowth.put(merge.getMergeCommit(), merge.getBaselineDirGrowthBytes());
+                    }
                 }
             } catch (IOException e) {
                 System.err.println("Warning: could not read stored baseline from " + file + ": " + e.getMessage());
             }
         }
-        return new StoredBaselines(seconds, peakRam, multiModule);
+        return new StoredBaselines(seconds, peakRam, multiModule, dirGrowth);
     }
 
     /**

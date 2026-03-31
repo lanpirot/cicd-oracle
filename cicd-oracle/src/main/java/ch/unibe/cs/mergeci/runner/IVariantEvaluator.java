@@ -28,12 +28,14 @@ public interface IVariantEvaluator {
      * @param skipVariants         run baseline only (human_baseline mode)
      * @param storedBaselineSeconds pre-recorded baseline time; 0 = run baseline fresh
      * @param storedPeakRamBytes   pre-recorded peak RAM of baseline build (bytes); 0 = unknown
+     * @param storedDirGrowthBytes pre-recorded Maven disk writes per build (bytes); 0 = unknown
      * @return timing statistics
      */
     ExperimentTiming runExperiment(VariantBuildContext context, VariantProjectBuilder builder,
                                    boolean isParallel, boolean isCache,
                                    boolean skipVariants, long storedBaselineSeconds,
-                                   long storedPeakRamBytes) throws Exception;
+                                   long storedPeakRamBytes,
+                                   long storedDirGrowthBytes) throws Exception;
 
     Map<String, CompilationResult> getCompilationResults();
     Map<String, TestTotal> getTestResults();
@@ -45,4 +47,5 @@ public interface IVariantEvaluator {
     int getNumInFlightVariantsKilled();
     int getMaxThreads();
     long getPeakBaselineRamBytes();
+    long getBaselineDirGrowthBytes();
 }

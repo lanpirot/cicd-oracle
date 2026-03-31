@@ -36,34 +36,38 @@ public class MergeExperimentRunner {
     private final boolean skipVariants;
     private final Map<String, Long> storedBaselines;
     private final Map<String, Long> storedPeakRamBytes;
+    private final Map<String, Long> storedDirGrowthBytes;
     private final IVariantGeneratorFactory generatorFactory;
     private final IVariantEvaluator evaluator;
     private final boolean stopOnPerfect;
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap(), Collections.emptyMap(), null, null, true);
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, false, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), null, null, true);
     }
 
     public MergeExperimentRunner(Path repoPath, boolean isParallel, boolean isCache, boolean skipVariants) {
-        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap(), Collections.emptyMap(), null, null, true);
-    }
-
-    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
-                                  boolean skipVariants, Map<String, Long> storedBaselines,
-                                  Map<String, Long> storedPeakRamBytes) {
-        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, storedPeakRamBytes, null, null, true);
+        this(repoPath, AppConfig.TMP_DIR, isParallel, isCache, skipVariants, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), null, null, true);
     }
 
     public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
                                   boolean skipVariants, Map<String, Long> storedBaselines,
                                   Map<String, Long> storedPeakRamBytes,
+                                  Map<String, Long> storedDirGrowthBytes) {
+        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, storedPeakRamBytes, storedDirGrowthBytes, null, null, true);
+    }
+
+    public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
+                                  boolean skipVariants, Map<String, Long> storedBaselines,
+                                  Map<String, Long> storedPeakRamBytes,
+                                  Map<String, Long> storedDirGrowthBytes,
                                   IVariantGeneratorFactory generatorFactory, IVariantEvaluator evaluator) {
-        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, storedPeakRamBytes, generatorFactory, evaluator, true);
+        this(repoPath, tmpDir, isParallel, isCache, skipVariants, storedBaselines, storedPeakRamBytes, storedDirGrowthBytes, generatorFactory, evaluator, true);
     }
 
     public MergeExperimentRunner(Path repoPath, Path tmpDir, boolean isParallel, boolean isCache,
                                   boolean skipVariants, Map<String, Long> storedBaselines,
                                   Map<String, Long> storedPeakRamBytes,
+                                  Map<String, Long> storedDirGrowthBytes,
                                   IVariantGeneratorFactory generatorFactory, IVariantEvaluator evaluator,
                                   boolean stopOnPerfect) {
         this.repoPath = repoPath;
@@ -73,6 +77,7 @@ public class MergeExperimentRunner {
         this.skipVariants = skipVariants;
         this.storedBaselines = storedBaselines;
         this.storedPeakRamBytes = storedPeakRamBytes;
+        this.storedDirGrowthBytes = storedDirGrowthBytes;
         this.generatorFactory = generatorFactory;
         this.evaluator = evaluator;
         this.stopOnPerfect = stopOnPerfect;
@@ -133,11 +138,13 @@ public class MergeExperimentRunner {
         // Run experiment using the evaluator (default: MavenVariantEvaluator)
         long storedBaseline = storedBaselines.getOrDefault(info.getMergeCommit(), 0L);
         long storedPeakRam = storedPeakRamBytes.getOrDefault(info.getMergeCommit(), 0L);
+        long storedDirGrowth = storedDirGrowthBytes.getOrDefault(info.getMergeCommit(), 0L);
         IVariantEvaluator activeEvaluator = (evaluator != null)
                 ? evaluator
                 : new MavenVariantEvaluator(variantProjectBuilder.getLogDir(), stopOnPerfect);
         ExperimentTiming experimentTiming = activeEvaluator.runExperiment(
-                context, variantProjectBuilder, isParallel, isCache, skipVariants, storedBaseline, storedPeakRam);
+                context, variantProjectBuilder, isParallel, isCache, skipVariants,
+                storedBaseline, storedPeakRam, storedDirGrowth);
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toSeconds();
@@ -159,7 +166,8 @@ public class MergeExperimentRunner {
                 activeEvaluator.getCacheHitKeys(),
                 activeEvaluator.getNumInFlightVariantsKilled(),
                 activeEvaluator.getMaxThreads(),
-                activeEvaluator.getPeakBaselineRamBytes()
+                activeEvaluator.getPeakBaselineRamBytes(),
+                activeEvaluator.getBaselineDirGrowthBytes()
         );
     }
 
@@ -213,7 +221,8 @@ public class MergeExperimentRunner {
                                           Set<String> cacheHitKeys,
                                           int numInFlightVariantsKilled,
                                           int maxThreads,
-                                          long peakBaselineRamBytes) {
+                                          long peakBaselineRamBytes,
+                                          long baselineDirGrowthBytes) {
 
         public String getProjectName() {
                 return analyzer.getProjectName();
