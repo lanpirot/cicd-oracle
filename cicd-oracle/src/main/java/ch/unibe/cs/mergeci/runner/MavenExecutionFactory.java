@@ -124,7 +124,7 @@ public class MavenExecutionFactory {
                 CompilationResult baselineCompilation = compilationResults.get(context.getProjectName());
                 long baselineSeconds = normalizeBaselineSeconds(rawBaselineSeconds, baselineTests, baselineCompilation);
                 experimentTiming.setNormalizedBaselineSeconds(baselineSeconds);
-                long totalBudgetSeconds = baselineSeconds * AppConfig.TIMEOUT_MULTIPLIER;
+                long totalBudgetSeconds = AppConfig.variantBudget(baselineSeconds);
 
                 int maxThreads = isParallel ? AppConfig.computeMaxThreads(measuredPeakRam) : 1;
                 MavenExecutionFactory.this.maxThreads = maxThreads;
@@ -565,44 +565,43 @@ public class MavenExecutionFactory {
     }
 
     /**
-     * Normalize baseline duration to account for partial builds:
-     * <ol>
-     *   <li>Module normalization: if only some modules compiled, scale the raw time
-     *       by totalModules/successfulModules to estimate a full-module build.
-     *       Falls back to {@link AppConfig#MAVEN_BUILD_TIMEOUT} when no modules succeeded.</li>
-     *   <li>Test normalization: if tests failed early, scale the test portion
-     *       by runTests/passedTests to estimate a fully-green run.</li>
-     * </ol>
+     * Normalize baseline duration to estimate a full successful build.
+     * Decomposes total time into compilation (c = total − testElapsed) and test (t = testElapsed),
+     * then scales each independently: c′ = c × totalModules/successfulModules,
+     * t′ = t × runTests/passedTests. Returns c′ + t′.
+     * Falls back to {@link AppConfig#MAVEN_BUILD_TIMEOUT} when nothing succeeded.
      */
-    static long normalizeBaselineSeconds(long rawSeconds, TestTotal testTotal,
+    static long normalizeBaselineSeconds(long totalBuildSeconds, TestTotal testTotal,
                                                   CompilationResult compilationResult) {
-        float seconds = rawSeconds;
+        float testElapsed = (testTotal != null) ? testTotal.getElapsedTime() : 0;
+        float compilationTime = Math.max(0, totalBuildSeconds - testElapsed);
 
-        // 1. Module normalization: scale up if only a fraction of modules succeeded
+        // Module normalization: scale compilation time by total/successful modules
         if (compilationResult != null) {
-            int total = compilationResult.getTotalModules();
-            int successful = compilationResult.getSuccessfulModules();
-            if (total > 1 && successful == 0) {
+            int totalModules = compilationResult.getTotalModules();
+            int successfulModules = compilationResult.getSuccessfulModules();
+            if (totalModules > 1 && successfulModules == 0) {
                 return AppConfig.MAVEN_BUILD_TIMEOUT;
             }
-            if (total > 1 && successful < total) {
-                seconds = seconds * total / successful;
+            if (totalModules > 1 && successfulModules < totalModules) {
+                compilationTime = compilationTime * totalModules / successfulModules;
             }
         }
 
-        // 2. Test normalization: scale up if tests failed/errored
+        // Test normalization: scale test time by run/passed tests
+        float normalizedTestTime = testElapsed;
         if (testTotal != null) {
             int runTests = testTotal.getRunNum();
             int passedTests = runTests - testTotal.getFailuresNum() - testTotal.getErrorsNum();
-            float testElapsed = testTotal.getElapsedTime();
-            float compilationTime = Math.max(0, seconds - testElapsed);
-            float normalized = TestTotal.normalizeElapsedTime(compilationTime, testElapsed, runTests, passedTests);
-            if (!Float.isNaN(normalized)) {
-                seconds = normalized;
+            if (runTests > 0 && passedTests == 0) {
+                return AppConfig.MAVEN_BUILD_TIMEOUT;
+            }
+            if (passedTests > 0 && passedTests < runTests) {
+                normalizedTestTime = testElapsed * runTests / passedTests;
             }
         }
 
-        return (long) seconds;
+        return (long) (compilationTime + normalizedTestTime);
     }
 
     static boolean isSnapshotMultiModule(Path projectPath) {

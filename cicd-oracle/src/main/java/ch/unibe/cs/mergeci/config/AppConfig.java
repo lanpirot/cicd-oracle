@@ -208,7 +208,7 @@ private static final boolean FRESH_RUN = false;
     /**
      * Compute the number of parallel Maven variant threads.
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 4))}.
+     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 9))}.
      *
      * <ul>
      *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build via
@@ -304,12 +304,13 @@ private static final boolean FRESH_RUN = false;
             "-Djacoco.skip=true"
     };
 
-    /**
-     * Timeout multiplier for variant testing in ResolutionVariantRunner.
-     * Timeout is calculated as: TIMEOUT_MULTIPLIER * normalizedElapsedTime
-     * This allows dynamic timeouts based on the expected build time from the dataset.
-     */
-    public static final int TIMEOUT_MULTIPLIER = 10;
+    private static final int TIMEOUT_MULTIPLIER = 10;
+    private static final long MIN_VARIANT_BUDGET = 300;
+
+    /** Compute variant budget: max(300s, normalizedBaseline × 10). */
+    public static long variantBudget(long normalizedBaselineSeconds) {
+        return Math.max(MIN_VARIANT_BUDGET, normalizedBaselineSeconds * TIMEOUT_MULTIPLIER);
+    }
 
     /**
      * JVM heap size passed to spawned Maven processes via MAVEN_OPTS.
