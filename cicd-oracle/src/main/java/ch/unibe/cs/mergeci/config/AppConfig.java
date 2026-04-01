@@ -218,7 +218,7 @@ private static final boolean FRESH_RUN = false;
     /**
      * Compute the number of parallel Maven variant threads.
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 4))}.
+     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 9))}.
      *
      * <ul>
      *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build via
@@ -240,17 +240,21 @@ private static final boolean FRESH_RUN = false;
      * Compute parallel Maven variant threads accounting for a persistent RAM reservation
      * (e.g. a shared overlay base on tmpfs).
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − headroom − persistentRamBytes) / perThread, cores − 4))}.
+     * <p>Formula: {@code max(1, min((MemAvailable − headroom − persistentRamBytes) / perThread, cores − 9))}.
      *
      * @param perThreadRamBytes   measured per-build RAM (peak heap + Maven disk writes on tmpfs); 0 = unknown
      * @param persistentRamBytes  RAM pinned for shared state (e.g. overlay base dir on tmpfs); 0 = none
      */
     public static int computeMaxThreads(long perThreadRamBytes, long persistentRamBytes) {
         try {
+            // Hard cap via system property — useful for benchmarking and throttling
+            String cap = System.getProperty("maxThreads");
+            if (cap != null) return Math.max(1, Integer.parseInt(cap));
+
             long memAvailable = readMemAvailable();
             long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM - persistentRamBytes);
             long ramPerThread = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
-            int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 4);
+            int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 9);
             return Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
         } catch (Exception e) {
             return THREAD_FALLBACK;
@@ -327,12 +331,13 @@ private static final boolean FRESH_RUN = false;
             "-Djacoco.skip=true"
     };
 
-    /**
-     * Timeout multiplier for variant testing in ResolutionVariantRunner.
-     * Timeout is calculated as: TIMEOUT_MULTIPLIER * normalizedElapsedTime
-     * This allows dynamic timeouts based on the expected build time from the dataset.
-     */
-    public static final int TIMEOUT_MULTIPLIER = 10;
+    private static final int TIMEOUT_MULTIPLIER = 10;
+    private static final long MIN_VARIANT_BUDGET = 300;
+
+    /** Compute variant budget: max(300s, normalizedBaseline × 10). */
+    public static long variantBudget(long normalizedBaselineSeconds) {
+        return Math.max(MIN_VARIANT_BUDGET, normalizedBaselineSeconds * TIMEOUT_MULTIPLIER);
+    }
 
     /**
      * JVM heap size passed to spawned Maven processes via MAVEN_OPTS.

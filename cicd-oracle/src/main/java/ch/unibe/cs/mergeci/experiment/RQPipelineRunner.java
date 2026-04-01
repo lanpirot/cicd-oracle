@@ -82,7 +82,7 @@ public abstract class RQPipelineRunner {
         System.out.printf( "║  Generator           : %s%n",
                 generatorFactory() != null ? generatorFactory().getClass().getSimpleName() : "default (heuristic)");
         System.out.printf( "║  Baseline timeout    : %d s%n", AppConfig.MAVEN_BUILD_TIMEOUT);
-        System.out.printf( "║  Timeout multiplier  : %dx%n", AppConfig.TIMEOUT_MULTIPLIER);
+        System.out.printf( "║  Variant budget      : max(300s, baseline×10)%n");
         System.out.printf( "║  Max threads         : %d (initial, re-computed per merge)%n", AppConfig.MAX_THREADS);
         System.out.printf( "║  Maven heap          : %s%n", AppConfig.MAVEN_SUBPROCESS_HEAP);
         System.out.printf( "║  Output dir          : %s%n", experimentDir());
