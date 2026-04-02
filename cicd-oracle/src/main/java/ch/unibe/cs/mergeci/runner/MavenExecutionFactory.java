@@ -197,16 +197,17 @@ public class MavenExecutionFactory {
 
                 // Cap the baseline at MAVEN_BUILD_TIMEOUT so hung builds don't block the pipeline.
                 // The actual wall-clock duration (capped at this limit) sets the variant budget.
-                MavenRunner mainRunner = new MavenRunner(logDir, false, AppConfig.MAVEN_BUILD_TIMEOUT);
+                MavenRunner mainRunner = new MavenRunner(logDir, AppConfig.USE_MAVEN_DAEMON, AppConfig.MAVEN_BUILD_TIMEOUT);
 
                 // Pre-install SNAPSHOT inter-module dependencies so sibling artifacts are
                 // available in the local cache.  Without this, a cold checkout of a
                 // multi-module SNAPSHOT project fails dependency resolution immediately.
                 if (isSnapshotMultiModule(mainProjectPath)) {
                     System.out.printf("  ⚙ SNAPSHOT multi-module — pre-installing to local cache...%n");
-                    MavenCommandResolver cmdResolver = new MavenCommandResolver(false);
-                    String mvnCmd = cmdResolver.resolveMavenCommand(mainProjectPath);
-                    String[] cmd = {mvnCmd, "-B", "-fae", "-DskipTests=true", "-Dmaven.test.skip=true", "install"};
+                    MavenCommandResolver cmdResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
+                    String[] execArgs = cmdResolver.resolveExecutableArgs(mainProjectPath);
+                    String[] cmd = AppConfig.concat(execArgs,
+                            new String[]{"-B", "-fae", "-DskipTests=true", "-Dmaven.test.skip=true", "install"});
                     Path preInstallLog = logDir.resolve(mainProjectPath.getFileName() + "_preinstall");
                     java.nio.file.Files.createDirectories(logDir);
                     new MavenProcessExecutor(AppConfig.MAVEN_BUILD_TIMEOUT)
@@ -235,7 +236,7 @@ public class MavenExecutionFactory {
                                      Instant deadline, Instant variantsStart, int maxThreads) throws Exception {
                 java.nio.file.Files.createDirectories(logDir);
                 String projectName = context.getProjectName();
-                MavenCommandResolver commandResolver = new MavenCommandResolver(false);
+                MavenCommandResolver commandResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
                 Path cacheWarmPath = null;
@@ -263,8 +264,8 @@ public class MavenExecutionFactory {
                         new MavenProcessExecutor(timeout0).executeCommand(
                                 firstPath, logDir.resolve(firstPath.getFileName() + "_compilation"),
                                 MavenExecutionFactory.this.resolvedJavaHome,
-                                AppConfig.buildCommand(commandResolver.resolveMavenCommand(firstPath),
-                                        commandResolver.resolveMavenGoal(firstPath), firstPath));
+                                AppConfig.buildCommand(commandResolver.resolveExecutableArgs(firstPath),
+                                        commandResolver.resolveMavenGoal(firstPath)));
                         double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
                         String warmKey = projectName + "_" + idx;
                         MavenExecutionFactory.this.cacheWarmerKey = warmKey;
@@ -388,11 +389,11 @@ public class MavenExecutionFactory {
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
                                             MavenExecutionFactory.this.resolvedJavaHome,
-                                            AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
-                                                    commandResolver.resolveMavenGoal(variantPath), variantPath));
+                                            AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(variantPath),
+                                                    commandResolver.resolveMavenGoal(variantPath)));
                                 } else {
                                     builder.applyConflictResolution(variantPath, variant);
-                                    new MavenRunner(logDir, false, variantTimeout).run_no_optimization(
+                                    new MavenRunner(logDir, AppConfig.USE_MAVEN_DAEMON, variantTimeout).run_no_optimization(
                                             MavenExecutionFactory.this.resolvedJavaHome, variantPath);
                                 }
                                 Instant variantFinish = Instant.now();
@@ -432,7 +433,7 @@ public class MavenExecutionFactory {
                                             Path basePath) throws Exception {
                 java.nio.file.Files.createDirectories(logDir);
                 String projectName = context.getProjectName();
-                MavenCommandResolver commandResolver = new MavenCommandResolver(false);
+                MavenCommandResolver commandResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
                 OverlayMount warmerOverlay = null;
@@ -460,8 +461,8 @@ public class MavenExecutionFactory {
                             new MavenProcessExecutor(timeout0).executeCommand(
                                     vPath, logDir.resolve(key + "_compilation"),
                                     MavenExecutionFactory.this.resolvedJavaHome,
-                                    AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                                    AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
                             double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
                             MavenExecutionFactory.this.cacheWarmerKey = key;
                             collectResult(key, vPath, builder, variantsStart, warmWallClock);
@@ -582,11 +583,11 @@ public class MavenExecutionFactory {
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantKey + "_compilation"),
                                             MavenExecutionFactory.this.resolvedJavaHome,
-                                            AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
-                                                    commandResolver.resolveMavenGoal(variantPath), variantPath));
+                                            AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(variantPath),
+                                                    commandResolver.resolveMavenGoal(variantPath)));
                                 } else {
                                     builder.applyConflictResolution(variantPath, variant);
-                                    new MavenRunner(logDir, false, variantTimeout).run_no_optimization(
+                                    new MavenRunner(logDir, AppConfig.USE_MAVEN_DAEMON, variantTimeout).run_no_optimization(
                                             MavenExecutionFactory.this.resolvedJavaHome, variantPath);
                                 }
                                 Instant variantFinish = Instant.now();
@@ -636,8 +637,8 @@ public class MavenExecutionFactory {
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(key + "_compilation"),
                                     javaHome,
-                                    AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                                    AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
                             MavenExecutionFactory.this.cacheWarmerKey = key;
                             Path logPath = logDir.resolve(key + "_compilation");
                             CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
@@ -659,15 +660,15 @@ public class MavenExecutionFactory {
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(key + "_compilation"),
                                         javaHome,
-                                        AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
-                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                                        AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(vPath),
+                                                commandResolver.resolveMavenGoal(vPath)));
                             } else {
                                 builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(key + "_compilation"),
                                         javaHome,
-                                        AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                                        AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                                commandResolver.resolveMavenGoal(vPath)));
                             }
                         }
                     }
@@ -696,8 +697,8 @@ public class MavenExecutionFactory {
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                     javaHome,
-                                    AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                                    AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
                             MavenExecutionFactory.this.cacheWarmerKey = key;
                             // Only advertise the cache if the warmer produced usable artifacts;
                             // otherwise other threads will fall back to normal online builds.
@@ -723,16 +724,16 @@ public class MavenExecutionFactory {
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                         javaHome,
-                                        AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
-                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                                        AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(vPath),
+                                                commandResolver.resolveMavenGoal(vPath)));
                             } else {
                                 // Cache not yet ready: write conflict files and build normally.
                                 builder.applyConflictResolution(vPath, variant);
                                 new MavenProcessExecutor(timeout).executeCommand(
                                         vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
                                         javaHome,
-                                        AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                                commandResolver.resolveMavenGoal(vPath), vPath));
+                                        AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                                commandResolver.resolveMavenGoal(vPath)));
                             }
                         }
                     }

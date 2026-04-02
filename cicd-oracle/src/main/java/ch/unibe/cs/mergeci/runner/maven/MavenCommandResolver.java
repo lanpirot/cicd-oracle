@@ -13,6 +13,9 @@ import java.util.Locale;
  */
 public class MavenCommandResolver {
     private final boolean useMavenDaemon;
+    /** Maven home resolved from the project's wrapper, used with {@code mvnd --maven-home}. */
+    private String wrapperMavenHome;
+    private boolean wrapperDetected;
 
     public MavenCommandResolver(boolean useMavenDaemon) {
         this.useMavenDaemon = useMavenDaemon;
@@ -23,12 +26,6 @@ public class MavenCommandResolver {
     }
 
     /**
-     * Resolve the Maven command to use for the given project.
-     *
-     * @param projectPath Path to the Maven project
-     * @return Maven command string (e.g., "mvn", "./mvnw", "mvn.cmd")
-     */
-    /**
      * Detects whether this project's CI uses {@code mvn verify} (integration tests included)
      * or plain {@code mvn test} by inspecting {@code .github/workflows/*.yml}.
      */
@@ -38,6 +35,10 @@ public class MavenCommandResolver {
 
     public String resolveMavenCommand(Path projectPath) {
         if (useMavenDaemon) {
+            if (!wrapperDetected && !isWindowsOS()) {
+                wrapperMavenHome = detectWrapperMavenHome(projectPath);
+                wrapperDetected = true;
+            }
             return "mvnd";
         }
 
@@ -48,6 +49,19 @@ public class MavenCommandResolver {
         } else {
             return resolveUnixCommand(projectPath);
         }
+    }
+
+    /**
+     * Returns the executable prefix as an array. For mvnd with a wrapper Maven home,
+     * this is {@code ["mvnd", "--maven-home", "/path"]}; otherwise just {@code ["mvn"]} etc.
+     * Use this instead of {@link #resolveMavenCommand} when building command arrays.
+     */
+    public String[] resolveExecutableArgs(Path projectPath) {
+        String cmd = resolveMavenCommand(projectPath);
+        if (wrapperMavenHome != null) {
+            return new String[]{cmd, "--maven-home", wrapperMavenHome};
+        }
+        return new String[]{cmd};
     }
 
     private boolean isWindowsOS() {
@@ -107,5 +121,43 @@ public class MavenCommandResolver {
             System.err.println("  Wrapper may fail on Unix systems. Consider fixing manually.");
             // Non-fatal: wrapper might still work, or fallback to system Maven will be used
         }
+    }
+
+    /**
+     * Run {@code ./mvnw --version} to trigger the wrapper's Maven download and parse
+     * "Maven home: /path" from its output. Returns null if the project has no wrapper
+     * or the detection fails.
+     */
+    private String detectWrapperMavenHome(Path projectPath) {
+        File mvnw = projectPath.resolve("mvnw").toFile();
+        if (!mvnw.exists()) return null;
+
+        fixUnixLineEndings(mvnw);
+        File wrapperProps = projectPath.resolve(".mvn/wrapper/maven-wrapper.properties").toFile();
+        if (wrapperProps.exists()) fixUnixLineEndings(wrapperProps);
+        if (!mvnw.setExecutable(true)) return null;
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder("./mvnw", "--version");
+            pb.directory(projectPath.toFile());
+            pb.redirectErrorStream(true);
+            Process proc = pb.start();
+            String output = new String(proc.getInputStream().readAllBytes());
+            boolean completed = proc.waitFor(30, java.util.concurrent.TimeUnit.SECONDS);
+            if (!completed) {
+                proc.destroyForcibly();
+                return null;
+            }
+            for (String line : output.split("\n")) {
+                if (line.startsWith("Maven home:")) {
+                    String home = line.substring("Maven home:".length()).trim();
+                    System.out.printf("  mvnd: using wrapper Maven home: %s%n", home);
+                    return home;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: failed to detect wrapper Maven home: " + e.getMessage());
+        }
+        return null;
     }
 }

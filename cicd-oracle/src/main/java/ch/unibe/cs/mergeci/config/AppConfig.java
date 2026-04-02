@@ -37,46 +37,30 @@ private static final boolean FRESH_RUN = false;
 
     /**
      * Build the full Maven command array for a normal build.
+     * @param executableArgs executable prefix, e.g. {@code ["mvn"]} or {@code ["mvnd", "--maven-home", "/path"]}
      */
-    public static String[] buildCommand(String mavenExecutable) {
-        return buildCommand(mavenExecutable, "test");
-    }
-
-    public static String[] buildCommand(String mavenExecutable, String mavenGoal) {
+    public static String[] buildCommand(String[] executableArgs, String mavenGoal) {
         return concat(
-                new String[]{mavenExecutable, MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                executableArgs,
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
                 SKIP_STATIC_ANALYSIS,
                 new String[]{mavenGoal});
-    }
-
-    /** Overload for callers that previously passed a projectPath for JaCoCo detection (now ignored). */
-    public static String[] buildCommand(String mavenExecutable, String mavenGoal, @SuppressWarnings("unused") Path projectPath) {
-        return buildCommand(mavenExecutable, mavenGoal);
     }
 
     /**
      * Same as {@link #buildCommand} but with {@code -o} (offline) prepended, for cache builds.
      */
-    public static String[] buildCommandOffline(String mavenExecutable) {
-        return buildCommandOffline(mavenExecutable, "test");
-    }
-
-    public static String[] buildCommandOffline(String mavenExecutable, String mavenGoal) {
+    public static String[] buildCommandOffline(String[] executableArgs, String mavenGoal) {
         return concat(
-                new String[]{mavenExecutable, "-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                executableArgs,
+                new String[]{"-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
                 SKIP_STATIC_ANALYSIS,
                 new String[]{mavenGoal});
     }
 
-    /** Overload for callers that previously passed a projectPath for JaCoCo detection (now ignored). */
-    public static String[] buildCommandOffline(String mavenExecutable, String mavenGoal, @SuppressWarnings("unused") Path projectPath) {
-        return buildCommandOffline(mavenExecutable, mavenGoal);
-    }
-
-    @SafeVarargs
-    private static String[] concat(String[]... parts) {
+    public static String[] concat(String[]... parts) {
         return Arrays.stream(parts).flatMap(Arrays::stream).toArray(String[]::new);
     }
 
@@ -345,6 +329,18 @@ private static final boolean FRESH_RUN = false;
      * Increase this if you see "OutOfMemoryError: Java heap space" in Maven subprocess output.
      */
     public static final String MAVEN_SUBPROCESS_HEAP = "-Xmx4g";
+
+    /** Use Maven Daemon (mvnd) for variant builds. Auto-detected from PATH. */
+    public static final boolean USE_MAVEN_DAEMON = detectMvnd();
+
+    private static boolean detectMvnd() {
+        try {
+            Process p = new ProcessBuilder("which", "mvnd").start();
+            return p.waitFor() == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     // ========== UTILITY ==========
     // File extensions

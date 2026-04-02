@@ -84,6 +84,7 @@ public abstract class RQPipelineRunner {
         System.out.printf( "║  Baseline timeout    : %d s%n", AppConfig.MAVEN_BUILD_TIMEOUT);
         System.out.printf( "║  Variant budget      : max(300s, baseline×10)%n");
         System.out.printf( "║  Max threads         : %d (initial, re-computed per merge)%n", AppConfig.MAX_THREADS);
+        System.out.printf( "║  Maven daemon        : %s%n", AppConfig.USE_MAVEN_DAEMON);
         System.out.printf( "║  Maven heap          : %s%n", AppConfig.MAVEN_SUBPROCESS_HEAP);
         System.out.printf( "║  Output dir          : %s%n", experimentDir());
         System.out.printf( "║  Repo dir            : %s%n", AppConfig.REPO_DIR);
