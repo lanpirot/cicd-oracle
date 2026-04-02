@@ -88,7 +88,7 @@ private static final boolean FRESH_RUN = false;
     public static final int CLONE_TIMEOUT_SECONDS = 600; // 10 minutes
     /** Per-operation socket timeout passed to JGit transport, in seconds. */
     public static final int CLONE_SOCKET_TIMEOUT_SECONDS = 120; // 2 minutes
-    public static final Path BASE_DIR = Paths.get("/home/lanpirot");
+    public static final Path BASE_DIR = Paths.get(System.getProperty("user.home"));
     public static final Path DATA_BASE_DIR = BASE_DIR.resolve("data/bruteforcemerge");
     public static final Path REPO_DIR = BASE_DIR.resolve("tmp/bruteforce_repos");                             // directory to clone projects into
     public static final Path CONFLICT_DATASET_DIR = DATA_BASE_DIR.resolve("conflict_datasets");
@@ -191,8 +191,10 @@ private static final boolean FRESH_RUN = false;
 
     // ========== PRESENTATION ==========
     /** Python script that generates all paper-ready PDF charts with LaTeX fonts. */
-    public static final Path PLOT_SCRIPT = Paths.get(
-            "/home/lanpirot/projects/merge++/cicd-oracle/scripts/plot_results.py");
+    public static final Path PLOT_SCRIPT = Path.of(
+            System.getProperty("projectDir",
+                    BASE_DIR.resolve("projects/merge++/cicd-oracle").toString()))
+            .resolve("scripts/plot_results.py");
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     private static final int    THREAD_FALLBACK         = 4;
