@@ -205,13 +205,13 @@ private static final boolean FRESH_RUN = false;
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     private static final int    THREAD_FALLBACK         = 4;
-    private static final long   RAM_HEADROOM            = 10L * 1024 * 1024 * 1024; // 10 GB reserved for OS + user tasks
+    private static final long   RAM_HEADROOM            = 5L * 1024 * 1024 * 1024;  // 5 GB reserved for OS (dedicated VM)
     private static final long   RAM_PER_THREAD_DEFAULT  = 10L * 1024 * 1024 * 1024; // 10 GB assumed when peak unknown
 
     /**
      * Compute the number of parallel Maven variant threads.
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 9))}.
+     * <p>Formula: {@code max(1, min((MemAvailable − 5 GB) / peak, cores − 2))}.
      *
      * <ul>
      *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build via
@@ -219,8 +219,8 @@ private static final boolean FRESH_RUN = false;
      *   <li>When {@code peakBuildRamBytes == 0} (unknown): divides spare RAM by
      *       {@value #RAM_PER_THREAD_DEFAULT} bytes (10 GB) as a conservative estimate.</li>
      * </ul>
-     * Spare RAM = {@code MemAvailable − 10 GB} headroom for OS and user tasks.
-     * Result is capped at {@code availableProcessors − 4} and floored at 1.
+     * Spare RAM = {@code MemAvailable − 5 GB} headroom for OS (dedicated VM).
+     * Result is capped at {@code availableProcessors − 2} and floored at 1.
      * Returns {@value #THREAD_FALLBACK} on any error (e.g. non-Linux systems).
      *
      * @param peakBuildRamBytes measured peak RAM of one Maven build, in bytes; 0 = unknown
@@ -233,7 +233,7 @@ private static final boolean FRESH_RUN = false;
      * Compute parallel Maven variant threads accounting for a persistent RAM reservation
      * (e.g. a shared overlay base on tmpfs).
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − headroom − persistentRamBytes) / perThread, cores − 9))}.
+     * <p>Formula: {@code max(1, min((MemAvailable − headroom − persistentRamBytes) / perThread, cores − 2))}.
      *
      * @param perThreadRamBytes   measured per-build RAM (peak heap + Maven disk writes on tmpfs); 0 = unknown
      * @param persistentRamBytes  RAM pinned for shared state (e.g. overlay base dir on tmpfs); 0 = none
@@ -247,7 +247,7 @@ private static final boolean FRESH_RUN = false;
             long memAvailable = readMemAvailable();
             long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM - persistentRamBytes);
             long ramPerThread = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
-            int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 9);
+            int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
             return Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
         } catch (Exception e) {
             return THREAD_FALLBACK;
