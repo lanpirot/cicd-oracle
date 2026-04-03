@@ -82,14 +82,38 @@ Each conflict chunk is resolved by one pattern: `OURS`, `THEIRS`, `BASE`, or `EM
 
 All paths, timeouts, and feature flags live in `AppConfig.java`. `JAVA_HOMES` maps Java major versions to JDK paths; the tool selects the closest available JDK ≥ the version in `pom.xml`.
 
+Properties are passed as `-D` flags to `java` (not to Maven):
+
 | Property | Default | Effect |
 |----------|---------|--------|
-| `freshRun` | `false` | Delete all output and start from scratch |
-| `maxConflictMerges` | `5` | Max qualifying merges per project |
-| `reanalyzeSuccess` | `false` | Re-run analysis on previously successful repos |
-| `rq3BestMode` | `cache_parallel` | Best mode from RQ2 to use in RQ3 |
-| `MAX_THREADS` | `max(1, min((MemAvail−10GB)/peak, cores−4))` | Parallel build threads (fallback: 4) |
-| `TIMEOUT_MULTIPLIER` | `10` | Variant budget = baseline × multiplier |
+| `freshRun` | `false` | Delete all output dirs and start from scratch |
+| `reanalyzeSuccess` | `false` | Re-run previously successful repos without re-cloning |
+| `maxConflictMerges` | `5` | Max qualifying merges sampled per project |
+| `experimentTag` | `""` | Namespace RQ2/RQ3 output dirs (e.g. `rq2-with-mvnd` → `data/bruteforcemerge/rq2-with-mvnd/rq2/`) |
+| `rq2SampleRepos` | `50` | Number of repos to sample for RQ2 |
+| `rq2MergesPerRepo` | `1` | Merges per repo in RQ2 |
+| `rq3BestMode` | `cache_parallel` | Best experiment mode from RQ2 to use in RQ3 |
+| `maxThreads` | auto | Hard cap on parallel build threads (auto = `max(1, min((MemAvail−5GB)/peak, cores−2))`) |
+| `overlayTmpDir` | `~/tmp/bruteforce_tmp` | Overlay/variant build dir — set to `/dev/shm` for RAM-backed I/O |
+| `projectDir` | `~/projects/merge++/cicd-oracle` | Repo root used to locate the Python plot script |
+
+### Example: full RQ2 run with all flags
+
+```bash
+java \
+  -DfreshRun=true \
+  -DreanalyzeSuccess=false \
+  -DmaxConflictMerges=3 \
+  -DexperimentTag=rq2-with-mvnd \
+  -Drq2SampleRepos=50 \
+  -Drq2MergesPerRepo=1 \
+  -Drq3BestMode=cache_parallel \
+  -DmaxThreads=8 \
+  -DoverlayTmpDir=/dev/shm \
+  -DprojectDir=/home/lanpirot/projects/merge++/cicd-oracle \
+  -cp "target/*:target/lib/*" \
+  ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
+```
 
 ## Data Directories
 

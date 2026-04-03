@@ -65,7 +65,7 @@ RQ1 large artefacts (`all_conflicts.csv`, fold CSVs, `.pt` checkpoints, predicti
 
 ### Key Configuration (`config/AppConfig.java`)
 
-Central source of truth for all paths, timeouts, Java installations, and feature flags. Machine-specific paths (e.g., `JAVA_HOMES`) must match the actual JDK installations on the host. `MAX_THREADS` is computed dynamically by `computeMaxThreads()` as `max(1, min((MemAvailable − 10 GB) / peakBuildRamBytes, cores − 4))`, falling back to 4 on error.
+Central source of truth for all paths, timeouts, Java installations, and feature flags. Machine-specific paths (e.g., `JAVA_HOMES`) must match the actual JDK installations on the host. `MAX_THREADS` is computed dynamically by `computeMaxThreads()` as `max(1, min((MemAvailable − 5 GB) / peakBuildRamBytes, cores − 2))`, falling back to 4 on error.
 
 Overridable at runtime via system properties: `freshRun`, `maxConflictMerges`, `reanalyzeSuccess`, `rq3BestMode`.
 
