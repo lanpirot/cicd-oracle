@@ -806,7 +806,7 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
                 own = v.get("ownExecutionSeconds")
                 if own is None or own <= 0:
                     continue
-                if v.get("isCacheWarmer", False):
+                if v.get("isCacheDonor", False) or v.get("isCacheWarmer", False):
                     cold_t = own
                 else:
                     warm_ts.append(own)

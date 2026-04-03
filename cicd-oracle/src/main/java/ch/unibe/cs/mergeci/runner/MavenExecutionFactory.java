@@ -45,7 +45,8 @@ public class MavenExecutionFactory {
     @Getter
     private boolean budgetExhausted;
     @Getter
-    private String cacheWarmerKey;
+    private Set<String> cacheDonorKeys;
+    private String bestDonorKey;
     @Getter
     private Set<String> cacheHitKeys;
     @Getter
@@ -96,7 +97,8 @@ public class MavenExecutionFactory {
         variantFinishSeconds = new TreeMap<>();
         variantSinceMergeStartSeconds = new TreeMap<>();
         budgetExhausted = false;
-        cacheWarmerKey = null;
+        cacheDonorKeys = ConcurrentHashMap.newKeySet();
+        bestDonorKey = null;
         cacheHitKeys = ConcurrentHashMap.newKeySet();
         numInFlightVariantsKilled = 0;
         resolvedJavaHome = null;
@@ -239,81 +241,33 @@ public class MavenExecutionFactory {
                 MavenCommandResolver commandResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
-                Path cacheWarmPath = null;
-                Path warmerDirToCleanUp = null;
                 boolean perfectFound = false;
 
-                // Sequential cache mode: run the very first variant synchronously to warm the local Maven cache.
-                if (isCache && !isParallel) {
-                    Optional<VariantProject> first = context.nextVariant();
-                    int timeout0 = remainingSeconds(deadline);
-                    if (first.isPresent() && timeout0 > 0) {
-                        int idx = globalVariantIndex++;
-                        // T-1: non-conflict files; injectCacheArtifacts writes XML config (timestamp irrelevant);
-                        // T1: conflict files written last — no cache to copy yet so ordering only matters for
-                        // subsequent variants that copy from this warmer.
-                        Path firstPath = builder.buildVariantBase(context, idx);
-                        if (MavenExecutionFactory.this.resolvedJavaHome == null)
-                            MavenExecutionFactory.this.resolvedJavaHome =
-                                    JavaVersionResolver.resolveJavaHome(firstPath).orElse(null);
-                        cacheManager.injectCacheArtifacts(firstPath);
-                        builder.applyConflictResolution(firstPath, first.get());
-                        System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
-                                firstPath.getFileName(), timeout0);
-                        Instant warmStart = Instant.now();
-                        new MavenProcessExecutor(timeout0).executeCommand(
-                                firstPath, logDir.resolve(firstPath.getFileName() + "_compilation"),
-                                MavenExecutionFactory.this.resolvedJavaHome,
-                                AppConfig.buildCommand(commandResolver.resolveExecutableArgs(firstPath),
-                                        commandResolver.resolveMavenGoal(firstPath)));
-                        double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
-                        String warmKey = projectName + "_" + idx;
-                        MavenExecutionFactory.this.cacheWarmerKey = warmKey;
-                        collectResult(warmKey, firstPath, builder, variantsStart, warmWallClock);
-                        warmerDirToCleanUp = firstPath;
-                        if (isWarmerUsable(compilationResults.get(warmKey))) {
-                            cacheWarmPath = firstPath;
-                        } else {
-                            System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
-                        }
-                        if (stopOnPerfect && isPerfect(compilationResults.get(warmKey), testResults.get(warmKey))) {
-                            System.out.printf("✓ Perfect variant found (cache-warmer #%d) — stopping early%n", idx);
-                            perfectFound = true;
-                        }
-                    }
-                }
-                final Path warmPath = cacheWarmPath;
-                final Path seqWarmerCleanup = warmerDirToCleanUp;
-
                 if (isParallel) {
-                    // In cache mode, the first submitted variant acts as the cache warmer;
-                    // subsequent variants copy from it if it has finished, or fall back to a normal build.
+                    // Donor registry: any completed variant that compiled successfully can become the donor.
+                    // The donor evolves — a later variant with more successful modules replaces the current donor.
                     AtomicReference<Path> warmPathRef = new AtomicReference<>(null);
                     ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
                     CompletionService<TaskResult> cs = new ExecutorCompletionService<>(executor);
-                    // Track every path we build so the finally block can clean up after an exception.
                     List<Path> allocatedPaths = new ArrayList<>();
+                    List<Path> retiredDonorPaths = new ArrayList<>();
 
                     try {
-                        // Pre-fill the thread pool.
                         int inFlight = 0;
                         while (inFlight < maxThreads && !Instant.now().isAfter(deadline)) {
                             Optional<VariantProject> next = context.nextVariant();
                             if (next.isEmpty()) break;
                             int idx = globalVariantIndex++;
                             String key = projectName + "_" + idx;
-                            // T-1: non-conflict files only; applyConflictResolution called inside the task.
                             Path vPath = builder.buildVariantBase(context, idx);
                             if (MavenExecutionFactory.this.resolvedJavaHome == null)
                                 MavenExecutionFactory.this.resolvedJavaHome =
                                         JavaVersionResolver.resolveJavaHome(vPath).orElse(null);
                             allocatedPaths.add(vPath);
-                            boolean isWarmer = isCache && (inFlight == 0);
-                            submitTask(cs, commandResolver, cacheManager, warmPathRef, isWarmer, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
+                            submitTask(cs, commandResolver, cacheManager, warmPathRef, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                             inFlight++;
                         }
 
-                        // Rolling: as each slot frees up, collect results and immediately fill the slot.
                         while (inFlight > 0) {
                             TaskResult done = drainOne(cs);
                             inFlight--;
@@ -322,8 +276,16 @@ public class MavenExecutionFactory {
                                 System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
                                 perfectFound = true;
                             }
-                            Path currentWarm = warmPathRef.get();
-                            if (!done.path().equals(currentWarm) && done.path().toFile().exists()) {
+                            // Evolving donor: promote if this variant compiled more modules than current donor.
+                            CompilationResult doneCr = compilationResults.get(done.key());
+                            CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
+                            if (isCache && isBetterDonor(doneCr, currentDonorCr)) {
+                                Path oldDonor = warmPathRef.get();
+                                if (oldDonor != null) retiredDonorPaths.add(oldDonor);
+                                warmPathRef.set(done.path());
+                                MavenExecutionFactory.this.bestDonorKey = done.key();
+                                MavenExecutionFactory.this.cacheDonorKeys.add(done.key());
+                            } else if (!done.path().equals(warmPathRef.get()) && done.path().toFile().exists()) {
                                 deleteWithRetry(done.path());
                             }
                             if (!perfectFound && !Instant.now().isAfter(deadline)) {
@@ -333,27 +295,33 @@ public class MavenExecutionFactory {
                                     String key = projectName + "_" + idx;
                                     Path vPath = builder.buildVariantBase(context, idx);
                                     allocatedPaths.add(vPath);
-                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, false, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
+                                    submitTask(cs, commandResolver, cacheManager, warmPathRef, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                                     inFlight++;
                                 }
                             }
                         }
                     } finally {
                         executor.shutdownNow();
-                        // variants submitted but not yet collected when budget expired
                         MavenExecutionFactory.this.numInFlightVariantsKilled =
                                 (globalVariantIndex - 1) - (compilationResults.size() - 1);
-                        Path finalWarm = warmPathRef.get();
+                        Path finalDonor = warmPathRef.get();
                         for (Path p : allocatedPaths) {
-                            if (p != null && !p.equals(finalWarm) && p.toFile().exists()) {
+                            if (p != null && !p.equals(finalDonor) && p.toFile().exists()) {
                                 try { FileUtils.deleteDirectory(p.toFile()); } catch (Exception ignored) {}
                             }
                         }
-                        if (finalWarm != null && finalWarm.toFile().exists()) {
-                            try { FileUtils.deleteDirectory(finalWarm.toFile()); } catch (Exception ignored) {}
+                        for (Path p : retiredDonorPaths) {
+                            if (p != null && !p.equals(finalDonor) && p.toFile().exists()) {
+                                try { FileUtils.deleteDirectory(p.toFile()); } catch (Exception ignored) {}
+                            }
+                        }
+                        if (finalDonor != null && finalDonor.toFile().exists()) {
+                            try { FileUtils.deleteDirectory(finalDonor.toFile()); } catch (Exception ignored) {}
                         }
                     }
                 } else {
+                    // Sequential: donor evolves in-place — each better variant replaces the previous donor.
+                    Path donorPath = null;
                     try {
                         while (true) {
                             if (perfectFound) break;
@@ -368,7 +336,6 @@ public class MavenExecutionFactory {
 
                             VariantProject variant = next.get();
                             int idx = globalVariantIndex++;
-                            // Build non-conflict files first (T-1); conflict files written after any cache copy.
                             Path variantPath = builder.buildVariantBase(context, idx);
                             if (MavenExecutionFactory.this.resolvedJavaHome == null)
                                 MavenExecutionFactory.this.resolvedJavaHome =
@@ -376,51 +343,64 @@ public class MavenExecutionFactory {
                             String variantKey = projectName + "_" + idx;
 
                             try {
-                                System.out.printf("[DEBUG] sequential variant %d: timeout=%ds%n", idx, variantTimeout);
                                 Instant variantStart = Instant.now();
-                                if (isCache && warmPath != null) {
-                                    // T0: copy compiled artifacts from warmer (fresh timestamps, T0 > T-1).
+                                if (isCache && donorPath != null) {
+                                    // Consumer: copy from donor, run offline.
+                                    System.out.printf("[DEBUG] sequential variant %d (cache from donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
-                                    cacheManager.copyTargetDirectories(warmPath.toFile(), variantPath.toFile());
-                                    cacheManager.copyCacheDirectory(warmPath, variantPath);
+                                    cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
+                                    cacheManager.copyCacheDirectory(donorPath, variantPath);
                                     cacheHitKeys.add(variantKey);
-                                    // T1: conflict files written last (T1 > T0) so Maven recompiles only changed modules.
                                     builder.applyConflictResolution(variantPath, variant);
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
                                             MavenExecutionFactory.this.resolvedJavaHome,
                                             AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(variantPath),
                                                     commandResolver.resolveMavenGoal(variantPath)));
+                                } else if (isCache) {
+                                    // Potential donor: inject cache artifacts, run online.
+                                    System.out.printf("[DEBUG] sequential variant %d (potential donor): timeout=%ds%n", idx, variantTimeout);
+                                    cacheManager.injectCacheArtifacts(variantPath);
+                                    builder.applyConflictResolution(variantPath, variant);
+                                    new MavenProcessExecutor(variantTimeout).executeCommand(
+                                            variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
+                                            MavenExecutionFactory.this.resolvedJavaHome,
+                                            AppConfig.buildCommand(commandResolver.resolveExecutableArgs(variantPath),
+                                                    commandResolver.resolveMavenGoal(variantPath)));
                                 } else {
+                                    System.out.printf("[DEBUG] sequential variant %d: timeout=%ds%n", idx, variantTimeout);
                                     builder.applyConflictResolution(variantPath, variant);
                                     new MavenRunner(logDir, AppConfig.USE_MAVEN_DAEMON, variantTimeout).run_no_optimization(
                                             MavenExecutionFactory.this.resolvedJavaHome, variantPath);
                                 }
-                                Instant variantFinish = Instant.now();
-                                double wallClockSeconds = Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
-                                builder.collectCompilationResult(variantKey).ifPresent(result ->
-                                    compilationResults.put(variantKey, result)
-                                );
-                                testResults.put(variantKey, builder.collectTestResult(variantPath));
-                                variantFinishSeconds.put(variantKey, wallClockSeconds);
-                                variantSinceMergeStartSeconds.put(variantKey,
-                                        Duration.between(variantsStart, variantFinish).toMillis() / 1000.0);
+                                double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
+                                collectResult(variantKey, variantPath, builder, variantsStart, wallClockSeconds);
+                                // Evolving donor: promote if this variant compiled more modules.
+                                if (isCache) {
+                                    CompilationResult cr = compilationResults.get(variantKey);
+                                    CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
+                                    if (isBetterDonor(cr, currentDonorCr)) {
+                                        if (donorPath != null && donorPath.toFile().exists()) {
+                                            deleteWithRetry(donorPath);
+                                        }
+                                        donorPath = variantPath;
+                                        MavenExecutionFactory.this.bestDonorKey = variantKey;
+                                        MavenExecutionFactory.this.cacheDonorKeys.add(variantKey);
+                                    }
+                                }
                                 if (stopOnPerfect && isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
                                     System.out.printf("✓ Perfect variant found (#%d) — stopping early%n", idx);
                                     break;
                                 }
                             } finally {
-                                if (!variantPath.equals(warmPath) && variantPath.toFile().exists()) {
+                                if (!variantPath.equals(donorPath) && variantPath.toFile().exists()) {
                                     deleteWithRetry(variantPath);
                                 }
                             }
                         }
                     } finally {
-                        if (warmPath != null && warmPath.toFile().exists()) {
-                            try { FileUtils.deleteDirectory(warmPath.toFile()); } catch (Exception ignored) {}
-                        }
-                        if (seqWarmerCleanup != null && seqWarmerCleanup.toFile().exists()) {
-                            try { FileUtils.deleteDirectory(seqWarmerCleanup.toFile()); } catch (Exception ignored) {}
+                        if (donorPath != null && donorPath.toFile().exists()) {
+                            try { FileUtils.deleteDirectory(donorPath.toFile()); } catch (Exception ignored) {}
                         }
                     }
                 }
@@ -436,60 +416,14 @@ public class MavenExecutionFactory {
                 MavenCommandResolver commandResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 int globalVariantIndex = 1;
-                OverlayMount warmerOverlay = null;
-                boolean warmerUsable = false;
                 boolean perfectFound = false;
-
-                // Sequential cache mode: first variant warms the cache
-                if (isCache && !isParallel) {
-                    Optional<VariantProject> first = context.nextVariant();
-                    int timeout0 = remainingSeconds(deadline);
-                    if (first.isPresent() && timeout0 > 0) {
-                        int idx = globalVariantIndex++;
-                        String key = projectName + "_" + idx;
-                        OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
-                        Path vPath = overlay.mountPoint();
-                        try {
-                            if (MavenExecutionFactory.this.resolvedJavaHome == null)
-                                MavenExecutionFactory.this.resolvedJavaHome =
-                                        JavaVersionResolver.resolveJavaHome(vPath).orElse(null);
-                            cacheManager.injectCacheArtifacts(vPath);
-                            builder.applyConflictResolution(vPath, first.get());
-                            System.out.printf("[DEBUG] variant %s starting (cache-warmer, overlay), timeout=%ds%n",
-                                    key, timeout0);
-                            Instant warmStart = Instant.now();
-                            new MavenProcessExecutor(timeout0).executeCommand(
-                                    vPath, logDir.resolve(key + "_compilation"),
-                                    MavenExecutionFactory.this.resolvedJavaHome,
-                                    AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
-                                            commandResolver.resolveMavenGoal(vPath)));
-                            double warmWallClock = Duration.between(warmStart, Instant.now()).toMillis() / 1000.0;
-                            MavenExecutionFactory.this.cacheWarmerKey = key;
-                            collectResult(key, vPath, builder, variantsStart, warmWallClock);
-                            if (isWarmerUsable(compilationResults.get(key))) {
-                                warmerOverlay = overlay;
-                                warmerUsable = true;
-                            } else {
-                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
-                                overlay.close();
-                            }
-                        } catch (Exception e) {
-                            overlay.close();
-                            throw e;
-                        }
-                        if (stopOnPerfect && isPerfect(compilationResults.get(key), testResults.get(key))) {
-                            System.out.printf("✓ Perfect variant found (cache-warmer #%d) — stopping early%n", idx);
-                            perfectFound = true;
-                        }
-                    }
-                }
-                final OverlayMount seqWarmerOverlay = warmerOverlay;
 
                 if (isParallel) {
                     AtomicReference<OverlayMount> warmOverlayRef = new AtomicReference<>(null);
                     ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
                     CompletionService<OverlayTaskResult> cs = new ExecutorCompletionService<>(executor);
                     List<OverlayMount> allocatedOverlays = new ArrayList<>();
+                    List<OverlayMount> retiredDonorOverlays = new ArrayList<>();
 
                     try {
                         int inFlight = 0;
@@ -504,8 +438,7 @@ public class MavenExecutionFactory {
                                 MavenExecutionFactory.this.resolvedJavaHome =
                                         JavaVersionResolver.resolveJavaHome(vPath).orElse(null);
                             allocatedOverlays.add(overlay);
-                            boolean isWarmer = isCache && (inFlight == 0);
-                            submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef, isWarmer,
+                            submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef,
                                     overlay, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                             inFlight++;
                         }
@@ -518,8 +451,16 @@ public class MavenExecutionFactory {
                                 System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
                                 perfectFound = true;
                             }
-                            OverlayMount currentWarm = warmOverlayRef.get();
-                            if (done.overlay() != currentWarm) {
+                            // Evolving donor: promote if this variant compiled more modules.
+                            CompilationResult doneCr = compilationResults.get(done.key());
+                            CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
+                            if (isCache && isBetterDonor(doneCr, currentDonorCr)) {
+                                OverlayMount oldDonor = warmOverlayRef.get();
+                                if (oldDonor != null) retiredDonorOverlays.add(oldDonor);
+                                warmOverlayRef.set(done.overlay());
+                                MavenExecutionFactory.this.bestDonorKey = done.key();
+                                MavenExecutionFactory.this.cacheDonorKeys.add(done.key());
+                            } else if (done.overlay() != warmOverlayRef.get()) {
                                 done.overlay().close();
                             }
                             if (!perfectFound && !Instant.now().isAfter(deadline)) {
@@ -529,7 +470,7 @@ public class MavenExecutionFactory {
                                     String key = projectName + "_" + idx;
                                     OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
                                     allocatedOverlays.add(overlay);
-                                    submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef, false,
+                                    submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef,
                                             overlay, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                                     inFlight++;
                                 }
@@ -539,17 +480,24 @@ public class MavenExecutionFactory {
                         executor.shutdownNow();
                         MavenExecutionFactory.this.numInFlightVariantsKilled =
                                 (globalVariantIndex - 1) - (compilationResults.size() - 1);
-                        OverlayMount finalWarm = warmOverlayRef.get();
+                        OverlayMount finalDonor = warmOverlayRef.get();
                         for (OverlayMount o : allocatedOverlays) {
-                            if (o != null && o != finalWarm) {
+                            if (o != null && o != finalDonor) {
                                 try { o.close(); } catch (Exception ignored) {}
                             }
                         }
-                        if (finalWarm != null) {
-                            try { finalWarm.close(); } catch (Exception ignored) {}
+                        for (OverlayMount o : retiredDonorOverlays) {
+                            if (o != null && o != finalDonor) {
+                                try { o.close(); } catch (Exception ignored) {}
+                            }
+                        }
+                        if (finalDonor != null) {
+                            try { finalDonor.close(); } catch (Exception ignored) {}
                         }
                     }
                 } else {
+                    // Sequential overlay: donor evolves in-place.
+                    OverlayMount donorOverlay = null;
                     try {
                         while (true) {
                             if (perfectFound) break;
@@ -572,12 +520,13 @@ public class MavenExecutionFactory {
                                 if (MavenExecutionFactory.this.resolvedJavaHome == null)
                                     MavenExecutionFactory.this.resolvedJavaHome =
                                             JavaVersionResolver.resolveJavaHome(variantPath).orElse(null);
-                                System.out.printf("[DEBUG] sequential variant %d (overlay): timeout=%ds%n", idx, variantTimeout);
                                 Instant variantStart = Instant.now();
-                                if (isCache && warmerUsable) {
+                                if (isCache && donorOverlay != null) {
+                                    // Consumer: copy from donor, run offline.
+                                    System.out.printf("[DEBUG] sequential variant %d (overlay, cache from donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
-                                    cacheManager.copyTargetDirectories(seqWarmerOverlay.mountPoint().toFile(), variantPath.toFile());
-                                    cacheManager.copyCacheDirectory(seqWarmerOverlay.mountPoint(), variantPath);
+                                    cacheManager.copyTargetDirectories(donorOverlay.mountPoint().toFile(), variantPath.toFile());
+                                    cacheManager.copyCacheDirectory(donorOverlay.mountPoint(), variantPath);
                                     cacheHitKeys.add(variantKey);
                                     builder.applyConflictResolution(variantPath, variant);
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
@@ -585,32 +534,49 @@ public class MavenExecutionFactory {
                                             MavenExecutionFactory.this.resolvedJavaHome,
                                             AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(variantPath),
                                                     commandResolver.resolveMavenGoal(variantPath)));
+                                } else if (isCache) {
+                                    // Potential donor: inject cache artifacts, run online.
+                                    System.out.printf("[DEBUG] sequential variant %d (overlay, potential donor): timeout=%ds%n", idx, variantTimeout);
+                                    cacheManager.injectCacheArtifacts(variantPath);
+                                    builder.applyConflictResolution(variantPath, variant);
+                                    new MavenProcessExecutor(variantTimeout).executeCommand(
+                                            variantPath, logDir.resolve(variantKey + "_compilation"),
+                                            MavenExecutionFactory.this.resolvedJavaHome,
+                                            AppConfig.buildCommand(commandResolver.resolveExecutableArgs(variantPath),
+                                                    commandResolver.resolveMavenGoal(variantPath)));
                                 } else {
+                                    System.out.printf("[DEBUG] sequential variant %d (overlay): timeout=%ds%n", idx, variantTimeout);
                                     builder.applyConflictResolution(variantPath, variant);
                                     new MavenRunner(logDir, AppConfig.USE_MAVEN_DAEMON, variantTimeout).run_no_optimization(
                                             MavenExecutionFactory.this.resolvedJavaHome, variantPath);
                                 }
-                                Instant variantFinish = Instant.now();
-                                double wallClockSeconds = Duration.between(variantStart, variantFinish).toMillis() / 1000.0;
+                                double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
                                 // Collect results BEFORE closing overlay — surefire XML lives in the mountpoint
-                                builder.collectCompilationResult(variantKey).ifPresent(result ->
-                                    compilationResults.put(variantKey, result)
-                                );
-                                testResults.put(variantKey, builder.collectTestResult(variantPath));
-                                variantFinishSeconds.put(variantKey, wallClockSeconds);
-                                variantSinceMergeStartSeconds.put(variantKey,
-                                        Duration.between(variantsStart, variantFinish).toMillis() / 1000.0);
+                                collectResult(variantKey, variantPath, builder, variantsStart, wallClockSeconds);
+                                // Evolving donor: promote if this variant compiled more modules.
+                                if (isCache) {
+                                    CompilationResult cr = compilationResults.get(variantKey);
+                                    CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
+                                    if (isBetterDonor(cr, currentDonorCr)) {
+                                        if (donorOverlay != null) donorOverlay.close();
+                                        donorOverlay = overlay;
+                                        MavenExecutionFactory.this.bestDonorKey = variantKey;
+                                        MavenExecutionFactory.this.cacheDonorKeys.add(variantKey);
+                                    }
+                                }
                                 if (stopOnPerfect && isPerfect(compilationResults.get(variantKey), testResults.get(variantKey))) {
                                     System.out.printf("✓ Perfect variant found (#%d) — stopping early%n", idx);
                                     break;
                                 }
                             } finally {
-                                overlay.close();
+                                if (overlay != donorOverlay) {
+                                    overlay.close();
+                                }
                             }
                         }
                     } finally {
-                        if (seqWarmerOverlay != null) {
-                            try { seqWarmerOverlay.close(); } catch (Exception ignored) {}
+                        if (donorOverlay != null) {
+                            try { donorOverlay.close(); } catch (Exception ignored) {}
                         }
                     }
                 }
@@ -620,7 +586,6 @@ public class MavenExecutionFactory {
                                             MavenCommandResolver commandResolver,
                                             MavenCacheManager cacheManager,
                                             AtomicReference<OverlayMount> warmOverlayRef,
-                                            boolean isWarmer,
                                             OverlayMount overlay, VariantProject variant,
                                             VariantProjectBuilder builder,
                                             String key, Instant deadline, String javaHome) {
@@ -629,8 +594,22 @@ public class MavenExecutionFactory {
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
                     if (timeout > 0) {
-                        if (isWarmer) {
-                            System.out.printf("[DEBUG] variant %s starting (cache-warmer, overlay), timeout=%ds%n",
+                        OverlayMount donor = isCache ? warmOverlayRef.get() : null;
+                        if (donor != null) {
+                            System.out.printf("[DEBUG] variant %s starting (cache ready, overlay), timeout=%ds%n",
+                                    key, timeout);
+                            cacheManager.injectCacheArtifacts(vPath);
+                            cacheManager.copyTargetDirectories(donor.mountPoint().toFile(), vPath.toFile());
+                            cacheManager.copyCacheDirectory(donor.mountPoint(), vPath);
+                            cacheHitKeys.add(key);
+                            builder.applyConflictResolution(vPath, variant);
+                            new MavenProcessExecutor(timeout).executeCommand(
+                                    vPath, logDir.resolve(key + "_compilation"),
+                                    javaHome,
+                                    AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
+                        } else if (isCache) {
+                            System.out.printf("[DEBUG] variant %s starting (potential donor, overlay), timeout=%ds%n",
                                     key, timeout);
                             cacheManager.injectCacheArtifacts(vPath);
                             builder.applyConflictResolution(vPath, variant);
@@ -639,37 +618,15 @@ public class MavenExecutionFactory {
                                     javaHome,
                                     AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
                                             commandResolver.resolveMavenGoal(vPath)));
-                            MavenExecutionFactory.this.cacheWarmerKey = key;
-                            Path logPath = logDir.resolve(key + "_compilation");
-                            CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
-                            if (isWarmerUsable(warmCr)) {
-                                warmOverlayRef.set(overlay);
-                            } else {
-                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
-                            }
                         } else {
-                            OverlayMount warm = isCache ? warmOverlayRef.get() : null;
-                            System.out.printf("[DEBUG] variant %s starting%s (overlay), timeout=%ds%n",
-                                    key, warm != null ? " (cache ready)" : "", timeout);
-                            if (warm != null) {
-                                cacheManager.injectCacheArtifacts(vPath);
-                                cacheManager.copyTargetDirectories(warm.mountPoint().toFile(), vPath.toFile());
-                                cacheManager.copyCacheDirectory(warm.mountPoint(), vPath);
-                                cacheHitKeys.add(key);
-                                builder.applyConflictResolution(vPath, variant);
-                                new MavenProcessExecutor(timeout).executeCommand(
-                                        vPath, logDir.resolve(key + "_compilation"),
-                                        javaHome,
-                                        AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(vPath),
-                                                commandResolver.resolveMavenGoal(vPath)));
-                            } else {
-                                builder.applyConflictResolution(vPath, variant);
-                                new MavenProcessExecutor(timeout).executeCommand(
-                                        vPath, logDir.resolve(key + "_compilation"),
-                                        javaHome,
-                                        AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
-                                                commandResolver.resolveMavenGoal(vPath)));
-                            }
+                            System.out.printf("[DEBUG] variant %s starting (overlay), timeout=%ds%n",
+                                    key, timeout);
+                            builder.applyConflictResolution(vPath, variant);
+                            new MavenProcessExecutor(timeout).executeCommand(
+                                    vPath, logDir.resolve(key + "_compilation"),
+                                    javaHome,
+                                    AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
                         }
                     }
                     double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
@@ -681,16 +638,30 @@ public class MavenExecutionFactory {
                                     MavenCommandResolver commandResolver,
                                     MavenCacheManager cacheManager,
                                     AtomicReference<Path> warmPathRef,
-                                    boolean isWarmer,
                                     Path vPath, VariantProject variant, VariantProjectBuilder builder,
                                     String key, Instant deadline, String javaHome) {
                 cs.submit(() -> {
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
                     if (timeout > 0) {
-                        if (isWarmer) {
-                            // No previous cache to copy from: write conflict files immediately (T1 after T-1).
-                            System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
+                        Path donor = isCache ? warmPathRef.get() : null;
+                        if (donor != null) {
+                            // Consumer: copy from donor, run offline.
+                            System.out.printf("[DEBUG] variant %s starting (cache ready), timeout=%ds%n",
+                                    vPath.getFileName(), timeout);
+                            cacheManager.injectCacheArtifacts(vPath);
+                            cacheManager.copyTargetDirectories(donor.toFile(), vPath.toFile());
+                            cacheManager.copyCacheDirectory(donor, vPath);
+                            cacheHitKeys.add(key);
+                            builder.applyConflictResolution(vPath, variant);
+                            new MavenProcessExecutor(timeout).executeCommand(
+                                    vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                    javaHome,
+                                    AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
+                        } else if (isCache) {
+                            // Potential donor: inject cache artifacts, run online.
+                            System.out.printf("[DEBUG] variant %s starting (potential donor), timeout=%ds%n",
                                     vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
                             builder.applyConflictResolution(vPath, variant);
@@ -699,42 +670,16 @@ public class MavenExecutionFactory {
                                     javaHome,
                                     AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
                                             commandResolver.resolveMavenGoal(vPath)));
-                            MavenExecutionFactory.this.cacheWarmerKey = key;
-                            // Only advertise the cache if the warmer produced usable artifacts;
-                            // otherwise other threads will fall back to normal online builds.
-                            Path logPath = logDir.resolve(vPath.getFileName() + "_compilation");
-                            CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
-                            if (isWarmerUsable(warmCr)) {
-                                warmPathRef.set(vPath);
-                            } else {
-                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
-                            }
                         } else {
-                            Path warm = isCache ? warmPathRef.get() : null;
-                            System.out.printf("[DEBUG] variant %s starting%s, timeout=%ds%n",
-                                    vPath.getFileName(), warm != null ? " (cache ready)" : "", timeout);
-                            if (warm != null) {
-                                // T0: copy compiled artifacts (fresh timestamps, T0 > T-1).
-                                cacheManager.injectCacheArtifacts(vPath);
-                                cacheManager.copyTargetDirectories(warm.toFile(), vPath.toFile());
-                                cacheManager.copyCacheDirectory(warm, vPath);
-                                cacheHitKeys.add(key);
-                                // T1: conflict files written last so Maven recompiles only changed modules.
-                                builder.applyConflictResolution(vPath, variant);
-                                new MavenProcessExecutor(timeout).executeCommand(
-                                        vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
-                                        javaHome,
-                                        AppConfig.buildCommandOffline(commandResolver.resolveExecutableArgs(vPath),
-                                                commandResolver.resolveMavenGoal(vPath)));
-                            } else {
-                                // Cache not yet ready: write conflict files and build normally.
-                                builder.applyConflictResolution(vPath, variant);
-                                new MavenProcessExecutor(timeout).executeCommand(
-                                        vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
-                                        javaHome,
-                                        AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
-                                                commandResolver.resolveMavenGoal(vPath)));
-                            }
+                            // No cache mode: build normally.
+                            System.out.printf("[DEBUG] variant %s starting, timeout=%ds%n",
+                                    vPath.getFileName(), timeout);
+                            builder.applyConflictResolution(vPath, variant);
+                            new MavenProcessExecutor(timeout).executeCommand(
+                                    vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
+                                    javaHome,
+                                    AppConfig.buildCommand(commandResolver.resolveExecutableArgs(vPath),
+                                            commandResolver.resolveMavenGoal(vPath)));
                         }
                     }
                     double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
@@ -799,15 +744,26 @@ public class MavenExecutionFactory {
     }
 
     /**
-     * Returns true when a cache warmer produced at least one successful module,
+     * Returns true when a variant produced at least one successful module,
      * meaning subsequent variants can benefit from copying its target directories.
-     * When the warmer compiled zero modules successfully, the cache contains nothing
+     * When the variant compiled zero modules successfully, the cache contains nothing
      * useful and offline builds would be doomed to fail.
      */
-    private static boolean isWarmerUsable(CompilationResult cr) {
+    private static boolean isDonorUsable(CompilationResult cr) {
         if (cr == null) return false;
         return cr.getSuccessfulModules() > 0
                 || cr.getBuildStatus() == CompilationResult.Status.SUCCESS;
+    }
+
+    /**
+     * Returns true when candidate should replace the current donor (more modules compiled).
+     * A consumer that was built from the previous donor can itself become the new donor,
+     * creating an iterative improvement chain with progressively warmer caches.
+     */
+    private static boolean isBetterDonor(CompilationResult candidate, CompilationResult current) {
+        if (!isDonorUsable(candidate)) return false;
+        if (current == null) return true;
+        return candidate.getSuccessfulModules() > current.getSuccessfulModules();
     }
 
     /**

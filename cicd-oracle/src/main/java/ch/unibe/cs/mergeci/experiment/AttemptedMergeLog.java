@@ -48,7 +48,7 @@ public class AttemptedMergeLog implements Closeable {
 
         if (result.getVariants() != null) {
             for (MergeOutputJSON.Variant v : result.getVariants()) {
-                if (v.getVariantIndex() == 0 || v.isCacheWarmer()) continue;
+                if (v.getVariantIndex() == 0 || v.isCacheDonor()) continue;
                 numVariants++;
 
                 CompilationResult cr = v.getCompilationResult();

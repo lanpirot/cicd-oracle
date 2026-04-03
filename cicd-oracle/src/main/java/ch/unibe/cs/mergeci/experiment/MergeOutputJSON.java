@@ -117,15 +117,15 @@ public class MergeOutputJSON {
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder({"variantIndex", "isCacheWarmer", "shouldUseCache", "didUseCache",
+    @JsonPropertyOrder({"variantIndex", "isCacheDonor", "didUseCache",
             "ownExecutionSeconds",
             "totalTimeSinceMergeStartSeconds", "timedOut",
             "compilationResult", "testResults", "conflictPatterns"})
     public static class Variant {
         private int variantIndex;
-        @JsonProperty("isCacheWarmer")
-        private boolean isCacheWarmer;
-        private boolean shouldUseCache;
+        @JsonProperty("isCacheDonor")
+        @com.fasterxml.jackson.annotation.JsonAlias("isCacheWarmer")
+        private boolean isCacheDonor;
         private boolean didUseCache;
         private Double ownExecutionSeconds;
         private Double totalTimeSinceMergeStartSeconds;

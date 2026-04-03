@@ -42,7 +42,7 @@ public interface IVariantEvaluator {
     Map<String, Double> getVariantFinishSeconds();
     Map<String, Double> getVariantSinceMergeStartSeconds();
     boolean isBudgetExhausted();
-    String getCacheWarmerKey();
+    Set<String> getCacheDonorKeys();
     Set<String> getCacheHitKeys();
     int getNumInFlightVariantsKilled();
     int getMaxThreads();

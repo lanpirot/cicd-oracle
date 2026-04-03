@@ -32,7 +32,7 @@ public class VariantResultCollector {
         MergeExperimentRunner.MergeAnalysisResult result = processed.getAnalysisResult();
 
         // Build and set variant results
-        VariantSummary variantSummary = buildVariantSummary(result, result.cacheWarmerKey(), result.cacheHitKeys());
+        VariantSummary variantSummary = buildVariantSummary(result, result.cacheDonorKeys(), result.cacheHitKeys());
         output.setVariants(variantSummary.variants());
         output.setVariantsExecutionTimeSeconds(variantSummary.variantsExecutionTimeSeconds());
         output.setBudgetExhausted(result.budgetExhausted());
@@ -77,7 +77,7 @@ public class VariantResultCollector {
      * Build complete variant summary including all variants and success metrics.
      */
     private VariantSummary buildVariantSummary(MergeExperimentRunner.MergeAnalysisResult result,
-                                               String cacheWarmerKey,
+                                               Set<String> cacheDonorKeys,
                                                Set<String> cacheHitKeys) {
         String projectName = result.getProjectName();
         Map<String, CompilationResult> compilationResults = result.compilationResults();
@@ -93,7 +93,7 @@ public class VariantResultCollector {
                 projectName,
                 variantFinishSeconds,
                 variantSinceMergeStartSeconds,
-                cacheWarmerKey,
+                cacheDonorKeys,
                 cacheHitKeys
         );
 
@@ -114,7 +114,7 @@ public class VariantResultCollector {
             String projectName,
             Map<String, Double> variantFinishSeconds,
             Map<String, Double> variantSinceMergeStartSeconds,
-            String cacheWarmerKey,
+            Set<String> cacheDonorKeys,
             Set<String> cacheHitKeys) {
 
         List<MergeOutputJSON.Variant> variants = new ArrayList<>(compilationResults.size());
@@ -128,10 +128,9 @@ public class VariantResultCollector {
             String key = entry.getKey();
             int variantIndex = Integer.parseInt(key.substring(key.lastIndexOf('_') + 1));
             variant.setVariantIndex(variantIndex);
-            boolean isWarmer = key.equals(cacheWarmerKey);
-            variant.setCacheWarmer(isWarmer);
+            boolean isDonor = cacheDonorKeys != null && cacheDonorKeys.contains(key);
+            variant.setCacheDonor(isDonor);
             boolean didUse = cacheHitKeys != null && cacheHitKeys.contains(key);
-            variant.setShouldUseCache(!isWarmer && (cacheWarmerKey != null));
             variant.setDidUseCache(didUse);
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(key));

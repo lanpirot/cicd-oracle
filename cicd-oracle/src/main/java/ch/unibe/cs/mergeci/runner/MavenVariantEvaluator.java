@@ -43,7 +43,7 @@ public class MavenVariantEvaluator implements IVariantEvaluator {
     @Override public Map<String, Double> getVariantFinishSeconds()            { return factory.getVariantFinishSeconds(); }
     @Override public Map<String, Double> getVariantSinceMergeStartSeconds()  { return factory.getVariantSinceMergeStartSeconds(); }
     @Override public boolean isBudgetExhausted()                              { return factory.isBudgetExhausted(); }
-    @Override public String getCacheWarmerKey()                               { return factory.getCacheWarmerKey(); }
+    @Override public Set<String> getCacheDonorKeys()                           { return factory.getCacheDonorKeys(); }
     @Override public Set<String> getCacheHitKeys()                            { return factory.getCacheHitKeys(); }
     @Override public int getNumInFlightVariantsKilled()                       { return factory.getNumInFlightVariantsKilled(); }
     @Override public int getMaxThreads()                                      { return factory.getMaxThreads(); }
