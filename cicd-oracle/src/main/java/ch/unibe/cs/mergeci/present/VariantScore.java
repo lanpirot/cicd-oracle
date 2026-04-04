@@ -28,12 +28,17 @@ import java.util.stream.Collectors;
  * than one using rare compound patterns. Only meaningful when comparing variants within
  * the same merge (same chunk count).
  *
+ * <p>Quaternary key: variant index (lower = better, i.e. higher generator confidence).
+ * Variants are generated in decreasing order of generator confidence, so a lower index
+ * reflects a more confident prediction. Defaults to {@code Integer.MAX_VALUE} when unknown.
+ *
  * <p>Variants that timed out or whose compilation result is unavailable carry no score
  * and are excluded from quality comparisons. They are still counted in
  * started/finished variant statistics.
  */
 public record VariantScore(int successfulModules, int passedTests,
-                           double simplicityScore) implements Comparable<VariantScore> {
+                           double simplicityScore,
+                           int variantIndex) implements Comparable<VariantScore> {
 
     /**
      * Returns a score for the variant, or empty if the build timed out or has no data.
@@ -63,7 +68,7 @@ public record VariantScore(int successfulModules, int passedTests,
                 ? tt.getRunNum() - tt.getErrorsNum() - tt.getFailuresNum()
                 : 0;
 
-        return Optional.of(new VariantScore(modules, tests, simplicityScore));
+        return Optional.of(new VariantScore(modules, tests, simplicityScore, Integer.MAX_VALUE));
     }
 
     /**
@@ -118,7 +123,9 @@ public record VariantScore(int successfulModules, int passedTests,
         if (cmp != 0) return cmp;
         cmp = Integer.compare(this.passedTests, other.passedTests);
         if (cmp != 0) return cmp;
-        return Double.compare(this.simplicityScore, other.simplicityScore);
+        cmp = Double.compare(this.simplicityScore, other.simplicityScore);
+        if (cmp != 0) return cmp;
+        return Integer.compare(other.variantIndex, this.variantIndex); // lower index = better
     }
 
     public boolean isBetterThan(VariantScore other) {
