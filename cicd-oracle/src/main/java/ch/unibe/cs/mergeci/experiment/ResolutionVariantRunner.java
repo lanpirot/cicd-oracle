@@ -202,7 +202,8 @@ public class ResolutionVariantRunner {
                 ? new StoredBaselines(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap())
                 : loadStoredBaselines(humanBaselineDir);
 
-        Map<String, String> skippedBaselines = skipVariants ? Collections.emptyMap()
+        Map<String, String> skippedBaselines = skipVariants
+                ? loadPriorSkippedMerges(modeDir.getParent().resolve("attempted_merges.csv"), modeName)
                 : loadSkippedBaselines(humanBaselineDir, mergeInfos);
 
         if (!skipVariants) {
@@ -357,6 +358,42 @@ public class ResolutionVariantRunner {
             }
         }
 
+        return skipped;
+    }
+
+    /**
+     * Load merges that were previously skipped in the given mode from {@code attempted_merges.csv}.
+     * On a pipeline restart, this avoids re-running expensive builds (e.g. 10-min INFRA_FAILURE
+     * baselines) that are guaranteed to fail again.  Only permanent skip reasons are included;
+     * "already processed" is excluded since the JSON resume check handles that.
+     */
+    private static Map<String, String> loadPriorSkippedMerges(Path attemptedMergesCsv, String modeName) {
+        if (attemptedMergesCsv == null || !attemptedMergesCsv.toFile().exists()) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> skipped = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(attemptedMergesCsv.toFile()))) {
+            String header = reader.readLine();
+            if (header == null) return skipped;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] cols = line.split(",", -1);
+                if (cols.length < 6) continue;
+                String mode = cols[3];
+                String verdict = cols[4];
+                String reason = cols[5];
+                String mergeCommit = cols[2];
+                if (!modeName.equals(mode) || mergeCommit.isEmpty()) continue;
+                if (!"SKIPPED".equals(verdict)) continue;
+                if (reason.contains("already processed")) continue;
+                skipped.put(mergeCommit, reason);
+            }
+        } catch (IOException e) {
+            System.err.println("Warning: could not read " + attemptedMergesCsv + ": " + e.getMessage());
+        }
+        if (!skipped.isEmpty()) {
+            System.out.printf("  Loaded %d previously-skipped merge(s) from attempted_merges.csv%n", skipped.size());
+        }
         return skipped;
     }
 
