@@ -57,7 +57,7 @@ For **broken-baseline merges** (`baselineBroken=true`), the stored baseline is t
 
 ### Variant / Pattern Model (`model`, `model/patterns`)
 
-A merge has N conflict chunks. Each variant assigns one pattern per chunk. Atomic patterns (`IPattern` implementations): `OursPattern`, `TheirsPattern`, `BasePattern`, `EmptyPattern`. Compound patterns (`CompoundPattern`) combine atomics with colon notation (e.g., `OURS:BASE`). `StrategySelector` + `PatternHeuristics` (loaded via `PatternHeuristics.loadFromFile()` from per-fold CSVs under `RQ1_CV_FOLDS_DIR`, e.g. `learnt_historical_pattern_distribution_train{k}.csv`) pick the order in which assignments are tried. For large N, the search space is exponential; the time budget is the natural stopping condition.
+A merge has N conflict chunks across all conflicting files (Java and non-Java alike — patterns are applied to every file with conflict markers, not just `.java` files). Each variant assigns one pattern per chunk. Atomic patterns (`IPattern` implementations): `OursPattern`, `TheirsPattern`, `BasePattern`, `EmptyPattern`. Compound patterns (`CompoundPattern`) combine atomics with colon notation (e.g., `OURS:BASE`). `StrategySelector` + `PatternHeuristics` (loaded via `PatternHeuristics.loadFromFile()` from per-fold CSVs under `RQ1_CV_FOLDS_DIR`, e.g. `learnt_historical_pattern_distribution_train{k}.csv`) pick the order in which assignments are tried. For large N, the search space is exponential; the time budget is the natural stopping condition.
 
 RQ1 large artefacts (`all_conflicts.csv`, fold CSVs, `.pt` checkpoints, prediction CSVs, results) live under `~/data/bruteforcemerge/rq1/` with subdirs `cv_folds/`, `checkpoints/`, `predictions/`, `results/`. Python scripts remain in `src/main/resources/pattern-heuristics/`. Paths are defined in `AppConfig.RQ1_*`.
 
@@ -65,7 +65,7 @@ RQ1 large artefacts (`all_conflicts.csv`, fold CSVs, `.pt` checkpoints, predicti
 
 ### Key Configuration (`config/AppConfig.java`)
 
-Central source of truth for all paths, timeouts, Java installations, and feature flags. Machine-specific paths (e.g., `JAVA_HOMES`) must match the actual JDK installations on the host. `MAX_THREADS` is computed dynamically by `computeMaxThreads()` as `max(1, min((MemAvailable − 5 GB) / peakBuildRamBytes, cores − 2))`, falling back to 4 on error.
+Central source of truth for all paths, timeouts, Java installations, and feature flags. Machine-specific paths (e.g., `JAVA_HOMES`) must match the actual JDK installations on the host — run `scripts/setup_vm.sh` on a fresh VM which installs all required JDKs and prints the expected paths. `PYTHON_EXECUTABLE` is resolved at startup by walking up from cwd to find `.venv/bin/python3`; falls back to system `python3`. `MAX_THREADS` is computed dynamically by `computeMaxThreads()` as `max(1, min((MemAvailable − 5 GB) / peakBuildRamBytes, cores − 2))`, falling back to 4 on error.
 
 Overridable at runtime via system properties: `freshRun`, `maxConflictMerges`, `reanalyzeSuccess`, `rq3BestMode`.
 

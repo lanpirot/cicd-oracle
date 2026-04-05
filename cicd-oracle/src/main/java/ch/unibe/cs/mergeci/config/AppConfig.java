@@ -60,15 +60,37 @@ private static final boolean FRESH_RUN = false;
                 new String[]{mavenGoal});
     }
 
+    /**
+     * Compile-only command: runs {@code mvn compile} without test-related flags.
+     * Used for the two-phase optimization: compile first, skip test phase if the variant
+     * can't beat the current best on successful modules.
+     */
+    public static String[] buildCompileOnlyCommand(String[] executableArgs) {
+        return concat(
+                executableArgs,
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
+                SKIP_STATIC_ANALYSIS,
+                new String[]{"compile"});
+    }
+
+    /** Same as {@link #buildCompileOnlyCommand} but with {@code -o} (offline) for cache builds. */
+    public static String[] buildCompileOnlyCommandOffline(String[] executableArgs) {
+        return concat(
+                executableArgs,
+                new String[]{"-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
+                SKIP_STATIC_ANALYSIS,
+                new String[]{"compile"});
+    }
+
     public static String[] concat(String[]... parts) {
         return Arrays.stream(parts).flatMap(Arrays::stream).toArray(String[]::new);
     }
 
     // ========== JAVA INSTALLATIONS ==========
-    // NOTE: These paths are hardcoded for the development machine and MUST be updated
-    // to match the Java installations available on your system.
-    // Run `ls /usr/lib/jvm/` (Linux) or `ls /Library/Java/JavaVirtualMachines/` (macOS)
-    // to find installed JDKs. Only include versions that are actually present.
+    // NOTE: These paths are machine-specific and MUST match the actual JDK installations.
+    // On a fresh VM, run `scripts/setup_vm.sh` which installs all required JDKs and
+    // prints the expected paths. On an existing machine:
+    //   Linux: ls /usr/lib/jvm/     macOS: ls /Library/Java/JavaVirtualMachines/
     // Used by JavaVersionResolver to switch to the closest compatible JDK when a
     // repository requires a specific Java version.
     public static final Map<Integer, Path> JAVA_HOMES = Map.of(
@@ -143,11 +165,10 @@ private static final boolean FRESH_RUN = false;
     public static final String PYTHON_EXECUTABLE = resolveVenvPython();
 
     private static String resolveVenvPython() {
-        // .venv may sit at the Maven module root or one level up (repo root)
-        Path moduleDir = Paths.get("").toAbsolutePath();
-        for (Path candidate : new Path[]{
-                moduleDir.resolve(".venv/bin/python3"),
-                moduleDir.getParent().resolve(".venv/bin/python3")}) {
+        // Walk up from cwd to find .venv/bin/python3. The venv lives at the workspace
+        // root (e.g. merge++/.venv), which may be several levels above the Maven module.
+        for (Path dir = Paths.get("").toAbsolutePath(); dir != null; dir = dir.getParent()) {
+            Path candidate = dir.resolve(".venv/bin/python3");
             if (candidate.toFile().canExecute()) return candidate.toString();
         }
         return "python3";

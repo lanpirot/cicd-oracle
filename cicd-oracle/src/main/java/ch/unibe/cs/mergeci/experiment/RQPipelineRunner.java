@@ -42,6 +42,9 @@ public abstract class RQPipelineRunner {
     /** Return the experiment modes to run (in order). */
     protected abstract List<Utility.Experiments> modesToRun();
 
+    /** Modes to include in the cross-mode sanity check. Defaults to {@link #modesToRun()}. */
+    protected List<Utility.Experiments> sanityCheckModes() { return modesToRun(); }
+
     /** Return the root directory under which per-mode subdirs are created. */
     protected abstract Path experimentDir();
 
@@ -83,7 +86,8 @@ public abstract class RQPipelineRunner {
                 generatorFactory() != null ? generatorFactory().getClass().getSimpleName() : "default (heuristic)");
         System.out.printf( "║  Baseline timeout    : %d s%n", AppConfig.MAVEN_BUILD_TIMEOUT);
         System.out.printf( "║  Variant budget      : max(300s, baseline×10)%n");
-        System.out.printf( "║  Max threads         : %d (initial, re-computed per merge)%n", AppConfig.MAX_THREADS);
+        System.out.printf( "║  Max threads         : %d (cores − 2; re-computed per merge from measured peak RAM)%n",
+                Math.max(1, Runtime.getRuntime().availableProcessors() - 2));
         System.out.printf( "║  Maven daemon        : %s%n", AppConfig.USE_MAVEN_DAEMON);
         System.out.printf( "║  Maven heap          : %s%n", AppConfig.MAVEN_SUBPROCESS_HEAP);
         System.out.printf( "║  Output dir          : %s%n", experimentDir());
@@ -116,7 +120,7 @@ public abstract class RQPipelineRunner {
             runProjects(byProject, mergeLog);
         }
 
-        CrossModeSanityChecker.check(experimentDir(), modesToRun());
+        CrossModeSanityChecker.check(experimentDir(), sanityCheckModes());
         analyzeResults();
     }
 
@@ -333,6 +337,11 @@ public abstract class RQPipelineRunner {
                     System.err.println("Warning: could not delete " + modeDir + ": " + e.getMessage());
                 }
             }
+        }
+        // Also clean the append-only merge log so it doesn't carry stale rows from prior runs
+        Path mergeLog = experimentDir().resolve("attempted_merges.csv");
+        if (mergeLog.toFile().exists()) {
+            mergeLog.toFile().delete();
         }
     }
 

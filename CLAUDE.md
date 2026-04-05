@@ -13,13 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Python Environment
 
-A `.venv/` virtual environment at the repo root contains GPU-enabled PyTorch (required for ML-AR model training). Always use it instead of system `python3` for any ML work — system Python is CPU-only and 10–50× slower.
+A `.venv/` virtual environment at the workspace root (`merge++/.venv/`) contains GPU-enabled PyTorch (required for ML-AR model training). Always use it instead of system `python3` for any ML work — system Python is CPU-only and 10–50× slower.
 
 ```bash
 source .venv/bin/activate
 ```
 
-The `run_rq1.sh` pipeline script auto-detects and activates the venv.
+The `run_rq1.sh` pipeline script auto-detects and activates the venv. The Java pipeline (`AppConfig.PYTHON_EXECUTABLE`) walks up the directory tree from cwd to locate `.venv/bin/python3` automatically. On a VM provisioned with `scripts/setup_vm.sh`, a CPU-only PyTorch venv is created at the same location.
 
 ## cicd-oracle (Java pipeline)
 

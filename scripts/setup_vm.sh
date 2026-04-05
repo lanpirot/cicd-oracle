@@ -5,7 +5,7 @@
 # After running this script:
 #   1. source ~/.bashrc
 #   2. Update JAVA_HOMES in AppConfig.java to match installed paths
-#   3. cd ~/projects/merge++/maven-hook && mvn install
+#   3. cd ~/projects/merge++/cicd-oracle/maven-hook && mvn install
 #   4. cd ~/projects/merge++/cicd-oracle/cicd-oracle && mvn clean package
 set -euo pipefail
 
@@ -18,7 +18,8 @@ echo "==> Setting up for user: $TARGET_USER (home: $TARGET_HOME)"
 echo "==> Installing system packages..."
 apt-get update -qq
 apt-get install -y -qq git curl wget unzip fuse-overlayfs python3 python3-venv python3-pip \
-    build-essential ca-certificates gnupg
+    build-essential ca-certificates gnupg \
+    texlive-latex-base texlive-fonts-recommended texlive-latex-extra cm-super dvipng
 
 # ---------- JDKs ----------
 
@@ -26,21 +27,21 @@ apt-get install -y -qq git curl wget unzip fuse-overlayfs python3 python3-venv p
 echo "==> Installing OpenJDK 17, 21..."
 apt-get install -y -qq openjdk-17-jdk openjdk-21-jdk
 
-# Adoptium (Temurin) for JDK 8 and 11
-echo "==> Adding Adoptium apt repo for JDK 8, 11..."
+# Adoptium (Temurin) for JDK 8, 11, and 25
+echo "==> Adding Adoptium apt repo for JDK 8, 11, 25..."
 install -m 0755 -d /etc/apt/keyrings
 wget -qO- https://packages.adoptium.net/artifactory/api/gpg/key/public \
     | gpg --dearmor -o /etc/apt/keyrings/adoptium.gpg 2>/dev/null || true
 echo "deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb noble main" \
     > /etc/apt/sources.list.d/adoptium.list
 apt-get update -qq
-apt-get install -y -qq temurin-8-jdk temurin-11-jdk
+apt-get install -y -qq temurin-8-jdk temurin-11-jdk temurin-25-jdk
 
 echo "==> Installed JDKs:"
 ls /usr/lib/jvm/
 
 # ---------- Maven 3.9.x ----------
-MAVEN_VERSION="3.9.12"
+MAVEN_VERSION="3.9.14"
 if [ ! -d /opt/maven ]; then
     echo "==> Installing Maven ${MAVEN_VERSION}..."
     wget -q "https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
@@ -53,7 +54,7 @@ else
 fi
 
 # ---------- Maven Daemon (mvnd) ----------
-MVND_VERSION="1.0.3"
+MVND_VERSION="1.0.5"
 MVND_DIR="/opt/maven-mvnd-${MVND_VERSION}-linux-amd64"
 if [ ! -d "$MVND_DIR" ]; then
     echo "==> Installing mvnd ${MVND_VERSION}..."
@@ -102,7 +103,7 @@ if ! grep -qF "$MARKER" "$BASHRC" 2>/dev/null; then
 
 # --- cicd-oracle setup ---
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export PATH=$JAVA_HOME/bin:/opt/maven/bin:/opt/maven-mvnd-1.0.3-linux-amd64/bin:$HOME/.local/bin:$PATH
+export PATH=$JAVA_HOME/bin:/opt/maven/bin:/opt/maven-mvnd-1.0.5-linux-amd64/bin:$HOME/.local/bin:$PATH
 
 # JDK switching aliases (adjust paths after 'ls /usr/lib/jvm/')
 set_java_home() { export JAVA_HOME="$1"; export PATH="$JAVA_HOME/bin:$PATH"; }
@@ -110,6 +111,7 @@ alias java21='set_java_home /usr/lib/jvm/java-21-openjdk-amd64'
 alias java17='set_java_home /usr/lib/jvm/java-17-openjdk-amd64'
 alias java11='set_java_home /usr/lib/jvm/temurin-11-jdk-amd64'
 alias java8='set_java_home /usr/lib/jvm/temurin-8-jdk-amd64'
+alias java25='set_java_home /usr/lib/jvm/temurin-25-jdk-amd64'
 # --- end cicd-oracle setup ---
 BASHEOF
 else
@@ -128,14 +130,20 @@ echo "mvnd:                  $(${MVND_DIR}/bin/mvnd --version 2>/dev/null | head
 echo "Python venv:           ${VENV_DIR}"
 echo "fuse-overlayfs:        $(fuse-overlayfs --version 2>/dev/null | head -1)"
 echo ""
+echo "Expected JAVA_HOMES for AppConfig.java on this VM:"
+echo "   8  -> /usr/lib/jvm/temurin-8-jdk-amd64"
+echo "  11  -> /usr/lib/jvm/temurin-11-jdk-amd64"
+echo "  17  -> /usr/lib/jvm/java-17-openjdk-amd64"
+echo "  21  -> /usr/lib/jvm/java-21-openjdk-amd64"
+echo "  25  -> /usr/lib/jvm/temurin-25-jdk-amd64"
+echo ""
 echo "Next steps:"
 echo "  1. source ~/.bashrc"
-echo "  2. Check JDK paths:  ls /usr/lib/jvm/"
-echo "  3. Update JAVA_HOMES in AppConfig.java to match"
-echo "  4. rsync code + data from laptop (see below)"
-echo "  5. cd ~/projects/merge++/maven-hook && mvn install"
-echo "  6. cd ~/projects/merge++/cicd-oracle/cicd-oracle && mvn clean package"
-echo "  7. mvn test"
+echo "  2. Update JAVA_HOMES in AppConfig.java to the paths above"
+echo "  3. rsync code + data from laptop (see below)"
+echo "  4. cd ~/projects/merge++/cicd-oracle/maven-hook && mvn install"
+echo "  5. cd ~/projects/merge++/cicd-oracle/cicd-oracle && mvn clean package"
+echo "  6. mvn test"
 echo ""
 echo "rsync commands (run from laptop):"
 echo "  rsync -avz --exclude=target/ --exclude=.venv/ ~/projects/merge++/ seg@VM:~/projects/merge++/"
