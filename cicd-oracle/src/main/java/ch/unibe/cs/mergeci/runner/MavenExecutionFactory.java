@@ -748,7 +748,7 @@ public class MavenExecutionFactory {
      * Returns true when a variant is "perfect": all modules built successfully
      * and all tests ran and passed.
      */
-    private static boolean isPerfect(CompilationResult cr, TestTotal tt) {
+    static boolean isPerfect(CompilationResult cr, TestTotal tt) {
         if (cr == null) return false;
         boolean buildOk = cr.getTotalModules() > 0
                 ? cr.getSuccessfulModules() == cr.getTotalModules()
@@ -764,7 +764,7 @@ public class MavenExecutionFactory {
      * When the variant compiled zero modules successfully, the cache contains nothing
      * useful and offline builds would be doomed to fail.
      */
-    private static boolean isDonorUsable(CompilationResult cr) {
+    static boolean isDonorUsable(CompilationResult cr) {
         if (cr == null) return false;
         return cr.getSuccessfulModules() > 0
                 || cr.getBuildStatus() == CompilationResult.Status.SUCCESS;
@@ -775,7 +775,7 @@ public class MavenExecutionFactory {
      * A consumer that was built from the previous donor can itself become the new donor,
      * creating an iterative improvement chain with progressively warmer caches.
      */
-    private static boolean isBetterDonor(CompilationResult candidate, CompilationResult current) {
+    static boolean isBetterDonor(CompilationResult candidate, CompilationResult current) {
         if (!isDonorUsable(candidate)) return false;
         if (current == null) return true;
         return candidate.getSuccessfulModules() > current.getSuccessfulModules();
