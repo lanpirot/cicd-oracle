@@ -63,6 +63,13 @@ public class MavenExecutionFactory {
     private long baselineDirGrowthBytes;
     private String resolvedJavaHome;
 
+    /** Shared ~/.m2/repository — lower layer for per-variant overlayFS isolation. */
+    private static final Path M2_REPO = Path.of(System.getProperty("user.home"), ".m2", "repository");
+    /** Temp directory for per-variant .m2 overlay upper/work/mount dirs. */
+    private static final Path M2_OVERLAY_DIR = AppConfig.TMP_DIR.resolve("m2_overlays");
+    /** Whether to use overlayFS isolation for the local Maven repo in parallel builds. */
+    private static final boolean m2OverlayEnabled = OverlayMount.isAvailable();
+
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
         this.compilationResults = new TreeMap<>();
@@ -259,9 +266,10 @@ public class MavenExecutionFactory {
 
                     try {
                         int inFlight = 0;
+                        boolean exhaustedVariants = false;
                         while (inFlight < maxThreads && !Instant.now().isAfter(deadline)) {
                             Optional<VariantProject> next = context.nextVariant();
-                            if (next.isEmpty()) break;
+                            if (next.isEmpty()) { exhaustedVariants = true; break; }
                             int idx = globalVariantIndex++;
                             String key = projectName + "_" + idx;
                             Path vPath = builder.buildVariantBase(context, idx);
@@ -276,7 +284,20 @@ public class MavenExecutionFactory {
                         while (inFlight > 0) {
                             TaskResult done = drainOne(cs);
                             inFlight--;
+                            if (done.skipped()) {
+                                if (done.path().toFile().exists()) {
+                                    deleteWithRetry(done.path());
+                                }
+                                continue;
+                            }
                             collectResult(done.key(), done.path(), builder, variantsStart, done.wallClockSeconds());
+                            if (!isCleanResult(done.key())) {
+                                discardResult(done.key());
+                                if (!done.path().equals(warmPathRef.get()) && done.path().toFile().exists()) {
+                                    deleteWithRetry(done.path());
+                                }
+                                continue;
+                            }
                             CompilationResult doneCr = compilationResults.get(done.key());
                             if (doneCr != null) {
                                 bestSuccessfulModules.updateAndGet(old -> Math.max(old, doneCr.getSuccessfulModules()));
@@ -305,8 +326,13 @@ public class MavenExecutionFactory {
                                     allocatedPaths.add(vPath);
                                     submitTask(cs, commandResolver, cacheManager, warmPathRef, vPath, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                                     inFlight++;
+                                } else {
+                                    exhaustedVariants = true;
                                 }
                             }
+                        }
+                        if (!perfectFound && !exhaustedVariants) {
+                            MavenExecutionFactory.this.budgetExhausted = true;
                         }
                     } finally {
                         executor.shutdownNow();
@@ -352,17 +378,13 @@ public class MavenExecutionFactory {
 
                             try {
                                 Instant variantStart = Instant.now();
-                                boolean offline = false;
                                 if (isCache && donorPath != null) {
-                                    // Consumer: copy from donor, run offline.
                                     System.out.printf("[DEBUG] sequential variant %d (cache from donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
                                     cacheManager.copyCacheDirectory(donorPath, variantPath);
                                     cacheHitKeys.add(variantKey);
-                                    offline = true;
                                 } else if (isCache) {
-                                    // Potential donor: inject cache artifacts, run online.
                                     System.out.printf("[DEBUG] sequential variant %d (potential donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
                                 } else {
@@ -370,9 +392,13 @@ public class MavenExecutionFactory {
                                 }
                                 builder.applyConflictResolution(variantPath, variant);
                                 runTwoPhase(variantPath, MavenExecutionFactory.this.resolvedJavaHome,
-                                        variantKey, deadline, offline, commandResolver);
+                                        variantKey, deadline, commandResolver, null);
                                 double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
                                 collectResult(variantKey, variantPath, builder, variantsStart, wallClockSeconds);
+                                if (!isCleanResult(variantKey)) {
+                                    discardResult(variantKey);
+                                    continue;
+                                }
                                 CompilationResult cr = compilationResults.get(variantKey);
                                 if (cr != null) {
                                     bestSuccessfulModules.updateAndGet(old -> Math.max(old, cr.getSuccessfulModules()));
@@ -428,9 +454,10 @@ public class MavenExecutionFactory {
 
                     try {
                         int inFlight = 0;
+                        boolean exhaustedVariants = false;
                         while (inFlight < maxThreads && !Instant.now().isAfter(deadline)) {
                             Optional<VariantProject> next = context.nextVariant();
-                            if (next.isEmpty()) break;
+                            if (next.isEmpty()) { exhaustedVariants = true; break; }
                             int idx = globalVariantIndex++;
                             String key = projectName + "_" + idx;
                             OverlayMount overlay = builder.buildVariantOverlay(basePath, idx);
@@ -447,7 +474,20 @@ public class MavenExecutionFactory {
                         while (inFlight > 0) {
                             OverlayTaskResult done = cs.take().get();
                             inFlight--;
+                            if (done.skipped()) {
+                                if (done.overlay() != warmOverlayRef.get()) {
+                                    done.overlay().close();
+                                }
+                                continue;
+                            }
                             collectResult(done.key(), done.overlay().mountPoint(), builder, variantsStart, done.wallClockSeconds());
+                            if (!isCleanResult(done.key())) {
+                                discardResult(done.key());
+                                if (done.overlay() != warmOverlayRef.get()) {
+                                    done.overlay().close();
+                                }
+                                continue;
+                            }
                             CompilationResult doneCr = compilationResults.get(done.key());
                             if (doneCr != null) {
                                 bestSuccessfulModules.updateAndGet(old -> Math.max(old, doneCr.getSuccessfulModules()));
@@ -477,8 +517,13 @@ public class MavenExecutionFactory {
                                     submitOverlayTask(cs, commandResolver, cacheManager, warmOverlayRef,
                                             overlay, next.get(), builder, key, deadline, MavenExecutionFactory.this.resolvedJavaHome);
                                     inFlight++;
+                                } else {
+                                    exhaustedVariants = true;
                                 }
                             }
+                        }
+                        if (!perfectFound && !exhaustedVariants) {
+                            MavenExecutionFactory.this.budgetExhausted = true;
                         }
                     } finally {
                         executor.shutdownNow();
@@ -525,17 +570,13 @@ public class MavenExecutionFactory {
                                     MavenExecutionFactory.this.resolvedJavaHome =
                                             JavaVersionResolver.resolveJavaHome(variantPath).orElse(null);
                                 Instant variantStart = Instant.now();
-                                boolean offline = false;
                                 if (isCache && donorOverlay != null) {
-                                    // Consumer: copy from donor, run offline.
                                     System.out.printf("[DEBUG] sequential variant %d (overlay, cache from donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(donorOverlay.mountPoint().toFile(), variantPath.toFile());
                                     cacheManager.copyCacheDirectory(donorOverlay.mountPoint(), variantPath);
                                     cacheHitKeys.add(variantKey);
-                                    offline = true;
                                 } else if (isCache) {
-                                    // Potential donor: inject cache artifacts, run online.
                                     System.out.printf("[DEBUG] sequential variant %d (overlay, potential donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
                                 } else {
@@ -543,10 +584,14 @@ public class MavenExecutionFactory {
                                 }
                                 builder.applyConflictResolution(variantPath, variant);
                                 runTwoPhase(variantPath, MavenExecutionFactory.this.resolvedJavaHome,
-                                        variantKey, deadline, offline, commandResolver);
+                                        variantKey, deadline, commandResolver, null);
                                 double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
                                 // Collect results BEFORE closing overlay — surefire XML lives in the mountpoint
                                 collectResult(variantKey, variantPath, builder, variantsStart, wallClockSeconds);
+                                if (!isCleanResult(variantKey)) {
+                                    discardResult(variantKey);
+                                    continue;
+                                }
                                 CompilationResult cr = compilationResults.get(variantKey);
                                 if (cr != null) {
                                     bestSuccessfulModules.updateAndGet(old -> Math.max(old, cr.getSuccessfulModules()));
@@ -590,8 +635,20 @@ public class MavenExecutionFactory {
                     Path vPath = overlay.mountPoint();
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
-                    if (timeout > 0) {
-                        boolean offline = false;
+                    if (timeout <= 0) {
+                        return new OverlayTaskResult(key, overlay, 0.0, true);
+                    }
+                    OverlayMount m2Overlay = null;
+                    try {
+                        Path repoLocal = null;
+                        if (m2OverlayEnabled) {
+                            try {
+                                m2Overlay = OverlayMount.create(M2_REPO, M2_OVERLAY_DIR, key);
+                                repoLocal = m2Overlay.mountPoint();
+                            } catch (java.io.IOException e) {
+                                // Graceful fallback: use shared repo if overlay mount fails
+                            }
+                        }
                         OverlayMount donor = isCache ? warmOverlayRef.get() : null;
                         if (donor != null) {
                             System.out.printf("[DEBUG] variant %s starting (cache ready, overlay), timeout=%ds%n",
@@ -600,7 +657,6 @@ public class MavenExecutionFactory {
                             cacheManager.copyTargetDirectories(donor.mountPoint().toFile(), vPath.toFile());
                             cacheManager.copyCacheDirectory(donor.mountPoint(), vPath);
                             cacheHitKeys.add(key);
-                            offline = true;
                         } else if (isCache) {
                             System.out.printf("[DEBUG] variant %s starting (potential donor, overlay), timeout=%ds%n",
                                     key, timeout);
@@ -610,21 +666,27 @@ public class MavenExecutionFactory {
                                     key, timeout);
                         }
                         builder.applyConflictResolution(vPath, variant);
-                        runTwoPhase(vPath, javaHome, key, deadline, offline, commandResolver);
+                        runTwoPhase(vPath, javaHome, key, deadline, commandResolver, repoLocal);
+                    } finally {
+                        if (m2Overlay != null) m2Overlay.close();
                     }
                     double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
-                    return new OverlayTaskResult(key, overlay, wallClockSeconds);
+                    return new OverlayTaskResult(key, overlay, wallClockSeconds, false);
                 });
             }
 
             /**
              * Two-phase Maven execution: compile first, skip test phase if the variant
              * can't beat the current best on successful modules (primary VariantScore tiebreaker).
+             *
+             * @param mavenRepoLocal per-variant local repo path (overlayFS mountpoint) for
+             *                       isolation; {@code null} uses the default {@code ~/.m2/repository}
              * @return true if tests were run, false if test phase was skipped or budget expired
              */
             private boolean runTwoPhase(Path variantPath, String javaHome, String key,
-                                        Instant deadline, boolean offline,
-                                        MavenCommandResolver commandResolver) throws java.io.IOException {
+                                        Instant deadline,
+                                        MavenCommandResolver commandResolver,
+                                        Path mavenRepoLocal) throws java.io.IOException {
                 String[] execArgs = commandResolver.resolveExecutableArgs(variantPath);
                 String mavenGoal = commandResolver.resolveMavenGoal(variantPath);
                 Path compileLog = logDir.resolve(key + "_compile_phase");
@@ -635,8 +697,7 @@ public class MavenExecutionFactory {
                 if (compileTimeout <= 0) return false;
                 new MavenProcessExecutor(compileTimeout).executeCommand(
                         variantPath, compileLog, javaHome,
-                        offline ? AppConfig.buildCompileOnlyCommandOffline(execArgs)
-                                : AppConfig.buildCompileOnlyCommand(execArgs));
+                        withRepoLocal(AppConfig.buildCompileOnlyCommand(execArgs), mavenRepoLocal));
 
                 CompilationResult cr = new CompilationResult(compileLog);
                 int modules = cr.getSuccessfulModules();
@@ -658,9 +719,16 @@ public class MavenExecutionFactory {
                 Files.deleteIfExists(compileLog);
                 new MavenProcessExecutor(testTimeout).executeCommand(
                         variantPath, fullLog, javaHome,
-                        offline ? AppConfig.buildCommandOffline(execArgs, mavenGoal)
-                                : AppConfig.buildCommand(execArgs, mavenGoal));
+                        withRepoLocal(AppConfig.buildCommand(execArgs, mavenGoal), mavenRepoLocal));
                 return true;
+            }
+
+            /** Append {@code -Dmaven.repo.local=<path>} to a Maven command array. */
+            private static String[] withRepoLocal(String[] cmd, Path repoLocal) {
+                if (repoLocal == null) return cmd;
+                String[] result = java.util.Arrays.copyOf(cmd, cmd.length + 1);
+                result[cmd.length] = "-Dmaven.repo.local=" + repoLocal;
+                return result;
             }
 
             private void submitTask(CompletionService<TaskResult> cs,
@@ -672,33 +740,43 @@ public class MavenExecutionFactory {
                 cs.submit(() -> {
                     Instant taskStart = Instant.now();
                     int timeout = remainingSeconds(deadline);
-                    if (timeout > 0) {
-                        boolean offline = false;
+                    if (timeout <= 0) {
+                        return new TaskResult(key, vPath, 0.0, true);
+                    }
+                    OverlayMount m2Overlay = null;
+                    try {
+                        Path repoLocal = null;
+                        if (m2OverlayEnabled) {
+                            try {
+                                m2Overlay = OverlayMount.create(M2_REPO, M2_OVERLAY_DIR, key);
+                                repoLocal = m2Overlay.mountPoint();
+                            } catch (java.io.IOException e) {
+                                // Graceful fallback: use shared repo if overlay mount fails
+                            }
+                        }
                         Path donor = isCache ? warmPathRef.get() : null;
                         if (donor != null) {
-                            // Consumer: copy from donor, run offline.
                             System.out.printf("[DEBUG] variant %s starting (cache ready), timeout=%ds%n",
                                     vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
                             cacheManager.copyTargetDirectories(donor.toFile(), vPath.toFile());
                             cacheManager.copyCacheDirectory(donor, vPath);
                             cacheHitKeys.add(key);
-                            offline = true;
                         } else if (isCache) {
-                            // Potential donor: inject cache artifacts, run online.
                             System.out.printf("[DEBUG] variant %s starting (potential donor), timeout=%ds%n",
                                     vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
                         } else {
-                            // No cache mode: build normally.
                             System.out.printf("[DEBUG] variant %s starting, timeout=%ds%n",
                                     vPath.getFileName(), timeout);
                         }
                         builder.applyConflictResolution(vPath, variant);
-                        runTwoPhase(vPath, javaHome, key, deadline, offline, commandResolver);
+                        runTwoPhase(vPath, javaHome, key, deadline, commandResolver, repoLocal);
+                    } finally {
+                        if (m2Overlay != null) m2Overlay.close();
                     }
                     double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
-                    return new TaskResult(key, vPath, wallClockSeconds);
+                    return new TaskResult(key, vPath, wallClockSeconds, false);
                 });
             }
 
@@ -714,6 +792,26 @@ public class MavenExecutionFactory {
                 testResults.put(key, builder.collectTestResult(path));
                 variantFinishSeconds.put(key, wallClockSeconds);
                 variantSinceMergeStartSeconds.put(key, Duration.between(variantsStart, finish).toMillis() / 1000.0);
+            }
+
+            /**
+             * Returns true when the collected result represents a build that completed
+             * cleanly (not timed out, not interrupted, not missing).  Only such results
+             * are deterministic and should count in analysis / sanity checks.
+             */
+            private boolean isCleanResult(String key) {
+                CompilationResult cr = compilationResults.get(key);
+                if (cr == null) return false;
+                CompilationResult.Status s = cr.getBuildStatus();
+                return s != null && s != CompilationResult.Status.TIMEOUT;
+            }
+
+            /** Remove a timed-out / interrupted variant from all result maps. */
+            private void discardResult(String key) {
+                compilationResults.remove(key);
+                testResults.remove(key);
+                variantFinishSeconds.remove(key);
+                variantSinceMergeStartSeconds.remove(key);
             }
 
             private int remainingSeconds(Instant deadline) {
@@ -739,10 +837,10 @@ public class MavenExecutionFactory {
     }
 
     /** Carries per-variant wall-clock timing out of parallel task lambdas. */
-    private record TaskResult(String key, Path path, double wallClockSeconds) {}
+    private record TaskResult(String key, Path path, double wallClockSeconds, boolean skipped) {}
 
     /** Overlay variant of TaskResult — carries the mount so it can be closed after result collection. */
-    private record OverlayTaskResult(String key, OverlayMount overlay, double wallClockSeconds) {}
+    private record OverlayTaskResult(String key, OverlayMount overlay, double wallClockSeconds, boolean skipped) {}
 
     /**
      * Returns true when a variant is "perfect": all modules built successfully
