@@ -56,6 +56,13 @@ public class MavenExecutionFactory {
     private long peakBaselineRamBytes;
     private String resolvedJavaHome;
 
+    /** Shared ~/.m2/repository — lower layer for per-variant overlayFS isolation. */
+    private static final Path M2_REPO = Path.of(System.getProperty("user.home"), ".m2", "repository");
+    /** Temp directory for per-variant .m2 overlay upper/work/mount dirs. */
+    private static final Path M2_OVERLAY_DIR = AppConfig.TMP_DIR.resolve("m2_overlays");
+    /** Whether to use overlayFS isolation for the local Maven repo in parallel builds. */
+    private static final boolean m2OverlayEnabled = OverlayMount.isAvailable();
+
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
         this.compilationResults = new TreeMap<>();
@@ -358,7 +365,7 @@ public class MavenExecutionFactory {
                                     new MavenProcessExecutor(variantTimeout).executeCommand(
                                             variantPath, logDir.resolve(variantPath.getFileName() + "_compilation"),
                                             MavenExecutionFactory.this.resolvedJavaHome,
-                                            AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(variantPath),
+                                            AppConfig.buildCommand(commandResolver.resolveMavenCommand(variantPath),
                                                     commandResolver.resolveMavenGoal(variantPath), variantPath));
                                 } else {
                                     builder.applyConflictResolution(variantPath, variant);
@@ -406,53 +413,54 @@ public class MavenExecutionFactory {
                     if (timeout <= 0) {
                         return new TaskResult(key, vPath, 0.0, true);
                     }
-                    if (isWarmer) {
-                        // No previous cache to copy from: write conflict files immediately (T1 after T-1).
-                        System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
-                                vPath.getFileName(), timeout);
-                        cacheManager.injectCacheArtifacts(vPath);
-                        builder.applyConflictResolution(vPath, variant);
-                        new MavenProcessExecutor(timeout).executeCommand(
-                                vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
-                                javaHome,
+                    OverlayMount m2Overlay = null;
+                    try {
+                        Path repoLocal = null;
+                        if (m2OverlayEnabled) {
+                            try {
+                                m2Overlay = OverlayMount.create(M2_REPO, M2_OVERLAY_DIR, key);
+                                repoLocal = m2Overlay.mountPoint();
+                            } catch (java.io.IOException e) {
+                                // Graceful fallback: use shared repo if overlay mount fails
+                            }
+                        }
+                        String[] cmd = withRepoLocal(
                                 AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                        commandResolver.resolveMavenGoal(vPath), vPath));
-                        MavenExecutionFactory.this.cacheWarmerKey = key;
-                        // Only advertise the cache if the warmer produced usable artifacts;
-                        // otherwise other threads will fall back to normal online builds.
-                        Path logPath = logDir.resolve(vPath.getFileName() + "_compilation");
-                        CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
-                        if (isWarmerUsable(warmCr)) {
-                            warmPathRef.set(vPath);
-                        } else {
-                            System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
-                        }
-                    } else {
-                        Path warm = isCache ? warmPathRef.get() : null;
-                        System.out.printf("[DEBUG] variant %s starting%s, timeout=%ds%n",
-                                vPath.getFileName(), warm != null ? " (cache ready)" : "", timeout);
-                        if (warm != null) {
-                            // T0: copy compiled artifacts (fresh timestamps, T0 > T-1).
+                                        commandResolver.resolveMavenGoal(vPath), vPath),
+                                repoLocal);
+                        if (isWarmer) {
+                            System.out.printf("[DEBUG] variant %s starting (cache-warmer), timeout=%ds%n",
+                                    vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
-                            cacheManager.copyTargetDirectories(warm.toFile(), vPath.toFile());
-                            cacheManager.copyCacheDirectory(warm, vPath);
-                            cacheHitKeys.add(key);
-                            // T1: conflict files written last so Maven recompiles only changed modules.
                             builder.applyConflictResolution(vPath, variant);
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
-                                    javaHome,
-                                    AppConfig.buildCommandOffline(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                                    javaHome, cmd);
+                            MavenExecutionFactory.this.cacheWarmerKey = key;
+                            Path logPath = logDir.resolve(vPath.getFileName() + "_compilation");
+                            CompilationResult warmCr = logPath.toFile().exists() ? new CompilationResult(logPath) : null;
+                            if (isWarmerUsable(warmCr)) {
+                                warmPathRef.set(vPath);
+                            } else {
+                                System.out.println("⚠ Cache warmer produced no successful modules — falling back to non-cache builds");
+                            }
                         } else {
-                            // Cache not yet ready: write conflict files and build normally.
+                            Path warm = isCache ? warmPathRef.get() : null;
+                            System.out.printf("[DEBUG] variant %s starting%s, timeout=%ds%n",
+                                    vPath.getFileName(), warm != null ? " (cache ready)" : "", timeout);
+                            if (warm != null) {
+                                cacheManager.injectCacheArtifacts(vPath);
+                                cacheManager.copyTargetDirectories(warm.toFile(), vPath.toFile());
+                                cacheManager.copyCacheDirectory(warm, vPath);
+                                cacheHitKeys.add(key);
+                            }
                             builder.applyConflictResolution(vPath, variant);
                             new MavenProcessExecutor(timeout).executeCommand(
                                     vPath, logDir.resolve(vPath.getFileName() + "_compilation"),
-                                    javaHome,
-                                    AppConfig.buildCommand(commandResolver.resolveMavenCommand(vPath),
-                                            commandResolver.resolveMavenGoal(vPath), vPath));
+                                    javaHome, cmd);
                         }
+                    } finally {
+                        if (m2Overlay != null) m2Overlay.close();
                     }
                     double wallClockSeconds = Duration.between(taskStart, Instant.now()).toMillis() / 1000.0;
                     return new TaskResult(key, vPath, wallClockSeconds, false);
@@ -491,6 +499,14 @@ public class MavenExecutionFactory {
                 testResults.remove(key);
                 variantFinishSeconds.remove(key);
                 variantSinceMergeStartSeconds.remove(key);
+            }
+
+            /** Append {@code -Dmaven.repo.local=<path>} to a Maven command array. */
+            private static String[] withRepoLocal(String[] cmd, Path repoLocal) {
+                if (repoLocal == null) return cmd;
+                String[] result = java.util.Arrays.copyOf(cmd, cmd.length + 1);
+                result[cmd.length] = "-Dmaven.repo.local=" + repoLocal;
+                return result;
             }
 
             private int remainingSeconds(Instant deadline) {
