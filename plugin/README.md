@@ -6,18 +6,49 @@ An IntelliJ IDEA plugin that **automatically resolves merge conflicts** by gener
 
 ## Features
 
-- **Live streaming dashboard** -- variants appear as they complete, sorted by a four-tier quality score (modules built, tests passed, pattern simplicity, generator confidence). The current best variant is highlighted.
-- **Chunk-level inspection** -- view each conflict chunk with an OURS / BASE / THEIRS preview. Pin individual chunks to a specific resolution to narrow the search space.
-- **Consensus indicator** -- shows per-chunk pattern agreement among completed variants, helping identify which chunks are settled and which need attention.
+- **Live streaming dashboard** -- variants appear as they complete, sorted by a four-tier quality score (modules built, tests passed, pattern simplicity, variant index). The current best variant is highlighted.
+- **Chunk-level inspection** -- view each conflict chunk with an OURS / BASE / THEIRS preview. Pin individual chunks to a specific resolution (OURS, THEIRS, BASE, EMPTY, or free-form manual text) to narrow the search space.
+- **Consensus indicator** -- shows per-chunk pattern agreement among tied-best variants, helping identify which chunks are settled and which need attention.
 - **Variant history** -- every variant ever tested is preserved. Browse, compare, and apply any historical variant at any time.
 - **One-click apply** -- apply the best (or any selected) variant directly to the working tree.
 - **Maven Daemon support** -- optional toggle for faster builds via `mvnd`.
 
 ---
 
+## Architecture
+
+```
+plugin/
+  src/main/java/org/example/cicdmergeoracle/cicdMergeTool/
+    model/
+      ChunkKey.java              -- identifies a conflict chunk (file path + index)
+    service/
+      PluginOrchestrator.java    -- top-level pipeline: parse, generate, build, score, stream
+      OracleSession.java         -- thread-safe session state (best variant, history, pins, pause/resume)
+      ChunkConsensus.java        -- per-chunk pattern distribution across tied-best variants
+      HeuristicGeneratorFactory.java -- loads learned pattern CSV, creates variant generators
+      VariantResult.java         -- immutable record of a completed variant build
+      ManualPattern.java         -- user-provided free-form text for a pinned chunk
+    ui/
+      MergeResolutionPanel.java  -- main UI (dashboard table, chunk selector, status bar)
+      MergeResolutionToolWindowFactory.java -- registers the tool window
+      MergeStateListener.java    -- reacts to merge state changes
+    util/
+      GitUtils.java              -- conflict parsing, merge-state detection
+      MyFileUtils.java           -- directory cleanup
+      model/MergeInfo.java       -- merge metadata record
+  src/main/resources/
+    pattern-heuristics/          -- bundled learned pattern distribution CSV
+    META-INF/plugin.xml          -- tool window and dependency declarations
+```
+
+The plugin depends on the `cicd-oracle` pipeline library (via `mavenLocal`) for model classes, pattern types, variant scoring, and Maven execution.
+
+---
+
 ## Requirements
 
-- **IntelliJ IDEA** 2022.3+ (Community or Ultimate)
+- **IntelliJ IDEA** 2025.1+ (Community or Ultimate)
 - **Java** 17+
 - **Maven** (project under test must be Maven-based)
 - **Maven Daemon** (optional, for faster variant builds)

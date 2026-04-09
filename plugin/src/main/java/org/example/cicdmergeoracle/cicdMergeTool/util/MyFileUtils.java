@@ -5,6 +5,9 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MyFileUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(MyFileUtils.class);
     public static void saveFilesFromObjectId(Path projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
         for (Map.Entry<String, ObjectId> entry : files.entrySet()) {
             ObjectStream objectStream = getFileFromObject(entry.getValue(), git);
@@ -35,7 +39,7 @@ public class MyFileUtils {
                 objectOutputStream.write(objectStream.readAllBytes());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to save file: {}", file, e);
         }
     }
 
@@ -85,8 +89,8 @@ public class MyFileUtils {
 
     public static void printErrorMessage(Process pr) {
         try (InputStream errorStream = pr.getErrorStream(); InputStream messageStream = pr.getInputStream()) {
-            System.out.println(new String(errorStream.readAllBytes()));
-            System.out.println(new String(messageStream.readAllBytes()));
+            LOG.debug("Process stderr: {}", new String(errorStream.readAllBytes()));
+            LOG.debug("Process stdout: {}", new String(messageStream.readAllBytes()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -120,9 +124,8 @@ public class MyFileUtils {
             while ((length = in.read(buf)) > 0) {
                 out.write(buf, 0, length);
             }
-        }catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(sourceFile.getAbsoluteFile());
+        } catch (IOException e) {
+            LOG.warn("Failed to copy file: {}", sourceFile.getAbsoluteFile(), e);
         }
     }
 

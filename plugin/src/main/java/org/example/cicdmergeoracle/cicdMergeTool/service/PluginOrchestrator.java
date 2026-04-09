@@ -21,6 +21,9 @@ import org.eclipse.jgit.merge.MergeResult;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.merge.ResolveMerger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,14 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -53,6 +56,7 @@ import java.util.function.Consumer;
  * DirCache (index), which is safe during an active merge conflict.
  */
 public class PluginOrchestrator {
+    private static final Logger LOG = LoggerFactory.getLogger(PluginOrchestrator.class);
     private static final int MAVEN_TIMEOUT_SECONDS = 600;
 
     private final Path repoPath;
@@ -60,15 +64,15 @@ public class PluginOrchestrator {
     private final Consumer<VariantResult> onVariantComplete;
     private final Consumer<Boolean> onRunFinished; // true = exhausted, false = cancelled
     private final Consumer<String> onError;
+    private final Consumer<Integer> onInFlightChanged;
     private final HeuristicGeneratorFactory generatorFactory;
     private final boolean useMavenDaemon;
     private final int threadCount;
 
     private volatile ExecutorService executor;
     private volatile Future<?> coordinatorFuture;
-    private volatile List<Future<?>> activeBatch = List.of();
+    private final Set<Future<?>> activeFutures = ConcurrentHashMap.newKeySet();
     private volatile boolean exhausted;
-    private final Deque<VariantProject> pendingRetry = new ConcurrentLinkedDeque<>();
     private Path tempDir;
     private VariantProjectBuilder builder;
     private Map<String, Double> globalWeightMap;
@@ -78,6 +82,7 @@ public class PluginOrchestrator {
                               Consumer<VariantResult> onVariantComplete,
                               Consumer<Boolean> onRunFinished,
                               Consumer<String> onError,
+                              Consumer<Integer> onInFlightChanged,
                               boolean useMavenDaemon,
                               int threadCount) {
         this.repoPath = repoPath;
@@ -85,6 +90,7 @@ public class PluginOrchestrator {
         this.onVariantComplete = onVariantComplete;
         this.onRunFinished = onRunFinished;
         this.onError = onError;
+        this.onInFlightChanged = onInFlightChanged;
         this.generatorFactory = new HeuristicGeneratorFactory();
         this.useMavenDaemon = useMavenDaemon;
         this.threadCount = threadCount;
@@ -112,7 +118,7 @@ public class PluginOrchestrator {
                 session.initChunkIndex();
                 runVariantLoop(context);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Pipeline failed", e);
                 SwingUtilities.invokeLater(() -> onError.accept(e.getMessage()));
             }
         });
@@ -180,8 +186,7 @@ public class PluginOrchestrator {
 
     public void pause() {
         session.pause();
-        // Interrupt in-flight workers so they exit early
-        for (Future<?> f : activeBatch) {
+        for (Future<?> f : activeFutures) {
             f.cancel(true);
         }
     }
@@ -204,77 +209,96 @@ public class PluginOrchestrator {
         }
     }
 
+    /**
+     * Continuously feeds variants to a fixed thread pool using a semaphore.
+     * As soon as one variant finishes, a new one is submitted — threads stay
+     * fully saturated instead of waiting for an entire batch to complete.
+     *
+     * <p>Interrupted variants (from a pause/cancel) are tracked via {@code submitted}
+     * and retried on the next resume before asking the generator for new variants.
+     */
     private void runVariantLoop(VariantBuildContext context) {
         executor = Executors.newFixedThreadPool(threadCount);
+        Semaphore slots = new Semaphore(threadCount);
         AtomicInteger variantCounter = new AtomicInteger(1);
-        Set<List<String>> seenEffective = new HashSet<>();
+        AtomicInteger inFlight = new AtomicInteger();
+        // Tracks in-flight variants (original, pre-pin) keyed by variant index.
+        // Removed on successful completion; survivors after pause are retried.
+        ConcurrentHashMap<Integer, VariantProject> submitted = new ConcurrentHashMap<>();
+        Deque<VariantProject> pendingRetry = new ArrayDeque<>();
+        Deque<Integer> freeIndices = new ArrayDeque<>();
         Path logDir = tempDir.resolve("log");
         logDir.toFile().mkdirs();
 
+        boolean justResumed = false;
         try {
-            boolean resumedFromPause = false;
             while (!session.isCancelled()) {
                 session.waitIfPaused();
                 if (session.isCancelled()) break;
-                if (resumedFromPause) {
-                    // Manual pins may have changed while paused — reset dedup
-                    seenEffective.clear();
-                }
-                resumedFromPause = false;
 
-                // Drain retry queue first (killed variants from previous pause),
-                // then ask the generator for remaining slots
-                List<VariantProject> batch = new ArrayList<>();
-                while (!pendingRetry.isEmpty() && batch.size() < threadCount) {
-                    batch.add(pendingRetry.poll());
-                }
-                if (batch.size() < threadCount) {
-                    batch.addAll(context.collectAllVariants(threadCount - batch.size()));
-                }
-                if (batch.isEmpty()) break;
-                // Dedup: skip variants whose effective assignment (with MANUAL overrides)
-                // has already been seen. Inject manual pins into non-skipped variants.
-                Set<Integer> completed = ConcurrentHashMap.newKeySet();
-                List<Future<?>> futures = new ArrayList<>();
-                List<VariantProject> submittedBatch = new ArrayList<>();
-                for (int i = 0; i < batch.size(); i++) {
-                    VariantProject variant = batch.get(i);
-                    try {
-                        VariantProject buildVariant = applyManualPins(variant);
-                        int idx = variantCounter.getAndIncrement();
-                        int pos = submittedBatch.size();
-                        submittedBatch.add(variant);
-                        futures.add(executor.submit(() -> {
-                            if (buildAndTest(context, buildVariant, idx, logDir)) {
-                                completed.add(pos);
-                            }
-                        }));
-                    } catch (Throwable e) {
-                        // variant preparation failed — skip silently
+                // After a pause/resume cycle, wait for in-flight workers to drain
+                // and re-queue any that didn't complete successfully.
+                if (justResumed) {
+                    slots.acquire(threadCount);
+                    slots.release(threadCount);
+                    // Reclaim variant indices and re-queue interrupted variants
+                    for (Map.Entry<Integer, VariantProject> e : submitted.entrySet()) {
+                        freeIndices.add(e.getKey());
+                        pendingRetry.add(e.getValue());
                     }
+                    submitted.clear();
+                    justResumed = false;
                 }
-                activeBatch = List.copyOf(futures);
 
-                for (Future<?> f : futures) {
-                    try {
-                        f.get();
-                    } catch (Exception e) {
-                        if (session.isStopped()) break;
-                        e.printStackTrace();
-                    }
+                // Drain retry queue first, then ask generator for a new variant
+                VariantProject variant = pendingRetry.poll();
+                if (variant == null) {
+                    List<VariantProject> one = context.collectAllVariants(1);
+                    if (one.isEmpty()) break; // generator exhausted
+                    variant = one.get(0);
                 }
-                activeBatch = List.of();
 
-                // Re-queue variants that were killed by pause for retry on resume
+                VariantProject buildVariant;
+                try {
+                    buildVariant = applyManualPins(variant);
+                } catch (Throwable e) {
+                    continue;
+                }
+
+                // Block until a thread is free
+                slots.acquire();
                 if (session.isStopped()) {
-                    resumedFromPause = true;
-                    for (int i = 0; i < submittedBatch.size(); i++) {
-                        if (!completed.contains(i)) {
-                            pendingRetry.add(submittedBatch.get(i));
-                        }
-                    }
+                    slots.release();
+                    pendingRetry.addFirst(variant);
+                    justResumed = true;
+                    continue; // loops back to waitIfPaused
                 }
+
+                Integer recycled = freeIndices.poll();
+                int idx = recycled != null ? recycled : variantCounter.getAndIncrement();
+                submitted.put(idx, variant);
+                int count = inFlight.incrementAndGet();
+                SwingUtilities.invokeLater(() -> onInFlightChanged.accept(count));
+
+                Future<?>[] holder = new Future<?>[1];
+                holder[0] = executor.submit(() -> {
+                    try {
+                        if (buildAndTest(context, buildVariant, idx, logDir)) {
+                            submitted.remove(idx);
+                        }
+                    } finally {
+                        activeFutures.remove(holder[0]);
+                        int remaining = inFlight.decrementAndGet();
+                        SwingUtilities.invokeLater(() -> onInFlightChanged.accept(remaining));
+                        slots.release();
+                    }
+                });
+                activeFutures.add(holder[0]);
             }
+
+            // Wait for remaining in-flight variants to finish
+            slots.acquire(threadCount);
+            slots.release(threadCount);
         } catch (InterruptedException e) {
             // Hard cancel interrupted the wait — fall through to finally
         } finally {
@@ -326,7 +350,7 @@ public class PluginOrchestrator {
             SwingUtilities.invokeLater(() -> onVariantComplete.accept(result));
             return true;
         } catch (Exception e) {
-            if (!session.isStopped()) e.printStackTrace();
+            if (!session.isStopped()) LOG.warn("Build/test failed for variant {}", variantIndex, e);
             return false;
         } finally {
             if (variantPath != null) {
@@ -335,10 +359,6 @@ public class PluginOrchestrator {
         }
     }
 
-    /**
-     * Clone a variant and replace MANUAL-pinned chunks with ManualPattern.
-     * Returns the original variant unchanged if no manual pins are active.
-     */
     /**
      * Overlay MANUAL-pinned chunks onto the variant in place.
      * Safe because each variant from the generator has its own ConflictBlocks.

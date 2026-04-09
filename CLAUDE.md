@@ -35,15 +35,16 @@ java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.
 
 ## plugin (IntelliJ Plugin)
 
-Built with Gradle. Requires IntelliJ IDEA 2022.3+ and Java 17+.
+Built with Gradle. Requires IntelliJ IDEA 2025.1+ and Java 17+. Depends on the `cicd-oracle` pipeline library via `mavenLocal`.
 
 ```bash
 cd plugin
 ./gradlew buildPlugin       # produces zip in build/distributions/
 ./gradlew runIde            # launches sandbox IDE with plugin loaded (requires Plugin DevKit)
+./redeploy.sh               # build, deploy, reset /tmp/mockRepo, relaunch IntelliJ
 ```
 
-A pre-built zip is at `plugin/plugin-zip/demo-1.0-SNAPSHOT.zip` — install via Settings → Plugins → Install from Disk.
+A pre-built zip is at `plugin/plugin-zip/cicd-merge-oracle-1.0-SNAPSHOT.zip` — install via Settings → Plugins → Install from Disk.
 
 ## scripts/ (Python Analysis)
 

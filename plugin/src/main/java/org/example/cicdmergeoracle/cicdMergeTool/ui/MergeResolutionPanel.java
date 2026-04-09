@@ -3,9 +3,6 @@ package org.example.cicdmergeoracle.cicdMergeTool.ui;
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
-import ch.unibe.cs.mergeci.present.VariantScore;
-import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
-import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -23,10 +20,10 @@ import org.example.cicdmergeoracle.cicdMergeTool.service.OracleSession;
 import org.example.cicdmergeoracle.cicdMergeTool.service.PluginOrchestrator;
 import org.example.cicdmergeoracle.cicdMergeTool.service.VariantResult;
 import org.example.cicdmergeoracle.cicdMergeTool.util.GitUtils;
-import org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -40,11 +37,14 @@ import java.util.List;
 import java.util.Map;
 
 public class MergeResolutionPanel {
+    private static final Logger LOG = LoggerFactory.getLogger(MergeResolutionPanel.class);
+    private static final String[] SPINNER_FRAMES = {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"};
+
     private final Path projectPath;
     private final Project ideProject;
     private final JPanel root = new JPanel(new BorderLayout());
 
-    // Status bar
+    // Status bar — left
     private final JLabel mergeInfoLabel = new JBLabel();
     private final JLabel variantCountLabel = createFixedWidthLabel("Variants: 0",
             "Variants: 9999/9999 (stopped)");
@@ -52,6 +52,12 @@ public class MergeResolutionPanel {
     private boolean running;
     private final JButton applyVariantButton = new JButton("Apply Variant");
     private final JCheckBox showAllToggle = new JCheckBox("Ignore Pins");
+
+    // Status bar — right (progress)
+    private final JLabel inFlightLabel = new JBLabel();
+    private int spinnerIndex;
+    private int currentInFlight;
+    private final Timer spinnerTimer;
 
     // Live dashboard table
     private final VariantTableModel dashboardModel = new VariantTableModel();
@@ -61,11 +67,10 @@ public class MergeResolutionPanel {
     private final ChunkTableModel chunkModel = new ChunkTableModel();
     private final JTable chunkTable = new JTable(chunkModel);
 
-    // Manual edit state
+    // Manual edit
     private final JButton pinManualButton = new JButton("Pin Manual");
     private final JButton cancelManualButton = new JButton("Cancel Manual");
-    private int manualEditRow = -1;
-    private Path manualEditFile;
+    private final ManualEditWorkflow manualEdit;
 
     // State
     private OracleSession session;
@@ -77,6 +82,12 @@ public class MergeResolutionPanel {
     public MergeResolutionPanel(File projectPath, Project ideProject) {
         this.projectPath = projectPath.toPath();
         this.ideProject = ideProject;
+        this.manualEdit = new ManualEditWorkflow(
+                ideProject, this.projectPath, chunkModel, pinManualButton, cancelManualButton);
+        this.spinnerTimer = new Timer(100, e -> {
+            spinnerIndex = (spinnerIndex + 1) % SPINNER_FRAMES.length;
+            updateInFlightLabel(currentInFlight);
+        });
 
         root.add(createStatusBar(), BorderLayout.NORTH);
         root.add(createCenterPanel(), BorderLayout.CENTER);
@@ -91,8 +102,12 @@ public class MergeResolutionPanel {
             if (running) stopRun(); else startRun();
         });
         applyVariantButton.addActionListener(e -> applySelectedVariant());
-        pinManualButton.addActionListener(e -> confirmManualEdit());
-        cancelManualButton.addActionListener(e -> cancelManualEdit());
+        pinManualButton.addActionListener(e -> {
+            if (session != null) confirmManualEdit();
+        });
+        cancelManualButton.addActionListener(e -> {
+            if (session != null) cancelManualEdit();
+        });
         showAllToggle.addActionListener(e -> {
             if (session == null) return;
             if (showAllToggle.isSelected()) {
@@ -119,7 +134,7 @@ public class MergeResolutionPanel {
         });
 
         // Resolution dropdown editor
-        JComboBox<String> resolutionCombo = new JComboBox<>(RESOLUTION_OPTIONS);
+        JComboBox<String> resolutionCombo = new JComboBox<>(ChunkTableModel.RESOLUTION_OPTIONS);
         chunkTable.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(resolutionCombo));
         chunkModel.addTableModelListener(e -> {
             if (e.getColumn() == 5 && e.getType() == javax.swing.event.TableModelEvent.UPDATE) {
@@ -132,14 +147,21 @@ public class MergeResolutionPanel {
     }
 
     private JPanel createStatusBar() {
-        JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
-        bar.add(mergeInfoLabel);
-        bar.add(variantCountLabel);
-        bar.add(showAllToggle);
-        bar.add(runStopButton);
-        bar.add(applyVariantButton);
-        bar.add(pinManualButton);
-        bar.add(cancelManualButton);
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+        left.add(mergeInfoLabel);
+        left.add(variantCountLabel);
+        left.add(showAllToggle);
+        left.add(runStopButton);
+        left.add(applyVariantButton);
+        left.add(pinManualButton);
+        left.add(cancelManualButton);
+
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 4));
+        right.add(inFlightLabel);
+
+        JPanel bar = new JPanel(new BorderLayout());
+        bar.add(left, BorderLayout.WEST);
+        bar.add(right, BorderLayout.EAST);
         return bar;
     }
 
@@ -188,7 +210,7 @@ public class MergeResolutionPanel {
             }
         } catch (Exception e) {
             mergeInfoLabel.setText("Error detecting merge state");
-            e.printStackTrace();
+            LOG.warn("Failed to detect merge state", e);
         }
     }
 
@@ -210,6 +232,7 @@ public class MergeResolutionPanel {
                     this::onVariantComplete,
                     this::onRunFinished,
                     this::onError,
+                    this::onInFlightChanged,
                     true,
                     threads);
 
@@ -220,7 +243,7 @@ public class MergeResolutionPanel {
 
             orchestrator.start(oursCommit, theirsCommit);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Failed to start variant run", e);
             mergeInfoLabel.setText("Run failed: " + e.getMessage());
             running = false;
             runStopButton.setText("Run");
@@ -233,6 +256,7 @@ public class MergeResolutionPanel {
         runStopButton.setText("Run");
         applyVariantButton.setEnabled(dashboardTable.getSelectedRow() >= 0);
         updateVariantCountLabel();
+        onInFlightChanged(0);
     }
 
     /** Called on EDT by the orchestrator for each completed variant. */
@@ -278,6 +302,26 @@ public class MergeResolutionPanel {
         }
         applyVariantButton.setEnabled(dashboardTable.getSelectedRow() >= 0);
         updateVariantCountLabel();
+        onInFlightChanged(0);
+    }
+
+    /** Called on EDT when the number of in-flight (building) variants changes. */
+    private void onInFlightChanged(int inFlight) {
+        currentInFlight = inFlight;
+        updateInFlightLabel(inFlight);
+        if (inFlight > 0 && !spinnerTimer.isRunning()) {
+            spinnerTimer.start();
+        } else if (inFlight == 0 && spinnerTimer.isRunning()) {
+            spinnerTimer.stop();
+        }
+    }
+
+    private void updateInFlightLabel(int inFlight) {
+        if (inFlight > 0) {
+            inFlightLabel.setText(SPINNER_FRAMES[spinnerIndex] + " [" + inFlight + "] Variants building");
+        } else {
+            inFlightLabel.setText("");
+        }
     }
 
     private static JLabel createFixedWidthLabel(String initialText, String widestExpected) {
@@ -426,8 +470,8 @@ public class MergeResolutionPanel {
         if (session == null) return;
 
         if ("MANUAL".equals(resolution)) {
-            startManualEdit(row);
-            return; // Pin/cancel handled by buttons
+            manualEdit.startManualEdit(row, session);
+            return;
         } else if ("(auto)".equals(resolution)) {
             session.getPinnedChunks().remove(row);
             session.getManualTexts().remove(row);
@@ -436,72 +480,20 @@ public class MergeResolutionPanel {
             session.getManualTexts().remove(row);
         }
 
-        // A pin change invalidates an exhausted generator — allow re-run
-        if (orchestrator != null && orchestrator.isExhausted()) {
-            orchestrator = null;
-        }
-        runStopButton.setEnabled(true);
-
-        // Re-filter dashboard unless "Show All" is active
-        if (!showAllToggle.isSelected()) {
-            dashboardModel.applyFilter(session.getPinnedChunks(), session.getManualVersionSnapshot(), session.getChunkIndex());
-        }
-        updateVariantCountLabel();
-    }
-
-    private void startManualEdit(int row) {
-        // Cancel any in-progress manual edit
-        if (manualEditRow >= 0) cancelManualEdit();
-
-        String initial;
-        if (session.getManualTexts().containsKey(row)) {
-            initial = session.getManualTexts().get(row);
-        } else {
-            // Read the full conflict chunk (with Git markers) from the working tree
-            initial = readConflictChunkFromFile(row);
-        }
-
-        // Determine file extension from the conflict file path
-        String filePath = chunkModel.getFilePath(row);
-        String ext = "";
-        int dot = filePath.lastIndexOf('.');
-        if (dot >= 0) ext = filePath.substring(dot);
-
-        try {
-            manualEditFile = Files.createTempFile("manual-chunk" + row + "-", ext);
-            Files.writeString(manualEditFile, initial);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        manualEditRow = row;
-        pinManualButton.setVisible(true);
-        cancelManualButton.setVisible(true);
-
-        // Open the temp file in IntelliJ's editor
-        VirtualFile vf = LocalFileSystem.getInstance().refreshAndFindFileByPath(
-                manualEditFile.toAbsolutePath().toString());
-        if (vf != null) {
-            FileEditorManager.getInstance(ideProject).openFile(vf, true);
-        }
+        onPinChanged();
     }
 
     private void confirmManualEdit() {
-        if (manualEditRow < 0 || manualEditFile == null) return;
+        manualEdit.confirmManualEdit(session);
+        onPinChanged();
+    }
 
-        try {
-            String text = Files.readString(manualEditFile);
-            session.getManualTexts().put(manualEditRow, text);
-            session.getPinnedChunks().put(manualEditRow, "MANUAL");
-            session.bumpManualVersion(manualEditRow);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void cancelManualEdit() {
+        manualEdit.cancelManualEdit(session);
+        onPinChanged();
+    }
 
-        cleanupManualEdit();
-
-        // A pin change invalidates an exhausted generator — allow re-run
+    private void onPinChanged() {
         if (orchestrator != null && orchestrator.isExhausted()) {
             orchestrator = null;
         }
@@ -511,69 +503,6 @@ public class MergeResolutionPanel {
             dashboardModel.applyFilter(session.getPinnedChunks(), session.getManualVersionSnapshot(), session.getChunkIndex());
         }
         updateVariantCountLabel();
-    }
-
-    private void cancelManualEdit() {
-        if (manualEditRow < 0) return;
-
-        chunkModel.setResolution(manualEditRow, "(auto)");
-        session.getManualTexts().remove(manualEditRow);
-        session.getPinnedChunks().remove(manualEditRow);
-
-        cleanupManualEdit();
-
-        if (!showAllToggle.isSelected()) {
-            dashboardModel.applyFilter(session.getPinnedChunks(), session.getManualVersionSnapshot(), session.getChunkIndex());
-        }
-        updateVariantCountLabel();
-    }
-
-    /**
-     * Read the full conflict chunk (including Git markers) from the working tree file.
-     */
-    private String readConflictChunkFromFile(int row) {
-        String filePath = chunkModel.getFilePath(row);
-        int chunkIdx = chunkModel.getChunkIdx(row);
-        try {
-            List<String> lines = Files.readAllLines(projectPath.resolve(filePath));
-            int conflictCount = 0;
-            for (int i = 0; i < lines.size(); i++) {
-                if (lines.get(i).startsWith("<<<<<<<")) {
-                    if (conflictCount == chunkIdx) {
-                        StringBuilder sb = new StringBuilder();
-                        for (int j = i; j < lines.size(); j++) {
-                            sb.append(lines.get(j)).append('\n');
-                            if (lines.get(j).startsWith(">>>>>>>")) break;
-                        }
-                        return sb.toString();
-                    }
-                    conflictCount++;
-                }
-            }
-        } catch (IOException e) {
-            // fall through
-        }
-        return "";
-    }
-
-    private void cleanupManualEdit() {
-        // Close the editor tab and delete the temp file
-        if (manualEditFile != null) {
-            VirtualFile vf = LocalFileSystem.getInstance().findFileByPath(
-                    manualEditFile.toAbsolutePath().toString());
-            if (vf != null) {
-                FileEditorManager.getInstance(ideProject).closeFile(vf);
-            }
-            try {
-                Files.deleteIfExists(manualEditFile);
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-        manualEditRow = -1;
-        manualEditFile = null;
-        pinManualButton.setVisible(false);
-        cancelManualButton.setVisible(false);
     }
 
     private void applySelectedVariant() {
@@ -614,7 +543,7 @@ public class MergeResolutionPanel {
                 Files.createDirectories(target.getParent());
                 Files.writeString(target, resolved.toString());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.warn("Failed to write resolved file: {}", target, e);
             }
         }
         JOptionPane.showMessageDialog(root,
@@ -654,287 +583,4 @@ public class MergeResolutionPanel {
     public JComponent getRoot() {
         return root;
     }
-
-    // =========================================================================
-    // Table models
-    // =========================================================================
-
-    static class VariantTableModel extends AbstractTableModel {
-        private static final String[] COLUMNS = {"#", "Status", "Modules", "Tests", "Score", "Time (s)", "Patterns"};
-        private final List<VariantResult> allResults = new ArrayList<>();
-        private final List<VariantResult> filtered = new ArrayList<>();
-        private List<ChunkKey> chunkIndex = List.of();
-
-        void setChunkIndex(List<ChunkKey> chunkIndex) {
-            this.chunkIndex = chunkIndex;
-        }
-
-        void addResult(VariantResult r) {
-            allResults.add(r);
-            int insertAt = findSortedInsertionPoint(filtered, r);
-            filtered.add(insertAt, r);
-            fireTableRowsInserted(insertAt, insertAt);
-        }
-
-        void addIfMatches(VariantResult r, Map<Integer, String> pins,
-                          Map<Integer, Integer> manualVersions, List<ChunkKey> chunkIndex) {
-            allResults.add(r);
-            if (matchesPins(r, pins, manualVersions, chunkIndex)) {
-                int insertAt = findSortedInsertionPoint(filtered, r);
-                filtered.add(insertAt, r);
-                fireTableRowsInserted(insertAt, insertAt);
-            }
-        }
-
-        /** Re-filter visible results based on current pins. A variant matches if,
-         *  for every pinned chunk, the variant's assignment at that global index
-         *  equals the pinned pattern. MANUAL pins require the variant's manual
-         *  version to match the current version (hides stale manual variants). */
-        void applyFilter(Map<Integer, String> pins, Map<Integer, Integer> manualVersions,
-                         List<ChunkKey> chunkIndex) {
-            int oldSize = filtered.size();
-            filtered.clear();
-            if (oldSize > 0) fireTableRowsDeleted(0, oldSize - 1);
-
-            for (VariantResult r : allResults) {
-                if (matchesPins(r, pins, manualVersions, chunkIndex)) {
-                    int insertAt = findSortedInsertionPoint(filtered, r);
-                    filtered.add(insertAt, r);
-                    fireTableRowsInserted(insertAt, insertAt);
-                }
-            }
-        }
-
-        private boolean matchesPins(VariantResult r, Map<Integer, String> pins,
-                                     Map<Integer, Integer> manualVersions,
-                                     List<ChunkKey> chunkIndex) {
-            if (pins.isEmpty() || r.patternAssignment() == null) return true;
-            for (Map.Entry<Integer, String> pin : pins.entrySet()) {
-                int globalIdx = pin.getKey();
-                String pinnedPattern = pin.getValue();
-                if ("MANUAL".equals(pinnedPattern)) {
-                    // MANUAL pin: variant must have been built with the current manual version
-                    Integer currentVer = manualVersions.get(globalIdx);
-                    Integer variantVer = r.manualVersions() != null
-                            ? r.manualVersions().get(globalIdx) : null;
-                    if (currentVer != null && !currentVer.equals(variantVer)) return false;
-                    continue;
-                }
-                if (globalIdx >= chunkIndex.size()) continue;
-                ChunkKey key = chunkIndex.get(globalIdx);
-                List<String> filePatterns = r.patternAssignment().get(key.filePath());
-                if (filePatterns == null) return false;
-                if (key.indexWithinFile() >= filePatterns.size()) return false;
-                if (!pinnedPattern.equals(filePatterns.get(key.indexWithinFile()))) return false;
-            }
-            return true;
-        }
-
-        private int findSortedInsertionPoint(List<VariantResult> list, VariantResult r) {
-            for (int i = 0; i < list.size(); i++) {
-                if (compareVariants(r, list.get(i)) > 0) return i;
-            }
-            return list.size();
-        }
-
-        /** Compare two variants: scored beats unscored; among scored, delegate to
-         *  {@link VariantScore#compareTo} (modules → tests → simplicity → variant index). */
-        private int compareVariants(VariantResult a, VariantResult b) {
-            if (a.score() != null && b.score() != null) return a.score().compareTo(b.score());
-            if (a.score() != null) return 1;   // scored beats unscored
-            if (b.score() != null) return -1;
-            return 0;
-        }
-
-        /** Show all results, ignoring pin filters. */
-        void showAll() {
-            int oldSize = filtered.size();
-            filtered.clear();
-            if (oldSize > 0) fireTableRowsDeleted(0, oldSize - 1);
-
-            for (VariantResult r : allResults) {
-                int insertAt = findSortedInsertionPoint(filtered, r);
-                filtered.add(insertAt, r);
-                fireTableRowsInserted(insertAt, insertAt);
-            }
-        }
-
-        void clear() {
-            allResults.clear();
-            int size = filtered.size();
-            if (size > 0) {
-                filtered.clear();
-                fireTableRowsDeleted(0, size - 1);
-            }
-        }
-
-        VariantResult getResult(int row) {
-            return filtered.get(row);
-        }
-
-        @Override public int getRowCount() { return filtered.size(); }
-        @Override public int getColumnCount() { return COLUMNS.length; }
-        @Override public String getColumnName(int col) { return COLUMNS[col]; }
-
-        @Override
-        public Object getValueAt(int row, int col) {
-            VariantResult r = filtered.get(row);
-            return switch (col) {
-                case 0 -> r.variantIndex();
-                case 1 -> statusText(r);
-                case 2 -> r.compilationResult() != null ? r.compilationResult().getSuccessfulModules()
-                        + "/" + r.compilationResult().getTotalModules() : "-";
-                case 3 -> r.testResult() != null && r.testResult().isHasData()
-                        ? r.testResult().getPassedTests() + "/" + r.testResult().getRunNum() : "-";
-                case 4 -> r.score() != null
-                        ? r.score().successfulModules() + "m " + r.score().passedTests() + "t" : "-";
-                case 5 -> String.format("%.1f", r.elapsed().toMillis() / 1000.0);
-                case 6 -> summarizePatterns(r.patternAssignment(), chunkIndex);
-                default -> "";
-            };
-        }
-
-        private String statusText(VariantResult r) {
-            if (r.compilationResult() == null) return "ERROR";
-            CompilationResult.Status s = r.compilationResult().getBuildStatus();
-            if (s == CompilationResult.Status.SUCCESS) return "\u2713";
-            if (s == CompilationResult.Status.TIMEOUT) return "TIMEOUT";
-            return "FAIL";
-        }
-
-        private String summarizePatterns(Map<String, List<String>> patterns,
-                                         List<ChunkKey> index) {
-            if (patterns == null) return "";
-            if (index.isEmpty()) {
-                // Fallback if chunk index not yet available
-                return patterns.values().stream()
-                        .flatMap(List::stream)
-                        .reduce((a, b) -> a + ", " + b)
-                        .orElse("");
-            }
-            StringBuilder sb = new StringBuilder();
-            for (ChunkKey key : index) {
-                List<String> filePatterns = patterns.get(key.filePath());
-                if (filePatterns != null && key.indexWithinFile() < filePatterns.size()) {
-                    if (!sb.isEmpty()) sb.append(", ");
-                    sb.append(filePatterns.get(key.indexWithinFile()));
-                }
-            }
-            return sb.toString();
-        }
-    }
-
-    static final String[] RESOLUTION_OPTIONS = {"(auto)", "OURS", "THEIRS", "BASE", "EMPTY", "MANUAL"};
-
-    static class ChunkTableModel extends AbstractTableModel {
-        private static final String[] COLUMNS = {"File", "Chunk", "OURS (1st line)", "THEIRS (1st line)", "Consensus", "Resolution"};
-        private final List<ChunkRow> rows = new ArrayList<>();
-
-        static class ChunkRow {
-            final String filePath;
-            final int chunkIdx;
-            final ConflictBlock block;
-            final String oursPreview;
-            final String theirsPreview;
-            String consensus;
-            String resolution;
-
-            ChunkRow(String filePath, int chunkIdx, ConflictBlock block,
-                     String oursPreview, String theirsPreview, String consensus, String resolution) {
-                this.filePath = filePath;
-                this.chunkIdx = chunkIdx;
-                this.block = block;
-                this.oursPreview = oursPreview;
-                this.theirsPreview = theirsPreview;
-                this.consensus = consensus;
-                this.resolution = resolution;
-            }
-        }
-
-        void addChunk(String filePath, int chunkIdx, ConflictBlock cb,
-                     String oursPreview, String theirsPreview) {
-            rows.add(new ChunkRow(filePath, chunkIdx, cb, oursPreview, theirsPreview, "", "(auto)"));
-            fireTableRowsInserted(rows.size() - 1, rows.size() - 1);
-        }
-
-        void clear() {
-            int size = rows.size();
-            if (size > 0) {
-                rows.clear();
-                fireTableRowsDeleted(0, size - 1);
-            }
-        }
-
-        ConflictBlock getConflictBlock(int row) {
-            return rows.get(row).block;
-        }
-
-        String getFilePath(int row) {
-            return rows.get(row).filePath;
-        }
-
-        int getChunkIdx(int row) {
-            return rows.get(row).chunkIdx;
-        }
-
-        String getResolution(int row) {
-            return rows.get(row).resolution;
-        }
-
-        void setResolution(int row, String resolution) {
-            rows.get(row).resolution = resolution;
-            fireTableCellUpdated(row, 5);
-        }
-
-        void updateConsensus(Map<ChunkKey, Map<String, Double>> consensus) {
-            for (int i = 0; i < rows.size(); i++) {
-                ChunkRow r = rows.get(i);
-                ChunkKey key = new ChunkKey(r.filePath, r.chunkIdx);
-                Map<String, Double> pcts = consensus.get(key);
-                r.consensus = pcts != null ? formatConsensus(pcts) : "";
-            }
-            if (!rows.isEmpty()) fireTableRowsUpdated(0, rows.size() - 1);
-        }
-
-        private String formatConsensus(Map<String, Double> pcts) {
-            StringBuilder sb = new StringBuilder();
-            pcts.forEach((pattern, pct) -> {
-                if (!sb.isEmpty()) sb.append(", ");
-                sb.append(pattern).append(": ").append(String.format("%.0f%%", pct));
-            });
-            return sb.toString();
-        }
-
-        @Override public int getRowCount() { return rows.size(); }
-        @Override public int getColumnCount() { return COLUMNS.length; }
-        @Override public String getColumnName(int col) { return COLUMNS[col]; }
-
-        @Override
-        public boolean isCellEditable(int row, int col) {
-            return col == 5; // Resolution column
-        }
-
-        @Override
-        public Object getValueAt(int row, int col) {
-            ChunkRow r = rows.get(row);
-            return switch (col) {
-                case 0 -> r.filePath;
-                case 1 -> r.chunkIdx;
-                case 2 -> r.oursPreview;
-                case 3 -> r.theirsPreview;
-                case 4 -> r.consensus;
-                case 5 -> r.resolution;
-                default -> "";
-            };
-        }
-
-        @Override
-        public void setValueAt(Object value, int row, int col) {
-            if (col == 5) {
-                rows.get(row).resolution = (String) value;
-                fireTableCellUpdated(row, col);
-            }
-        }
-    }
-
 }
