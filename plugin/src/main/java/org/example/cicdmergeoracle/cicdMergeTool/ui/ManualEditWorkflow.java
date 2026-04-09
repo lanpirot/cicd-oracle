@@ -1,10 +1,13 @@
 package org.example.cicdmergeoracle.cicdMergeTool.ui;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.example.cicdmergeoracle.cicdMergeTool.service.OracleSession;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +20,7 @@ import java.util.List;
 /**
  * Manages the manual-edit lifecycle for a single conflict chunk:
  * open a temp file in the editor, let the user edit, then pin or cancel.
+ * If the editor tab is closed without clicking Pin, prompts to save or discard.
  */
 class ManualEditWorkflow {
     private static final Logger LOG = LoggerFactory.getLogger(ManualEditWorkflow.class);
@@ -26,23 +30,37 @@ class ManualEditWorkflow {
     private final ChunkTableModel chunkModel;
     private final JButton pinManualButton;
     private final JButton cancelManualButton;
+    private final Runnable onPinChanged;
 
     private int manualEditRow = -1;
     private Path manualEditFile;
+    private OracleSession activeSession;
+    private boolean cleaningUp;
 
     ManualEditWorkflow(Project ideProject, Path projectPath,
                        ChunkTableModel chunkModel,
-                       JButton pinManualButton, JButton cancelManualButton) {
+                       JButton pinManualButton, JButton cancelManualButton,
+                       Runnable onPinChanged) {
         this.ideProject = ideProject;
         this.projectPath = projectPath;
         this.chunkModel = chunkModel;
         this.pinManualButton = pinManualButton;
         this.cancelManualButton = cancelManualButton;
+        this.onPinChanged = onPinChanged;
+
+        ideProject.getMessageBus().connect().subscribe(
+                FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+                    @Override
+                    public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+                        onEditorTabClosed(file);
+                    }
+                });
     }
 
     void startManualEdit(int row, OracleSession session) {
         if (manualEditRow >= 0) cancelManualEdit(session);
 
+        this.activeSession = session;
         String initial;
         if (session.getManualTexts().containsKey(row)) {
             initial = session.getManualTexts().get(row);
@@ -102,6 +120,30 @@ class ManualEditWorkflow {
         cleanupManualEdit();
     }
 
+    private void onEditorTabClosed(VirtualFile file) {
+        if (cleaningUp || manualEditRow < 0 || manualEditFile == null || activeSession == null) return;
+
+        // Check if the closed file is our temp manual edit file
+        String closedPath = file.getPath();
+        if (!closedPath.equals(manualEditFile.toAbsolutePath().toString())) return;
+
+        // The user closed the editor tab without clicking Pin or Cancel — prompt
+        int choice = JOptionPane.showConfirmDialog(
+                null,
+                "Pin the manual edit for chunk " + manualEditRow + "?",
+                "Manual Edit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            confirmManualEdit(activeSession);
+            onPinChanged.run();
+        } else {
+            cancelManualEdit(activeSession);
+            onPinChanged.run();
+        }
+    }
+
     private String readConflictChunkFromFile(int row) {
         String filePath = chunkModel.getFilePath(row);
         int chunkIdx = chunkModel.getChunkIdx(row);
@@ -128,21 +170,27 @@ class ManualEditWorkflow {
     }
 
     private void cleanupManualEdit() {
-        if (manualEditFile != null) {
-            VirtualFile vf = LocalFileSystem.getInstance().findFileByPath(
-                    manualEditFile.toAbsolutePath().toString());
-            if (vf != null) {
-                FileEditorManager.getInstance(ideProject).closeFile(vf);
+        cleaningUp = true;
+        try {
+            if (manualEditFile != null) {
+                VirtualFile vf = LocalFileSystem.getInstance().findFileByPath(
+                        manualEditFile.toAbsolutePath().toString());
+                if (vf != null) {
+                    FileEditorManager.getInstance(ideProject).closeFile(vf);
+                }
+                try {
+                    Files.deleteIfExists(manualEditFile);
+                } catch (IOException e) {
+                    // ignore
+                }
             }
-            try {
-                Files.deleteIfExists(manualEditFile);
-            } catch (IOException e) {
-                // ignore
-            }
+            manualEditRow = -1;
+            manualEditFile = null;
+            activeSession = null;
+            pinManualButton.setVisible(false);
+            cancelManualButton.setVisible(false);
+        } finally {
+            cleaningUp = false;
         }
-        manualEditRow = -1;
-        manualEditFile = null;
-        pinManualButton.setVisible(false);
-        cancelManualButton.setVisible(false);
     }
 }

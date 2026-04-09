@@ -1,6 +1,7 @@
 package org.example.cicdmergeoracle.cicdMergeTool.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
@@ -18,15 +19,10 @@ public class MergeResolutionToolWindowFactory implements ToolWindowFactory {
         MergeResolutionPanel panel =
                 new MergeResolutionPanel(new File(project.getBasePath()), project);
 
-        ContentFactory contentFactory =
-                ContentFactory.getInstance();
-
-        Content content = contentFactory.createContent(
-                panel.getRoot(),
-                "",
-                false
-        );
-
+        ContentFactory contentFactory = ContentFactory.getInstance();
+        Content content = contentFactory.createContent(panel.getRoot(), "", false);
         toolWindow.getContentManager().addContent(content);
+
+        Disposer.register(toolWindow.getDisposable(), panel::dispose);
     }
 }

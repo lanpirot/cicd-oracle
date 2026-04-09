@@ -7,11 +7,21 @@ import org.example.cicdmergeoracle.cicdMergeTool.service.VariantResult;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 class VariantTableModel extends AbstractTableModel {
     private static final String[] COLUMNS = {"#", "Status", "Modules", "Tests", "Score", "Time (s)", "Patterns"};
+    /** Best-first: scored beats unscored; among scored, higher VariantScore wins. */
+    private static final Comparator<VariantResult> BEST_FIRST = (a, b) -> {
+        if (a.score() != null && b.score() != null) return b.score().compareTo(a.score());
+        if (a.score() != null) return -1; // scored before unscored
+        if (b.score() != null) return 1;
+        return 0;
+    };
+
     private final List<VariantResult> allResults = new ArrayList<>();
     private final List<VariantResult> filtered = new ArrayList<>();
     private List<ChunkKey> chunkIndex = List.of();
@@ -22,7 +32,8 @@ class VariantTableModel extends AbstractTableModel {
 
     void addResult(VariantResult r) {
         allResults.add(r);
-        int insertAt = findSortedInsertionPoint(filtered, r);
+        int insertAt = Collections.binarySearch(filtered, r, BEST_FIRST);
+        if (insertAt < 0) insertAt = -insertAt - 1;
         filtered.add(insertAt, r);
         fireTableRowsInserted(insertAt, insertAt);
     }
@@ -31,29 +42,25 @@ class VariantTableModel extends AbstractTableModel {
                       Map<Integer, Integer> manualVersions, List<ChunkKey> chunkIndex) {
         allResults.add(r);
         if (matchesPins(r, pins, manualVersions, chunkIndex)) {
-            int insertAt = findSortedInsertionPoint(filtered, r);
+            int insertAt = Collections.binarySearch(filtered, r, BEST_FIRST);
+            if (insertAt < 0) insertAt = -insertAt - 1;
             filtered.add(insertAt, r);
             fireTableRowsInserted(insertAt, insertAt);
         }
     }
 
-    /** Re-filter visible results based on current pins. A variant matches if,
-     *  for every pinned chunk, the variant's assignment at that global index
-     *  equals the pinned pattern. MANUAL pins require the variant's manual
-     *  version to match the current version (hides stale manual variants). */
+    /** Re-filter visible results based on current pins, then sort once.
+     *  O(N log N) with a single repaint event. */
     void applyFilter(Map<Integer, String> pins, Map<Integer, Integer> manualVersions,
                      List<ChunkKey> chunkIndex) {
-        int oldSize = filtered.size();
         filtered.clear();
-        if (oldSize > 0) fireTableRowsDeleted(0, oldSize - 1);
-
         for (VariantResult r : allResults) {
             if (matchesPins(r, pins, manualVersions, chunkIndex)) {
-                int insertAt = findSortedInsertionPoint(filtered, r);
-                filtered.add(insertAt, r);
-                fireTableRowsInserted(insertAt, insertAt);
+                filtered.add(r);
             }
         }
+        filtered.sort(BEST_FIRST);
+        fireTableDataChanged();
     }
 
     private boolean matchesPins(VariantResult r, Map<Integer, String> pins,
@@ -80,33 +87,12 @@ class VariantTableModel extends AbstractTableModel {
         return true;
     }
 
-    private int findSortedInsertionPoint(List<VariantResult> list, VariantResult r) {
-        for (int i = 0; i < list.size(); i++) {
-            if (compareVariants(r, list.get(i)) > 0) return i;
-        }
-        return list.size();
-    }
-
-    /** Compare two variants: scored beats unscored; among scored, delegate to
-     *  {@link VariantScore#compareTo} (modules -> tests -> simplicity -> variant index). */
-    private int compareVariants(VariantResult a, VariantResult b) {
-        if (a.score() != null && b.score() != null) return a.score().compareTo(b.score());
-        if (a.score() != null) return 1;
-        if (b.score() != null) return -1;
-        return 0;
-    }
-
     /** Show all results, ignoring pin filters. */
     void showAll() {
-        int oldSize = filtered.size();
         filtered.clear();
-        if (oldSize > 0) fireTableRowsDeleted(0, oldSize - 1);
-
-        for (VariantResult r : allResults) {
-            int insertAt = findSortedInsertionPoint(filtered, r);
-            filtered.add(insertAt, r);
-            fireTableRowsInserted(insertAt, insertAt);
-        }
+        filtered.addAll(allResults);
+        filtered.sort(BEST_FIRST);
+        fireTableDataChanged();
     }
 
     void clear() {

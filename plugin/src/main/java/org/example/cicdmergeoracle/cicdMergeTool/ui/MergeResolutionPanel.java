@@ -83,7 +83,8 @@ public class MergeResolutionPanel {
         this.projectPath = projectPath.toPath();
         this.ideProject = ideProject;
         this.manualEdit = new ManualEditWorkflow(
-                ideProject, this.projectPath, chunkModel, pinManualButton, cancelManualButton);
+                ideProject, this.projectPath, chunkModel, pinManualButton, cancelManualButton,
+                this::onPinChanged);
         this.spinnerTimer = new Timer(100, e -> {
             spinnerIndex = (spinnerIndex + 1) % SPINNER_FRAMES.length;
             updateInFlightLabel(currentInFlight);
@@ -582,5 +583,14 @@ public class MergeResolutionPanel {
 
     public JComponent getRoot() {
         return root;
+    }
+
+    /** Called when the tool window is disposed (IDE shutdown or project close). */
+    void dispose() {
+        spinnerTimer.stop();
+        if (orchestrator != null) {
+            orchestrator.cancel();
+            orchestrator.cleanupTempDir();
+        }
     }
 }

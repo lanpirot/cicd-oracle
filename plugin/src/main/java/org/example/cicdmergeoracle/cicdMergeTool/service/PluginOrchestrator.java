@@ -303,8 +303,16 @@ public class PluginOrchestrator {
             // Hard cancel interrupted the wait — fall through to finally
         } finally {
             executor.shutdown();
+            cleanupTempDir();
             exhausted = !session.isCancelled();
             SwingUtilities.invokeLater(() -> onRunFinished.accept(exhausted));
+        }
+    }
+
+    /** Delete the temp directory and all its contents. Safe to call multiple times. */
+    public void cleanupTempDir() {
+        if (tempDir != null && tempDir.toFile().exists()) {
+            org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(tempDir.toFile());
         }
     }
 
