@@ -7,6 +7,7 @@ import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.present.VariantScore;
 import ch.unibe.cs.mergeci.runner.IVariantGenerator;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
+import ch.unibe.cs.mergeci.runner.VariantDedup;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.MavenCommandResolver;
@@ -36,6 +37,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -227,6 +229,7 @@ public class PluginOrchestrator {
         ConcurrentHashMap<Integer, VariantProject> submitted = new ConcurrentHashMap<>();
         Deque<VariantProject> pendingRetry = new ArrayDeque<>();
         Deque<Integer> freeIndices = new ArrayDeque<>();
+        Set<List<String>> seenEffective = new HashSet<>();
         Path logDir = tempDir.resolve("log");
         logDir.toFile().mkdirs();
 
@@ -263,6 +266,13 @@ public class PluginOrchestrator {
                     buildVariant = applyManualPins(variant);
                 } catch (Throwable e) {
                     continue;
+                }
+
+                // Dedup: skip variants whose effective assignment was already tested
+                List<String> effective = VariantDedup.computeEffectiveAssignment(
+                        buildVariant, session.getManualTexts(), session.getManualVersionSnapshot());
+                if (!seenEffective.add(effective)) {
+                    continue; // duplicate — skip
                 }
 
                 // Block until a thread is free
@@ -338,6 +348,11 @@ public class PluginOrchestrator {
 
             CompilationResult cr = new CompilationResult(logFile);
             TestTotal tt = new TestTotal(variantPath.toFile());
+
+            // Extract failure details before variantPath is cleaned up
+            List<String> failedModules = extractFailedModules(cr);
+            List<String> testFailures = extractTestFailures(variantPath);
+
             Map<String, List<String>> patterns = variant.extractPatterns();
             double simplicity;
             try {
@@ -353,7 +368,8 @@ public class PluginOrchestrator {
             Duration elapsed = Duration.between(start, Instant.now());
             Map<Integer, Integer> manualVers = session.getManualVersionSnapshot();
             VariantResult result = new VariantResult(
-                    variantIndex, patterns, cr, tt, score, elapsed, logFile, manualVers);
+                    variantIndex, patterns, cr, tt, score, elapsed, logFile, manualVers,
+                    failedModules, testFailures);
 
             SwingUtilities.invokeLater(() -> onVariantComplete.accept(result));
             return true;
@@ -365,6 +381,65 @@ public class PluginOrchestrator {
                 org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(variantPath.toFile());
             }
         }
+    }
+
+    /** Extract names of modules that did not succeed (FAILURE, SKIPPED, TIMEOUT). */
+    private static List<String> extractFailedModules(CompilationResult cr) {
+        if (cr == null || cr.getModuleResults() == null) return List.of();
+        List<String> failed = new ArrayList<>();
+        for (CompilationResult.ModuleResult mr : cr.getModuleResults()) {
+            if (mr.getStatus() != CompilationResult.Status.SUCCESS) {
+                failed.add(mr.getModuleName() + " (" + mr.getStatus() + ")");
+            }
+        }
+        return failed;
+    }
+
+    /** Parse surefire/failsafe XMLs for individual test failures. Must be called before variantPath cleanup. */
+    private static List<String> extractTestFailures(Path variantPath) {
+        List<String> failures = new ArrayList<>();
+        try {
+            java.util.stream.Stream<Path> files = java.nio.file.Files.walk(variantPath, 10);
+            files.filter(p -> {
+                String s = p.toString();
+                return (s.contains("surefire-reports") || s.contains("failsafe-reports"))
+                        && s.endsWith(".xml") && p.getFileName().toString().startsWith("TEST-");
+            }).forEach(xmlPath -> {
+                try {
+                    javax.xml.parsers.DocumentBuilder db = javax.xml.parsers.DocumentBuilderFactory
+                            .newInstance().newDocumentBuilder();
+                    org.w3c.dom.Document doc = db.parse(xmlPath.toFile());
+                    org.w3c.dom.NodeList testcases = doc.getElementsByTagName("testcase");
+                    for (int i = 0; i < testcases.getLength(); i++) {
+                        org.w3c.dom.Element tc = (org.w3c.dom.Element) testcases.item(i);
+                        org.w3c.dom.NodeList failNodes = tc.getElementsByTagName("failure");
+                        org.w3c.dom.NodeList errorNodes = tc.getElementsByTagName("error");
+                        if (failNodes.getLength() > 0 || errorNodes.getLength() > 0) {
+                            String className = tc.getAttribute("classname");
+                            String method = tc.getAttribute("name");
+                            String msg = "";
+                            if (failNodes.getLength() > 0) {
+                                msg = ((org.w3c.dom.Element) failNodes.item(0)).getAttribute("message");
+                            } else if (errorNodes.getLength() > 0) {
+                                msg = ((org.w3c.dom.Element) errorNodes.item(0)).getAttribute("message");
+                            }
+                            String entry = className + "#" + method;
+                            if (!msg.isEmpty()) {
+                                String shortMsg = msg.length() > 80 ? msg.substring(0, 80) + "..." : msg;
+                                entry += " — " + shortMsg;
+                            }
+                            failures.add(entry);
+                        }
+                    }
+                } catch (Exception e) {
+                    // skip unparseable XML
+                }
+            });
+            files.close();
+        } catch (IOException e) {
+            // variant path may already be gone
+        }
+        return failures;
     }
 
     /**
@@ -388,30 +463,6 @@ public class PluginOrchestrator {
             }
         }
         return variant;
-    }
-
-    /**
-     * Compute the effective pattern assignment for dedup purposes.
-     * MANUAL-pinned chunks are normalized to "MANUAL" so variants that differ
-     * only in a pinned chunk are detected as duplicates.
-     */
-    private List<String> computeEffectiveAssignment(VariantProject variant) {
-        Map<Integer, String> manualTexts = session.getManualTexts();
-        List<String> effective = new ArrayList<>();
-        int globalIdx = 0;
-        for (ConflictFile cf : variant.getClasses()) {
-            for (IMergeBlock block : cf.getMergeBlocks()) {
-                if (block instanceof ConflictBlock cb) {
-                    if (manualTexts.containsKey(globalIdx)) {
-                        effective.add("MANUAL");
-                    } else {
-                        effective.add(cb.getPattern() != null ? cb.getPattern().name() : "?");
-                    }
-                    globalIdx++;
-                }
-            }
-        }
-        return effective;
     }
 
     public Path getTempDir() {

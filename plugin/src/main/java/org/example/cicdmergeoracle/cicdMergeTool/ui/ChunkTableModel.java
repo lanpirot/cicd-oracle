@@ -21,6 +21,7 @@ class ChunkTableModel extends AbstractTableModel {
         final String oursPreview;
         final String theirsPreview;
         String consensus;
+        double maxConsensusPct;
         String resolution;
 
         ChunkRow(String filePath, int chunkIdx, ConflictBlock block,
@@ -75,9 +76,19 @@ class ChunkTableModel extends AbstractTableModel {
             ChunkRow r = rows.get(i);
             ChunkKey key = new ChunkKey(r.filePath, r.chunkIdx);
             Map<String, Double> pcts = consensus.get(key);
-            r.consensus = pcts != null ? formatConsensus(pcts) : "";
+            if (pcts != null) {
+                r.consensus = formatConsensus(pcts);
+                r.maxConsensusPct = pcts.values().stream().mapToDouble(Double::doubleValue).max().orElse(0);
+            } else {
+                r.consensus = "";
+                r.maxConsensusPct = 0;
+            }
         }
         if (!rows.isEmpty()) fireTableRowsUpdated(0, rows.size() - 1);
+    }
+
+    double getMaxConsensusPct(int row) {
+        return rows.get(row).maxConsensusPct;
     }
 
     private String formatConsensus(Map<String, Double> pcts) {

@@ -61,7 +61,14 @@ public class MergeResolutionPanel {
 
     // Live dashboard table
     private final VariantTableModel dashboardModel = new VariantTableModel();
-    private final JTable dashboardTable = new JTable(dashboardModel);
+    private final JTable dashboardTable = new JTable(dashboardModel) {
+        @Override
+        public String getToolTipText(MouseEvent e) {
+            int row = rowAtPoint(e.getPoint());
+            if (row < 0 || row >= dashboardModel.getRowCount()) return null;
+            return dashboardModel.getResult(row).buildTooltip();
+        }
+    };
 
     // Chunk selector table
     private final ChunkTableModel chunkModel = new ChunkTableModel();
@@ -131,6 +138,21 @@ public class MergeResolutionPanel {
                     int row = chunkTable.rowAtPoint(e.getPoint());
                     if (row >= 0) openChunkInEditor(row);
                 }
+            }
+        });
+
+        // Bold rows where consensus > 75%
+        chunkTable.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (row < chunkModel.getRowCount() && chunkModel.getMaxConsensusPct(row) > 75) {
+                    c.setFont(c.getFont().deriveFont(Font.BOLD));
+                } else {
+                    c.setFont(c.getFont().deriveFont(Font.PLAIN));
+                }
+                return c;
             }
         });
 

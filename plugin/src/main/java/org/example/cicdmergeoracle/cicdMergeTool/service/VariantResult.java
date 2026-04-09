@@ -29,5 +29,31 @@ public record VariantResult(
         VariantScore score,
         Duration elapsed,
         Path logFile,
-        Map<Integer, Integer> manualVersions
-) {}
+        Map<Integer, Integer> manualVersions,
+        List<String> failedModules,
+        List<String> testFailures
+) {
+    /** Build a multi-line tooltip from failed modules and test failures. Returns null if everything passed. */
+    public String buildTooltip() {
+        boolean hasModuleFailures = failedModules != null && !failedModules.isEmpty();
+        boolean hasTestFailures = testFailures != null && !testFailures.isEmpty();
+        if (!hasModuleFailures && !hasTestFailures) return null;
+
+        StringBuilder sb = new StringBuilder("<html>");
+        if (hasModuleFailures) {
+            sb.append("<b>Failed modules:</b><br>");
+            for (String m : failedModules) sb.append("&nbsp;&nbsp;").append(escape(m)).append("<br>");
+        }
+        if (hasTestFailures) {
+            if (hasModuleFailures) sb.append("<br>");
+            sb.append("<b>Failed tests:</b><br>");
+            for (String t : testFailures) sb.append("&nbsp;&nbsp;").append(escape(t)).append("<br>");
+        }
+        sb.append("</html>");
+        return sb.toString();
+    }
+
+    private static String escape(String s) {
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+}
