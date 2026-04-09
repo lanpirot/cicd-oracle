@@ -46,11 +46,34 @@ public record VariantResult(
         }
         if (hasTestFailures) {
             if (hasModuleFailures) sb.append("<br>");
-            sb.append("<b>Failed tests:</b><br>");
-            for (String t : testFailures) sb.append("&nbsp;&nbsp;").append(escape(t)).append("<br>");
+            String prefix = commonPrefix(testFailures);
+            String label = prefix.isEmpty() ? "Failed tests:" : "Failed tests (…" + escape(prefix) + "):";
+            sb.append("<b>").append(label).append("</b><br>");
+            for (String t : testFailures) {
+                String display = prefix.isEmpty() ? t : t.substring(prefix.length());
+                sb.append("&nbsp;&nbsp;").append(escape(display)).append("<br>");
+            }
         }
         sb.append("</html>");
         return sb.toString();
+    }
+
+    /** Find the longest common prefix up to the last '.' boundary (package-level). */
+    private static String commonPrefix(List<String> items) {
+        if (items.size() < 2) return "";
+        String first = items.get(0);
+        int len = first.length();
+        for (int i = 1; i < items.size(); i++) {
+            String s = items.get(i);
+            len = Math.min(len, s.length());
+            for (int j = 0; j < len; j++) {
+                if (first.charAt(j) != s.charAt(j)) { len = j; break; }
+            }
+        }
+        // Snap back to last '.' so we truncate at a package boundary
+        String raw = first.substring(0, len);
+        int dot = raw.lastIndexOf('.');
+        return dot > 0 ? raw.substring(0, dot + 1) : "";
     }
 
     private static String escape(String s) {

@@ -1,7 +1,6 @@
 package org.example.cicdmergeoracle.cicdMergeTool.ui;
 
 import ch.unibe.cs.mergeci.present.VariantScore;
-import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import org.example.cicdmergeoracle.cicdMergeTool.model.ChunkKey;
 import org.example.cicdmergeoracle.cicdMergeTool.service.VariantResult;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 class VariantTableModel extends AbstractTableModel {
-    private static final String[] COLUMNS = {"#", "Status", "Modules", "Tests", "Score", "Time (s)", "Patterns"};
+    private static final String[] COLUMNS = {"#", "Modules", "Tests", "Time (s)", "Patterns"};
     /** Best-first: scored beats unscored; among scored, higher VariantScore wins. */
     private static final Comparator<VariantResult> BEST_FIRST = (a, b) -> {
         if (a.score() != null && b.score() != null) return b.score().compareTo(a.score());
@@ -117,25 +116,14 @@ class VariantTableModel extends AbstractTableModel {
         VariantResult r = filtered.get(row);
         return switch (col) {
             case 0 -> r.variantIndex();
-            case 1 -> statusText(r);
-            case 2 -> r.compilationResult() != null ? r.compilationResult().getSuccessfulModules()
+            case 1 -> r.compilationResult() != null ? r.compilationResult().getSuccessfulModules()
                     + "/" + r.compilationResult().getTotalModules() : "-";
-            case 3 -> r.testResult() != null && r.testResult().isHasData()
+            case 2 -> r.testResult() != null && r.testResult().isHasData()
                     ? r.testResult().getPassedTests() + "/" + r.testResult().getRunNum() : "-";
-            case 4 -> r.score() != null
-                    ? r.score().successfulModules() + "m " + r.score().passedTests() + "t" : "-";
-            case 5 -> String.format("%.1f", r.elapsed().toMillis() / 1000.0);
-            case 6 -> summarizePatterns(r.patternAssignment(), chunkIndex);
+            case 3 -> String.format("%.1f", r.elapsed().toMillis() / 1000.0);
+            case 4 -> summarizePatterns(r.patternAssignment(), chunkIndex);
             default -> "";
         };
-    }
-
-    private String statusText(VariantResult r) {
-        if (r.compilationResult() == null) return "ERROR";
-        CompilationResult.Status s = r.compilationResult().getBuildStatus();
-        if (s == CompilationResult.Status.SUCCESS) return "\u2713";
-        if (s == CompilationResult.Status.TIMEOUT) return "TIMEOUT";
-        return "FAIL";
     }
 
     private String summarizePatterns(Map<String, List<String>> patterns,

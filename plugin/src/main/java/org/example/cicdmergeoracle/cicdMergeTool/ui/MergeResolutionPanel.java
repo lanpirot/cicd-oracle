@@ -97,6 +97,9 @@ public class MergeResolutionPanel {
             updateInFlightLabel(currentInFlight);
         });
 
+        configureDashboardColumns();
+        configureChunkColumns();
+
         root.add(createStatusBar(), BorderLayout.NORTH);
         root.add(createCenterPanel(), BorderLayout.CENTER);
 
@@ -165,6 +168,44 @@ public class MergeResolutionPanel {
                 if (row >= 0 && row < chunkModel.getRowCount()) {
                     onResolutionChanged(row, chunkModel.getResolution(row));
                 }
+            }
+        });
+    }
+
+    /** Variant table: compact fixed columns, Patterns gets all remaining space. */
+    private void configureDashboardColumns() {
+        dashboardTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        var cm = dashboardTable.getColumnModel();
+        // #, Modules, Tests, Time (s) — small fixed; Patterns expands
+        int[] pref = {35, 65, 65, 65};
+        for (int i = 0; i < pref.length && i < cm.getColumnCount(); i++) {
+            var col = cm.getColumn(i);
+            col.setPreferredWidth(pref[i]);
+            col.setMaxWidth(pref[i] + 20);
+        }
+    }
+
+    /** Chunk table: File and Consensus wide, Chunk and Resolution narrow, dropdown indicator on Resolution. */
+    private void configureChunkColumns() {
+        chunkTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        var cm = chunkTable.getColumnModel();
+        // File=0, Chunk=1, OURS=2, THEIRS=3, Consensus=4, Resolution=5
+        int[] pref = {200, 45, 140, 140, 180, 90};
+        int[] max  = {500, 60, 300, 300, 400, 110};
+        for (int i = 0; i < pref.length && i < cm.getColumnCount(); i++) {
+            var col = cm.getColumn(i);
+            col.setPreferredWidth(pref[i]);
+            col.setMaxWidth(max[i]);
+        }
+
+        // Resolution column: append ▾ to hint that it's a dropdown
+        cm.getColumn(5).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                setText(value + " \u25BE");
+                return c;
             }
         });
     }
@@ -249,7 +290,7 @@ public class MergeResolutionPanel {
             }
 
             // First run (or previous run exhausted all variants — create fresh)
-            int threads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+            int threads = Math.max(1, (Runtime.getRuntime().availableProcessors() + 1) / 2);
             orchestrator = new PluginOrchestrator(
                     projectPath, session,
                     this::onVariantComplete,
