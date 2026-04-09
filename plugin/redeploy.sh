@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Build the plugin, kill any running IntelliJ, redeploy, and relaunch with the mock repo.
+set -euo pipefail
+
+PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
+IDEA_PLUGINS="$HOME/.local/share/JetBrains/IntelliJIdea2025.3"
+IDEA_BIN="/opt/intellij-idea/bin/idea.sh"
+MOCK_REPO="${1:-/tmp/mockRepo}"
+
+cd "$PLUGIN_DIR"
+
+echo "==> Building plugin..."
+./gradlew buildPlugin
+
+echo "==> Killing IntelliJ IDEA (if running)..."
+pkill -f "com.intellij.idea.Main" 2>/dev/null || true
+sleep 2
+
+echo "==> Deploying plugin..."
+rm -rf "$IDEA_PLUGINS/cicd-merge-oracle"
+unzip -o build/distributions/cicd-merge-oracle-1.0-SNAPSHOT.zip -d "$IDEA_PLUGINS/" > /dev/null
+
+echo "==> Resetting mock repo to pristine merge-conflict state..."
+(
+  cd "$MOCK_REPO"
+  git merge --abort 2>/dev/null || true
+  git checkout feature-subtract --force
+  git reset --hard feature-subtract
+  git clean -fd
+  git config merge.conflictstyle diff3
+  git merge feature-multiply --no-commit || true
+)
+
+echo "==> Launching IntelliJ IDEA with $MOCK_REPO..."
+"$IDEA_BIN" "$MOCK_REPO" &
+
+echo "Done."

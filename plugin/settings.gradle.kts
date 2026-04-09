@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "demo"
+rootProject.name = "cicd-merge-oracle"

@@ -1,76 +1,85 @@
-# Merge Resolution Tool Plugin
+# CI/CD Merge Oracle Plugin
 
-An IntelliJ IDEA plugin to assist developers in **resolving merge conflicts**, analyzing build and test results for different merge variants, and applying customizable resolution patterns.
+An IntelliJ IDEA plugin that **automatically resolves merge conflicts** by generating resolution variants from learned heuristic patterns, building and testing each variant in parallel, and presenting results in a live dashboard.
 
 ---
 
 ## Features
 
-- **Automatic Merge Resolution:** Run resolution on conflicting branches with selectable patterns.
-- **Build & Test Integration:** Automatically build projects and run tests for each variant.
-- **Variant Analysis:** Inspect compilation results, test results, and resolution patterns.
-- **Interactive Tree View:** Expand and explore variants, build, and test details.
-- **Execution Metrics:** Displays current processing status and total execution time.
-- **Customizable Patterns:** Choose which resolution strategies to apply via a dropdown.
+- **Live streaming dashboard** -- variants appear as they complete, sorted by a four-tier quality score (modules built, tests passed, pattern simplicity, generator confidence). The current best variant is highlighted.
+- **Chunk-level inspection** -- view each conflict chunk with an OURS / BASE / THEIRS preview. Pin individual chunks to a specific resolution to narrow the search space.
+- **Consensus indicator** -- shows per-chunk pattern agreement among completed variants, helping identify which chunks are settled and which need attention.
+- **Variant history** -- every variant ever tested is preserved. Browse, compare, and apply any historical variant at any time.
+- **One-click apply** -- apply the best (or any selected) variant directly to the working tree.
+- **Maven Daemon support** -- optional toggle for faster builds via `mvnd`.
 
 ---
 
 ## Requirements
 
-- **IntelliJ IDEA**: `2022.3+` (Community or Ultimate)
-- **Java**: 17+
-- **Maven**:
-- **Maven Daemon** (Optional)
-- **[Maven Hook](../maven-hook/README.md)** (Required for cached builds)
-- **[Plugin DevKit](https://plugins.jetbrains.com/plugin/22851-plugin-devkit)** (Required for further plugin development)
+- **IntelliJ IDEA** 2022.3+ (Community or Ultimate)
+- **Java** 17+
+- **Maven** (project under test must be Maven-based)
+- **Maven Daemon** (optional, for faster variant builds)
+- **[Plugin DevKit](https://plugins.jetbrains.com/plugin/22851-plugin-devkit)** (only needed for plugin development)
+
 ---
 
 ## Installation
 
 ### From Compiled ZIP
 
-**Already compiled plugin:** [cicd-merge-oracle-1.0-SNAPSHOT.zip](plugin-zip/cicd-merge-oracle-1.0-SNAPSHOT.zip)
+A pre-built zip is available at [`plugin-zip/cicd-merge-oracle-1.0-SNAPSHOT.zip`](plugin-zip/cicd-merge-oracle-1.0-SNAPSHOT.zip).
 
-Install the plugin in IntelliJ IDEA:
-    - Go to **Settings → Plugins → ⚙️ → Install Plugin from Disk**
-    - Select the generated `.zip` file
-    - Restart IntelliJ IDEA
+1. Go to **Settings > Plugins > Install Plugin from Disk...**
+2. Select the `.zip` file
+3. Restart IntelliJ IDEA
 
+### From Source
 
-
----
-
-### From Source (Optional)
-
-Build the plugin:
 ```bash
 ./gradlew buildPlugin
 ```
-> The output `.zip` file will be located in `build/distributions/`.
+
+The output `.zip` will be in `build/distributions/`.
 
 ---
 
 ## Usage
 
-1. Open a project with merge conflicts.
-2. Open the **Merge Resolution Tool** (tab in the bottom right corner):
-3. Select desired resolution patterns from the **Patterns** dropdown.
-4. Click **Run Conflict Resolution**.
-5. Explore the tree view of merge variants, compilation results, and tests.
-6. Sort variants by test results with the **Sort by tests** button.
-7. Apply variants using the context menu (right-click on a variant).
+1. Open a Maven project that has an **active merge conflict** (i.e. `MERGE_HEAD` exists).
+2. Open the **CI/CD Merge Oracle** tool window (right panel).
+3. Click **Run** to start generating and testing resolution variants.
+4. Watch variants stream into the **Dashboard** tab, sorted best-first.
+5. Switch to the **Chunks** tab to inspect individual conflict chunks and their consensus.
+6. Optionally pin chunks you are confident about -- the pipeline restarts for the remaining conflicts.
+7. Select a variant and click **Apply Variant** (or double-click a row in History) to write it to the working tree.
 
 ---
 
-### Running via Sandbox
+## Development
 
-> HINT: `Plugin DevKit` is required !!!
+### Sandbox
+
+> Requires Plugin DevKit
+
 ```bash
 ./gradlew runIde
 ```
 
-### Building Plugin
+### Redeploy Script
+
+Builds the plugin, kills any running IntelliJ, deploys the zip, resets the mock repo to a pristine merge-conflict state, and relaunches IntelliJ:
 
 ```bash
-./gradlew build
+./redeploy.sh              # defaults to /tmp/mockRepo
+./redeploy.sh /path/to/repo
+```
+
+The mock repo at `/tmp/mockRepo` is a multi-module Maven project with 6 conflict chunks across `core` and `service` modules. It exercises compile-level variance (partial module success) and test-level variance (partial test pass rates). The script resets the repo on every run, so experiments are always reproducible.
+
+### Build
+
+```bash
+./gradlew buildPlugin
 ```

@@ -7,15 +7,42 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>CI/CD Merge Oracle</name>
 
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="alexander.boll@unibe.ch" url="https://www.unibe.ch">University of Bern</vendor>
 
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    <h2>CI/CD Merge Oracle</h2>
+    <p>Automated merge conflict resolution with build and test feedback.</p>
+
+    <p>When a merge conflict occurs, CI/CD Merge Oracle generates resolution variants
+    using learned heuristic patterns, builds and tests each variant in parallel,
+    and presents results in a live dashboard. The best variant is continuously
+    updated as better resolutions are found.</p>
+
+    <h3>Features</h3>
+    <ul>
+      <li><b>Live streaming dashboard</b> &mdash; variants appear as they complete, with
+          compilation and test results. The current best is highlighted automatically.</li>
+      <li><b>Chunk-level control</b> &mdash; inspect each conflict chunk with a side-by-side
+          OURS/BASE/THEIRS preview. Pin individual chunks to a specific resolution
+          (OURS, THEIRS, BASE, EMPTY, or free-form manual text) and the pipeline
+          restarts for the remaining conflicts.</li>
+      <li><b>Consensus indicator</b> &mdash; shows per-chunk pattern agreement among the
+          top-scoring variants, helping you identify which chunks are settled and
+          which need attention.</li>
+      <li><b>Persistent variant history</b> &mdash; every variant ever tested is remembered.
+          Browse, compare, and apply any historical variant at any time.</li>
+      <li><b>One-click apply</b> &mdash; apply the best (or any selected) variant directly
+          to your working tree.</li>
+    </ul>
+
+    <h3>How it works</h3>
+    <ol>
+      <li>Open a project with an active merge conflict.</li>
+      <li>Open the <b>CI/CD Merge Oracle</b> tool window (right panel).</li>
+      <li>Click <b>Run</b> to start generating and testing resolution variants.</li>
+      <li>Optionally pin chunks you are confident about to narrow the search.</li>
+      <li>Click <b>Apply Best</b> to write the best resolution to your working tree.</li>
+    </ol>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -26,23 +53,8 @@
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
-    <!--<extensions defaultExtensionNs="com.intellij">
-        <applicationService
-                serviceImplementation="org.example.cicdmergeoracle.threeWayMergeTool.TestResultCounter"/>
-    </extensions>-->
-    <actions>
-        <action id="org.example.cicdmergeoracle.threeWayMergeTool.CICDMergeOraclePlugin" class="org.example.cicdmergeoracle.threeWayMergeTool.CICDMergeOraclePlugin" text="CI/CD Merge Oracle"
-                description="CI/CD Merge Oracle">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt BACK_SLASH"/>
-        </action>
-        <action id="org.example.cicdmergeoracle.threeWayMergeTool.TestAction" class="org.example.cicdmergeoracle.threeWayMergeTool.TestAction" text="testaction">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt NUMPAD1"/>
-        </action>
-
-    </actions>
     <extensions defaultExtensionNs="com.intellij">
-        <testStatusListener implementation="org.example.cicdmergeoracle.threeWayMergeTool.TestResultCounter"/>
-        <toolWindow id="Pattern-Based Merge Resolution" secondary="true" icon="AllIcons.Toolwindows.WebToolWindow" anchor="right"
+        <toolWindow id="CI/CD Merge Oracle" secondary="false" icon="AllIcons.Toolwindows.WebToolWindow" anchor="right"
                     factoryClass="org.example.cicdmergeoracle.cicdMergeTool.ui.MergeResolutionToolWindowFactory"/>
     </extensions>
 </idea-plugin>

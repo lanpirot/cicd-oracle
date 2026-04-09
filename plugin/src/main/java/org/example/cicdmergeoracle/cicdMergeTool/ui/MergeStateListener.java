@@ -11,12 +11,9 @@ import java.util.List;
 
 public class MergeStateListener {
     public static void register(Project project, Runnable onChange) {
-/*        project.getMessageBus().connect(project).subscribe(ProjectLevelVcsManager.VCS_CONFIGURATION_CHANGED, (VcsListener) () -> {
-            System.out.printf("VCS has been changed%n");
-            onChange.run();
-        });*/
         MessageBusConnection connection = project.getMessageBus().connect();
 
+        // React to VFS detecting MERGE_HEAD changes
         connection.subscribe(
                 VirtualFileManager.VFS_CHANGES,
                 new BulkFileListener() {

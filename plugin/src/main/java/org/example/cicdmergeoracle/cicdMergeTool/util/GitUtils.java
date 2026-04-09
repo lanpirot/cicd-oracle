@@ -1,6 +1,5 @@
 package org.example.cicdmergeoracle.cicdMergeTool.util;
 
-import org.example.cicdmergeoracle.cicdMergeTool.model.Project;
 import org.example.cicdmergeoracle.cicdMergeTool.util.model.MergeInfo;
 import lombok.Getter;
 import org.eclipse.jgit.api.Git;

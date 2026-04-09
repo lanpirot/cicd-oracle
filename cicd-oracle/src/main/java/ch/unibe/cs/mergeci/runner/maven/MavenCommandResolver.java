@@ -22,7 +22,20 @@ public class MavenCommandResolver {
     }
 
     public MavenCommandResolver() {
-        this(false);
+        this(isMvndAvailable());
+    }
+
+    private static boolean isMvndAvailable() {
+        try {
+            Process p = new ProcessBuilder("mvnd", "--version")
+                    .redirectErrorStream(true).start();
+            p.getInputStream().readAllBytes();
+            boolean done = p.waitFor(5, java.util.concurrent.TimeUnit.SECONDS);
+            if (!done) { p.destroyForcibly(); return false; }
+            return p.exitValue() == 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
