@@ -69,21 +69,16 @@ public class MyFileUtils {
 
     // function to delete subdirectories and files
     public static void deleteDirectory(File file) {
-        // store all the paths of files and folders present
-        // inside directory
         if (!file.exists()) return;
-        for (File subfile : file.listFiles()) {
-
-            // if it is a subfolder,e.g Rohan and Ritik,
-            //  recursively call function to empty subfolder
-            if (subfile.isDirectory()) {
-                deleteDirectory(subfile);
+        File[] children = file.listFiles();
+        if (children != null) {
+            for (File subfile : children) {
+                if (subfile.isDirectory()) {
+                    deleteDirectory(subfile);
+                }
+                subfile.delete();
             }
-
-            // delete files and empty subfolders
-            subfile.delete();
         }
-
         file.delete();
     }
 

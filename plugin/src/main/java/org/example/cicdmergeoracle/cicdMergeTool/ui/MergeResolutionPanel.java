@@ -2,7 +2,6 @@ package org.example.cicdmergeoracle.cicdMergeTool.ui;
 
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
-import ch.unibe.cs.mergeci.model.FixedTextBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.patterns.OursPattern;
 import com.intellij.openapi.application.ApplicationManager;
@@ -25,7 +24,9 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import org.example.cicdmergeoracle.cicdMergeTool.model.BlockGroup;
 import org.example.cicdmergeoracle.cicdMergeTool.model.ChunkKey;
+import org.example.cicdmergeoracle.cicdMergeTool.service.BlockGroupComputer;
 import org.example.cicdmergeoracle.cicdMergeTool.service.ChunkConsensus;
+import org.example.cicdmergeoracle.cicdMergeTool.service.ManualPinOverlay;
 import org.example.cicdmergeoracle.cicdMergeTool.service.OracleSession;
 import org.example.cicdmergeoracle.cicdMergeTool.service.PluginOrchestrator;
 import org.example.cicdmergeoracle.cicdMergeTool.service.VariantResult;
@@ -45,7 +46,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -502,112 +502,25 @@ public class MergeResolutionPanel {
 
     /**
      * Compute block groups: map each JGit ConflictBlock to the working-tree
-     * conflict it belongs to. One working-tree conflict may contain multiple
-     * JGit ConflictBlocks separated by NonConflictBlocks (shared lines).
-     * <p>
-     * Uses offset-based matching: builds the full OURS-view text from JGit blocks,
-     * finds each working-tree OURS section within it, and maps character ranges
-     * back to block indices.
+     * conflict it belongs to. Delegates to {@link BlockGroupComputer}.
      */
     private List<BlockGroup> computeBlockGroups(String filePath, ConflictFile cf,
                                                  int wtConflictCount, int globalIdxStart) {
         List<IMergeBlock> blocks = cf.getMergeBlocks();
         List<String> wtOursSections = extractOursSections(projectPath.resolve(filePath));
-        if (wtOursSections.isEmpty()) {
-            return buildFallbackGroups(blocks, globalIdxStart);
-        }
-
         OursPattern oursPattern = new OursPattern();
 
-        // Build the full OURS-view of the file and track each block's char range
-        StringBuilder fullOurs = new StringBuilder();
-        int[] blockStart = new int[blocks.size()];
-        int[] blockEnd = new int[blocks.size()];
-        int[] blockGlobalIdx = new int[blocks.size()]; // -1 for NCBs
-        int gIdx = globalIdxStart;
-
-        for (int i = 0; i < blocks.size(); i++) {
-            blockStart[i] = fullOurs.length();
-            IMergeBlock block = blocks.get(i);
-            List<String> lines;
+        List<BlockGroupComputer.BlockEntry> entries = new ArrayList<>();
+        for (IMergeBlock block : blocks) {
             if (block instanceof ConflictBlock cb) {
-                lines = oursPattern.apply(cb.getMergeResult(), cb.getChunks());
-                blockGlobalIdx[i] = gIdx++;
+                entries.add(new BlockGroupComputer.BlockEntry(
+                        oursPattern.apply(cb.getMergeResult(), cb.getChunks()), true));
             } else {
-                lines = block.getLines();
-                blockGlobalIdx[i] = -1;
-            }
-            for (int j = 0; j < lines.size(); j++) {
-                if (fullOurs.length() > 0) fullOurs.append('\n');
-                fullOurs.append(lines.get(j));
-            }
-            blockEnd[i] = fullOurs.length();
-        }
-
-        String fullOursStr = fullOurs.toString();
-
-        // Find each WT OURS section in the full text and map to block ranges
-        List<BlockGroup> groups = new ArrayList<>();
-        int searchFrom = 0;
-
-        for (int wt = 0; wt < wtOursSections.size(); wt++) {
-            String wtOurs = wtOursSections.get(wt);
-            if (wtOurs.isEmpty()) continue;
-
-            int pos = fullOursStr.indexOf(wtOurs, searchFrom);
-            if (pos < 0) {
-                LOG.warn("Could not find WT OURS section {} in JGit OURS view for {}; skipping",
-                        wt, filePath);
-                continue;
-            }
-            int end = pos + wtOurs.length();
-            searchFrom = end;
-
-            // Find blocks that overlap [pos, end]
-            int startBlock = -1, endBlock = -1;
-            List<Integer> cbIndices = new ArrayList<>();
-            for (int i = 0; i < blocks.size(); i++) {
-                if (blockEnd[i] > pos && blockStart[i] < end) {
-                    if (startBlock < 0) startBlock = i;
-                    endBlock = i + 1;
-                    if (blockGlobalIdx[i] >= 0) {
-                        cbIndices.add(blockGlobalIdx[i]);
-                    }
-                }
-            }
-
-            if (startBlock >= 0 && !cbIndices.isEmpty()) {
-                groups.add(new BlockGroup(wt, startBlock, endBlock, cbIndices));
+                entries.add(new BlockGroupComputer.BlockEntry(block.getLines(), false));
             }
         }
 
-        // Assign ungrouped ConflictBlocks to their own single-block groups
-        Set<Integer> groupedGlobalIndices = new HashSet<>();
-        for (BlockGroup g : groups) {
-            groupedGlobalIndices.addAll(g.memberGlobalIndices());
-        }
-        int ungroupedWtIdx = groups.size();
-        for (int i = 0; i < blocks.size(); i++) {
-            if (blockGlobalIdx[i] >= 0 && !groupedGlobalIndices.contains(blockGlobalIdx[i])) {
-                groups.add(new BlockGroup(ungroupedWtIdx++, i, i + 1,
-                        List.of(blockGlobalIdx[i])));
-            }
-        }
-
-        return groups;
-    }
-
-    /** Fallback: each ConflictBlock is its own group. */
-    private static List<BlockGroup> buildFallbackGroups(List<IMergeBlock> blocks, int globalIdxStart) {
-        List<BlockGroup> groups = new ArrayList<>();
-        int globalIdx = globalIdxStart;
-        int wtIdx = 0;
-        for (int i = 0; i < blocks.size(); i++) {
-            if (blocks.get(i) instanceof ConflictBlock) {
-                groups.add(new BlockGroup(wtIdx++, i, i + 1, List.of(globalIdx++)));
-            }
-        }
-        return groups;
+        return BlockGroupComputer.compute(entries, wtOursSections, globalIdxStart, filePath);
     }
 
     /**
@@ -962,71 +875,13 @@ public class MergeResolutionPanel {
 
     private ConflictFile applyPatterns(ConflictFile original, List<String> patterns,
                                        int globalIdxStart, Map<Integer, String> manualTexts) {
-        ConflictFile resolved = new ConflictFile();
-        resolved.setClassPath(original.getClassPath());
-        List<IMergeBlock> originalBlocks = original.getMergeBlocks();
-        List<IMergeBlock> newBlocks = new ArrayList<>();
         Map<Integer, BlockGroup> groupMap = session != null
                 ? session.getBlockGroupMap() : Map.of();
-
-        // Find manual groups for THIS file's globalIdx range
-        int fileCBCount = (int) originalBlocks.stream()
-                .filter(b -> b instanceof ConflictBlock).count();
-        Set<BlockGroup> manualGroups = new HashSet<>();
-        for (int gi = globalIdxStart; gi < globalIdxStart + fileCBCount; gi++) {
-            if (manualTexts.containsKey(gi)) {
-                BlockGroup g = groupMap.get(gi);
-                if (g != null) manualGroups.add(g);
-            }
-        }
-
-        int patternIdx = 0;
-        int globalIdx = globalIdxStart;
-        int blockIdx = 0;
-
-        while (blockIdx < originalBlocks.size()) {
-            // Check if this block is the START of a manual group in THIS file
-            BlockGroup manualGroup = null;
-            for (BlockGroup mg : manualGroups) {
-                if (mg.startBlockIndex() == blockIdx) {
-                    manualGroup = mg;
-                    break;
-                }
-            }
-
-            if (manualGroup != null) {
-                // Flatten: replace entire group with FixedTextBlock
-                int primaryIdx = manualGroup.memberGlobalIndices().get(0);
-                String text = manualTexts.get(primaryIdx);
-                newBlocks.add(new FixedTextBlock(text, manualGroup.memberGlobalIndices().size()));
-                manualGroups.remove(manualGroup);
-                for (int i = manualGroup.startBlockIndex(); i < manualGroup.endBlockIndex(); i++) {
-                    if (originalBlocks.get(i) instanceof ConflictBlock) {
-                        patternIdx++;
-                        globalIdx++;
-                    }
-                }
-                blockIdx = manualGroup.endBlockIndex();
-                continue;
-            }
-
-            IMergeBlock block = originalBlocks.get(blockIdx);
-
-            if (block instanceof ConflictBlock cb) {
-                ConflictBlock clone = cb.clone();
-                clone.setPattern(
-                        ch.unibe.cs.mergeci.model.patterns.PatternFactory.fromName(
-                                patterns.get(patternIdx)));
-                patternIdx++;
-                globalIdx++;
-                newBlocks.add(clone);
-            } else {
-                newBlocks.add(block);
-            }
-            blockIdx++;
-        }
-
-        resolved.setMergeBlocks(newBlocks);
+        ManualPinOverlay.Result r = ManualPinOverlay.apply(
+                original.getMergeBlocks(), globalIdxStart, manualTexts, groupMap, patterns);
+        ConflictFile resolved = new ConflictFile();
+        resolved.setClassPath(original.getClassPath());
+        resolved.setMergeBlocks(r.blocks());
         return resolved;
     }
 
@@ -1037,6 +892,9 @@ public class MergeResolutionPanel {
     /** Called when the tool window is disposed (IDE shutdown or project close). */
     void dispose() {
         spinnerTimer.stop();
+        if (balloonTimer != null) balloonTimer.stop();
+        if (dismissTimer != null) dismissTimer.stop();
+        dismissBalloon();
         if (orchestrator != null) {
             orchestrator.cancel();
             orchestrator.cleanupTempDir();
