@@ -118,7 +118,8 @@ class VariantTableModel extends AbstractTableModel {
             case 0 -> r.variantIndex();
             case 1 -> r.compilationResult() != null ? r.compilationResult().getSuccessfulModules()
                     + "/" + r.compilationResult().getTotalModules() : "-";
-            case 2 -> r.testResult() != null && r.testResult().isHasData()
+            case 2 -> r.testsSkipped() ? "skipped"
+                    : r.testResult() != null && r.testResult().isHasData()
                     ? r.testResult().getPassedTests() + "/" + r.testResult().getRunNum() : "-";
             case 3 -> String.format("%.1f", r.elapsed().toMillis() / 1000.0);
             case 4 -> summarizePatterns(r.patternAssignment(), chunkIndex);

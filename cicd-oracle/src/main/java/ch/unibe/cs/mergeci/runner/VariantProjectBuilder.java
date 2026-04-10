@@ -29,6 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Builds variant project directories (full copy, overlay base, overlay mount).
+ *
+ * <p><b>Shared with plugin:</b> the IntelliJ plugin calls {@link #buildBase},
+ * {@link #buildVariantOverlay}, {@link #buildVariantBase}, and
+ * {@link #applyConflictResolution} directly.
+ */
 @Getter
 @Setter
 public class VariantProjectBuilder {
@@ -205,9 +212,15 @@ public class VariantProjectBuilder {
     /**
      * Write the conflict-resolved source files into an already-prepared variant directory.
      * Must be called after any cache copy (target/ dirs) so that conflict files receive a
-     * timestamp T1 that is strictly newer than the copied class files (T0 > T-1).
+     * timestamp that is strictly newer than the copied class files — Maven's incremental
+     * compiler uses last-modified to decide what to recompile.
+     *
+     * <p>On fast filesystems (tmpfs), the cache copy and this write can finish within the
+     * same millisecond, so we explicitly set conflict file timestamps 2 seconds into the
+     * future to guarantee the ordering regardless of filesystem timestamp granularity.
      */
     public void applyConflictResolution(Path variantPath, VariantProject variant) throws IOException {
+        long futureTimestamp = System.currentTimeMillis() + 2000;
         for (ConflictFile conflictFile : variant.getClasses()) {
             File filepath = variantPath.resolve(conflictFile.getClassPath().toString()).toFile();
             if (filepath.getParentFile() != null) {
@@ -216,6 +229,7 @@ public class VariantProjectBuilder {
             try (java.io.OutputStream out = new java.io.FileOutputStream(filepath)) {
                 out.write(conflictFile.toString().getBytes());
             }
+            filepath.setLastModified(futureTimestamp);
         }
     }
 

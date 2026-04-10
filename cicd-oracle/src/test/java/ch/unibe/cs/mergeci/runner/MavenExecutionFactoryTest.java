@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for optimizations introduced since rq2-before-overlayfs:
  * <ul>
  *   <li>Two-phase compile-then-test (skips tests when modules can't beat best)</li>
- *   <li>Donor registry (evolving donor, isBetterDonor, isDonorUsable)</li>
+ *   <li>Donor registry (evolving donor, {@link DonorTracker#isBetterDonor}, {@link DonorTracker#isDonorUsable})</li>
  *   <li>Baseline time normalization (decomposed c+t scaling)</li>
  *   <li>VariantScore 4th tiebreaker (variant index)</li>
  *   <li>SNAPSHOT multi-module detection</li>
@@ -310,14 +310,14 @@ public class MavenExecutionFactoryTest extends BaseTest {
 
         @Test
         void isDonorUsable_nullCompilationResult_false() {
-            assertFalse(MavenExecutionFactory.isDonorUsable(null));
+            assertFalse(DonorTracker.isDonorUsable(null));
         }
 
         @Test
         void isDonorUsable_zeroSuccessfulModules_false() {
             CompilationResult cr = CompilationResult.forTest(CompilationResult.Status.FAILURE,
                     List.of(module("A", CompilationResult.Status.FAILURE)));
-            assertFalse(MavenExecutionFactory.isDonorUsable(cr));
+            assertFalse(DonorTracker.isDonorUsable(cr));
         }
 
         @Test
@@ -325,25 +325,25 @@ public class MavenExecutionFactoryTest extends BaseTest {
             CompilationResult cr = CompilationResult.forTest(CompilationResult.Status.FAILURE,
                     List.of(module("A", CompilationResult.Status.SUCCESS),
                             module("B", CompilationResult.Status.FAILURE)));
-            assertTrue(MavenExecutionFactory.isDonorUsable(cr));
+            assertTrue(DonorTracker.isDonorUsable(cr));
         }
 
         @Test
         void isDonorUsable_singleModuleSuccess_true() {
             CompilationResult cr = CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
-            assertTrue(MavenExecutionFactory.isDonorUsable(cr));
+            assertTrue(DonorTracker.isDonorUsable(cr));
         }
 
         @Test
         void isBetterDonor_nullCandidate_false() {
             CompilationResult current = CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
-            assertFalse(MavenExecutionFactory.isBetterDonor(null, current));
+            assertFalse(DonorTracker.isBetterDonor(null, current));
         }
 
         @Test
         void isBetterDonor_noCurrent_usableCandidate_true() {
             CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
-            assertTrue(MavenExecutionFactory.isBetterDonor(candidate, null));
+            assertTrue(DonorTracker.isBetterDonor(candidate, null));
         }
 
         @Test
@@ -356,7 +356,7 @@ public class MavenExecutionFactoryTest extends BaseTest {
                     List.of(module("A", CompilationResult.Status.SUCCESS),
                             module("B", CompilationResult.Status.FAILURE),
                             module("C", CompilationResult.Status.FAILURE)));
-            assertTrue(MavenExecutionFactory.isBetterDonor(candidate, current));
+            assertTrue(DonorTracker.isBetterDonor(candidate, current));
         }
 
         @Test
@@ -367,7 +367,7 @@ public class MavenExecutionFactoryTest extends BaseTest {
             CompilationResult current = CompilationResult.forTest(CompilationResult.Status.FAILURE,
                     List.of(module("A", CompilationResult.Status.SUCCESS),
                             module("B", CompilationResult.Status.SUCCESS)));
-            assertFalse(MavenExecutionFactory.isBetterDonor(candidate, current));
+            assertFalse(DonorTracker.isBetterDonor(candidate, current));
         }
 
         @Test
@@ -378,14 +378,14 @@ public class MavenExecutionFactoryTest extends BaseTest {
             CompilationResult current = CompilationResult.forTest(CompilationResult.Status.FAILURE,
                     List.of(module("A", CompilationResult.Status.SUCCESS),
                             module("B", CompilationResult.Status.FAILURE)));
-            assertFalse(MavenExecutionFactory.isBetterDonor(candidate, current));
+            assertFalse(DonorTracker.isBetterDonor(candidate, current));
         }
 
         @Test
         void isBetterDonor_unusableCandidate_false() {
             CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.FAILURE,
                     List.of(module("A", CompilationResult.Status.FAILURE)));
-            assertFalse(MavenExecutionFactory.isBetterDonor(candidate, null));
+            assertFalse(DonorTracker.isBetterDonor(candidate, null));
         }
     }
 

@@ -20,6 +20,7 @@ import java.util.Map;
  * @param score              lexicographic quality score (null if build failed / timed out)
  * @param elapsed            wall-clock time for this variant's build + test
  * @param logFile            path to the Maven compilation log file
+ * @param testsSkipped       true when the two-phase gate skipped the test phase (not competitive)
  */
 public record VariantResult(
         int variantIndex,
@@ -31,7 +32,8 @@ public record VariantResult(
         Path logFile,
         Map<Integer, Integer> manualVersions,
         List<String> failedModules,
-        List<String> testFailures
+        List<String> testFailures,
+        boolean testsSkipped
 ) {
     /** Build a multi-line tooltip from failed modules and test failures. Returns null if everything passed. */
     public String buildTooltip() {

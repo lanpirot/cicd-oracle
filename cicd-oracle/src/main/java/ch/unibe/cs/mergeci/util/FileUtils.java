@@ -127,7 +127,8 @@ public class FileUtils {
     private static void copyFile(File sourceFile, File destinationFile)
             throws IOException {
         if (destinationFile.getParentFile() != null) destinationFile.getParentFile().mkdirs();
-        Files.copy(sourceFile.toPath(), destinationFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(sourceFile.toPath(), destinationFile.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**

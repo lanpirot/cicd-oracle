@@ -6,15 +6,17 @@ import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
 import org.example.cicdmergeoracle.cicdMergeTool.model.BlockGroup;
 import ch.unibe.cs.mergeci.present.VariantScore;
+import ch.unibe.cs.mergeci.runner.DonorTracker;
 import ch.unibe.cs.mergeci.runner.IVariantGenerator;
+import ch.unibe.cs.mergeci.runner.OverlayMount;
+import ch.unibe.cs.mergeci.runner.TwoPhaseRunner;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import ch.unibe.cs.mergeci.runner.VariantDedup;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
+import ch.unibe.cs.mergeci.runner.maven.MavenCacheManager;
 import ch.unibe.cs.mergeci.runner.maven.MavenCommandResolver;
-import ch.unibe.cs.mergeci.runner.maven.MavenProcessExecutor;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
-import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.util.ProjectBuilderUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.Sequence;
@@ -79,6 +81,9 @@ public class PluginOrchestrator {
     private Path tempDir;
     private VariantProjectBuilder builder;
     private Map<String, Double> globalWeightMap;
+    private boolean useOverlay;
+    private Path overlayBasePath;
+    private Path overlayTmpDir;
 
     public PluginOrchestrator(Path repoPath,
                               OracleSession session,
@@ -113,6 +118,15 @@ public class PluginOrchestrator {
         Path projectTempDir = tempDir.resolve("projects");
         builder = new VariantProjectBuilder(repoPath, tempDir, projectTempDir);
         globalWeightMap = generatorFactory.getGlobalWeightMap();
+
+        // Detect overlayFS support and choose tmpfs-backed dir if available
+        useOverlay = OverlayMount.isAvailable();
+        Path shmDir = Path.of("/dev/shm");
+        overlayTmpDir = (useOverlay && Files.isDirectory(shmDir) && Files.isWritable(shmDir))
+                ? shmDir.resolve("cicd-oracle-plugin") : tempDir;
+        if (useOverlay) {
+            OverlayMount.cleanupStaleMounts(overlayTmpDir);
+        }
 
         coordinatorFuture = Executors.newSingleThreadExecutor().submit(() -> {
             try {
@@ -220,7 +234,12 @@ public class PluginOrchestrator {
      * <p>Interrupted variants (from a pause/cancel) are tracked via {@code submitted}
      * and retried on the next resume before asking the generator for new variants.
      */
-    private void runVariantLoop(VariantBuildContext context) {
+    private void runVariantLoop(VariantBuildContext context) throws IOException {
+        // Build shared overlay base once (contains all non-conflict files)
+        if (useOverlay) {
+            overlayBasePath = builder.buildBase(context, overlayTmpDir);
+        }
+
         executor = Executors.newFixedThreadPool(threadCount);
         Semaphore slots = new Semaphore(threadCount);
         AtomicInteger variantCounter = new AtomicInteger(1);
@@ -320,8 +339,23 @@ public class PluginOrchestrator {
         }
     }
 
-    /** Delete the temp directory and all its contents. Safe to call multiple times. */
+    /** Delete the temp directory, overlay base, and donor. Safe to call multiple times. */
     public void cleanupTempDir() {
+        // Clean up donor path (it was kept alive across variants for cache warming)
+        DonorTracker tracker = session.getDonorTracker();
+        Path donorPath = tracker.getDonorPath();
+        if (donorPath != null && donorPath.toFile().exists()) {
+            org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(donorPath.toFile());
+        }
+        // Clean up overlay base directory
+        if (overlayBasePath != null && overlayBasePath.toFile().exists()) {
+            org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(overlayBasePath.toFile());
+            overlayBasePath = null;
+        }
+        // Clean up tmpfs overlay parent (if on /dev/shm)
+        if (overlayTmpDir != null && !overlayTmpDir.equals(tempDir) && overlayTmpDir.toFile().exists()) {
+            org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(overlayTmpDir.toFile());
+        }
         if (tempDir != null && tempDir.toFile().exists()) {
             org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(tempDir.toFile());
         }
@@ -334,26 +368,60 @@ public class PluginOrchestrator {
 
         Instant start = Instant.now();
         Path variantPath = null;
+        OverlayMount overlay = null;
+        boolean isDonor = false;
         try {
-            variantPath = builder.buildVariant(context, variant, variantIndex);
+            // 1. Prepare variant directory (overlayFS CoW or full file copy)
+            if (useOverlay) {
+                overlay = builder.buildVariantOverlay(overlayBasePath, variantIndex);
+                variantPath = overlay.mountPoint();
+            } else {
+                variantPath = builder.buildVariantBase(context, variantIndex);
+            }
 
-            MavenCommandResolver resolver = new MavenCommandResolver(useMavenDaemon);
-            MavenProcessExecutor processExecutor = new MavenProcessExecutor(MAVEN_TIMEOUT_SECONDS);
-            String[] execArgs = resolver.resolveExecutableArgs(variantPath);
-            String mavenGoal = resolver.resolveMavenGoal(variantPath);
-            Path logFile = logDir.resolve(context.getProjectName() + "_" + variantIndex + "_compilation");
-            processExecutor.executeCommand(variantPath, logFile, null,
-                    AppConfig.buildCommand(execArgs, mavenGoal));
+            // 2. Cache warming from donor (copy compiled artifacts for incremental build)
+            DonorTracker tracker = session.getDonorTracker();
+            Path donorPath = tracker.getDonorPath();
+            if (donorPath != null) {
+                MavenCacheManager cacheManager = new MavenCacheManager();
+                cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
+                cacheManager.copyCacheDirectory(donorPath, variantPath);
+            }
+
+            // 3. Apply conflict resolution AFTER cache copy (timestamp ordering for incremental compiler)
+            builder.applyConflictResolution(variantPath, variant);
 
             if (session.isStopped()) { return false; }
 
-            CompilationResult cr = new CompilationResult(logFile);
-            TestTotal tt = new TestTotal(variantPath.toFile());
+            // 4. Two-phase execution: compile first, skip tests if not competitive
+            MavenCommandResolver resolver = new MavenCommandResolver(useMavenDaemon);
+            String variantKey = context.getProjectName() + "_" + variantIndex;
+            TwoPhaseRunner twoPhase = new TwoPhaseRunner(
+                    resolver, () -> MAVEN_TIMEOUT_SECONDS, logDir, null);
+            TwoPhaseRunner.TwoPhaseResult tpResult = twoPhase.run(
+                    variantPath, variantKey, tracker, null);
 
-            // Extract failure details before variantPath is cleaned up
+            if (session.isStopped()) { return false; }
+
+            // 6. Collect results (BEFORE closing overlay — surefire XML lives in mountpoint)
+            Path logFile = logDir.resolve(variantKey + "_compilation");
+            CompilationResult cr = tpResult.compilationResult();
+            if (cr == null) cr = new CompilationResult(logFile);
+            TestTotal tt = tpResult.testsRan() ? new TestTotal(variantPath.toFile()) : new TestTotal();
+
             List<String> failedModules = extractFailedModules(cr);
-            List<String> testFailures = extractTestFailures(variantPath);
+            List<String> testFailures = tpResult.testsRan()
+                    ? extractTestFailures(variantPath) : List.of();
 
+            // 7. Update best modules (gates future two-phase skips) and promote donor
+            tracker.updateBestModules(cr.getSuccessfulModules());
+            Path oldDonor = tracker.promoteDonorIfBetter(variantPath, cr);
+            isDonor = variantPath.equals(tracker.getDonorPath());
+            if (oldDonor != null && !oldDonor.equals(variantPath)) {
+                org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(oldDonor.toFile());
+            }
+
+            // 8. Score and report to UI
             Map<String, List<String>> patterns = variant.extractPatterns();
             double simplicity;
             try {
@@ -368,9 +436,10 @@ public class PluginOrchestrator {
 
             Duration elapsed = Duration.between(start, Instant.now());
             Map<Integer, Integer> manualVers = session.getManualVersionSnapshot();
+            boolean testsSkipped = !tpResult.testsRan();
             VariantResult result = new VariantResult(
                     variantIndex, patterns, cr, tt, score, elapsed, logFile, manualVers,
-                    failedModules, testFailures);
+                    failedModules, testFailures, testsSkipped);
 
             SwingUtilities.invokeLater(() -> onVariantComplete.accept(result));
             return true;
@@ -378,8 +447,12 @@ public class PluginOrchestrator {
             if (!session.isStopped()) LOG.warn("Build/test failed for variant {}", variantIndex, e);
             return false;
         } finally {
-            if (variantPath != null) {
-                org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(variantPath.toFile());
+            if (!isDonor) {
+                if (overlay != null) {
+                    try { overlay.close(); } catch (Exception ignored) {}
+                } else if (variantPath != null) {
+                    org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(variantPath.toFile());
+                }
             }
         }
     }

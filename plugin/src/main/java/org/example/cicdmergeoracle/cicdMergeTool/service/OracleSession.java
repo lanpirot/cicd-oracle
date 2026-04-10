@@ -3,6 +3,7 @@ package org.example.cicdmergeoracle.cicdMergeTool.service;
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
+import ch.unibe.cs.mergeci.runner.DonorTracker;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,7 @@ public class OracleSession {
     private volatile VariantBuildContext buildContext;
     @Setter @Getter
     private Map<Integer, BlockGroup> blockGroupMap = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final DonorTracker donorTracker = new DonorTracker();
     private final AtomicBoolean cancelled = new AtomicBoolean(false);
     private final AtomicBoolean paused = new AtomicBoolean(false);
     private final Object pauseLock = new Object();

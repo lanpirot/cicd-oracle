@@ -16,6 +16,9 @@ import java.util.concurrent.TimeUnit;
  * a per-variant {@code upperDir}; the {@code mountPoint} is where Maven sees the merged
  * view.  Closing the mount unmounts the FUSE filesystem, kills any processes whose cwd is
  * inside the mountpoint, and deletes the upper/work/mount directories.
+ *
+ * <p><b>Shared with plugin:</b> the IntelliJ plugin calls {@link #isAvailable},
+ * {@link #create}, {@link #cleanupStaleMounts}, {@link #close}, and {@link #mountPoint}.
  */
 public class OverlayMount implements AutoCloseable {
     private final Path mountPoint;

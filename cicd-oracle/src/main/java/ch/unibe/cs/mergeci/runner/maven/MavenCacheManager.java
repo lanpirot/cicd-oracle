@@ -4,13 +4,18 @@ import ch.unibe.cs.mergeci.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 /**
  * Manages Maven build cache artifacts.
  * Handles cache injection and target directory copying.
+ *
+ * <p><b>Shared with plugin:</b> the IntelliJ plugin calls {@link #injectCacheArtifacts},
+ * {@link #copyTargetDirectories}, and {@link #copyCacheDirectory} for donor cache warming.
  */
 public class MavenCacheManager {
 
@@ -22,16 +27,24 @@ public class MavenCacheManager {
     public void injectCacheArtifacts(Path projectDir) {
         try {
             Path mvnDir = projectDir.resolve(".mvn");
+            Files.createDirectories(mvnDir);
 
-            FileUtils.copyDirectoryCompatibilityMode(
-                    new File("src/main/resources/cache-artifacts/extensions.xml"),
-                    mvnDir.resolve("extensions.xml").toFile());
-
-            FileUtils.copyDirectoryCompatibilityMode(
-                    new File("src/main/resources/cache-artifacts/maven-build-cache-config.xml"),
-                    mvnDir.resolve("maven-build-cache-config.xml").toFile());
+            copyClasspathResource("/cache-artifacts/extensions.xml",
+                    mvnDir.resolve("extensions.xml"));
+            copyClasspathResource("/cache-artifacts/maven-build-cache-config.xml",
+                    mvnDir.resolve("maven-build-cache-config.xml"));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void copyClasspathResource(String resourcePath, Path destination) throws IOException {
+        try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
+            if (in == null) {
+                System.err.println("Cache artifact not found on classpath: " + resourcePath);
+                return;
+            }
+            Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

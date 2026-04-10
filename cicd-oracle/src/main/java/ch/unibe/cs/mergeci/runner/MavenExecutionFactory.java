@@ -15,7 +15,6 @@ import org.apache.commons.io.FileUtils;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,9 +31,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Orchestrates variant builds for the experiment pipeline.
+ *
+ * <p><b>Downstream dependency:</b> The IntelliJ plugin ({@code plugin/} module) reuses
+ * several classes from this package — {@link DonorTracker}, {@link TwoPhaseRunner},
+ * {@link OverlayMount}, {@link VariantProjectBuilder}, and
+ * {@link ch.unibe.cs.mergeci.runner.maven.MavenCacheManager}.  Changes to their
+ * public API or behaviour (e.g. cache format, overlay mount protocol, two-phase
+ * gating logic) may break the plugin even if all pipeline tests still pass.
+ */
 public class MavenExecutionFactory {
     private final Path logDir;
     @Getter
@@ -50,7 +58,7 @@ public class MavenExecutionFactory {
     @Getter
     private Set<String> cacheDonorKeys;
     private String bestDonorKey;
-    private final AtomicInteger bestSuccessfulModules = new AtomicInteger(0);
+    private DonorTracker donorTracker;
     @Getter
     private Set<String> cacheHitKeys;
     @Getter
@@ -110,7 +118,7 @@ public class MavenExecutionFactory {
         budgetExhausted = false;
         cacheDonorKeys = ConcurrentHashMap.newKeySet();
         bestDonorKey = null;
-        bestSuccessfulModules.set(0);
+        donorTracker = new DonorTracker();
         cacheHitKeys = ConcurrentHashMap.newKeySet();
         numInFlightVariantsKilled = 0;
         resolvedJavaHome = null;
@@ -300,7 +308,7 @@ public class MavenExecutionFactory {
                             }
                             CompilationResult doneCr = compilationResults.get(done.key());
                             if (doneCr != null) {
-                                bestSuccessfulModules.updateAndGet(old -> Math.max(old, doneCr.getSuccessfulModules()));
+                                donorTracker.updateBestModules(doneCr.getSuccessfulModules());
                             }
                             if (stopOnPerfect && !perfectFound && isPerfect(doneCr, testResults.get(done.key()))) {
                                 System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
@@ -308,7 +316,7 @@ public class MavenExecutionFactory {
                             }
                             // Evolving donor: promote if this variant compiled more modules than current donor.
                             CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
-                            if (isCache && isBetterDonor(doneCr, currentDonorCr)) {
+                            if (isCache && DonorTracker.isBetterDonor(doneCr, currentDonorCr)) {
                                 Path oldDonor = warmPathRef.get();
                                 if (oldDonor != null) retiredDonorPaths.add(oldDonor);
                                 warmPathRef.set(done.path());
@@ -391,8 +399,9 @@ public class MavenExecutionFactory {
                                     System.out.printf("[DEBUG] sequential variant %d: timeout=%ds%n", idx, variantTimeout);
                                 }
                                 builder.applyConflictResolution(variantPath, variant);
-                                runTwoPhase(variantPath, MavenExecutionFactory.this.resolvedJavaHome,
-                                        variantKey, deadline, commandResolver, null);
+                                new TwoPhaseRunner(commandResolver, () -> remainingSeconds(deadline),
+                                        logDir, MavenExecutionFactory.this.resolvedJavaHome)
+                                        .run(variantPath, variantKey, donorTracker, null);
                                 double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
                                 collectResult(variantKey, variantPath, builder, variantsStart, wallClockSeconds);
                                 if (!isCleanResult(variantKey)) {
@@ -401,12 +410,12 @@ public class MavenExecutionFactory {
                                 }
                                 CompilationResult cr = compilationResults.get(variantKey);
                                 if (cr != null) {
-                                    bestSuccessfulModules.updateAndGet(old -> Math.max(old, cr.getSuccessfulModules()));
+                                    donorTracker.updateBestModules(cr.getSuccessfulModules());
                                 }
                                 // Evolving donor: promote if this variant compiled more modules.
                                 if (isCache) {
                                     CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
-                                    if (isBetterDonor(cr, currentDonorCr)) {
+                                    if (DonorTracker.isBetterDonor(cr, currentDonorCr)) {
                                         if (donorPath != null && donorPath.toFile().exists()) {
                                             deleteWithRetry(donorPath);
                                         }
@@ -490,7 +499,7 @@ public class MavenExecutionFactory {
                             }
                             CompilationResult doneCr = compilationResults.get(done.key());
                             if (doneCr != null) {
-                                bestSuccessfulModules.updateAndGet(old -> Math.max(old, doneCr.getSuccessfulModules()));
+                                donorTracker.updateBestModules(doneCr.getSuccessfulModules());
                             }
                             if (stopOnPerfect && !perfectFound && isPerfect(doneCr, testResults.get(done.key()))) {
                                 System.out.printf("✓ Perfect variant found (%s) — stopping early%n", done.key());
@@ -498,7 +507,7 @@ public class MavenExecutionFactory {
                             }
                             // Evolving donor: promote if this variant compiled more modules.
                             CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
-                            if (isCache && isBetterDonor(doneCr, currentDonorCr)) {
+                            if (isCache && DonorTracker.isBetterDonor(doneCr, currentDonorCr)) {
                                 OverlayMount oldDonor = warmOverlayRef.get();
                                 if (oldDonor != null) retiredDonorOverlays.add(oldDonor);
                                 warmOverlayRef.set(done.overlay());
@@ -583,8 +592,9 @@ public class MavenExecutionFactory {
                                     System.out.printf("[DEBUG] sequential variant %d (overlay): timeout=%ds%n", idx, variantTimeout);
                                 }
                                 builder.applyConflictResolution(variantPath, variant);
-                                runTwoPhase(variantPath, MavenExecutionFactory.this.resolvedJavaHome,
-                                        variantKey, deadline, commandResolver, null);
+                                new TwoPhaseRunner(commandResolver, () -> remainingSeconds(deadline),
+                                        logDir, MavenExecutionFactory.this.resolvedJavaHome)
+                                        .run(variantPath, variantKey, donorTracker, null);
                                 double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
                                 // Collect results BEFORE closing overlay — surefire XML lives in the mountpoint
                                 collectResult(variantKey, variantPath, builder, variantsStart, wallClockSeconds);
@@ -594,12 +604,12 @@ public class MavenExecutionFactory {
                                 }
                                 CompilationResult cr = compilationResults.get(variantKey);
                                 if (cr != null) {
-                                    bestSuccessfulModules.updateAndGet(old -> Math.max(old, cr.getSuccessfulModules()));
+                                    donorTracker.updateBestModules(cr.getSuccessfulModules());
                                 }
                                 // Evolving donor: promote if this variant compiled more modules.
                                 if (isCache) {
                                     CompilationResult currentDonorCr = (bestDonorKey != null) ? compilationResults.get(bestDonorKey) : null;
-                                    if (isBetterDonor(cr, currentDonorCr)) {
+                                    if (DonorTracker.isBetterDonor(cr, currentDonorCr)) {
                                         if (donorOverlay != null) donorOverlay.close();
                                         donorOverlay = overlay;
                                         MavenExecutionFactory.this.bestDonorKey = variantKey;
@@ -666,7 +676,9 @@ public class MavenExecutionFactory {
                                     key, timeout);
                         }
                         builder.applyConflictResolution(vPath, variant);
-                        runTwoPhase(vPath, javaHome, key, deadline, commandResolver, repoLocal);
+                        new TwoPhaseRunner(commandResolver, () -> remainingSeconds(deadline),
+                                logDir, javaHome)
+                                .run(vPath, key, donorTracker, repoLocal);
                     } finally {
                         if (m2Overlay != null) m2Overlay.close();
                     }
@@ -675,61 +687,6 @@ public class MavenExecutionFactory {
                 });
             }
 
-            /**
-             * Two-phase Maven execution: compile first, skip test phase if the variant
-             * can't beat the current best on successful modules (primary VariantScore tiebreaker).
-             *
-             * @param mavenRepoLocal per-variant local repo path (overlayFS mountpoint) for
-             *                       isolation; {@code null} uses the default {@code ~/.m2/repository}
-             * @return true if tests were run, false if test phase was skipped or budget expired
-             */
-            private boolean runTwoPhase(Path variantPath, String javaHome, String key,
-                                        Instant deadline,
-                                        MavenCommandResolver commandResolver,
-                                        Path mavenRepoLocal) throws java.io.IOException {
-                String[] execArgs = commandResolver.resolveExecutableArgs(variantPath);
-                String mavenGoal = commandResolver.resolveMavenGoal(variantPath);
-                Path compileLog = logDir.resolve(key + "_compile_phase");
-                Path fullLog = logDir.resolve(key + "_compilation");
-
-                // Phase 1: compile only
-                int compileTimeout = remainingSeconds(deadline);
-                if (compileTimeout <= 0) return false;
-                new MavenProcessExecutor(compileTimeout).executeCommand(
-                        variantPath, compileLog, javaHome,
-                        withRepoLocal(AppConfig.buildCompileOnlyCommand(execArgs), mavenRepoLocal));
-
-                CompilationResult cr = new CompilationResult(compileLog);
-                int modules = cr.getSuccessfulModules();
-                bestSuccessfulModules.updateAndGet(old -> Math.max(old, modules));
-
-                if (modules < bestSuccessfulModules.get()) {
-                    System.out.printf("⏭ Variant %s compiled %d modules (best: %d) — skipping test phase%n",
-                            key, modules, bestSuccessfulModules.get());
-                    Files.move(compileLog, fullLog, StandardCopyOption.REPLACE_EXISTING);
-                    return false;
-                }
-
-                // Phase 2: full test lifecycle (re-compiles incrementally, then tests)
-                int testTimeout = remainingSeconds(deadline);
-                if (testTimeout <= 0) {
-                    Files.move(compileLog, fullLog, StandardCopyOption.REPLACE_EXISTING);
-                    return false;
-                }
-                Files.deleteIfExists(compileLog);
-                new MavenProcessExecutor(testTimeout).executeCommand(
-                        variantPath, fullLog, javaHome,
-                        withRepoLocal(AppConfig.buildCommand(execArgs, mavenGoal), mavenRepoLocal));
-                return true;
-            }
-
-            /** Append {@code -Dmaven.repo.local=<path>} to a Maven command array. */
-            private static String[] withRepoLocal(String[] cmd, Path repoLocal) {
-                if (repoLocal == null) return cmd;
-                String[] result = java.util.Arrays.copyOf(cmd, cmd.length + 1);
-                result[cmd.length] = "-Dmaven.repo.local=" + repoLocal;
-                return result;
-            }
 
             private void submitTask(CompletionService<TaskResult> cs,
                                     MavenCommandResolver commandResolver,
@@ -771,7 +728,9 @@ public class MavenExecutionFactory {
                                     vPath.getFileName(), timeout);
                         }
                         builder.applyConflictResolution(vPath, variant);
-                        runTwoPhase(vPath, javaHome, key, deadline, commandResolver, repoLocal);
+                        new TwoPhaseRunner(commandResolver, () -> remainingSeconds(deadline),
+                                logDir, javaHome)
+                                .run(vPath, key, donorTracker, repoLocal);
                     } finally {
                         if (m2Overlay != null) m2Overlay.close();
                     }
@@ -856,28 +815,6 @@ public class MavenExecutionFactory {
                 && tt.getFailuresNum() == 0 && tt.getErrorsNum() == 0;
     }
 
-    /**
-     * Returns true when a variant produced at least one successful module,
-     * meaning subsequent variants can benefit from copying its target directories.
-     * When the variant compiled zero modules successfully, the cache contains nothing
-     * useful and offline builds would be doomed to fail.
-     */
-    static boolean isDonorUsable(CompilationResult cr) {
-        if (cr == null) return false;
-        return cr.getSuccessfulModules() > 0
-                || cr.getBuildStatus() == CompilationResult.Status.SUCCESS;
-    }
-
-    /**
-     * Returns true when candidate should replace the current donor (more modules compiled).
-     * A consumer that was built from the previous donor can itself become the new donor,
-     * creating an iterative improvement chain with progressively warmer caches.
-     */
-    static boolean isBetterDonor(CompilationResult candidate, CompilationResult current) {
-        if (!isDonorUsable(candidate)) return false;
-        if (current == null) return true;
-        return candidate.getSuccessfulModules() > current.getSuccessfulModules();
-    }
 
     /**
      * Samples {@code MemAvailable} from {@code /proc/meminfo} every 200 ms while a build
