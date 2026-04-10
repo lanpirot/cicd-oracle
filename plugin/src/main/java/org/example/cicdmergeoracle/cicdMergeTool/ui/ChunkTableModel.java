@@ -11,7 +11,7 @@ import java.util.Map;
 class ChunkTableModel extends AbstractTableModel {
     static final String[] RESOLUTION_OPTIONS = {"(auto)", "OURS", "THEIRS", "BASE", "EMPTY", "MANUAL"};
 
-    private static final String[] COLUMNS = {"File", "Chunk", "OURS (1st line)", "THEIRS (1st line)", "Consensus", "Resolution"};
+    private static final String[] COLUMNS = {"File", "Chunk", "OURS (1st line)", "THEIRS (1st line)", "Consensus", "Pinned Resolution"};
     private final List<ChunkRow> rows = new ArrayList<>();
 
     static class ChunkRow {
@@ -114,7 +114,7 @@ class ChunkTableModel extends AbstractTableModel {
         ChunkRow r = rows.get(row);
         return switch (col) {
             case 0 -> r.filePath;
-            case 1 -> r.chunkIdx;
+            case 1 -> r.chunkIdx + 1;
             case 2 -> r.oursPreview;
             case 3 -> r.theirsPreview;
             case 4 -> r.consensus;

@@ -183,11 +183,11 @@ public class MergeResolutionPanel {
         dashboardTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         var cm = dashboardTable.getColumnModel();
         // #, Modules, Tests, Time (s) — small fixed; Patterns expands
-        int[] pref = {35, 65, 65, 65};
+        int[] pref = {40, 75, 75, 75};
         for (int i = 0; i < pref.length && i < cm.getColumnCount(); i++) {
             var col = cm.getColumn(i);
             col.setPreferredWidth(pref[i]);
-            col.setMaxWidth(pref[i] + 20);
+            col.setMaxWidth(pref[i] + 25);
         }
     }
 
