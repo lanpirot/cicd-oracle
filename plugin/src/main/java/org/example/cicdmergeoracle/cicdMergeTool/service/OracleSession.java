@@ -6,6 +6,7 @@ import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.cicdmergeoracle.cicdMergeTool.model.BlockGroup;
 import org.example.cicdmergeoracle.cicdMergeTool.model.ChunkKey;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class OracleSession {
     private List<ChunkKey> chunkIndex = List.of();
     @Setter
     private volatile VariantBuildContext buildContext;
+    @Setter @Getter
+    private Map<Integer, BlockGroup> blockGroupMap = Collections.synchronizedMap(new LinkedHashMap<>());
     private final AtomicBoolean cancelled = new AtomicBoolean(false);
     private final AtomicBoolean paused = new AtomicBoolean(false);
     private final Object pauseLock = new Object();

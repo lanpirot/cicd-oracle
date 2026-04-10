@@ -2,8 +2,10 @@ package org.example.cicdmergeoracle.cicdMergeTool.service;
 
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
+import ch.unibe.cs.mergeci.model.FixedTextBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
+import org.example.cicdmergeoracle.cicdMergeTool.model.BlockGroup;
 import ch.unibe.cs.mergeci.present.VariantScore;
 import ch.unibe.cs.mergeci.runner.IVariantGenerator;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
@@ -443,24 +445,70 @@ public class PluginOrchestrator {
     }
 
     /**
-     * Overlay MANUAL-pinned chunks onto the variant in place.
-     * Safe because each variant from the generator has its own ConflictBlocks.
+     * Overlay MANUAL-pinned chunks onto the variant by flattening entire
+     * working-tree chunk groups into a single {@link FixedTextBlock}.
+     * Safe because each variant from the generator has its own block copies.
      */
     private VariantProject applyManualPins(VariantProject variant) {
         Map<Integer, String> manualTexts = session.getManualTexts();
         if (manualTexts.isEmpty()) return variant;
 
+        Map<Integer, BlockGroup> groupMap = session.getBlockGroupMap();
         int globalIdx = 0;
+
         for (ConflictFile cf : variant.getClasses()) {
-            for (IMergeBlock block : cf.getMergeBlocks()) {
-                if (block instanceof ConflictBlock cb) {
-                    String manualText = manualTexts.get(globalIdx);
-                    if (manualText != null) {
-                        cb.setPattern(new ManualPattern(manualText));
-                    }
-                    globalIdx++;
+            List<IMergeBlock> blocks = cf.getMergeBlocks();
+            List<IMergeBlock> newBlocks = new ArrayList<>();
+            int blockIdx = 0;
+
+            // Find manual groups for THIS file's globalIdx range
+            int fileStartGlobalIdx = globalIdx;
+            int fileCBCount = (int) blocks.stream()
+                    .filter(b -> b instanceof ConflictBlock).count();
+            Set<BlockGroup> manualGroups = new HashSet<>();
+            for (int gi = fileStartGlobalIdx; gi < fileStartGlobalIdx + fileCBCount; gi++) {
+                if (manualTexts.containsKey(gi)) {
+                    BlockGroup g = groupMap.get(gi);
+                    if (g != null) manualGroups.add(g);
                 }
             }
+
+            while (blockIdx < blocks.size()) {
+                // Check if this block is the START of a manual group in THIS file
+                BlockGroup manualGroup = null;
+                for (BlockGroup mg : manualGroups) {
+                    if (mg.startBlockIndex() == blockIdx) {
+                        manualGroup = mg;
+                        break;
+                    }
+                }
+
+                if (manualGroup != null) {
+                    // Flatten: replace entire group with one FixedTextBlock
+                    int primaryIdx = manualGroup.memberGlobalIndices().get(0);
+                    String text = manualTexts.get(primaryIdx);
+                    newBlocks.add(new FixedTextBlock(text, manualGroup.memberGlobalIndices().size()));
+                    manualGroups.remove(manualGroup);
+                    // Advance globalIdx past all ConflictBlocks in the group
+                    for (int i = manualGroup.startBlockIndex(); i < manualGroup.endBlockIndex(); i++) {
+                        if (blocks.get(i) instanceof ConflictBlock) globalIdx++;
+                    }
+                    blockIdx = manualGroup.endBlockIndex();
+                    continue;
+                }
+
+                IMergeBlock block = blocks.get(blockIdx);
+
+                if (block instanceof ConflictBlock) {
+                    newBlocks.add(block);
+                    globalIdx++;
+                } else {
+                    newBlocks.add(block);
+                }
+                blockIdx++;
+            }
+
+            cf.setMergeBlocks(newBlocks);
         }
         return variant;
     }

@@ -1,11 +1,15 @@
 package org.example.cicdmergeoracle.cicdMergeTool.ui;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.example.cicdmergeoracle.cicdMergeTool.model.BlockGroup;
 import org.example.cicdmergeoracle.cicdMergeTool.service.OracleSession;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -33,6 +37,9 @@ class ManualEditWorkflow {
     private final Runnable onPinChanged;
 
     private int manualEditRow = -1;
+    int getManualEditRow() { return manualEditRow; }
+    private String previousResolution;
+    String getPreviousResolution() { return previousResolution; }
     private Path manualEditFile;
     private OracleSession activeSession;
     private boolean cleaningUp;
@@ -61,6 +68,10 @@ class ManualEditWorkflow {
         if (manualEditRow >= 0) cancelManualEdit(session);
 
         this.activeSession = session;
+        // Remember what the chunk was pinned to before MANUAL (for cancel revert)
+        String prev = session.getPinnedChunks().get(row);
+        this.previousResolution = prev != null ? prev : "(auto)";
+
         String initial;
         if (session.getManualTexts().containsKey(row)) {
             initial = session.getManualTexts().get(row);
@@ -92,30 +103,66 @@ class ManualEditWorkflow {
         }
     }
 
-    /** Reads the edited content and pins the chunk as MANUAL. Returns true if successful. */
+    /** Reads the edited content from IntelliJ's in-memory document and pins the chunk as MANUAL. */
     boolean confirmManualEdit(OracleSession session) {
         if (manualEditRow < 0 || manualEditFile == null) return false;
 
-        try {
-            String text = Files.readString(manualEditFile);
-            session.getManualTexts().put(manualEditRow, text);
-            session.getPinnedChunks().put(manualEditRow, "MANUAL");
-            session.bumpManualVersion(manualEditRow);
-        } catch (IOException e) {
-            LOG.warn("Failed to read manual edit content", e);
+        String text = readManualEditContent();
+        if (text != null) {
+            LOG.info("Pinning MANUAL for chunk {}: {} chars", manualEditRow, text.length());
+            // Pin all ConflictBlocks in the same working-tree chunk group
+            BlockGroup group = session.getBlockGroupMap().get(manualEditRow);
+            List<Integer> members = group != null
+                    ? group.memberGlobalIndices() : List.of(manualEditRow);
+            for (int idx : members) {
+                session.getManualTexts().put(idx, text);
+                session.getPinnedChunks().put(idx, "MANUAL");
+                session.bumpManualVersion(idx);
+            }
         }
 
         cleanupManualEdit();
         return true;
     }
 
-    /** Reverts the chunk resolution to (auto) and cleans up. */
+    /** Read from IntelliJ's in-memory Document (picks up unsaved edits), fall back to disk. */
+    private String readManualEditContent() {
+        VirtualFile vf = LocalFileSystem.getInstance().findFileByPath(
+                manualEditFile.toAbsolutePath().toString());
+        if (vf != null) {
+            Document doc = FileDocumentManager.getInstance().getDocument(vf);
+            if (doc != null) {
+                return doc.getText();
+            }
+            LOG.warn("Manual edit: VirtualFile found but Document is null — falling back to disk");
+        } else {
+            LOG.warn("Manual edit: VirtualFile not found — falling back to disk");
+        }
+        // Fallback: read from disk
+        try {
+            return Files.readString(manualEditFile);
+        } catch (IOException e) {
+            LOG.warn("Failed to read manual edit content", e);
+            return null;
+        }
+    }
+
+    /** Reverts the chunk resolution to the previous pin and cleans up. */
     void cancelManualEdit(OracleSession session) {
         if (manualEditRow < 0) return;
 
-        chunkModel.setResolution(manualEditRow, "(auto)");
-        session.getManualTexts().remove(manualEditRow);
-        session.getPinnedChunks().remove(manualEditRow);
+        // Restore previous resolution for all ConflictBlocks in the group
+        BlockGroup group = session.getBlockGroupMap().get(manualEditRow);
+        List<Integer> members = group != null
+                ? group.memberGlobalIndices() : List.of(manualEditRow);
+        for (int idx : members) {
+            session.getManualTexts().remove(idx);
+            if ("(auto)".equals(previousResolution)) {
+                session.getPinnedChunks().remove(idx);
+            } else {
+                session.getPinnedChunks().put(idx, previousResolution);
+            }
+        }
 
         cleanupManualEdit();
     }

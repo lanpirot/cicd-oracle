@@ -2,7 +2,9 @@ package org.example.cicdmergeoracle.cicdMergeTool.ui;
 
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
+import ch.unibe.cs.mergeci.model.FixedTextBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
+import ch.unibe.cs.mergeci.model.patterns.OursPattern;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -13,9 +15,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
+import org.example.cicdmergeoracle.cicdMergeTool.model.BlockGroup;
 import org.example.cicdmergeoracle.cicdMergeTool.model.ChunkKey;
 import org.example.cicdmergeoracle.cicdMergeTool.service.ChunkConsensus;
-import org.example.cicdmergeoracle.cicdMergeTool.service.ManualPattern;
 import org.example.cicdmergeoracle.cicdMergeTool.service.OracleSession;
 import org.example.cicdmergeoracle.cicdMergeTool.service.PluginOrchestrator;
 import org.example.cicdmergeoracle.cicdMergeTool.service.VariantResult;
@@ -32,9 +34,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MergeResolutionPanel {
     private static final Logger LOG = LoggerFactory.getLogger(MergeResolutionPanel.class);
@@ -52,6 +56,7 @@ public class MergeResolutionPanel {
     private boolean running;
     private final JButton applyVariantButton = new JButton("Apply Variant");
     private final JCheckBox showAllToggle = new JCheckBox("Ignore Pins");
+    private boolean suppressResolutionListener;
 
     // Status bar — right (progress)
     private final JLabel inFlightLabel = new JBLabel();
@@ -163,6 +168,7 @@ public class MergeResolutionPanel {
         JComboBox<String> resolutionCombo = new JComboBox<>(ChunkTableModel.RESOLUTION_OPTIONS);
         chunkTable.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(resolutionCombo));
         chunkModel.addTableModelListener(e -> {
+            if (suppressResolutionListener) return;
             if (e.getColumn() == 5 && e.getType() == javax.swing.event.TableModelEvent.UPDATE) {
                 int row = e.getFirstRow();
                 if (row >= 0 && row < chunkModel.getRowCount()) {
@@ -401,6 +407,7 @@ public class MergeResolutionPanel {
     private void populateChunkTable(Map<String, ConflictFile> cfMap) {
         chunkModel.clear();
         List<ChunkKey> index = new ArrayList<>();
+        Map<Integer, BlockGroup> blockGroupMap = new LinkedHashMap<>();
 
         // Scan actual working tree files for conflict marker previews
         Map<String, List<String[]>> filePreviews = new LinkedHashMap<>();
@@ -408,23 +415,176 @@ public class MergeResolutionPanel {
             filePreviews.put(filePath, scanConflictPreviews(projectPath.resolve(filePath)));
         }
 
+        int globalIdx = 0;
         for (Map.Entry<String, ConflictFile> entry : cfMap.entrySet()) {
             String filePath = entry.getKey();
+            ConflictFile cf = entry.getValue();
             List<String[]> previews = filePreviews.getOrDefault(filePath, List.of());
-            int chunkIdx = 0;
-            for (IMergeBlock block : entry.getValue().getMergeBlocks()) {
+
+            List<BlockGroup> groups = computeBlockGroups(filePath, cf, previews.size(), globalIdx);
+
+            for (IMergeBlock block : cf.getMergeBlocks()) {
                 if (block instanceof ConflictBlock cb) {
-                    String ours = chunkIdx < previews.size() ? previews.get(chunkIdx)[0] : "";
-                    String theirs = chunkIdx < previews.size() ? previews.get(chunkIdx)[1] : "";
-                    chunkModel.addChunk(filePath, chunkIdx, cb, ours, theirs);
-                    index.add(new ChunkKey(filePath, chunkIdx));
-                    chunkIdx++;
+                    BlockGroup group = blockGroupMap.containsKey(globalIdx)
+                            ? blockGroupMap.get(globalIdx) : findGroup(groups, globalIdx);
+                    int wtIdx = group != null ? group.workingTreeChunkIndex() : 0;
+                    String ours = wtIdx < previews.size() ? previews.get(wtIdx)[0] : "";
+                    String theirs = wtIdx < previews.size() ? previews.get(wtIdx)[1] : "";
+                    chunkModel.addChunk(filePath, wtIdx, cb, ours, theirs);
+                    index.add(new ChunkKey(filePath, wtIdx));
+                    if (group != null) blockGroupMap.put(globalIdx, group);
+                    globalIdx++;
                 }
             }
         }
         List<ChunkKey> immutableIndex = List.copyOf(index);
-        if (session != null) session.setChunkIndex(immutableIndex);
+        if (session != null) {
+            session.setChunkIndex(immutableIndex);
+            session.setBlockGroupMap(blockGroupMap);
+        }
         dashboardModel.setChunkIndex(immutableIndex);
+    }
+
+    private static BlockGroup findGroup(List<BlockGroup> groups, int globalIdx) {
+        for (BlockGroup g : groups) {
+            if (g.memberGlobalIndices().contains(globalIdx)) return g;
+        }
+        return null;
+    }
+
+    /**
+     * Compute block groups: map each JGit ConflictBlock to the working-tree
+     * conflict it belongs to. One working-tree conflict may contain multiple
+     * JGit ConflictBlocks separated by NonConflictBlocks (shared lines).
+     * <p>
+     * Uses offset-based matching: builds the full OURS-view text from JGit blocks,
+     * finds each working-tree OURS section within it, and maps character ranges
+     * back to block indices.
+     */
+    private List<BlockGroup> computeBlockGroups(String filePath, ConflictFile cf,
+                                                 int wtConflictCount, int globalIdxStart) {
+        List<IMergeBlock> blocks = cf.getMergeBlocks();
+        List<String> wtOursSections = extractOursSections(projectPath.resolve(filePath));
+        if (wtOursSections.isEmpty()) {
+            return buildFallbackGroups(blocks, globalIdxStart);
+        }
+
+        OursPattern oursPattern = new OursPattern();
+
+        // Build the full OURS-view of the file and track each block's char range
+        StringBuilder fullOurs = new StringBuilder();
+        int[] blockStart = new int[blocks.size()];
+        int[] blockEnd = new int[blocks.size()];
+        int[] blockGlobalIdx = new int[blocks.size()]; // -1 for NCBs
+        int gIdx = globalIdxStart;
+
+        for (int i = 0; i < blocks.size(); i++) {
+            blockStart[i] = fullOurs.length();
+            IMergeBlock block = blocks.get(i);
+            List<String> lines;
+            if (block instanceof ConflictBlock cb) {
+                lines = oursPattern.apply(cb.getMergeResult(), cb.getChunks());
+                blockGlobalIdx[i] = gIdx++;
+            } else {
+                lines = block.getLines();
+                blockGlobalIdx[i] = -1;
+            }
+            for (int j = 0; j < lines.size(); j++) {
+                if (fullOurs.length() > 0) fullOurs.append('\n');
+                fullOurs.append(lines.get(j));
+            }
+            blockEnd[i] = fullOurs.length();
+        }
+
+        String fullOursStr = fullOurs.toString();
+
+        // Find each WT OURS section in the full text and map to block ranges
+        List<BlockGroup> groups = new ArrayList<>();
+        int searchFrom = 0;
+
+        for (int wt = 0; wt < wtOursSections.size(); wt++) {
+            String wtOurs = wtOursSections.get(wt);
+            if (wtOurs.isEmpty()) continue;
+
+            int pos = fullOursStr.indexOf(wtOurs, searchFrom);
+            if (pos < 0) {
+                LOG.warn("Could not find WT OURS section {} in JGit OURS view for {}; skipping",
+                        wt, filePath);
+                continue;
+            }
+            int end = pos + wtOurs.length();
+            searchFrom = end;
+
+            // Find blocks that overlap [pos, end]
+            int startBlock = -1, endBlock = -1;
+            List<Integer> cbIndices = new ArrayList<>();
+            for (int i = 0; i < blocks.size(); i++) {
+                if (blockEnd[i] > pos && blockStart[i] < end) {
+                    if (startBlock < 0) startBlock = i;
+                    endBlock = i + 1;
+                    if (blockGlobalIdx[i] >= 0) {
+                        cbIndices.add(blockGlobalIdx[i]);
+                    }
+                }
+            }
+
+            if (startBlock >= 0 && !cbIndices.isEmpty()) {
+                groups.add(new BlockGroup(wt, startBlock, endBlock, cbIndices));
+            }
+        }
+
+        // Assign ungrouped ConflictBlocks to their own single-block groups
+        Set<Integer> groupedGlobalIndices = new HashSet<>();
+        for (BlockGroup g : groups) {
+            groupedGlobalIndices.addAll(g.memberGlobalIndices());
+        }
+        int ungroupedWtIdx = groups.size();
+        for (int i = 0; i < blocks.size(); i++) {
+            if (blockGlobalIdx[i] >= 0 && !groupedGlobalIndices.contains(blockGlobalIdx[i])) {
+                groups.add(new BlockGroup(ungroupedWtIdx++, i, i + 1,
+                        List.of(blockGlobalIdx[i])));
+            }
+        }
+
+        return groups;
+    }
+
+    /** Fallback: each ConflictBlock is its own group. */
+    private static List<BlockGroup> buildFallbackGroups(List<IMergeBlock> blocks, int globalIdxStart) {
+        List<BlockGroup> groups = new ArrayList<>();
+        int globalIdx = globalIdxStart;
+        int wtIdx = 0;
+        for (int i = 0; i < blocks.size(); i++) {
+            if (blocks.get(i) instanceof ConflictBlock) {
+                groups.add(new BlockGroup(wtIdx++, i, i + 1, List.of(globalIdx++)));
+            }
+        }
+        return groups;
+    }
+
+    /**
+     * Extract the OURS text for each conflict in a working-tree file.
+     * Handles both merge style ({@code <<<<<<<}...{@code =======}) and
+     * diff3 style ({@code <<<<<<<}...{@code |||||||}...{@code =======}).
+     */
+    private static List<String> extractOursSections(Path file) {
+        List<String> sections = new ArrayList<>();
+        try {
+            List<String> lines = Files.readAllLines(file);
+            for (int i = 0; i < lines.size(); i++) {
+                if (!lines.get(i).startsWith("<<<<<<<")) continue;
+                List<String> oursLines = new ArrayList<>();
+                for (int j = i + 1; j < lines.size(); j++) {
+                    if (lines.get(j).startsWith("=======")
+                            || lines.get(j).startsWith("|||||||")) break;
+                    oursLines.add(lines.get(j));
+                }
+                sections.add(String.join("\n", oursLines));
+            }
+        } catch (IOException e) {
+            // Fall back to empty
+        }
+        return sections;
     }
 
     /**
@@ -537,9 +697,32 @@ public class MergeResolutionPanel {
             manualEdit.startManualEdit(row, session);
             return;
         } else if ("(auto)".equals(resolution)) {
-            session.getPinnedChunks().remove(row);
-            session.getManualTexts().remove(row);
+            // If this row is part of a multi-CB group with MANUAL, unpin the whole group
+            BlockGroup group = session.getBlockGroupMap().get(row);
+            if (group != null && group.isMultiBlock()
+                    && "MANUAL".equals(session.getPinnedChunks().get(row))) {
+                for (int idx : group.memberGlobalIndices()) {
+                    session.getPinnedChunks().remove(idx);
+                    session.getManualTexts().remove(idx);
+                }
+                updateGroupMemberResolutions(row, "(auto)");
+            } else {
+                session.getPinnedChunks().remove(row);
+                session.getManualTexts().remove(row);
+            }
         } else {
+            // Non-manual pin: if group was MANUAL, unpin the group's MANUAL first
+            BlockGroup group = session.getBlockGroupMap().get(row);
+            if (group != null && group.isMultiBlock()
+                    && "MANUAL".equals(session.getPinnedChunks().get(row))) {
+                for (int idx : group.memberGlobalIndices()) {
+                    session.getManualTexts().remove(idx);
+                    if (idx != row) {
+                        session.getPinnedChunks().remove(idx);
+                    }
+                }
+                updateGroupMemberResolutions(row, "(auto)");
+            }
             session.getPinnedChunks().put(row, resolution);
             session.getManualTexts().remove(row);
         }
@@ -548,13 +731,41 @@ public class MergeResolutionPanel {
     }
 
     private void confirmManualEdit() {
+        int row = manualEdit.getManualEditRow();
         manualEdit.confirmManualEdit(session);
+        // Update UI for group members without triggering the listener
+        updateGroupMemberResolutions(row, "MANUAL");
         onPinChanged();
     }
 
     private void cancelManualEdit() {
+        int row = manualEdit.getManualEditRow();
+        String prev = manualEdit.getPreviousResolution();
         manualEdit.cancelManualEdit(session);
+        // Restore the resolution dropdown for this row and group members
+        suppressResolutionListener = true;
+        try {
+            chunkModel.setResolution(row, prev != null ? prev : "(auto)");
+        } finally {
+            suppressResolutionListener = false;
+        }
+        updateGroupMemberResolutions(row, prev != null ? prev : "(auto)");
         onPinChanged();
+    }
+
+    /** Set resolution display for all group members, suppressing the listener. */
+    private void updateGroupMemberResolutions(int row, String resolution) {
+        if (session == null || row < 0) return;
+        BlockGroup group = session.getBlockGroupMap().get(row);
+        if (group == null || !group.isMultiBlock()) return;
+        suppressResolutionListener = true;
+        try {
+            for (int idx : group.memberGlobalIndices()) {
+                if (idx != row) chunkModel.setResolution(idx, resolution);
+            }
+        } finally {
+            suppressResolutionListener = false;
+        }
     }
 
     private void onPinChanged() {
@@ -619,28 +830,69 @@ public class MergeResolutionPanel {
                                        int globalIdxStart, Map<Integer, String> manualTexts) {
         ConflictFile resolved = new ConflictFile();
         resolved.setClassPath(original.getClassPath());
-        List<IMergeBlock> blocks = new ArrayList<>();
-        int patternIdx = 0;
-        int globalIdx = globalIdxStart;
-        for (IMergeBlock block : original.getMergeBlocks()) {
-            if (block instanceof ConflictBlock cb) {
-                ConflictBlock clone = cb.clone();
-                String manualText = manualTexts.get(globalIdx);
-                if (manualText != null) {
-                    clone.setPattern(new ManualPattern(manualText));
-                } else {
-                    clone.setPattern(
-                            ch.unibe.cs.mergeci.model.patterns.PatternFactory.fromName(
-                                    patterns.get(patternIdx)));
-                }
-                patternIdx++;
-                globalIdx++;
-                blocks.add(clone);
-            } else {
-                blocks.add(block);
+        List<IMergeBlock> originalBlocks = original.getMergeBlocks();
+        List<IMergeBlock> newBlocks = new ArrayList<>();
+        Map<Integer, BlockGroup> groupMap = session != null
+                ? session.getBlockGroupMap() : Map.of();
+
+        // Find manual groups for THIS file's globalIdx range
+        int fileCBCount = (int) originalBlocks.stream()
+                .filter(b -> b instanceof ConflictBlock).count();
+        Set<BlockGroup> manualGroups = new HashSet<>();
+        for (int gi = globalIdxStart; gi < globalIdxStart + fileCBCount; gi++) {
+            if (manualTexts.containsKey(gi)) {
+                BlockGroup g = groupMap.get(gi);
+                if (g != null) manualGroups.add(g);
             }
         }
-        resolved.setMergeBlocks(blocks);
+
+        int patternIdx = 0;
+        int globalIdx = globalIdxStart;
+        int blockIdx = 0;
+
+        while (blockIdx < originalBlocks.size()) {
+            // Check if this block is the START of a manual group in THIS file
+            BlockGroup manualGroup = null;
+            for (BlockGroup mg : manualGroups) {
+                if (mg.startBlockIndex() == blockIdx) {
+                    manualGroup = mg;
+                    break;
+                }
+            }
+
+            if (manualGroup != null) {
+                // Flatten: replace entire group with FixedTextBlock
+                int primaryIdx = manualGroup.memberGlobalIndices().get(0);
+                String text = manualTexts.get(primaryIdx);
+                newBlocks.add(new FixedTextBlock(text, manualGroup.memberGlobalIndices().size()));
+                manualGroups.remove(manualGroup);
+                for (int i = manualGroup.startBlockIndex(); i < manualGroup.endBlockIndex(); i++) {
+                    if (originalBlocks.get(i) instanceof ConflictBlock) {
+                        patternIdx++;
+                        globalIdx++;
+                    }
+                }
+                blockIdx = manualGroup.endBlockIndex();
+                continue;
+            }
+
+            IMergeBlock block = originalBlocks.get(blockIdx);
+
+            if (block instanceof ConflictBlock cb) {
+                ConflictBlock clone = cb.clone();
+                clone.setPattern(
+                        ch.unibe.cs.mergeci.model.patterns.PatternFactory.fromName(
+                                patterns.get(patternIdx)));
+                patternIdx++;
+                globalIdx++;
+                newBlocks.add(clone);
+            } else {
+                newBlocks.add(block);
+            }
+            blockIdx++;
+        }
+
+        resolved.setMergeBlocks(newBlocks);
         return resolved;
     }
 
