@@ -20,6 +20,11 @@ echo "==> Deploying plugin..."
 rm -rf "$IDEA_PLUGINS/cicd-merge-oracle"
 unzip -o build/distributions/cicd-merge-oracle-1.0-SNAPSHOT.zip -d "$IDEA_PLUGINS/" > /dev/null
 
+if [ ! -d "$MOCK_REPO/.git" ]; then
+  echo "==> Mock repo not found — creating from scratch..."
+  "$PLUGIN_DIR/src/test/resources/create-mock-repo.sh" "$MOCK_REPO"
+fi
+
 echo "==> Resetting mock repo to pristine merge-conflict state..."
 (
   cd "$MOCK_REPO"
