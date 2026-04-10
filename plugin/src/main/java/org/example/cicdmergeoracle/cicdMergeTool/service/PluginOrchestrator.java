@@ -116,14 +116,10 @@ public class PluginOrchestrator {
         builder = new VariantProjectBuilder(repoPath, tempDir, projectTempDir);
         globalWeightMap = generatorFactory.getGlobalWeightMap();
 
-        // Detect overlayFS support and choose tmpfs-backed dir if available
-        useOverlay = OverlayMount.isAvailable();
-        Path shmDir = Path.of("/dev/shm");
-        overlayTmpDir = (useOverlay && Files.isDirectory(shmDir) && Files.isWritable(shmDir))
-                ? shmDir.resolve("cicd-oracle-plugin") : tempDir;
-        if (useOverlay) {
-            OverlayMount.cleanupStaleMounts(overlayTmpDir);
-        }
+        // OverlayFS disabled in the plugin — fuse-overlayfs mounts race with
+        // concurrent mvnd daemons, causing silent build failures (~8% of variants).
+        useOverlay = false;
+        overlayTmpDir = tempDir;
 
         coordinatorFuture = Executors.newSingleThreadExecutor().submit(() -> {
             try {
@@ -390,18 +386,8 @@ public class PluginOrchestrator {
             DonorTracker tracker = session.getDonorTracker();
             Path donorPath = tracker.getDonorPath();
             if (donorPath != null) {
-                LOG.info("[cache] variant {} warming from donor {} (donor has {} successful modules)",
-                        variantIndex, tracker.getDonorKey(),
-                        tracker.getDonorCompilationResult() != null
-                                ? tracker.getDonorCompilationResult().getSuccessfulModules() : "?");
-                Instant copyStart = Instant.now();
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
-                cacheManager.copyCacheDirectory(donorPath, variantPath);
-                LOG.info("[cache] variant {} cache copy took {}ms",
-                        variantIndex, Duration.between(copyStart, Instant.now()).toMillis());
-            } else {
-                LOG.info("[cache] variant {} has NO donor — building from scratch", variantIndex);
             }
 
             // 3. Apply conflict resolution AFTER cache copy (timestamp ordering for incremental compiler)
@@ -420,12 +406,14 @@ public class PluginOrchestrator {
 
             if (session.isStopped()) { return false; }
 
-            // 4. Two-phase execution: compile first, skip tests if not competitive
+            // 4. Single-phase execution: run full mvn test with -Dcicd.bestModules=N.
+            //    The maven-hook aborts after compile if the variant can't beat the
+            //    current best — one Maven invocation instead of two.
             MavenCommandResolver resolver = new MavenCommandResolver();
             String variantKey = context.getProjectName() + "_" + variantIndex;
-            TwoPhaseRunner twoPhase = new TwoPhaseRunner(
-                    resolver, () -> MAVEN_TIMEOUT_SECONDS, logDir, null);
-            TwoPhaseRunner.TwoPhaseResult tpResult = twoPhase.run(
+            TwoPhaseRunner runner = new TwoPhaseRunner(
+                    resolver, () -> MAVEN_TIMEOUT_SECONDS, logDir, null, true);
+            TwoPhaseRunner.TwoPhaseResult tpResult = runner.run(
                     variantPath, variantKey, tracker, null);
 
             if (session.isStopped()) { return false; }
@@ -446,7 +434,7 @@ public class PluginOrchestrator {
                             "build={}, tests={}, elapsed={}s, hadDonor={}",
                     variantIndex, cr.getSuccessfulModules(), cr.getTotalModules(),
                     cr.getBuildStatus(), tpResult.testsRan() ? tt : "skipped",
-                    buildElapsed.toSeconds(), donorPath != null);
+                    buildElapsed.toSeconds(), tracker.getDonorPath() != null);
             tracker.updateBestModules(cr.getSuccessfulModules());
             Path oldDonor = tracker.promoteDonorIfBetter(variantPath, cr,
                     String.valueOf(variantIndex));

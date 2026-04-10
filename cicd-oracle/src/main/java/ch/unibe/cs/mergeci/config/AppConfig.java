@@ -82,6 +82,23 @@ private static final boolean FRESH_RUN = false;
                 new String[]{"compile"});
     }
 
+    /**
+     * Full build+test command with the early-abort gate.  The maven-hook reads
+     * {@code -Dcicd.bestModules=N} and aborts after compile if the variant can't
+     * reach N successful modules — replacing the two-phase compile-then-test split
+     * with a single Maven invocation that self-terminates.
+     */
+    public static String[] buildCommandWithGate(String[] executableArgs, String mavenGoal,
+                                                 int bestModules) {
+        return concat(
+                executableArgs,
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                        SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
+                        "-Dcicd.bestModules=" + bestModules},
+                SKIP_STATIC_ANALYSIS,
+                new String[]{mavenGoal});
+    }
+
     public static String[] concat(String[]... parts) {
         return Arrays.stream(parts).flatMap(Arrays::stream).toArray(String[]::new);
     }

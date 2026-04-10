@@ -16,6 +16,11 @@ echo "==> Killing IntelliJ IDEA (if running)..."
 pkill -f "com.intellij.idea.Main" 2>/dev/null || true
 sleep 2
 
+echo "==> Cleaning up stale overlay mounts and temp dirs..."
+grep -s 'fuse-overlayfs' /proc/mounts | awk '$2 ~ /cicd-oracle-plugin/ {print $2}' \
+  | while read -r mp; do fusermount3 -u "$mp" 2>/dev/null || true; done
+rm -rf /dev/shm/cicd-oracle-plugin /tmp/cicd-oracle-plugin*
+
 echo "==> Deploying plugin..."
 rm -rf "$IDEA_PLUGINS/cicd-merge-oracle"
 unzip -o build/distributions/cicd-merge-oracle-1.0-SNAPSHOT.zip -d "$IDEA_PLUGINS/" > /dev/null
@@ -37,6 +42,7 @@ echo "==> Resetting mock repo to pristine merge-conflict state..."
 )
 
 echo "==> Launching IntelliJ IDEA with $MOCK_REPO..."
-"$IDEA_BIN" "$MOCK_REPO" &
+nohup "$IDEA_BIN" "$MOCK_REPO" > /dev/null 2>&1 &
+disown
 
 echo "Done."

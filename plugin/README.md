@@ -119,10 +119,10 @@ Tests cover the `BlockGroupComputer`, which maps low-level JGit conflict blocks 
 
 ### Redeploy Script
 
-Builds the plugin, kills any running IntelliJ, deploys the zip, resets the mock repo to a pristine merge-conflict state, and relaunches IntelliJ:
+Builds the plugin, kills any running IntelliJ, deploys the zip, resets the mock repo to a pristine merge-conflict state, and relaunches IntelliJ. The script does not exit — it launches the IDE in the foreground. Run it in the background or in a separate terminal:
 
 ```bash
-./redeploy.sh              # defaults to /tmp/mockRepo
+./redeploy.sh &             # defaults to /tmp/mockRepo, runs in background
 ./redeploy.sh /path/to/repo
 ```
 

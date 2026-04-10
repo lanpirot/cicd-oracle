@@ -42,6 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -351,7 +352,6 @@ public class MergeResolutionPanel {
                     this::onRunFinished,
                     this::onError,
                     this::onInFlightChanged,
-                    true,
                     threads);
 
             running = true;
@@ -375,6 +375,7 @@ public class MergeResolutionPanel {
         applyVariantButton.setEnabled(dashboardTable.getSelectedRow() >= 0);
         updateVariantCountLabel();
         onInFlightChanged(0);
+        exportSessionJson();
     }
 
     /** Called on EDT by the orchestrator for each completed variant. */
@@ -421,6 +422,7 @@ public class MergeResolutionPanel {
         applyVariantButton.setEnabled(dashboardTable.getSelectedRow() >= 0);
         updateVariantCountLabel();
         onInFlightChanged(0);
+        exportSessionJson();
     }
 
     /** Called on EDT when the number of in-flight (building) variants changes. */
@@ -887,6 +889,68 @@ public class MergeResolutionPanel {
 
     public JComponent getRoot() {
         return root;
+    }
+
+    /** Export all variant results to a JSON file for benchmarking. */
+    private void exportSessionJson() {
+        if (session == null) return;
+        List<VariantResult> history = session.getHistory();
+        if (history.isEmpty()) return;
+
+        Path out = Path.of("/tmp/variant-benchmark.json");
+        List<ChunkKey> idx = session.getChunkIndex();
+        try (Writer w = Files.newBufferedWriter(out)) {
+            w.write("[\n");
+            for (int i = 0; i < history.size(); i++) {
+                VariantResult r = history.get(i);
+                String modules = r.compilationResult() != null
+                        ? r.compilationResult().getSuccessfulModules() + "/" + r.compilationResult().getTotalModules()
+                        : "-";
+                String tests = r.testsSkipped() ? "skipped"
+                        : r.testResult() != null && r.testResult().isHasData()
+                        ? r.testResult().getPassedTests() + "/" + r.testResult().getRunNum()
+                        : "-";
+                String timeSec = String.format("%.1f", r.elapsed().toMillis() / 1000.0);
+                String patterns = summarizePatterns(r.patternAssignment(), idx);
+
+                w.write("  {");
+                w.write("\"#\": " + r.variantIndex());
+                w.write(", \"Modules\": \"" + modules + "\"");
+                w.write(", \"Tests\": \"" + tests + "\"");
+                w.write(", \"Time (s)\": " + timeSec);
+                w.write(", \"Patterns\": \"" + jsonEscape(patterns) + "\"");
+                w.write("}");
+                if (i < history.size() - 1) w.write(",");
+                w.write("\n");
+            }
+            w.write("]\n");
+            LOG.info("Exported {} variant results to {}", history.size(), out);
+        } catch (IOException e) {
+            LOG.warn("Failed to export variant benchmark JSON", e);
+        }
+    }
+
+    private static String jsonEscape(String s) {
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
+    private String summarizePatterns(Map<String, List<String>> patterns, List<ChunkKey> index) {
+        if (patterns == null) return "";
+        if (index.isEmpty()) {
+            return patterns.values().stream()
+                    .flatMap(List::stream)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (ChunkKey key : index) {
+            List<String> filePatterns = patterns.get(key.filePath());
+            if (filePatterns != null && key.indexWithinFile() < filePatterns.size()) {
+                if (!sb.isEmpty()) sb.append(", ");
+                sb.append(filePatterns.get(key.indexWithinFile()));
+            }
+        }
+        return sb.toString();
     }
 
     /** Called when the tool window is disposed (IDE shutdown or project close). */

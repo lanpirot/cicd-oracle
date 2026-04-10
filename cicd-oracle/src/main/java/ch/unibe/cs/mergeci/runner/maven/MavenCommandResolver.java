@@ -13,21 +13,48 @@ import java.util.Locale;
  */
 public class MavenCommandResolver {
     private final boolean useMavenDaemon;
+    /** Resolved absolute path to the mvnd binary, or {@code "mvnd"} as fallback. */
+    private final String mvndCommand;
     /** Maven home resolved from the project's wrapper, used with {@code mvnd --maven-home}. */
     private String wrapperMavenHome;
     private boolean wrapperDetected;
 
     public MavenCommandResolver(boolean useMavenDaemon) {
         this.useMavenDaemon = useMavenDaemon;
+        this.mvndCommand = useMavenDaemon ? findMvnd() : "mvnd";
     }
 
     public MavenCommandResolver() {
-        this(isMvndAvailable());
+        String resolved = findMvnd();
+        this.useMavenDaemon = canExecute(resolved);
+        this.mvndCommand = resolved;
     }
 
-    private static boolean isMvndAvailable() {
+    /**
+     * Locate the mvnd binary. Tries bare {@code mvnd} on PATH first, then scans
+     * {@code /opt} for common install layouts. Returns the absolute path if found,
+     * or {@code "mvnd"} as a bare-name fallback.
+     */
+    private static String findMvnd() {
+        // 1. Try bare name on PATH
+        if (canExecute("mvnd")) return "mvnd";
+        // 2. Scan /opt for mvnd installations (e.g. /opt/maven-mvnd-*/bin/mvnd)
+        File opt = new File("/opt");
+        if (opt.isDirectory()) {
+            File[] dirs = opt.listFiles(f -> f.isDirectory() && f.getName().startsWith("maven-mvnd"));
+            if (dirs != null) {
+                for (File dir : dirs) {
+                    File candidate = new File(dir, "bin/mvnd");
+                    if (candidate.canExecute()) return candidate.getAbsolutePath();
+                }
+            }
+        }
+        return "mvnd";
+    }
+
+    private static boolean canExecute(String command) {
         try {
-            Process p = new ProcessBuilder("mvnd", "--version")
+            Process p = new ProcessBuilder(command, "--version")
                     .redirectErrorStream(true).start();
             p.getInputStream().readAllBytes();
             boolean done = p.waitFor(5, java.util.concurrent.TimeUnit.SECONDS);
@@ -52,7 +79,7 @@ public class MavenCommandResolver {
                 wrapperMavenHome = detectWrapperMavenHome(projectPath);
                 wrapperDetected = true;
             }
-            return "mvnd";
+            return mvndCommand;
         }
 
         boolean isWindows = isWindowsOS();
