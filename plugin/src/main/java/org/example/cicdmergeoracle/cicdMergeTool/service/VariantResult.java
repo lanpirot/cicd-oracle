@@ -42,7 +42,11 @@ public record VariantResult(
         StringBuilder sb = new StringBuilder("<html>");
         if (hasModuleFailures) {
             sb.append("<b>Failed modules:</b><br>");
-            for (String m : failedModules) sb.append("&nbsp;&nbsp;").append(escape(m)).append("<br>");
+            for (String m : failedModules) {
+                String moduleName = m.contains(" (") ? m.substring(0, m.indexOf(" (")) : m;
+                sb.append("&nbsp;&nbsp;<a href=\"module:").append(escape(moduleName)).append("\">")
+                  .append(escape(m)).append("</a><br>");
+            }
         }
         if (hasTestFailures) {
             if (hasModuleFailures) sb.append("<br>");
@@ -50,8 +54,10 @@ public record VariantResult(
             String label = prefix.isEmpty() ? "Failed tests:" : "Failed tests (…" + escape(prefix) + "):";
             sb.append("<b>").append(label).append("</b><br>");
             for (String t : testFailures) {
+                String className = t.contains("#") ? t.substring(0, t.indexOf('#')) : t;
                 String display = prefix.isEmpty() ? t : t.substring(prefix.length());
-                sb.append("&nbsp;&nbsp;").append(escape(display)).append("<br>");
+                sb.append("&nbsp;&nbsp;<a href=\"test:").append(escape(className)).append("\">")
+                  .append(escape(display)).append("</a><br>");
             }
         }
         sb.append("</html>");

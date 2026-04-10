@@ -5,13 +5,21 @@ import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.FixedTextBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.patterns.OursPattern;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.Balloon;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
@@ -26,14 +34,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -66,14 +77,7 @@ public class MergeResolutionPanel {
 
     // Live dashboard table
     private final VariantTableModel dashboardModel = new VariantTableModel();
-    private final JTable dashboardTable = new JTable(dashboardModel) {
-        @Override
-        public String getToolTipText(MouseEvent e) {
-            int row = rowAtPoint(e.getPoint());
-            if (row < 0 || row >= dashboardModel.getRowCount()) return null;
-            return dashboardModel.getResult(row).buildTooltip();
-        }
-    };
+    private final JTable dashboardTable = new JTable(dashboardModel);
 
     // Chunk selector table
     private final ChunkTableModel chunkModel = new ChunkTableModel();
@@ -90,6 +94,14 @@ public class MergeResolutionPanel {
     private String oursCommit;
     private String theirsCommit;
     private Map<String, ConflictFile> conflictFileMap;
+
+    // Tooltip balloon
+    private Balloon tooltipBalloon;
+    private int lastBalloonRow = -1;
+    private String pendingBalloonHtml;
+    private Timer balloonTimer;
+    private Timer dismissTimer;
+    private boolean dismissPending;
 
     public MergeResolutionPanel(File projectPath, Project ideProject) {
         this.projectPath = projectPath.toPath();
@@ -146,6 +158,42 @@ public class MergeResolutionPanel {
                     int row = chunkTable.rowAtPoint(e.getPoint());
                     if (row >= 0) openChunkInEditor(row);
                 }
+            }
+        });
+
+        // Tooltip balloon for dashboard — shows clickable links to failed tests/modules
+        balloonTimer = new Timer(400, e -> showTooltipBalloon());
+        balloonTimer.setRepeats(false);
+        dismissTimer = new Timer(1000, e -> {
+            dismissBalloon();
+            dismissPending = false;
+        });
+        dismissTimer.setRepeats(false);
+        dashboardTable.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int row = dashboardTable.rowAtPoint(e.getPoint());
+                if (row == lastBalloonRow) {
+                    // Back on the same row — cancel pending dismiss
+                    dismissTimer.stop();
+                    dismissPending = false;
+                    return;
+                }
+                if (dismissPending) return; // grace period — block new tooltips
+                if (tooltipBalloon != null) {
+                    // Start 1-second grace period before dismissing
+                    dismissPending = true;
+                    dismissTimer.restart();
+                    balloonTimer.stop();
+                    return;
+                }
+                balloonTimer.stop();
+                lastBalloonRow = row;
+                if (row < 0 || row >= dashboardModel.getRowCount()) return;
+                String html = dashboardModel.getResult(row).buildTooltip();
+                if (html == null) return;
+                pendingBalloonHtml = html;
+                balloonTimer.restart();
             }
         });
 
@@ -669,6 +717,92 @@ public class MergeResolutionPanel {
             editor.getCaretModel().moveToOffset(startOffset);
             editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
         }
+    }
+
+    // ---- Tooltip balloon with navigable links ----
+
+    private void showTooltipBalloon() {
+        dismissBalloon();
+        if (pendingBalloonHtml == null || lastBalloonRow < 0
+                || lastBalloonRow >= dashboardModel.getRowCount()) return;
+
+        tooltipBalloon = JBPopupFactory.getInstance()
+                .createHtmlTextBalloonBuilder(pendingBalloonHtml, MessageType.INFO, e -> {
+                    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                        handleTooltipNavigation(e.getDescription());
+                        dismissBalloon();
+                    }
+                })
+                .setHideOnClickOutside(true)
+                .setHideOnKeyOutside(true)
+                .createBalloon();
+
+        Rectangle cellRect = dashboardTable.getCellRect(lastBalloonRow, 0, true);
+        RelativePoint rp = new RelativePoint(dashboardTable,
+                new Point(cellRect.x + cellRect.width / 2, cellRect.y + cellRect.height));
+        tooltipBalloon.show(rp, Balloon.Position.below);
+    }
+
+    private void dismissBalloon() {
+        dismissTimer.stop();
+        dismissPending = false;
+        lastBalloonRow = -1;
+        if (tooltipBalloon != null) {
+            tooltipBalloon.hide();
+            tooltipBalloon = null;
+        }
+    }
+
+    private void handleTooltipNavigation(String href) {
+        if (href.startsWith("test:")) {
+            navigateToTest(href.substring(5));
+        } else if (href.startsWith("module:")) {
+            navigateToModule(href.substring(7));
+        }
+    }
+
+    private void navigateToTest(String fqClassName) {
+        String simpleClassName = fqClassName.substring(fqClassName.lastIndexOf('.') + 1);
+        String fileName = simpleClassName + ".java";
+        String pathSuffix = "/" + fqClassName.replace('.', '/') + ".java";
+
+        ApplicationManager.getApplication().executeOnPooledThread(() -> {
+            VirtualFile target = ReadAction.compute(() -> {
+                Collection<VirtualFile> files = FilenameIndex.getVirtualFilesByName(
+                        fileName, GlobalSearchScope.projectScope(ideProject));
+                for (VirtualFile vf : files) {
+                    if (vf.getPath().endsWith(pathSuffix)) return vf;
+                }
+                return files.isEmpty() ? null : files.iterator().next();
+            });
+            if (target != null) {
+                ApplicationManager.getApplication().invokeLater(() ->
+                        new OpenFileDescriptor(ideProject, target).navigate(true));
+            }
+        });
+    }
+
+    private void navigateToModule(String moduleName) {
+        VirtualFile projectRoot = LocalFileSystem.getInstance().findFileByPath(projectPath.toString());
+        if (projectRoot == null) return;
+        VirtualFile moduleDir = findModuleDir(projectRoot, moduleName);
+        if (moduleDir != null) {
+            VirtualFile pomXml = moduleDir.findChild("pom.xml");
+            VirtualFile target = pomXml != null ? pomXml : moduleDir;
+            new OpenFileDescriptor(ideProject, target).navigate(true);
+        }
+    }
+
+    private static VirtualFile findModuleDir(VirtualFile root, String moduleName) {
+        VirtualFile child = root.findChild(moduleName);
+        if (child != null && child.isDirectory()) return child;
+        for (VirtualFile c : root.getChildren()) {
+            if (c.isDirectory() && !c.getName().startsWith(".")) {
+                VirtualFile found = findModuleDir(c, moduleName);
+                if (found != null) return found;
+            }
+        }
+        return null;
     }
 
     private void appendLines(StringBuilder sb, ConflictBlock cb,
