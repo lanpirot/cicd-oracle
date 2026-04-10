@@ -6,7 +6,7 @@ An IntelliJ IDEA plugin that **automatically resolves merge conflicts** by gener
 
 ## Features
 
-- **Live streaming dashboard** -- variants appear as they complete, sorted by a four-tier quality score (modules built, tests passed, pattern simplicity, variant index). The current best variant is highlighted.
+- **Live streaming dashboard** -- variants appear as they complete, sorted by a four-tier quality score (modules built, tests passed, pattern simplicity, variant index). The current best variant is highlighted. Clickable tooltip links navigate directly to failed tests and modules.
 - **Chunk-level inspection** -- view each conflict chunk with an OURS / BASE / THEIRS preview. Pin individual chunks to a specific resolution (OURS, THEIRS, BASE, EMPTY, or free-form manual text) to narrow the search space.
 - **Consensus indicator** -- shows per-chunk pattern agreement among tied-best variants, helping identify which chunks are settled and which need attention.
 - **Variant history** -- every variant ever tested is preserved. Browse, compare, and apply any historical variant at any time.
@@ -21,18 +21,23 @@ An IntelliJ IDEA plugin that **automatically resolves merge conflicts** by gener
 plugin/
   src/main/java/org/example/cicdmergeoracle/cicdMergeTool/
     model/
+      BlockGroup.java            -- groups JGit merge blocks belonging to one working-tree conflict
       ChunkKey.java              -- identifies a conflict chunk (file path + index)
     service/
-      PluginOrchestrator.java    -- top-level pipeline: parse, generate, build, score, stream
-      OracleSession.java         -- thread-safe session state (best variant, history, pins, pause/resume)
+      BlockGroupComputer.java    -- maps JGit conflict blocks to working-tree conflict groups
       ChunkConsensus.java        -- per-chunk pattern distribution across tied-best variants
       HeuristicGeneratorFactory.java -- loads learned pattern CSV, creates variant generators
+      ManualPinOverlay.java      -- overlays user-pinned resolutions onto variant blocks
+      OracleSession.java         -- thread-safe session state (best variant, history, pins, pause/resume)
+      PluginOrchestrator.java    -- top-level pipeline: parse, generate, build, score, stream
       VariantResult.java         -- immutable record of a completed variant build
-      ManualPattern.java         -- user-provided free-form text for a pinned chunk
     ui/
+      ChunkTableModel.java       -- table model for the chunk inspector tab
+      ManualEditWorkflow.java    -- manages manual chunk editing lifecycle (temp file, pin, revert)
       MergeResolutionPanel.java  -- main UI (dashboard table, chunk selector, status bar)
       MergeResolutionToolWindowFactory.java -- registers the tool window
       MergeStateListener.java    -- reacts to merge state changes
+      VariantTableModel.java     -- table model for the variant dashboard with filtering
     util/
       GitUtils.java              -- conflict parsing, merge-state detection
       MyFileUtils.java           -- directory cleanup
@@ -40,6 +45,10 @@ plugin/
   src/main/resources/
     pattern-heuristics/          -- bundled learned pattern distribution CSV
     META-INF/plugin.xml          -- tool window and dependency declarations
+  src/test/java/.../service/
+    BlockGroupComputerTest.java  -- tests JGit-to-working-tree block grouping logic
+  src/test/resources/
+    create-mock-repo.sh          -- creates a multi-module Maven repo with merge conflicts
 ```
 
 The plugin depends on the `cicd-oracle` pipeline library (via `mavenLocal`) for model classes, pattern types, variant scoring, and Maven execution.
@@ -85,6 +94,16 @@ The output `.zip` will be in `build/distributions/`.
 5. Switch to the **Chunks** tab to inspect individual conflict chunks and their consensus.
 6. Optionally pin chunks you are confident about -- the pipeline restarts for the remaining conflicts.
 7. Select a variant and click **Apply Variant** (or double-click a row in History) to write it to the working tree.
+
+---
+
+## Testing
+
+```bash
+./gradlew test
+```
+
+Tests cover the `BlockGroupComputer`, which maps low-level JGit conflict blocks to user-visible working-tree conflict regions (a single working-tree conflict may span multiple JGit blocks with shared lines between them).
 
 ---
 
