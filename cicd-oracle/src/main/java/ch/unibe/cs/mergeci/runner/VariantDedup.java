@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.runner;
 
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
+import ch.unibe.cs.mergeci.model.FixedTextBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
 
@@ -33,7 +34,12 @@ public class VariantDedup {
         int globalIdx = 0;
         for (ConflictFile cf : variant.getClasses()) {
             for (IMergeBlock block : cf.getMergeBlocks()) {
-                if (block instanceof ConflictBlock cb) {
+                if (block instanceof FixedTextBlock ftb) {
+                    // Flattened manual block — covers multiple original ConflictBlocks
+                    int ver = manualVersions.getOrDefault(globalIdx, 0);
+                    effective.add("MANUAL_v" + ver);
+                    globalIdx += ftb.getReplacedConflictBlockCount();
+                } else if (block instanceof ConflictBlock cb) {
                     if (manualTexts.containsKey(globalIdx)) {
                         int ver = manualVersions.getOrDefault(globalIdx, 0);
                         effective.add("MANUAL_v" + ver);

@@ -21,6 +21,7 @@ public class ConflictFile{
             for (IMergeBlock block : mergeBlocks) {
                 newMergeBlocks.add(block.clone());
             }
+            clone.setMergeBlocks(newMergeBlocks);
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
