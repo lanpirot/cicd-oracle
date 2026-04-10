@@ -4,6 +4,7 @@ package ch.unibe.cs;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
@@ -54,6 +55,58 @@ public class MavenHook extends AbstractEventSpy {
                 }
             }
 
+            // Fix reactor artifact resolution after Maven Build Cache Extension partial restore.
+            //
+            // When the cache extension partially restores a module (e.g. compile cached,
+            // test requested), it replaces the project's artifact with a RestoredArtifact
+            // whose getFile() lazily fetches from the cache.  For compile-only cache entries
+            // there IS no jar — getFile() returns null or a non-existent path.  Downstream
+            // reactor modules then fail dependency resolution:
+            //   "Could not find artifact <sibling>:jar:..."
+            //
+            // Fix: after each module completes, ensure its artifact file points to
+            // target/classes (the compile output directory) if the current file is missing.
+            // This is exactly what Maven's ReactorReader expects for intra-reactor
+            // resolution during "mvn test" (where no jar is produced).
+            if (ee.getType() == ExecutionEvent.Type.ProjectSucceeded
+                    || ee.getType() == ExecutionEvent.Type.ProjectFailed) {
+                MavenProject project = ee.getProject();
+                fixReactorArtifact(project);
+            }
+        }
+    }
+
+    /**
+     * Ensure the project's main artifact points to an existing file so the
+     * ReactorReader can resolve it for downstream modules.
+     */
+    private void fixReactorArtifact(MavenProject project) {
+        if (!"jar".equals(project.getPackaging())
+                && !"bundle".equals(project.getPackaging())) {
+            return;
+        }
+        Artifact artifact = project.getArtifact();
+        if (artifact == null) return;
+
+        // Check if the current artifact file is usable
+        File currentFile;
+        try {
+            currentFile = artifact.getFile();
+        } catch (Exception e) {
+            // RestoredArtifact.getFile() can throw if the cache entry has no jar
+            currentFile = null;
+        }
+
+        if (currentFile != null && currentFile.exists()) {
+            return; // artifact is fine
+        }
+
+        // Point the artifact to target/classes — the standard reactor fallback
+        File classesDir = new File(project.getBuild().getOutputDirectory());
+        if (classesDir.isDirectory()) {
+            artifact.setFile(classesDir);
+            log.info("Fixed reactor artifact for {} → {}",
+                    project.getArtifactId(), classesDir);
         }
     }
 

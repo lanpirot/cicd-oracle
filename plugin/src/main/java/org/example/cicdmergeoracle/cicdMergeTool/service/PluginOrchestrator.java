@@ -71,7 +71,6 @@ public class PluginOrchestrator {
     private final Consumer<String> onError;
     private final Consumer<Integer> onInFlightChanged;
     private final HeuristicGeneratorFactory generatorFactory;
-    private final boolean useMavenDaemon;
     private final int threadCount;
 
     private volatile ExecutorService executor;
@@ -91,7 +90,6 @@ public class PluginOrchestrator {
                               Consumer<Boolean> onRunFinished,
                               Consumer<String> onError,
                               Consumer<Integer> onInFlightChanged,
-                              boolean useMavenDaemon,
                               int threadCount) {
         this.repoPath = repoPath;
         this.session = session;
@@ -100,7 +98,6 @@ public class PluginOrchestrator {
         this.onError = onError;
         this.onInFlightChanged = onInFlightChanged;
         this.generatorFactory = new HeuristicGeneratorFactory();
-        this.useMavenDaemon = useMavenDaemon;
         this.threadCount = threadCount;
     }
 
@@ -238,6 +235,8 @@ public class PluginOrchestrator {
         // Build shared overlay base once (contains all non-conflict files)
         if (useOverlay) {
             overlayBasePath = builder.buildBase(context, overlayTmpDir);
+            // Inject Maven Build Cache Extension into the base so all overlay variants inherit it
+            new MavenCacheManager().injectCacheArtifacts(overlayBasePath);
         }
 
         executor = Executors.newFixedThreadPool(threadCount);
@@ -341,6 +340,11 @@ public class PluginOrchestrator {
 
     /** Delete the temp directory, overlay base, and donor. Safe to call multiple times. */
     public void cleanupTempDir() {
+        // Unmount stale overlays BEFORE deleting directories — otherwise delete
+        // fails silently and dirs accumulate across IDE restarts.
+        if (overlayTmpDir != null) {
+            OverlayMount.cleanupStaleMounts(overlayTmpDir);
+        }
         // Clean up donor path (it was kept alive across variants for cache warming)
         DonorTracker tracker = session.getDonorTracker();
         Path donorPath = tracker.getDonorPath();
@@ -375,26 +379,49 @@ public class PluginOrchestrator {
             if (useOverlay) {
                 overlay = builder.buildVariantOverlay(overlayBasePath, variantIndex);
                 variantPath = overlay.mountPoint();
+                // .mvn/ with cache config inherited from overlay base
             } else {
                 variantPath = builder.buildVariantBase(context, variantIndex);
+                // Non-overlay: inject cache artifacts per variant (overlay inherits from base)
+                new MavenCacheManager().injectCacheArtifacts(variantPath);
             }
 
             // 2. Cache warming from donor (copy compiled artifacts for incremental build)
             DonorTracker tracker = session.getDonorTracker();
             Path donorPath = tracker.getDonorPath();
             if (donorPath != null) {
+                LOG.info("[cache] variant {} warming from donor {} (donor has {} successful modules)",
+                        variantIndex, tracker.getDonorKey(),
+                        tracker.getDonorCompilationResult() != null
+                                ? tracker.getDonorCompilationResult().getSuccessfulModules() : "?");
+                Instant copyStart = Instant.now();
                 MavenCacheManager cacheManager = new MavenCacheManager();
                 cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
                 cacheManager.copyCacheDirectory(donorPath, variantPath);
+                LOG.info("[cache] variant {} cache copy took {}ms",
+                        variantIndex, Duration.between(copyStart, Instant.now()).toMillis());
+            } else {
+                LOG.info("[cache] variant {} has NO donor — building from scratch", variantIndex);
             }
 
             // 3. Apply conflict resolution AFTER cache copy (timestamp ordering for incremental compiler)
             builder.applyConflictResolution(variantPath, variant);
 
+            // Log similarity between this variant's resolution and the donor's
+            Map<String, List<String>> variantPatterns = variant.extractPatterns();
+            Map<String, List<String>> donorPatternSnap = tracker.getDonorPatterns();
+            double similarity = DonorTracker.computePatternSimilarity(variantPatterns, donorPatternSnap);
+            if (similarity >= 0) {
+                LOG.info("[cache] variant {} resolution similarity to donor {}: {}% ({} chunks)",
+                        variantIndex, tracker.getDonorKey(),
+                        String.format("%.1f", similarity * 100),
+                        variantPatterns.values().stream().mapToInt(List::size).sum());
+            }
+
             if (session.isStopped()) { return false; }
 
             // 4. Two-phase execution: compile first, skip tests if not competitive
-            MavenCommandResolver resolver = new MavenCommandResolver(useMavenDaemon);
+            MavenCommandResolver resolver = new MavenCommandResolver();
             String variantKey = context.getProjectName() + "_" + variantIndex;
             TwoPhaseRunner twoPhase = new TwoPhaseRunner(
                     resolver, () -> MAVEN_TIMEOUT_SECONDS, logDir, null);
@@ -414,18 +441,27 @@ public class PluginOrchestrator {
                     ? extractTestFailures(variantPath) : List.of();
 
             // 7. Update best modules (gates future two-phase skips) and promote donor
+            Duration buildElapsed = Duration.between(start, Instant.now());
+            LOG.info("[cache] variant {} finished: {} successful modules / {} total, " +
+                            "build={}, tests={}, elapsed={}s, hadDonor={}",
+                    variantIndex, cr.getSuccessfulModules(), cr.getTotalModules(),
+                    cr.getBuildStatus(), tpResult.testsRan() ? tt : "skipped",
+                    buildElapsed.toSeconds(), donorPath != null);
             tracker.updateBestModules(cr.getSuccessfulModules());
-            Path oldDonor = tracker.promoteDonorIfBetter(variantPath, cr);
+            Path oldDonor = tracker.promoteDonorIfBetter(variantPath, cr,
+                    String.valueOf(variantIndex));
             isDonor = variantPath.equals(tracker.getDonorPath());
+            if (isDonor) {
+                tracker.setDonorPatterns(variantPatterns);
+            }
             if (oldDonor != null && !oldDonor.equals(variantPath)) {
                 org.example.cicdmergeoracle.cicdMergeTool.util.MyFileUtils.deleteDirectory(oldDonor.toFile());
             }
 
             // 8. Score and report to UI
-            Map<String, List<String>> patterns = variant.extractPatterns();
             double simplicity;
             try {
-                simplicity = VariantScore.computeSimplicityScore(patterns, globalWeightMap);
+                simplicity = VariantScore.computeSimplicityScore(variantPatterns, globalWeightMap);
             } catch (IllegalStateException e) {
                 simplicity = 0.0;
             }
@@ -438,7 +474,7 @@ public class PluginOrchestrator {
             Map<Integer, Integer> manualVers = session.getManualVersionSnapshot();
             boolean testsSkipped = !tpResult.testsRan();
             VariantResult result = new VariantResult(
-                    variantIndex, patterns, cr, tt, score, elapsed, logFile, manualVers,
+                    variantIndex, variantPatterns, cr, tt, score, elapsed, logFile, manualVers,
                     failedModules, testFailures, testsSkipped);
 
             SwingUtilities.invokeLater(() -> onVariantComplete.accept(result));
