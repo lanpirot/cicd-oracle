@@ -12,6 +12,8 @@ An IntelliJ IDEA plugin that **automatically resolves merge conflicts** by gener
 - **Variant history** -- every variant ever tested is preserved. Browse, compare, and apply any historical variant at any time.
 - **One-click apply** -- apply the best (or any selected) variant directly to the working tree.
 - **Maven Daemon support** -- optional toggle for faster builds via `mvnd`.
+- **Build optimizations** -- overlayFS (fuse-overlayfs copy-on-write) for fast variant directory creation, donor cache warming (reuse compiled artifacts from the best prior variant), two-phase execution (compile-only gate skips tests for non-competitive variants), and a shared Maven build cache across all variants.
+- **Benchmark export** -- variant results are continuously exported to `/tmp/variant-benchmark.json` for offline analysis.
 
 ---
 
@@ -44,6 +46,7 @@ plugin/
       model/MergeInfo.java       -- merge metadata record
   src/main/resources/
     pattern-heuristics/          -- bundled learned pattern distribution CSV
+    icons/                       -- plugin icons
     META-INF/plugin.xml          -- tool window and dependency declarations
   src/test/java/.../service/
     BlockGroupComputerTest.java  -- tests JGit-to-working-tree block grouping logic
@@ -51,7 +54,7 @@ plugin/
     create-mock-repo.sh          -- creates a multi-module Maven repo with merge conflicts
 ```
 
-The plugin depends on the `cicd-oracle` pipeline library (via `mavenLocal`) for model classes, pattern types, variant scoring, and Maven execution.
+The plugin depends on the `cicd-oracle` pipeline library (via `mavenLocal`) for model classes, pattern types, variant scoring, Maven execution, and build optimizations (`OverlayMount`, `DonorTracker`, `TwoPhaseRunner`, `MavenCacheManager`).
 
 ---
 

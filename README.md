@@ -36,8 +36,8 @@ See [cicd-oracle/README.md](cicd-oracle/README.md) for full configuration, RQ1/R
 | Component | Description | Docs |
 |-----------|-------------|------|
 | `cicd-oracle/` | Core research pipeline (Java/Spring Boot) | [README](cicd-oracle/README.md) |
-| `maven-hook/` | Maven plugin that extends build/test lifecycles for cache support | [README](maven-hook/README.md) |
-| `plugin/` | IntelliJ IDEA plugin — live-streaming dashboard with chunk pinning, consensus, and one-click apply | [README](plugin/README.md) |
+| `maven-hook/` | Maven EventSpy — early-abort gate, reactor artifact fixing, sidecar JSON output | [README](maven-hook/README.md) |
+| `plugin/` | IntelliJ IDEA plugin — live dashboard, chunk pinning, overlayFS + donor-warmed two-phase builds | [README](plugin/README.md) |
 
 ---
 

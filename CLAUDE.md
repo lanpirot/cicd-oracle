@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 |-----------|----------|---------|
 | `cicd-oracle/` | Java 21 / Spring Boot | Core research pipeline — see `cicd-oracle/CLAUDE.md` for full details |
 | `plugin/` | Java / Gradle (IntelliJ SDK) | IntelliJ IDEA plugin for interactive conflict resolution |
-| `maven-hook/` | Java / Maven | Maven plugin that extends build/test lifecycles for cache support |
+| `maven-hook/` | Java / Maven | Maven EventSpy — early-abort gate (`-Dcicd.bestModules`), reactor artifact fixing, sidecar JSON output |
 | `scripts/` | Python 3 | Standalone analysis and plotting scripts |
 
 ## Python Environment
@@ -35,7 +35,7 @@ java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.
 
 ## plugin (IntelliJ Plugin)
 
-Built with Gradle. Requires IntelliJ IDEA 2025.1+ and Java 17+. Depends on the `cicd-oracle` pipeline library via `mavenLocal`.
+Built with Gradle. Requires IntelliJ IDEA 2025.1+ and Java 17+. Depends on the `cicd-oracle` pipeline library via `mavenLocal` for model classes, variant scoring, and build optimizations (overlayFS, donor cache warming, two-phase execution, shared Maven build cache).
 
 ```bash
 cd plugin
