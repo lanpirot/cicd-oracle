@@ -259,7 +259,7 @@ public class MavenExecutionFactory {
                 java.nio.file.Files.createDirectories(logDir);
                 String projectName = context.getProjectName();
                 MavenCommandResolver commandResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
-                MavenCacheManager cacheManager = new MavenCacheManager();
+                MavenCacheManager cacheManager = new MavenCacheManager(logDir.resolveSibling("shared-cache"));
                 int globalVariantIndex = 1;
                 boolean perfectFound = false;
 
@@ -390,7 +390,7 @@ public class MavenExecutionFactory {
                                     System.out.printf("[DEBUG] sequential variant %d (cache from donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
-                                    cacheManager.copyCacheDirectory(donorPath, variantPath);
+
                                     cacheHitKeys.add(variantKey);
                                 } else if (isCache) {
                                     System.out.printf("[DEBUG] sequential variant %d (potential donor): timeout=%ds%n", idx, variantTimeout);
@@ -450,7 +450,7 @@ public class MavenExecutionFactory {
                 java.nio.file.Files.createDirectories(logDir);
                 String projectName = context.getProjectName();
                 MavenCommandResolver commandResolver = new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON);
-                MavenCacheManager cacheManager = new MavenCacheManager();
+                MavenCacheManager cacheManager = new MavenCacheManager(logDir.resolveSibling("shared-cache"));
                 int globalVariantIndex = 1;
                 boolean perfectFound = false;
 
@@ -583,7 +583,6 @@ public class MavenExecutionFactory {
                                     System.out.printf("[DEBUG] sequential variant %d (overlay, cache from donor): timeout=%ds%n", idx, variantTimeout);
                                     cacheManager.injectCacheArtifacts(variantPath);
                                     cacheManager.copyTargetDirectories(donorOverlay.mountPoint().toFile(), variantPath.toFile());
-                                    cacheManager.copyCacheDirectory(donorOverlay.mountPoint(), variantPath);
                                     cacheHitKeys.add(variantKey);
                                 } else if (isCache) {
                                     System.out.printf("[DEBUG] sequential variant %d (overlay, potential donor): timeout=%ds%n", idx, variantTimeout);
@@ -665,7 +664,6 @@ public class MavenExecutionFactory {
                                     key, timeout);
                             cacheManager.injectCacheArtifacts(vPath);
                             cacheManager.copyTargetDirectories(donor.mountPoint().toFile(), vPath.toFile());
-                            cacheManager.copyCacheDirectory(donor.mountPoint(), vPath);
                             cacheHitKeys.add(key);
                         } else if (isCache) {
                             System.out.printf("[DEBUG] variant %s starting (potential donor, overlay), timeout=%ds%n",
@@ -717,7 +715,6 @@ public class MavenExecutionFactory {
                                     vPath.getFileName(), timeout);
                             cacheManager.injectCacheArtifacts(vPath);
                             cacheManager.copyTargetDirectories(donor.toFile(), vPath.toFile());
-                            cacheManager.copyCacheDirectory(donor, vPath);
                             cacheHitKeys.add(key);
                         } else if (isCache) {
                             System.out.printf("[DEBUG] variant %s starting (potential donor), timeout=%ds%n",

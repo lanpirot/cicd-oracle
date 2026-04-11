@@ -20,8 +20,8 @@ class MavenCacheManagerTest extends BaseTest {
     private MavenCacheManager cacheManager;
 
     @BeforeEach
-    void setUp() {
-        cacheManager = new MavenCacheManager();
+    void setUp(@TempDir Path sharedCache) {
+        cacheManager = new MavenCacheManager(sharedCache.resolve("shared-cache"));
     }
 
     @Test
@@ -146,71 +146,6 @@ class MavenCacheManagerTest extends BaseTest {
         assertTrue(result, "Should successfully copy deeply nested target");
         assertTrue(destDir.resolve("parent/child/grandchild/target/deep.jar").toFile().exists(),
                 "Deeply nested artifact should be copied with correct structure");
-    }
-
-    @Test
-    void testCopyCacheDirectory_NoCacheDir(@TempDir Path tempDir) throws IOException {
-        // Create source without .cache directory
-        Path sourceDir = tempDir.resolve("source-project");
-        Files.createDirectories(sourceDir);
-
-        Path destDir = tempDir.resolve("dest-project");
-        Files.createDirectories(destDir);
-
-        // Execute - should not crash
-        assertDoesNotThrow(() -> cacheManager.copyCacheDirectory(sourceDir, destDir),
-                "Should not throw when .cache directory doesn't exist");
-
-        assertFalse(destDir.resolve(".cache").toFile().exists(),
-                ".cache should not be created if source doesn't have it");
-    }
-
-    @Test
-    void testCopyCacheDirectory_WithCacheDir(@TempDir Path tempDir) throws IOException {
-        // Create source with .cache directory
-        Path sourceDir = tempDir.resolve("source-project");
-        Path sourceCacheDir = sourceDir.resolve(".cache");
-        Files.createDirectories(sourceCacheDir);
-        Files.writeString(sourceCacheDir.resolve("cache-file.dat"), "cached data");
-        Files.writeString(sourceCacheDir.resolve("metadata.xml"), "<cache>metadata</cache>");
-
-        Path destDir = tempDir.resolve("dest-project");
-        Files.createDirectories(destDir);
-
-        // Execute
-        cacheManager.copyCacheDirectory(sourceDir, destDir);
-
-        // Verify cache directory and contents copied
-        assertTrue(destDir.resolve(".cache").toFile().exists(), ".cache directory should be copied");
-        assertTrue(destDir.resolve(".cache/cache-file.dat").toFile().exists(),
-                "Cache file should be copied");
-        assertTrue(destDir.resolve(".cache/metadata.xml").toFile().exists(),
-                "Metadata file should be copied");
-
-        String copiedContent = Files.readString(destDir.resolve(".cache/cache-file.dat"));
-        assertEquals("cached data", copiedContent, "Cache file content should match");
-    }
-
-    @Test
-    void testCopyCacheDirectory_NestedCacheStructure(@TempDir Path tempDir) throws IOException {
-        // Create source with nested cache structure
-        Path sourceDir = tempDir.resolve("source-project");
-        Path cacheSubdir = sourceDir.resolve(".cache/nested/subdir");
-        Files.createDirectories(cacheSubdir);
-        Files.writeString(cacheSubdir.resolve("deep-cache.dat"), "deep cached data");
-
-        Path destDir = tempDir.resolve("dest-project");
-        Files.createDirectories(destDir);
-
-        // Execute
-        cacheManager.copyCacheDirectory(sourceDir, destDir);
-
-        // Verify nested structure copied
-        assertTrue(destDir.resolve(".cache/nested/subdir/deep-cache.dat").toFile().exists(),
-                "Nested cache structure should be preserved");
-
-        String content = Files.readString(destDir.resolve(".cache/nested/subdir/deep-cache.dat"));
-        assertEquals("deep cached data", content, "Nested cache content should match");
     }
 
     @Test

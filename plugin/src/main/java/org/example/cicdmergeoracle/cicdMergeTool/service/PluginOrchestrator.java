@@ -83,7 +83,7 @@ public class PluginOrchestrator {
     private boolean useOverlay;
     private Path overlayBasePath;
     private Path overlayTmpDir;
-    private Path sharedCacheDir;
+    private MavenCacheManager cacheManager;
 
     public PluginOrchestrator(Path repoPath,
                               OracleSession session,
@@ -122,9 +122,7 @@ public class PluginOrchestrator {
         useOverlay = false;
         overlayTmpDir = tempDir;
 
-        // Shared cache directory: all variants point here so cache entries from
-        // variant N benefit variant N+1 automatically — no per-variant .cache/ copying.
-        sharedCacheDir = tempDir.resolve("shared-cache");
+        cacheManager = new MavenCacheManager(tempDir.resolve("shared-cache"));
 
         coordinatorFuture = Executors.newSingleThreadExecutor().submit(() -> {
             try {
@@ -237,7 +235,7 @@ public class PluginOrchestrator {
         if (useOverlay) {
             overlayBasePath = builder.buildBase(context, overlayTmpDir);
             // Inject Maven Build Cache Extension into the base so all overlay variants inherit it
-            new MavenCacheManager().injectCacheArtifacts(overlayBasePath, sharedCacheDir);
+            cacheManager.injectCacheArtifacts(overlayBasePath);
         }
 
         executor = Executors.newFixedThreadPool(threadCount);
@@ -400,14 +398,13 @@ public class PluginOrchestrator {
             } else {
                 variantPath = builder.buildVariantBase(context, variantIndex);
                 // Non-overlay: inject cache artifacts per variant (overlay inherits from base)
-                new MavenCacheManager().injectCacheArtifacts(variantPath, sharedCacheDir);
+                cacheManager.injectCacheArtifacts(variantPath);
             }
 
             // 2. Cache warming from donor (copy compiled artifacts for incremental build)
             DonorTracker tracker = session.getDonorTracker();
             Path donorPath = tracker.getDonorPath();
             if (donorPath != null) {
-                MavenCacheManager cacheManager = new MavenCacheManager();
                 cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
             }
 
