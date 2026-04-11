@@ -36,6 +36,10 @@ public class TwoPhaseRunner {
     private final Path logDir;
     private final String javaHome;
     private final boolean singlePhase;
+    /** When non-null, mvnd daemons are spawned with this stable cwd instead of the
+     *  variant directory.  Prevents crashes when overlayFS mounts are unmounted while
+     *  daemons are still alive (daemon cwd would point at a deleted FUSE mount). */
+    private final Path stableCwd;
 
     /**
      * @param commandResolver resolves Maven executable and goal
@@ -46,17 +50,29 @@ public class TwoPhaseRunner {
      */
     public TwoPhaseRunner(MavenCommandResolver commandResolver, IntSupplier timeoutSupplier,
                            Path logDir, String javaHome, boolean singlePhase) {
+        this(commandResolver, timeoutSupplier, logDir, javaHome, singlePhase, null);
+    }
+
+    /**
+     * @param stableCwd  stable working directory for mvnd daemon processes (e.g. the plugin
+     *                   temp dir).  When non-null, the Maven process is started with this cwd
+     *                   and {@code -f <variantPath>} is passed explicitly.  Null uses the
+     *                   variant directory as cwd (default, safe for non-overlay builds).
+     */
+    public TwoPhaseRunner(MavenCommandResolver commandResolver, IntSupplier timeoutSupplier,
+                           Path logDir, String javaHome, boolean singlePhase, Path stableCwd) {
         this.commandResolver = commandResolver;
         this.timeoutSupplier = timeoutSupplier;
         this.logDir = logDir;
         this.javaHome = javaHome;
         this.singlePhase = singlePhase;
+        this.stableCwd = stableCwd;
     }
 
-    /** Legacy constructor — defaults to two-phase. */
+    /** Legacy constructor — defaults to two-phase, no stable cwd. */
     public TwoPhaseRunner(MavenCommandResolver commandResolver, IntSupplier timeoutSupplier,
                            Path logDir, String javaHome) {
-        this(commandResolver, timeoutSupplier, logDir, javaHome, false);
+        this(commandResolver, timeoutSupplier, logDir, javaHome, false, null);
     }
 
     /**
@@ -98,8 +114,7 @@ public class TwoPhaseRunner {
                 ? AppConfig.buildCommandWithGate(execArgs, mavenGoal, threshold)
                 : AppConfig.buildCommand(execArgs, mavenGoal);
 
-        new MavenProcessExecutor(timeout).executeCommand(
-                variantPath, fullLog, javaHome, withRepoLocal(cmd, mavenRepoLocal));
+        executeMaven(variantPath, fullLog, timeout, withRepoLocal(cmd, mavenRepoLocal));
 
         // Check if the hook wrote a sidecar (early abort)
         if (Files.exists(sidecar)) {
@@ -130,8 +145,7 @@ public class TwoPhaseRunner {
         // Phase 1: compile only
         int compileTimeout = timeoutSupplier.getAsInt();
         if (compileTimeout <= 0) return new TwoPhaseResult(null, false);
-        new MavenProcessExecutor(compileTimeout).executeCommand(
-                variantPath, compileLog, javaHome,
+        executeMaven(variantPath, compileLog, compileTimeout,
                 withRepoLocal(AppConfig.buildCompileOnlyCommand(execArgs), mavenRepoLocal));
 
         CompilationResult cr = new CompilationResult(compileLog);
@@ -149,11 +163,20 @@ public class TwoPhaseRunner {
             return new TwoPhaseResult(cr, false);
         }
         Files.deleteIfExists(compileLog);
-        new MavenProcessExecutor(testTimeout).executeCommand(
-                variantPath, fullLog, javaHome,
+        executeMaven(variantPath, fullLog, testTimeout,
                 withRepoLocal(AppConfig.buildCommand(execArgs, mavenGoal), mavenRepoLocal));
         CompilationResult fullCr = new CompilationResult(fullLog);
         return new TwoPhaseResult(fullCr, true);
+    }
+
+    /** Execute Maven, using stable cwd when configured to avoid overlay mount issues. */
+    private void executeMaven(Path variantPath, Path logFile, int timeout, String... cmd) {
+        MavenProcessExecutor executor = new MavenProcessExecutor(timeout);
+        if (stableCwd != null) {
+            executor.executeCommandStableCwd(stableCwd, variantPath, logFile, javaHome, cmd);
+        } else {
+            executor.executeCommand(variantPath, logFile, javaHome, cmd);
+        }
     }
 
     /** Append {@code -Dmaven.repo.local=<path>} to a Maven command array. */

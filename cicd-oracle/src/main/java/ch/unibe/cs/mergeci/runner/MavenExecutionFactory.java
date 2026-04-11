@@ -592,7 +592,8 @@ public class MavenExecutionFactory {
                                 }
                                 builder.applyConflictResolution(variantPath, variant);
                                 new TwoPhaseRunner(commandResolver, () -> remainingSeconds(deadline),
-                                        logDir, MavenExecutionFactory.this.resolvedJavaHome)
+                                        logDir, MavenExecutionFactory.this.resolvedJavaHome,
+                                        false, AppConfig.TMP_DIR)
                                         .run(variantPath, variantKey, donorTracker, null);
                                 double wallClockSeconds = Duration.between(variantStart, Instant.now()).toMillis() / 1000.0;
                                 // Collect results BEFORE closing overlay — surefire XML lives in the mountpoint
@@ -675,7 +676,7 @@ public class MavenExecutionFactory {
                         }
                         builder.applyConflictResolution(vPath, variant);
                         new TwoPhaseRunner(commandResolver, () -> remainingSeconds(deadline),
-                                logDir, javaHome)
+                                logDir, javaHome, false, AppConfig.TMP_DIR)
                                 .run(vPath, key, donorTracker, repoLocal);
                     } finally {
                         if (m2Overlay != null) m2Overlay.close();

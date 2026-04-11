@@ -23,6 +23,43 @@ public class MavenProcessExecutor {
         run(createProcessBuilder(workingDirectory, outputFile, javaHome, command), outputFile, command);
     }
 
+    /**
+     * Execute a command with a stable working directory (e.g. /tmp) while the project
+     * path is passed via {@code -f}.  This prevents mvnd daemons from being spawned with
+     * their cwd inside an ephemeral overlay mount that may be unmounted later.
+     *
+     * @param stableCwd       a long-lived directory for the process cwd (daemon inherits this)
+     * @param projectDir      the actual project directory (passed via {@code -f pom.xml})
+     * @param outputFile      log file
+     * @param javaHome        JAVA_HOME override, or null
+     * @param command         the Maven/mvnd command array
+     */
+    public void executeCommandStableCwd(Path stableCwd, Path projectDir, Path outputFile,
+                                        String javaHome, String... command) {
+        // Insert "-f <projectDir>" right after the executable args (before goals/flags)
+        // Find first non-executable arg position (skip mvnd, --maven-home, /path)
+        String[] withPomFlag = insertPomFlag(command, projectDir);
+        run(createProcessBuilder(stableCwd, outputFile, javaHome, withPomFlag), outputFile, withPomFlag);
+    }
+
+    /** Insert {@code -f <dir>} after executable args in the command array. */
+    private static String[] insertPomFlag(String[] command, Path projectDir) {
+        // Find insertion point: skip executable (mvnd) and --maven-home /path if present
+        int insertAt = 1;
+        for (int i = 1; i < command.length - 1; i++) {
+            if ("--maven-home".equals(command[i])) {
+                insertAt = i + 2; // skip --maven-home and its value
+                break;
+            }
+        }
+        String[] result = new String[command.length + 2];
+        System.arraycopy(command, 0, result, 0, insertAt);
+        result[insertAt] = "-f";
+        result[insertAt + 1] = projectDir.toString();
+        System.arraycopy(command, insertAt, result, insertAt + 2, command.length - insertAt);
+        return result;
+    }
+
     private ProcessBuilder createProcessBuilder(Path workingDirectory, Path outputFile,
                                                 String javaHome, String... command) {
         ProcessBuilder pb = new ProcessBuilder(command);

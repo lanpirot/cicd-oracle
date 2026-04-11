@@ -117,9 +117,7 @@ public class PluginOrchestrator {
         builder = new VariantProjectBuilder(repoPath, tempDir, projectTempDir);
         globalWeightMap = generatorFactory.getGlobalWeightMap();
 
-        // OverlayFS disabled in the plugin — fuse-overlayfs mounts race with
-        // concurrent mvnd daemons, causing silent build failures (~8% of variants).
-        useOverlay = false;
+        useOverlay = OverlayMount.isAvailable();
         overlayTmpDir = tempDir;
 
         cacheManager = new MavenCacheManager(tempDir.resolve("shared-cache"));
@@ -370,11 +368,7 @@ public class PluginOrchestrator {
 
     private void stopMvndDaemons() {
         try {
-            String mvnd = new MavenCommandResolver().resolveMavenCommand(repoPath);
-            new ProcessBuilder(mvnd, "--stop")
-                    .redirectErrorStream(true)
-                    .start()
-                    .waitFor(10, java.util.concurrent.TimeUnit.SECONDS);
+            new MavenCommandResolver().stopDaemons();
         } catch (Exception e) {
             LOG.warn("Could not stop mvnd daemons: {}", e.getMessage());
         }
@@ -430,7 +424,7 @@ public class PluginOrchestrator {
             MavenCommandResolver resolver = new MavenCommandResolver();
             String variantKey = context.getProjectName() + "_" + variantIndex;
             TwoPhaseRunner runner = new TwoPhaseRunner(
-                    resolver, () -> MAVEN_TIMEOUT_SECONDS, logDir, null, true);
+                    resolver, () -> MAVEN_TIMEOUT_SECONDS, logDir, null, true, tempDir);
             TwoPhaseRunner.TwoPhaseResult tpResult = runner.run(
                     variantPath, variantKey, tracker, null);
 

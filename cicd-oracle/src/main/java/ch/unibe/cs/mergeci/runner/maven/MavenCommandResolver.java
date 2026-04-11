@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Resolves the appropriate Maven command based on OS and project configuration.
@@ -57,7 +58,7 @@ public class MavenCommandResolver {
             Process p = new ProcessBuilder(command, "--version")
                     .redirectErrorStream(true).start();
             p.getInputStream().readAllBytes();
-            boolean done = p.waitFor(5, java.util.concurrent.TimeUnit.SECONDS);
+            boolean done = p.waitFor(5, TimeUnit.SECONDS);
             if (!done) { p.destroyForcibly(); return false; }
             return p.exitValue() == 0;
         } catch (Exception e) {
@@ -164,7 +165,37 @@ public class MavenCommandResolver {
     }
 
     /**
-     * Run {@code ./mvnw --version} to trigger the wrapper's Maven download and parse
+     * Stop all mvnd daemons and clean up the daemon registry.
+     *
+     * <p>After {@code mvnd --stop}, the daemon's {@code registry.bin} may contain stale
+     * entries that cause the next spawn to fail with {@code StaleAddressException} or
+     * connection timeouts (~33% failure rate on Linux). Deleting the registry file after
+     * stop forces a clean daemon bootstrap on the next build.
+     */
+    public void stopDaemons() {
+        if (!useMavenDaemon) return;
+        try {
+            Process p = new ProcessBuilder(mvndCommand, "--stop")
+                    .redirectErrorStream(true).start();
+            p.getInputStream().readAllBytes();
+            p.waitFor(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            // best-effort
+        }
+        // Delete stale registry.bin — scan the daemon storage dir for all versions
+        Path registryBase = Path.of(System.getProperty("user.home"), ".m2", "mvnd", "registry");
+        if (Files.isDirectory(registryBase)) {
+            try (var versions = Files.list(registryBase)) {
+                versions.forEach(versionDir -> {
+                    try {
+                        Files.deleteIfExists(versionDir.resolve("registry.bin"));
+                    } catch (IOException ignored) {}
+                });
+            } catch (IOException ignored) {}
+        }
+    }
+
+    /**
      * "Maven home: /path" from its output. Returns null if the project has no wrapper
      * or the detection fails.
      */
@@ -183,7 +214,7 @@ public class MavenCommandResolver {
             pb.redirectErrorStream(true);
             Process proc = pb.start();
             String output = new String(proc.getInputStream().readAllBytes());
-            boolean completed = proc.waitFor(30, java.util.concurrent.TimeUnit.SECONDS);
+            boolean completed = proc.waitFor(30, TimeUnit.SECONDS);
             if (!completed) {
                 proc.destroyForcibly();
                 return null;
