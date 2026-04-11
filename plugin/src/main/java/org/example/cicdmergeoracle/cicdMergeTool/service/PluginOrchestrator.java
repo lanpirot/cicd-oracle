@@ -83,6 +83,7 @@ public class PluginOrchestrator {
     private boolean useOverlay;
     private Path overlayBasePath;
     private Path overlayTmpDir;
+    private Path sharedCacheDir;
 
     public PluginOrchestrator(Path repoPath,
                               OracleSession session,
@@ -120,6 +121,10 @@ public class PluginOrchestrator {
         // concurrent mvnd daemons, causing silent build failures (~8% of variants).
         useOverlay = false;
         overlayTmpDir = tempDir;
+
+        // Shared cache directory: all variants point here so cache entries from
+        // variant N benefit variant N+1 automatically — no per-variant .cache/ copying.
+        sharedCacheDir = tempDir.resolve("shared-cache");
 
         coordinatorFuture = Executors.newSingleThreadExecutor().submit(() -> {
             try {
@@ -232,7 +237,7 @@ public class PluginOrchestrator {
         if (useOverlay) {
             overlayBasePath = builder.buildBase(context, overlayTmpDir);
             // Inject Maven Build Cache Extension into the base so all overlay variants inherit it
-            new MavenCacheManager().injectCacheArtifacts(overlayBasePath);
+            new MavenCacheManager().injectCacheArtifacts(overlayBasePath, sharedCacheDir);
         }
 
         executor = Executors.newFixedThreadPool(threadCount);
@@ -334,8 +339,12 @@ public class PluginOrchestrator {
         }
     }
 
-    /** Delete the temp directory, overlay base, and donor. Safe to call multiple times. */
+    /** Delete the temp directory, overlay base, donor, and stop mvnd daemons. Safe to call multiple times. */
     public void cleanupTempDir() {
+        // Stop mvnd daemons so in-memory build cache state doesn't leak into the
+        // next run (daemons survive IDE restarts due to their 3h idle timeout).
+        stopMvndDaemons();
+
         // Unmount stale overlays BEFORE deleting directories — otherwise delete
         // fails silently and dirs accumulate across IDE restarts.
         if (overlayTmpDir != null) {
@@ -361,6 +370,18 @@ public class PluginOrchestrator {
         }
     }
 
+    private void stopMvndDaemons() {
+        try {
+            String mvnd = new MavenCommandResolver().resolveMavenCommand(repoPath);
+            new ProcessBuilder(mvnd, "--stop")
+                    .redirectErrorStream(true)
+                    .start()
+                    .waitFor(10, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (Exception e) {
+            LOG.warn("Could not stop mvnd daemons: {}", e.getMessage());
+        }
+    }
+
     /** @return true if the variant was built, tested, and reported successfully */
     private boolean buildAndTest(VariantBuildContext context, VariantProject variant,
                                  int variantIndex, Path logDir) {
@@ -379,7 +400,7 @@ public class PluginOrchestrator {
             } else {
                 variantPath = builder.buildVariantBase(context, variantIndex);
                 // Non-overlay: inject cache artifacts per variant (overlay inherits from base)
-                new MavenCacheManager().injectCacheArtifacts(variantPath);
+                new MavenCacheManager().injectCacheArtifacts(variantPath, sharedCacheDir);
             }
 
             // 2. Cache warming from donor (copy compiled artifacts for incremental build)

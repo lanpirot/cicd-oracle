@@ -25,14 +25,35 @@ public class MavenCacheManager {
      * @param projectDir Path to the Maven project
      */
     public void injectCacheArtifacts(Path projectDir) {
+        injectCacheArtifacts(projectDir, null);
+    }
+
+    /**
+     * Inject Maven cache configuration files into a project, optionally
+     * pointing the build cache at a shared location so all variants
+     * benefit from each other's cache entries without file copying.
+     *
+     * @param projectDir          Path to the Maven project
+     * @param sharedCacheLocation If non-null, replaces the default {@code .cache}
+     *                            location in the config XML with this absolute path
+     */
+    public void injectCacheArtifacts(Path projectDir, Path sharedCacheLocation) {
         try {
             Path mvnDir = projectDir.resolve(".mvn");
             Files.createDirectories(mvnDir);
 
             copyClasspathResource("/cache-artifacts/extensions.xml",
                     mvnDir.resolve("extensions.xml"));
-            copyClasspathResource("/cache-artifacts/maven-build-cache-config.xml",
-                    mvnDir.resolve("maven-build-cache-config.xml"));
+
+            Path configDest = mvnDir.resolve("maven-build-cache-config.xml");
+            copyClasspathResource("/cache-artifacts/maven-build-cache-config.xml", configDest);
+
+            if (sharedCacheLocation != null) {
+                String xml = Files.readString(configDest);
+                xml = xml.replace("<location>.cache</location>",
+                        "<location>" + sharedCacheLocation.toAbsolutePath() + "</location>");
+                Files.writeString(configDest, xml);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

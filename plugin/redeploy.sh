@@ -16,6 +16,9 @@ echo "==> Killing IntelliJ IDEA (if running)..."
 pkill -f "com.intellij.idea.Main" 2>/dev/null || true
 sleep 2
 
+echo "==> Stopping mvnd daemons (flush in-memory build cache)..."
+mvnd --stop 2>/dev/null || true
+
 echo "==> Cleaning up stale overlay mounts and temp dirs..."
 grep -s 'fuse-overlayfs' /proc/mounts | awk '$2 ~ /cicd-oracle-plugin/ {print $2}' \
   | while read -r mp; do fusermount3 -u "$mp" 2>/dev/null || true; done

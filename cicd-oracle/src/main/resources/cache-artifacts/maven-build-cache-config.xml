@@ -31,7 +31,7 @@
         </remote>
         <local>
             <location>.cache</location>
-            <maxBuildsCached>3</maxBuildsCached>
+            <maxBuildsCached>9999</maxBuildsCached>
         </local>
         <attachedOutputs>
             <dirNames>
