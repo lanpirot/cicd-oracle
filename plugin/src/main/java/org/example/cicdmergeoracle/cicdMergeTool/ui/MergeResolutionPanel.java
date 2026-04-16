@@ -175,14 +175,12 @@ public class MergeResolutionPanel {
             public void mouseMoved(MouseEvent e) {
                 int row = dashboardTable.rowAtPoint(e.getPoint());
                 if (row == lastBalloonRow) {
-                    // Back on the same row — cancel pending dismiss
                     dismissTimer.stop();
                     dismissPending = false;
                     return;
                 }
-                if (dismissPending) return; // grace period — block new tooltips
+                if (dismissPending) return;
                 if (tooltipBalloon != null) {
-                    // Start 1-second grace period before dismissing
                     dismissPending = true;
                     dismissTimer.restart();
                     balloonTimer.stop();
@@ -637,12 +635,15 @@ public class MergeResolutionPanel {
     // ---- Tooltip balloon with navigable links ----
 
     private void showTooltipBalloon() {
+        // Capture pending state before dismiss resets lastBalloonRow
+        String html = pendingBalloonHtml;
+        int row = lastBalloonRow;
         dismissBalloon();
-        if (pendingBalloonHtml == null || lastBalloonRow < 0
-                || lastBalloonRow >= dashboardModel.getRowCount()) return;
+        if (html == null || row < 0 || row >= dashboardModel.getRowCount()) return;
 
+        lastBalloonRow = row;
         tooltipBalloon = JBPopupFactory.getInstance()
-                .createHtmlTextBalloonBuilder(pendingBalloonHtml, MessageType.INFO, e -> {
+                .createHtmlTextBalloonBuilder(html, MessageType.INFO, e -> {
                     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                         handleTooltipNavigation(e.getDescription());
                         dismissBalloon();
@@ -652,7 +653,7 @@ public class MergeResolutionPanel {
                 .setHideOnKeyOutside(true)
                 .createBalloon();
 
-        Rectangle cellRect = dashboardTable.getCellRect(lastBalloonRow, 0, true);
+        Rectangle cellRect = dashboardTable.getCellRect(row, 0, true);
         RelativePoint rp = new RelativePoint(dashboardTable,
                 new Point(cellRect.x + cellRect.width / 2, cellRect.y + cellRect.height));
         tooltipBalloon.show(rp, Balloon.Position.below);

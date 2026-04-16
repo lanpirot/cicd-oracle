@@ -20,7 +20,7 @@ echo "==> Stopping mvnd daemons (flush in-memory build cache)..."
 mvnd --stop 2>/dev/null || true
 
 echo "==> Cleaning up stale overlay mounts and temp dirs..."
-grep -s 'fuse-overlayfs' /proc/mounts | awk '$2 ~ /cicd-oracle-plugin/ {print $2}' \
+{ grep -s 'fuse-overlayfs' /proc/mounts || true; } | awk '$2 ~ /cicd-oracle-plugin/ {print $2}' \
   | while read -r mp; do fusermount3 -u "$mp" 2>/dev/null || true; done
 rm -rf /dev/shm/cicd-oracle-plugin /tmp/cicd-oracle-plugin*
 
