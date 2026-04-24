@@ -1030,6 +1030,98 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
     ax.grid(True, alpha=0.3)
 
 
+# ── RQ2 Chart: Variant accumulation over time ────────────────────────────────
+
+def _variants_completed_at_time(merge: dict, rel_time: float, budget: float) -> int:
+    """Count of non-baseline, non-timed-out variants that finished by
+    rel_time * budget seconds."""
+    cutoff = rel_time * budget
+    count = 0
+    for v in merge.get("variants", []):
+        if v.get("variantIndex", 0) == 0:
+            continue
+        if v.get("timedOut", False):
+            continue
+        t = v.get("totalTimeSinceMergeStartSeconds")
+        if t is None or t > cutoff:
+            continue
+        count += 1
+    return count
+
+
+def draw_variant_accumulation(ax, all_data: dict, *, aggregate: str = "median",
+                              valid_commits: list[str] | None = None):
+    """
+    Per-merge accumulated variants completed by time t, aggregated across merges.
+
+    X-axis: multiples of human baseline build duration.
+    Y-axis: median (or mean) number of variants completed per merge.
+    """
+    import numpy as np
+
+    if valid_commits is None:
+        valid_commits = _common_valid_commits(all_data, VARIANT_MODES)
+
+    valid_with_budget = []
+    for commit in valid_commits:
+        merge = all_data[VARIANT_MODES[0]][commit]
+        budget = merge.get("budgetBasisSeconds", 0)
+        if budget > 0:
+            valid_with_budget.append((commit, budget))
+
+    if not valid_with_budget:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    max_rel = 0.0
+    for commit, budget in valid_with_budget:
+        for mode in VARIANT_MODES:
+            merge = all_data[mode].get(commit, {})
+            for v in merge.get("variants", []):
+                if v.get("timedOut", False):
+                    continue
+                t = v.get("totalTimeSinceMergeStartSeconds")
+                if t is not None:
+                    max_rel = max(max_rel, t / budget)
+    max_rel = min(max_rel, 10.0)
+
+    step = 0.05
+    n_steps = int(max_rel / step) + 1
+    time_points = [k * step for k in range(1, n_steps + 1)]
+    if not time_points:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    agg_fn = np.median if aggregate == "median" else np.mean
+    mode_values = {m: [] for m in VARIANT_MODES}
+
+    for rel_t in time_points:
+        per_mode_counts = {m: [] for m in VARIANT_MODES}
+        for commit, budget in valid_with_budget:
+            for mode in VARIANT_MODES:
+                merge = all_data[mode].get(commit, {})
+                per_mode_counts[mode].append(
+                    _variants_completed_at_time(merge, rel_t, budget)
+                )
+        for mode in VARIANT_MODES:
+            if per_mode_counts[mode]:
+                mode_values[mode].append(agg_fn(per_mode_counts[mode]))
+            else:
+                mode_values[mode].append(np.nan)
+
+    for mode in VARIANT_MODES:
+        ax.plot(time_points, mode_values[mode],
+                color=MODE_COLORS[mode], linewidth=1.8,
+                label=MODE_LABELS[mode], alpha=0.9, zorder=3)
+
+    ax.set_xlabel("Relative time (1.0 = human baseline build duration)")
+    ax.set_ylabel(f"{aggregate.capitalize()} variants completed per merge")
+    ax.set_title(f"Variant Accumulation Over Time ({aggregate})")
+    ax.axvline(x=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
+    ax.legend(loc="lower right", fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+
 # ── RQ2 Chart: Technique decomposition (interaction plot + ART ANOVA) ────────
 
 def _get_threads(merge: dict, mode: str) -> int:
@@ -1651,6 +1743,18 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         fig, ax = plt.subplots(figsize=(10, 5))
         draw_rank_evolution(ax, all_data)
         _save_fig(fig, results_dir, "07_rank_evolution", pdf)
+
+        # Chart 7a: Variant accumulation over time (median)
+        print("Drawing variant accumulation chart (median) ...")
+        fig, ax = plt.subplots(figsize=(10, 5))
+        draw_variant_accumulation(ax, all_data, aggregate="median")
+        _save_fig(fig, results_dir, "07a_variant_accumulation_median", pdf)
+
+        # Chart 7b: Variant accumulation over time (mean)
+        print("Drawing variant accumulation chart (mean) ...")
+        fig, ax = plt.subplots(figsize=(10, 5))
+        draw_variant_accumulation(ax, all_data, aggregate="mean")
+        _save_fig(fig, results_dir, "07b_variant_accumulation_mean", pdf)
 
         # Chart 8: Variant cost curve (variant# vs. build time)
         print("Drawing variant cost curve ...")
