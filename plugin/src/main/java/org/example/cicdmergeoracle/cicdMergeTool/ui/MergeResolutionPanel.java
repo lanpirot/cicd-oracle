@@ -225,30 +225,27 @@ public class MergeResolutionPanel {
         });
     }
 
-    /** Variant table: compact fixed columns, Patterns gets all remaining space. */
+    /** Variant table: sensible initial widths, all columns resizable. */
     private void configureDashboardColumns() {
         dashboardTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         var cm = dashboardTable.getColumnModel();
-        // #, Modules, Tests, Time (s) — small fixed; Patterns expands
-        int[] pref = {40, 75, 75, 75};
+        // #, Modules, Tests, Time (s) — initial preferred widths only
+        int[] pref = {30, 60, 50, 55};
         for (int i = 0; i < pref.length && i < cm.getColumnCount(); i++) {
-            var col = cm.getColumn(i);
-            col.setPreferredWidth(pref[i]);
-            col.setMaxWidth(pref[i] + 25);
+            cm.getColumn(i).setPreferredWidth(pref[i]);
         }
+        // Patterns column: fixed-width boxes with abbreviated labels
+        cm.getColumn(4).setCellRenderer(new PatternsCellRenderer());
     }
 
-    /** Chunk table: File and Consensus wide, Chunk and Resolution narrow, dropdown indicator on Resolution. */
+    /** Chunk table: sensible initial widths, all columns resizable. */
     private void configureChunkColumns() {
         chunkTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         var cm = chunkTable.getColumnModel();
-        // File=0, Chunk=1, OURS=2, THEIRS=3, Consensus=4, Resolution=5
-        int[] pref = {200, 45, 140, 140, 180, 90};
-        int[] max  = {500, 60, 300, 300, 400, 110};
+        // File=0, Chunk=1, OURS=2, THEIRS=3, Consensus=4, Pinned Resolution=5
+        int[] pref = {250, 35, 130, 130, 160, 120};
         for (int i = 0; i < pref.length && i < cm.getColumnCount(); i++) {
-            var col = cm.getColumn(i);
-            col.setPreferredWidth(pref[i]);
-            col.setMaxWidth(max[i]);
+            cm.getColumn(i).setPreferredWidth(pref[i]);
         }
 
         // Resolution column: append ▾ to hint that it's a dropdown

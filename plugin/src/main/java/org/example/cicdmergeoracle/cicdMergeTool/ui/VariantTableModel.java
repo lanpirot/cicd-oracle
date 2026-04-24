@@ -122,28 +122,26 @@ class VariantTableModel extends AbstractTableModel {
                     : r.testResult() != null && r.testResult().isHasData()
                     ? r.testResult().getPassedTests() + "/" + r.testResult().getRunNum() : "-";
             case 3 -> String.format("%.1f", r.elapsed().toMillis() / 1000.0);
-            case 4 -> summarizePatterns(r.patternAssignment(), chunkIndex);
+            case 4 -> collectPatterns(r.patternAssignment(), chunkIndex);
             default -> "";
         };
     }
 
-    private String summarizePatterns(Map<String, List<String>> patterns,
-                                     List<ChunkKey> index) {
-        if (patterns == null) return "";
+    private List<String> collectPatterns(Map<String, List<String>> patterns,
+                                          List<ChunkKey> index) {
+        if (patterns == null) return List.of();
         if (index.isEmpty()) {
             return patterns.values().stream()
                     .flatMap(List::stream)
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse("");
+                    .toList();
         }
-        StringBuilder sb = new StringBuilder();
+        List<String> result = new ArrayList<>();
         for (ChunkKey key : index) {
             List<String> filePatterns = patterns.get(key.filePath());
             if (filePatterns != null && key.indexWithinFile() < filePatterns.size()) {
-                if (!sb.isEmpty()) sb.append(", ");
-                sb.append(filePatterns.get(key.indexWithinFile()));
+                result.add(filePatterns.get(key.indexWithinFile()));
             }
         }
-        return sb.toString();
+        return result;
     }
 }
