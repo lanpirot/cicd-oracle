@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -182,6 +183,15 @@ public class MavenCommandResolver {
         } catch (Exception e) {
             // best-effort
         }
+
+        // `mvnd --stop` returns as soon as the signal is sent; the actual daemon
+        // processes exit asynchronously. Callers will call cleanupStaleMounts next,
+        // and fusermount3 -u only succeeds once the daemons have released their FDs
+        // into the overlay. So we must wait here for daemons to truly be gone.
+        // (We don't touch fuse-overlayfs processes — those exit on fusermount3 -u;
+        //  force-killing them would leave zombie mounts.)
+        waitOrKill("mvnd.id=", Duration.ofSeconds(15));
+
         // Delete stale registry.bin — scan the daemon storage dir for all versions
         Path registryBase = Path.of(System.getProperty("user.home"), ".m2", "mvnd", "registry");
         if (Files.isDirectory(registryBase)) {
@@ -192,6 +202,47 @@ public class MavenCommandResolver {
                     } catch (IOException ignored) {}
                 });
             } catch (IOException ignored) {}
+        }
+    }
+
+    /**
+     * Poll {@code pgrep -f} for processes whose full command line contains {@code needle};
+     * if any are still alive after {@code timeout}, {@code pkill -9 -f}. Returns once the
+     * set is empty or has been forcibly emptied.
+     *
+     * <p>Uses pgrep/pkill rather than {@link ProcessHandle#info()} because the latter
+     * reads {@code /proc/<pid>/cmdline} via the JVM's Info API which truncates long
+     * command lines — and the {@code mvnd.id=} marker on a full mvnd daemon argv sits
+     * past the truncation point, causing the in-JVM matcher to miss every daemon.
+     */
+    private static void waitOrKill(String needle, Duration timeout) {
+        long deadline = System.currentTimeMillis() + timeout.toMillis();
+        while (countProcessesMatching(needle) > 0
+                && System.currentTimeMillis() < deadline) {
+            try { Thread.sleep(200); } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+        if (countProcessesMatching(needle) > 0) {
+            try {
+                new ProcessBuilder("pkill", "-9", "-f", needle)
+                        .redirectErrorStream(true).start()
+                        .waitFor(5, TimeUnit.SECONDS);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private static int countProcessesMatching(String needle) {
+        try {
+            Process p = new ProcessBuilder("pgrep", "-cf", needle)
+                    .redirectErrorStream(true).start();
+            byte[] out = p.getInputStream().readAllBytes();
+            p.waitFor(5, TimeUnit.SECONDS);
+            String s = new String(out).trim();
+            return s.isEmpty() ? 0 : Integer.parseInt(s);
+        } catch (Exception e) {
+            return 0;
         }
     }
 

@@ -8,6 +8,7 @@ import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.IVariantGenerator;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.runner.MavenVariantEvaluator;
+import ch.unibe.cs.mergeci.runner.OverlayMount;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import ch.unibe.cs.mergeci.runner.VariantProjectBuilder;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
@@ -15,7 +16,6 @@ import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import org.eclipse.jgit.errors.MissingObjectException;
 import lombok.Getter;
-import org.apache.commons.io.FileUtils;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -122,9 +122,14 @@ public class MergeExperimentRunner {
      */
     private MergeAnalysisResult runMergeAnalysis(DatasetReader.MergeInfo info,
                                                    IVariantGenerator generator) throws Exception {
-        // Clean up before starting
+        // Clean up before starting. A blanket FileUtils.deleteDirectory(projects/) would
+        // recursively walk into still-mounted fuse-overlayfs dirs from a prior merge
+        // and throw IOIndexedException. cleanupStaleMounts tolerates live mounts: it
+        // unmounts what it can and deletes every non-mounted entry. Daemons are killed
+        // between modes (see ResolutionVariantRunner) so by the next mode start no
+        // overlays should be held live, and this call fully drains the scratch dir.
         Path tmpProjectDir = tmpDir.resolve("projects");
-        FileUtils.deleteDirectory(tmpProjectDir.toFile());
+        OverlayMount.cleanupStaleMounts(tmpProjectDir);
 
         // Time the analysis
         Instant start = Instant.now();

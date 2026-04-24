@@ -4,6 +4,9 @@ import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.present.CrossModeSanityChecker;
 import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
+import ch.unibe.cs.mergeci.runner.MavenExecutionFactory;
+import ch.unibe.cs.mergeci.runner.OverlayMount;
+import ch.unibe.cs.mergeci.runner.maven.MavenCommandResolver;
 import ch.unibe.cs.mergeci.util.GitUtils;
 import ch.unibe.cs.mergeci.util.RepositoryManager;
 import ch.unibe.cs.mergeci.util.Utility;
@@ -228,11 +231,31 @@ public abstract class RQPipelineRunner {
             Path modeDir = experimentDir().resolve(ex.getName());
             modeDir.toFile().mkdirs();
 
-            ResolutionVariantRunner.makeAnalysisByMergeList(
-                    merges, projectName, repoPath, modeDir, humanBaselineDir,
-                    ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
-                    AppConfig.TMP_DIR, ex.getName(),
-                    generatorFactory(), evaluator(), stopOnPerfect(), mergeLog);
+            try {
+                ResolutionVariantRunner.makeAnalysisByMergeList(
+                        merges, projectName, repoPath, modeDir, humanBaselineDir,
+                        ex.isParallel(), ex.isCache(), ex.isSkipVariants(),
+                        AppConfig.TMP_DIR, ex.getName(),
+                        generatorFactory(), evaluator(), stopOnPerfect(), mergeLog);
+            } finally {
+                // Kill mvnd daemons after each (project, mode) pair. Within a mode we
+                // reuse one daemon per worker thread (unique maven.repo.local per thread
+                // slot), but at mode boundary we wipe the slate clean so memory stays
+                // bounded across modes and overlays can be unmounted without daemon FDs
+                // keeping them busy.
+                //
+                // Then sweep the overlay temp dirs: the donor variant's project overlay
+                // and the last-variant-per-thread overlays are intentionally kept alive
+                // during a mode (donor preserved by design; last-variant busy because
+                // the daemon just finished it). With daemons dead, those mounts are now
+                // cleanly unmountable — do it here so the mode ends with zero lingering
+                // fuse-overlayfs state.
+                if (!ex.isSkipVariants()) {
+                    new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON).stopDaemons();
+                    OverlayMount.cleanupStaleMounts(AppConfig.OVERLAY_TMP_DIR.resolve("projects"));
+                    OverlayMount.cleanupStaleMounts(MavenExecutionFactory.M2_OVERLAY_DIR);
+                }
+            }
 
             // After the human_baseline build, check for problems that make this
             // project permanently unusable.  Abort early so it does not waste a

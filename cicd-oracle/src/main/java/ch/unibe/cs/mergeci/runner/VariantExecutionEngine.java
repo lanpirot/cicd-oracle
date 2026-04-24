@@ -84,6 +84,20 @@ public class VariantExecutionEngine {
     /** Number of in-flight variants killed during shutdown. */
     private volatile int killedInFlight;
 
+    /**
+     * Per-worker-thread ~/.m2/repository overlay. One overlay is created the first time
+     * a worker thread asks for one, then reused for every subsequent variant that lands
+     * on the same thread. This bounds the live mvnd-daemon count to the thread count
+     * (daemons match on {@code -Dmaven.repo.local}, so a stable path per thread lets
+     * them be reused) — previously each variant got a unique overlay path, so mvnd
+     * spawned a fresh daemon per variant and RAM grew unboundedly within a mode.
+     *
+     * <p>Overlays are closed in the {@code run()} {@code finally} block, after the
+     * executor has shut down and no worker can request a new one.
+     */
+    private final ConcurrentHashMap<Long, OverlayMount> threadM2Overlays = new ConcurrentHashMap<>();
+    private final AtomicInteger nextM2Slot = new AtomicInteger(0);
+
     public VariantExecutionEngine(EngineConfig config,
                                    VariantStopCondition stopCondition,
                                    VariantLifecycleListener listener) {
@@ -222,7 +236,35 @@ public class VariantExecutionEngine {
             killedInFlight = submitted.size();
             exhausted = !stopCondition.isCancelled() && pendingRetry.isEmpty();
             listener.onRunFinished(exhausted);
+
+            // Close the per-thread m2 overlays that we kept alive across variants.
+            // Workers have been shut down, so nothing will ask for one after this.
+            for (OverlayMount m2 : threadM2Overlays.values()) {
+                try { m2.close(); } catch (Exception ignored) {}
+            }
+            threadM2Overlays.clear();
         }
+    }
+
+    /**
+     * Return (creating on first use) the per-worker-thread m2 overlay for the current
+     * thread. Returns {@code null} if m2 overlays are disabled or creation failed —
+     * caller then falls back to a shared maven.repo.local.
+     */
+    private OverlayMount acquireThreadM2Overlay(String projectName) {
+        if (config.m2OverlayDir == null) return null;
+        long tid = Thread.currentThread().threadId();
+        return threadM2Overlays.computeIfAbsent(tid, k -> {
+            int slot = nextM2Slot.getAndIncrement();
+            try {
+                return OverlayMount.create(
+                        Path.of(System.getProperty("user.home"), ".m2", "repository"),
+                        config.m2OverlayDir,
+                        projectName + "_slot" + slot);
+            } catch (IOException e) {
+                return null; // graceful fallback; next variant on this thread retries
+            }
+        });
     }
 
     /**
@@ -274,20 +316,16 @@ public class VariantExecutionEngine {
             if (stopCondition.isStopped()) return;
 
             // 4. Run build+test
-            OverlayMount m2Overlay = null;
-            Path repoLocal = null;
+            //
+            // The m2 overlay is scoped to the worker THREAD, not the variant — see
+            // `threadM2Overlays` on the engine. The same overlay (and therefore the
+            // same `-Dmaven.repo.local`) is reused across every variant that lands on
+            // this worker, which lets mvnd reuse a single daemon per thread instead
+            // of spawning a fresh one per variant. Overlay lifetime ends in the run()
+            // finally block, after all workers have stopped.
+            OverlayMount m2Overlay = acquireThreadM2Overlay(projectName);
+            Path repoLocal = m2Overlay != null ? m2Overlay.mountPoint() : null;
             try {
-                if (config.m2OverlayDir != null) {
-                    try {
-                        m2Overlay = OverlayMount.create(
-                                Path.of(System.getProperty("user.home"), ".m2", "repository"),
-                                config.m2OverlayDir, variantKey);
-                        repoLocal = m2Overlay.mountPoint();
-                    } catch (IOException e) {
-                        // Graceful fallback: use shared repo
-                    }
-                }
-
                 int timeout = stopCondition.remainingSeconds();
                 if (timeout == 0) return; // deadline expired
 
@@ -319,7 +357,7 @@ public class VariantExecutionEngine {
                 if (config.useCache) {
                     Map<String, java.util.List<String>> patterns = variant.extractPatterns();
                     Path oldDonor = donorTracker.promoteDonorIfBetter(
-                            variantPath, cr, String.valueOf(variantIndex));
+                            variantPath, cr, tt, String.valueOf(variantIndex));
                     isDonor = variantPath.equals(donorTracker.getDonorPath());
                     if (isDonor) {
                         donorTracker.setDonorPatterns(patterns);
@@ -346,9 +384,7 @@ public class VariantExecutionEngine {
                     //  instead, the outcome is reported and the coordinator can check externally)
                 }
             } finally {
-                if (m2Overlay != null) {
-                    try { m2Overlay.close(); } catch (Exception ignored) {}
-                }
+                // Note: m2Overlay is thread-scoped and closed at engine-run end; not here.
             }
         } finally {
             // 9. Cleanup (unless this variant is the donor)

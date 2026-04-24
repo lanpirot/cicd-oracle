@@ -32,6 +32,12 @@ import java.util.stream.Collectors;
  * Variants are generated in decreasing order of generator confidence, so a lower index
  * reflects a more confident prediction. Defaults to {@code Integer.MAX_VALUE} when unknown.
  *
+ * <p><b>Tiebreaker scope:</b> the tertiary and quaternary keys are populated only by the
+ * IntelliJ plugin (see {@code PluginLifecycleListener}). The research pipeline always
+ * builds scores via {@link #of(CompilationResult, TestTotal)}, which leaves
+ * {@code simplicityScore = 0} and {@code variantIndex = Integer.MAX_VALUE}, so pipeline
+ * comparisons effectively reduce to {@code (successfulModules, passedTests)}.
+ *
  * <p>Variants that timed out or whose compilation result is unavailable carry no score
  * and are excluded from quality comparisons. They are still counted in
  * started/finished variant statistics.

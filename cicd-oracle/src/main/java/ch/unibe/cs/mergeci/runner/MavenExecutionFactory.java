@@ -58,7 +58,9 @@ public class MavenExecutionFactory {
     private String resolvedJavaHome;
 
     /** Temp directory for per-variant .m2 overlay upper/work/mount dirs. */
-    private static final Path M2_OVERLAY_DIR = AppConfig.TMP_DIR.resolve("m2_overlays");
+    /** Temp directory for per-variant .m2 overlay upper/work/mount dirs.
+     *  Exposed so pipeline-level code can sweep it during mode-boundary cleanup. */
+    public static final Path M2_OVERLAY_DIR = AppConfig.TMP_DIR.resolve("m2_overlays");
     /** Whether to use overlayFS isolation for the local Maven repo in parallel builds. */
     private static final boolean m2OverlayEnabled = OverlayMount.isAvailable();
 
@@ -104,7 +106,8 @@ public class MavenExecutionFactory {
             ExperimentTiming experimentTiming = new ExperimentTiming();
             boolean useOverlay = OverlayMount.isAvailable();
             if (useOverlay) {
-                OverlayMount.cleanupStaleMounts(AppConfig.OVERLAY_TMP_DIR);
+                OverlayMount.cleanupStaleMounts(AppConfig.OVERLAY_TMP_DIR.resolve("projects"));
+                OverlayMount.cleanupStaleMounts(M2_OVERLAY_DIR);
             }
 
             // ── Baseline measurement ──────────────────────────────────────────

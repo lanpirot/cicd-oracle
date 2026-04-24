@@ -1,6 +1,8 @@
 package ch.unibe.cs.mergeci.runner;
 
+import ch.unibe.cs.mergeci.present.VariantScore;
 import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
+import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,7 +26,7 @@ public class DonorTracker {
     private static final Logger LOG = LoggerFactory.getLogger(DonorTracker.class);
 
     private final AtomicReference<Path> donorPath = new AtomicReference<>();
-    private final AtomicReference<CompilationResult> donorCr = new AtomicReference<>();
+    private final AtomicReference<VariantScore> donorScore = new AtomicReference<>();
     private final AtomicReference<String> donorKey = new AtomicReference<>();
     private final AtomicReference<Map<String, List<String>>> donorPatterns = new AtomicReference<>();
     private final AtomicInteger bestSuccessfulModules = new AtomicInteger(0);
@@ -38,9 +41,9 @@ public class DonorTracker {
         return donorKey.get();
     }
 
-    /** Compilation result of the current donor, or null. */
-    public CompilationResult getDonorCompilationResult() {
-        return donorCr.get();
+    /** Score of the current donor, or null. */
+    public VariantScore getDonorScore() {
+        return donorScore.get();
     }
 
     /** Resolution patterns of the current donor, or null. */
@@ -95,47 +98,41 @@ public class DonorTracker {
     }
 
     /**
-     * Promote a candidate as the new donor if it compiled more modules than the current one.
+     * Promote a candidate as the new donor if it outscores the current one.
+     *
+     * <p>Ranking uses the same {@link VariantScore} comparator as the end-of-run "best
+     * variant" selection — modules first, then tests, then (unused in the current 2-arg
+     * factory) simplicity and variantIndex. Keeping both places on one comparator means
+     * donor ≡ best-so-far, and a change to ranking semantics touches only one spot.
      *
      * @param candidatePath path to the candidate variant directory (or overlay mountpoint)
      * @param candidateCr   compilation result of the candidate
-     * @return the old donor path that the caller should delete/close, or null if no promotion
-     *         happened or there was no previous donor
-     */
-    public Path promoteDonorIfBetter(Path candidatePath, CompilationResult candidateCr) {
-        return promoteDonorIfBetter(candidatePath, candidateCr, null);
-    }
-
-    /**
-     * Promote a candidate as the new donor if it compiled more modules than the current one.
-     *
-     * @param candidatePath path to the candidate variant directory (or overlay mountpoint)
-     * @param candidateCr   compilation result of the candidate
+     * @param candidateTt   test totals of the candidate (may be null)
      * @param candidateKey  human-readable key for the candidate (used for logging)
-     * @return the old donor path that the caller should delete/close, or null if no promotion
-     *         happened or there was no previous donor
+     * @return the old donor path that the caller should delete/close, or null if no
+     *         promotion happened (or the candidate has no usable score)
      */
     public Path promoteDonorIfBetter(Path candidatePath, CompilationResult candidateCr,
-                                     String candidateKey) {
-        if (!isDonorUsable(candidateCr)) return null;
+                                     TestTotal candidateTt, String candidateKey) {
+        Optional<VariantScore> candidateScoreOpt = VariantScore.of(candidateCr, candidateTt);
+        if (candidateScoreOpt.isEmpty() || !isDonorUsable(candidateCr)) return null;
+        VariantScore candidateScore = candidateScoreOpt.get();
 
         synchronized (this) {
-            CompilationResult currentCr = donorCr.get();
-            if (!isBetterDonor(candidateCr, currentCr)) {
-                LOG.info("[cache-donor] variant {} NOT promoted — {} successful modules vs donor {}'s {}",
-                        candidateKey, candidateCr.getSuccessfulModules(),
-                        donorKey.get(), currentCr != null ? currentCr.getSuccessfulModules() : 0);
+            VariantScore currentScore = donorScore.get();
+            if (currentScore != null && !candidateScore.isBetterThan(currentScore)) {
+                LOG.info("[cache-donor] variant {} NOT promoted — score {} vs donor {}'s {}",
+                        candidateKey, fmt(candidateScore), donorKey.get(), fmt(currentScore));
                 return null;
             }
 
             String oldKey = donorKey.get();
             Path oldDonor = donorPath.get();
-            int oldModules = currentCr != null ? currentCr.getSuccessfulModules() : 0;
             donorPath.set(candidatePath);
-            donorCr.set(candidateCr);
+            donorScore.set(candidateScore);
             donorKey.set(candidateKey);
-            LOG.info("[cache-donor] PROMOTED variant {} as new donor ({} → {} successful modules, prev donor: {})",
-                    candidateKey, oldModules, candidateCr.getSuccessfulModules(), oldKey);
+            LOG.info("[cache-donor] PROMOTED variant {} as new donor ({} → {}, prev donor: {})",
+                    candidateKey, fmt(currentScore), fmt(candidateScore), oldKey);
             return oldDonor;
         }
     }
@@ -150,14 +147,8 @@ public class DonorTracker {
                 || cr.getBuildStatus() == CompilationResult.Status.SUCCESS;
     }
 
-    /**
-     * Returns true when candidate should replace the current donor (more modules compiled).
-     * A consumer that was built from the previous donor can itself become the new donor,
-     * creating an iterative improvement chain with progressively warmer caches.
-     */
-    public static boolean isBetterDonor(CompilationResult candidate, CompilationResult current) {
-        if (!isDonorUsable(candidate)) return false;
-        if (current == null) return true;
-        return candidate.getSuccessfulModules() > current.getSuccessfulModules();
+    private static String fmt(VariantScore s) {
+        if (s == null) return "none";
+        return s.successfulModules() + "m/" + s.passedTests() + "t";
     }
 }

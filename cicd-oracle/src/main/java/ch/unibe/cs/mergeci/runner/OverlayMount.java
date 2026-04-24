@@ -87,38 +87,69 @@ public class OverlayMount implements AutoCloseable {
     }
 
     /**
-     * Clean up stale fuse-overlayfs mounts under {@code overlayTmpDir} from a prior crash.
-     * Reads {@code /proc/mounts} and unmounts any fuse-overlayfs entries whose mountpoint
-     * starts with the given directory.
+     * Clean up stale entries under {@code overlayTmpDir} — currently-mounted fuse-overlayfs
+     * overlays, leftover mountpoint dirs, {@code *_upper}/{@code *_work}/{@code *_base} dirs.
+     *
+     * <p>Attempts regular + lazy unmount for each stale mount; unmount may be "queued" but
+     * the mount can remain in {@code /proc/mounts} if a long-lived daemon (e.g. mvnd) still
+     * holds open FDs. After unmount attempts, sweeps every entry under the dir <em>except</em>
+     * those still listed as mounted in {@code /proc/mounts} — those would otherwise cause a
+     * pathological recursive delete through the live FUSE view.
      */
     public static void cleanupStaleMounts(Path overlayTmpDir) {
-        List<String> staleMounts = new ArrayList<>();
+        if (!Files.isDirectory(overlayTmpDir)) return;
+
+        for (String mountpoint : listFuseMountsUnder(overlayTmpDir)) {
+            System.err.println("[overlay] cleaning up stale mount: " + mountpoint);
+            Path mp = Path.of(mountpoint);
+            tryUnmount(mp, false);
+            tryUnmount(mp, true); // lazy fallback even if regular succeeded (idempotent)
+        }
+
+        // Re-read mounts after the unmount attempts — mvnd may still hold FDs, keeping the
+        // fuse process alive and the mount listed. We must NOT descend into those dirs.
+        java.util.Set<String> stillMounted = new java.util.HashSet<>(listFuseMountsUnder(overlayTmpDir));
+
+        try (java.util.stream.Stream<Path> entries = Files.list(overlayTmpDir)) {
+            entries.filter(p -> !stillMounted.contains(p.toString()))
+                   .forEach(OverlayMount::deleteQuietly);
+        } catch (IOException ignored) {}
+    }
+
+    /**
+     * Collect fuse-overlayfs mountpoints under {@code dir} from /proc/mounts.
+     *
+     * <p>/proc/mounts columns: {@code <device> <mountpoint> <fstype> ...}. For fuse-overlayfs
+     * the device is {@code fuse-overlayfs} and the fstype is {@code fuse.fuse-overlayfs}
+     * (note the {@code fuse.} prefix — matching on the fstype as {@code "fuse-overlayfs"}
+     * silently matched nothing, which is how this method's earlier version leaked mounts).
+     */
+    private static List<String> listFuseMountsUnder(Path dir) {
+        List<String> mounts = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/mounts"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                // Format: <device> <mountpoint> <type> <options> ...
                 String[] parts = line.split("\\s+");
-                if (parts.length >= 3 && "fuse-overlayfs".equals(parts[2])
-                        && parts[1].startsWith(overlayTmpDir.toString())) {
-                    staleMounts.add(parts[1]);
+                if (parts.length >= 3 && "fuse-overlayfs".equals(parts[0])
+                        && parts[1].startsWith(dir.toString())) {
+                    mounts.add(parts[1]);
                 }
             }
-        } catch (IOException e) {
-            // /proc/mounts not readable — nothing to clean up
-            return;
-        }
+        } catch (IOException ignored) {}
+        return mounts;
+    }
 
-        for (String mountpoint : staleMounts) {
-            System.err.println("[overlay] cleaning up stale mount: " + mountpoint);
-            try {
-                Process p = new ProcessBuilder("fusermount3", "-u", mountpoint)
-                        .redirectErrorStream(true).start();
-                p.getInputStream().readAllBytes();
-                p.waitFor(10, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                System.err.println("[overlay] failed to unmount " + mountpoint + ": " + e.getMessage());
+    /** True iff {@code mountPoint} is listed as a mount in /proc/mounts. */
+    private static boolean isMounted(Path mountPoint) {
+        String target = mountPoint.toString();
+        try (BufferedReader br = new BufferedReader(new FileReader("/proc/mounts"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\s+");
+                if (parts.length >= 2 && target.equals(parts[1])) return true;
             }
-        }
+        } catch (IOException ignored) {}
+        return false;
     }
 
     public Path mountPoint() { return mountPoint; }
@@ -129,36 +160,61 @@ public class OverlayMount implements AutoCloseable {
         if (closed) return;
         closed = true;
 
-        // Kill processes whose cwd is inside the mountpoint so unmount doesn't get "device busy"
+        // Kill processes whose cwd is inside the mountpoint so unmount doesn't get "device busy".
+        // Note: mvnd daemons have a stable cwd outside the mount (see commit 61946c5) and are
+        // intentionally kept alive — they won't match here even though their open FDs keep the
+        // mount busy. That's handled by the lazy-unmount fallback below.
         killProcessesIn(mountPoint);
 
-        // Retry unmount with backoff
-        boolean unmounted = false;
-        for (int attempt = 0; attempt < 5; attempt++) {
-            try {
-                Process p = new ProcessBuilder("fusermount3", "-u", mountPoint.toString())
-                        .redirectErrorStream(true).start();
-                p.getInputStream().readAllBytes();
-                if (p.waitFor(10, TimeUnit.SECONDS) && p.exitValue() == 0) {
-                    unmounted = true;
-                    break;
-                }
-            } catch (Exception e) {
-                // retry
-            }
-            try { Thread.sleep(500L * (attempt + 1)); } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
-        }
+        // Regular unmount first; if that fails (e.g. a live mvnd daemon is holding a JAR open),
+        // fall back to a lazy unmount which queues the detach. The fuse-overlayfs process
+        // only actually exits when the last FD closes, so with mvnd keeping FDs open the
+        // mount entry may linger in /proc/mounts after `-uz` returns 0.
+        tryUnmount(mountPoint, false);
+        if (isMounted(mountPoint)) tryUnmount(mountPoint, true);
 
-        if (!unmounted) {
-            System.err.println("[overlay] WARNING: could not unmount " + mountPoint);
+        if (isMounted(mountPoint)) {
+            // Recursive delete through a live FUSE mount would descend the entire lower layer
+            // (the full ~/.m2/repository) and issue one FUSE syscall per file — hours of I/O.
+            // And rmdir on the mountpoint would fail with EBUSY. Skip; cleanupStaleMounts()
+            // sweeps it on the next run after daemons release their FDs.
+            System.err.println("[overlay] WARNING: could not unmount " + mountPoint
+                    + " — skipping delete (will be cleaned on next start)");
+            return;
         }
 
         deleteQuietly(mountPoint);
         deleteQuietly(upperDir);
         deleteQuietly(workDir);
+    }
+
+    /**
+     * Attempt to unmount {@code mountPoint}. With {@code lazy=false}, retries up to 5 times
+     * with backoff. With {@code lazy=true}, issues a single {@code -uz} (MNT_DETACH) call.
+     */
+    private static boolean tryUnmount(Path mountPoint, boolean lazy) {
+        String flag = lazy ? "-uz" : "-u";
+        int attempts = lazy ? 1 : 5;
+        for (int attempt = 0; attempt < attempts; attempt++) {
+            try {
+                Process p = new ProcessBuilder("fusermount3", flag, mountPoint.toString())
+                        .redirectErrorStream(true).start();
+                p.getInputStream().readAllBytes();
+                if (p.waitFor(10, TimeUnit.SECONDS) && p.exitValue() == 0) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // retry
+            }
+            if (attempt < attempts - 1) {
+                try { Thread.sleep(500L * (attempt + 1)); }
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     /**

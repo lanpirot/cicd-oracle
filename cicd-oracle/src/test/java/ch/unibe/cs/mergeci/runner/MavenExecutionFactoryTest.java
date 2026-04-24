@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for optimizations introduced since rq2-before-overlayfs:
  * <ul>
  *   <li>Two-phase compile-then-test (skips tests when modules can't beat best)</li>
- *   <li>Donor registry (evolving donor, {@link DonorTracker#isBetterDonor}, {@link DonorTracker#isDonorUsable})</li>
+ *   <li>Donor registry (evolving donor, {@link DonorTracker#promoteDonorIfBetter}, {@link DonorTracker#isDonorUsable})</li>
  *   <li>Baseline time normalization (decomposed c+t scaling)</li>
  *   <li>VariantScore 4th tiebreaker (variant index)</li>
  *   <li>SNAPSHOT multi-module detection</li>
@@ -303,7 +303,7 @@ public class MavenExecutionFactoryTest extends BaseTest {
         }
     }
 
-    // ── Donor registry: isDonorUsable / isBetterDonor ───────────────────────
+    // ── Donor registry: isDonorUsable / promoteDonorIfBetter ────────────────
 
     @Nested
     class DonorRegistry {
@@ -334,58 +334,75 @@ public class MavenExecutionFactoryTest extends BaseTest {
             assertTrue(DonorTracker.isDonorUsable(cr));
         }
 
-        @Test
-        void isBetterDonor_nullCandidate_false() {
-            CompilationResult current = CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
-            assertFalse(DonorTracker.isBetterDonor(null, current));
+        private CompilationResult cr(int successfulModules, int failedModules) {
+            List<CompilationResult.ModuleResult> modules = new java.util.ArrayList<>();
+            for (int i = 0; i < successfulModules; i++) modules.add(module("S" + i, CompilationResult.Status.SUCCESS));
+            for (int i = 0; i < failedModules; i++) modules.add(module("F" + i, CompilationResult.Status.FAILURE));
+            CompilationResult.Status status = failedModules == 0
+                    ? CompilationResult.Status.SUCCESS
+                    : CompilationResult.Status.FAILURE;
+            return CompilationResult.forTest(status, modules);
+        }
+
+        private TestTotal tests(int passed) {
+            return testTotal(passed, 0, 0, 1f);
         }
 
         @Test
-        void isBetterDonor_noCurrent_usableCandidate_true() {
-            CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.SUCCESS, List.of());
-            assertTrue(DonorTracker.isBetterDonor(candidate, null));
+        void promote_firstCandidate_becomesDonor() {
+            DonorTracker tracker = new DonorTracker();
+            Path p = Path.of("/tmp/v1");
+            Path old = tracker.promoteDonorIfBetter(p, cr(2, 0), tests(10), "1");
+            assertNull(old);
+            assertEquals(p, tracker.getDonorPath());
+            assertEquals(2, tracker.getDonorScore().successfulModules());
         }
 
         @Test
-        void isBetterDonor_moreModules_true() {
-            CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.SUCCESS),
-                            module("B", CompilationResult.Status.SUCCESS),
-                            module("C", CompilationResult.Status.FAILURE)));
-            CompilationResult current = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.SUCCESS),
-                            module("B", CompilationResult.Status.FAILURE),
-                            module("C", CompilationResult.Status.FAILURE)));
-            assertTrue(DonorTracker.isBetterDonor(candidate, current));
+        void promote_moreModules_replaces() {
+            DonorTracker tracker = new DonorTracker();
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(1, 1), tests(10), "1");
+            Path old = tracker.promoteDonorIfBetter(Path.of("/tmp/v2"), cr(2, 0), tests(5), "2");
+            assertEquals(Path.of("/tmp/v1"), old);
+            assertEquals(Path.of("/tmp/v2"), tracker.getDonorPath());
         }
 
         @Test
-        void isBetterDonor_fewerModules_false() {
-            CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.SUCCESS),
-                            module("B", CompilationResult.Status.FAILURE)));
-            CompilationResult current = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.SUCCESS),
-                            module("B", CompilationResult.Status.SUCCESS)));
-            assertFalse(DonorTracker.isBetterDonor(candidate, current));
+        void promote_fewerModules_rejects() {
+            DonorTracker tracker = new DonorTracker();
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(2, 0), tests(10), "1");
+            Path old = tracker.promoteDonorIfBetter(Path.of("/tmp/v2"), cr(1, 1), tests(100), "2");
+            assertNull(old);
+            assertEquals(Path.of("/tmp/v1"), tracker.getDonorPath());
         }
 
         @Test
-        void isBetterDonor_equalModules_false() {
-            CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.SUCCESS),
-                            module("B", CompilationResult.Status.FAILURE)));
-            CompilationResult current = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.SUCCESS),
-                            module("B", CompilationResult.Status.FAILURE)));
-            assertFalse(DonorTracker.isBetterDonor(candidate, current));
+        void promote_equalModules_moreTests_replaces() {
+            // New in the VariantScore-based comparator: tests are a tiebreaker, so a
+            // candidate with same modules and more passing tests becomes the new donor.
+            DonorTracker tracker = new DonorTracker();
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(2, 0), tests(10), "1");
+            Path old = tracker.promoteDonorIfBetter(Path.of("/tmp/v2"), cr(2, 0), tests(20), "2");
+            assertEquals(Path.of("/tmp/v1"), old);
+            assertEquals(Path.of("/tmp/v2"), tracker.getDonorPath());
+            assertEquals(20, tracker.getDonorScore().passedTests());
         }
 
         @Test
-        void isBetterDonor_unusableCandidate_false() {
-            CompilationResult candidate = CompilationResult.forTest(CompilationResult.Status.FAILURE,
-                    List.of(module("A", CompilationResult.Status.FAILURE)));
-            assertFalse(DonorTracker.isBetterDonor(candidate, null));
+        void promote_equalModulesAndTests_rejects() {
+            DonorTracker tracker = new DonorTracker();
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(2, 0), tests(10), "1");
+            Path old = tracker.promoteDonorIfBetter(Path.of("/tmp/v2"), cr(2, 0), tests(10), "2");
+            assertNull(old);
+            assertEquals(Path.of("/tmp/v1"), tracker.getDonorPath());
+        }
+
+        @Test
+        void promote_unusableCandidate_rejects() {
+            DonorTracker tracker = new DonorTracker();
+            Path old = tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(0, 1), tests(0), "1");
+            assertNull(old);
+            assertNull(tracker.getDonorPath());
         }
     }
 
