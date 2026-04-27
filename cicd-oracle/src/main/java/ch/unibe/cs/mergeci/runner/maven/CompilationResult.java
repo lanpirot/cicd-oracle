@@ -128,7 +128,7 @@ public class CompilationResult {
             // Real timeouts are detected via the "[INFO] BUILD TIMEOUT" sentinel written
             // by MavenProcessExecutor.handleTimeout(), so this path is never a timeout.
             this.totalTime = 0;
-            this.buildStatus = null;
+            this.buildStatus = Status.SCAN_FAILURE;
             return;
         }
 
@@ -212,7 +212,11 @@ public class CompilationResult {
         SUCCESS,
         FAILURE,
         SKIPPED,
-        TIMEOUT
+        TIMEOUT,
+        /** Maven exited before any module reached compile (e.g. unparseable POM,
+         *  unresolvable parent, missing project descriptor). The log has neither
+         *  a Reactor Summary nor a BUILD SUCCESS/FAILURE/TIMEOUT line. */
+        SCAN_FAILURE
     }
 
     private float parseTime(String timeString, String timeUnit) {

@@ -42,17 +42,18 @@ public class CompilationResultTest extends BaseTest {
     }
 
     @Test
-    void parsesQuickMavenFailureAsNull() throws IOException {
+    void parsesQuickMavenFailureAsScanFailure() throws IOException {
         // Fixture: Maven exits immediately with a POM-resolution error — has [INFO] lines but
         // no BUILD SUCCESS/FAILURE/TIMEOUT line.  Must NOT be misclassified as TIMEOUT.
-        // (This is the chronicle-queue / jackson-databind SNAPSHOT pattern.)
+        // (This is the chronicle-queue / jackson-databind SNAPSHOT pattern, plus the
+        // common case of merge variants that produce unparseable pom.xml content.)
         CompilationResult result = parse("compilation-result_2.txt");
-        assertNull(result.getBuildStatus(),
-                "quick Maven setup failure (no BUILD line, no timeout sentinel) should yield null status");
+        assertEquals(CompilationResult.Status.SCAN_FAILURE, result.getBuildStatus(),
+                "quick Maven setup failure (no BUILD line, no timeout sentinel) should yield SCAN_FAILURE");
     }
 
     @Test
-    void nullStatusIsNeverSuccess() throws IOException {
+    void scanFailureIsNeverSuccess() throws IOException {
         CompilationResult result = parse("compilation-result_2.txt");
         assertNotEquals(CompilationResult.Status.SUCCESS, result.getBuildStatus());
         assertNotEquals(CompilationResult.Status.TIMEOUT, result.getBuildStatus());
