@@ -302,13 +302,20 @@ public class VariantExecutionEngine {
                 javaHomeHolder[0] = JavaVersionResolver.resolveJavaHome(variantPath).orElse(null);
             }
 
-            // 2. Cache warming from donor
-            if (config.useCache) {
-                // Overlay variants inherit .mvn/ cache config from the base — only
-                // inject for non-overlay variants that were built from scratch.
-                if (!config.useOverlay) {
+            // 2. Maven extensions + cache warming from donor.
+            //    Overlay variants inherit .mvn/ from the base — only inject for
+            //    non-overlay variants that were built from scratch.
+            //    All modes inject the maven-hook (for stable behavior by variant
+            //    index across modes); only cache modes additionally enable the
+            //    build-cache extension and warm target/ from the donor.
+            if (!config.useOverlay) {
+                if (config.useCache) {
                     cacheManager.injectCacheArtifacts(variantPath);
+                } else {
+                    cacheManager.injectMavenHookOnly(variantPath);
                 }
+            }
+            if (config.useCache) {
                 warmFromDonorWithRetry(donorTracker, cacheManager, variantPath, variantIndex);
             }
 

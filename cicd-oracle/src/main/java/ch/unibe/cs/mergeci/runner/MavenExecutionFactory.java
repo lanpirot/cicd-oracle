@@ -145,10 +145,11 @@ public class MavenExecutionFactory {
             long totalBudgetSeconds = AppConfig.variantBudget(baselineSeconds);
 
             // ── Overlay base ──────────────────────────────────────────────────
-            // The cache manager is created here (not later) so that cache-mode overlay
-            // builds can inject .mvn/extensions.xml into the shared base directory once.
-            // Variants overlay-mounted on top inherit the registration of both the
-            // maven-build-cache extension and the maven-hook (early-abort gate).
+            // The cache manager is created here (not later) so that overlay builds can
+            // inject .mvn/extensions.xml into the shared base directory once. All variant
+            // modes get the maven-hook (for stable fixReactorArtifact + stale-report
+            // cleanup → comparable test counts by variant index across modes); only cache
+            // modes additionally get the maven-build-cache extension and its config.
             MavenCacheManager cacheManager = new MavenCacheManager(logDir.resolveSibling("shared-cache"));
             Path basePath = null;
             long baseSizeBytes = 0;
@@ -156,6 +157,8 @@ public class MavenExecutionFactory {
                 basePath = builder.buildBase(context, AppConfig.OVERLAY_TMP_DIR);
                 if (isCache) {
                     cacheManager.injectCacheArtifacts(basePath);
+                } else {
+                    cacheManager.injectMavenHookOnly(basePath);
                 }
                 baseSizeBytes = org.apache.commons.io.FileUtils.sizeOfDirectory(basePath.toFile());
                 System.out.printf("[overlay] base: %d MB, dir growth: %d MB%n",

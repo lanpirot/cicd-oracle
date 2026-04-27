@@ -88,7 +88,8 @@ private static final boolean FRESH_RUN = false;
         return concat(
                 executableArgs,
                 reactorFlagOrEmpty(),
-                new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FORCE_UPDATE, MAVEN_FAIL_MODE,
+                        MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
                 SKIP_STATIC_ANALYSIS,
                 BOUND_PARALLELISM,
@@ -104,7 +105,7 @@ private static final boolean FRESH_RUN = false;
         return concat(
                 executableArgs,
                 reactorFlagOrEmpty(),
-                new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FORCE_UPDATE, MAVEN_FAIL_MODE},
                 SKIP_STATIC_ANALYSIS,
                 BOUND_PARALLELISM,
                 new String[]{"compile"});
@@ -121,7 +122,8 @@ private static final boolean FRESH_RUN = false;
         return concat(
                 executableArgs,
                 reactorFlagOrEmpty(),
-                new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FORCE_UPDATE, MAVEN_FAIL_MODE,
+                        MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
                         "-Dcicd.bestModules=" + bestModules},
                 SKIP_STATIC_ANALYSIS,
@@ -409,6 +411,24 @@ private static final boolean FRESH_RUN = false;
      * produced by redirectOutput() clean and reliably parseable.
      */
     public static final String MAVEN_BATCH_MODE = "-B";
+
+    /**
+     * Force-update flag (-U / --update-snapshots).
+     *
+     * <p>Two effects we rely on:
+     * <ol>
+     *   <li>Re-checks SNAPSHOT artifacts (irrelevant for our well-populated local repo).</li>
+     *   <li><b>Ignores cached 404s on missing artifacts</b>. Without {@code -U}, when a previous
+     *       Maven invocation failed to resolve {@code <some-reactor-parent>} from central (because
+     *       the project's parent POM lives only in the source tree, never published), the failure
+     *       gets cached in {@code ~/.m2/.../_remote.repositories} and Maven refuses to retry until
+     *       the repository's update interval elapses (default: daily). On per-thread m2 overlays
+     *       used by sequential variant modes, that means the very first variant's transient scan-
+     *       phase 404 poisons every subsequent variant on the same thread, surfacing as
+     *       SCAN_FAILURE in modes where the parallel modes (each on a fresh m2 overlay) succeed.</li>
+     * </ol>
+     */
+    public static final String MAVEN_FORCE_UPDATE = "-U";
 
     /**
      * Maven reactor behavior flag.

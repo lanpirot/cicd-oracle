@@ -1,0 +1,7 @@
+<extensions>
+    <extension>
+        <groupId>ch.unibe.cs</groupId>
+        <artifactId>maven-hook</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </extension>
+</extensions>

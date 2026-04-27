@@ -73,6 +73,30 @@ public class MavenCacheManager {
         }
     }
 
+    /**
+     * Inject only the maven-hook extension (without the build-cache extension)
+     * so non-cache modes get the same {@code fixReactorArtifact} /
+     * stale-surefire-reports cleanup behavior as cache modes. This keeps
+     * per-variant test counts comparable across modes — without that, modules
+     * whose reactor artifact file is left {@code null} after a partial build
+     * cause surefire to skip a few test classes in unhooked modes, breaking
+     * cross-mode sanity comparisons by variant index.
+     *
+     * <p>The hook's early-abort gate is a no-op unless {@code -Dcicd.bestModules}
+     * is passed, so installing it in non-cache modes does not change their
+     * gating behavior.
+     */
+    public void injectMavenHookOnly(Path projectDir) {
+        try {
+            Path mvnDir = projectDir.resolve(".mvn");
+            Files.createDirectories(mvnDir);
+            copyClasspathResource("/cache-artifacts/extensions-hook-only.xml",
+                    mvnDir.resolve("extensions.xml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void copyClasspathResource(String resourcePath, Path destination) throws IOException {
         try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
             if (in == null) {
