@@ -13,10 +13,12 @@ Research pipeline that studies automated merge conflict resolution by brute-forc
 ```bash
 mvn clean package
 # RQ2 (fresh run clears all prior output)
-java -DfreshRun=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
+java -DfreshRun=true -DoverlayTmpDir=/dev/shm -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
 # RQ3 (resume — skips already-processed merges)
-java -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.RQ3PipelineRunner
+java -DoverlayTmpDir=/dev/shm -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.RQ3PipelineRunner
 ```
+
+`-DoverlayTmpDir=/dev/shm` is required (see [Configuration](#configuration)).
 
 ## Requirements
 
@@ -93,9 +95,18 @@ Properties are passed as `-D` flags to `java` (not to Maven):
 | `rq2SampleRepos` | `50` | Number of repos to sample for RQ2 |
 | `rq2MergesPerRepo` | `1` | Merges per repo in RQ2 |
 | `rq3BestMode` | `cache_parallel` | Best experiment mode from RQ2 to use in RQ3 |
-| `maxThreads` | auto | Hard cap on parallel build threads (auto = `max(1, min((MemAvail−5GB)/peak, cores−2))`) |
-| `overlayTmpDir` | `~/tmp/bruteforce_tmp` | Overlay/variant build dir — set to `/dev/shm` for RAM-backed I/O |
+| `maxThreads` | auto | Hard cap on parallel build threads (auto = `max(1, min((MemAvail−10GB)/peak, cores−2))`) |
+| `overlayTmpDir` | `~/tmp/bruteforce_tmp` | Overlay/variant build dir — **always set to `/dev/shm`** for both local and VM runs (see below) |
 | `projectDir` | `~/projects/merge++/cicd-oracle` | Repo root used to locate the Python plot script |
+
+### Required: `-DoverlayTmpDir=/dev/shm`
+
+Always pass `-DoverlayTmpDir=/dev/shm` (local **and** on the VM). Two reasons:
+
+1. **Symmetric RAM accounting.** Both the human-baseline build and the variant phase write under `OVERLAY_TMP_DIR/projects/`. When that path is on tmpfs, baseline and variants share the same I/O backing, so `RamSampler`'s per-daemon peak measurement reflects the same memory pressure the variant phase will reproduce. Pointing only the variants at tmpfs (or only the baseline at disk) makes the cap formula divide spareRam by an unrepresentative number.
+2. **Speed.** Variant builds are I/O-bound on Maven plugin file writes; tmpfs eliminates the disk round-trips. `/dev/shm` is sized at 50% of RAM by default, well above what jplag-class projects need.
+
+The pipeline auto-derives `-T = max(1, floor(cores / maxThreads))` per mvnd daemon and passes it to both baseline and parallel-mode invocations, keeping `(intra-daemon reactor threads × parallel daemons) ≈ cores` so you don't oversubscribe the CPU. Sequential modes drop the flag and keep mvnd's default reactor.
 
 ### Example: full RQ2 run with all flags
 

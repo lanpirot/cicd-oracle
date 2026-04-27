@@ -36,15 +36,58 @@ private static final boolean FRESH_RUN = false;
     }
 
     /**
+     * Per-daemon mvnd reactor thread count ({@code -T} flag), set before each phase.
+     * Zero leaves {@code -T} off so mvnd uses its default ({@code cores/2 + 1}).
+     * Applied symmetrically to the human-baseline build and parallel variant modes
+     * so that {@link #computeMaxThreads} divides spareRam by a per-daemon peak that
+     * was actually measured under the same reactor parallelism the variant phase
+     * will reproduce. {@link #reactorThreadsFor} computes the value.
+     *
+     * <p>Volatile because the orchestrator sets it sequentially between phases
+     * while worker threads inside a phase read it via {@link #reactorFlagOrEmpty}.
+     */
+    private static volatile int reactorThreadsForCurrentRun = 0;
+
+    /** Set the {@code -T} value used by the next Maven invocations; 0 disables the flag. */
+    public static void setReactorThreads(int n) {
+        reactorThreadsForCurrentRun = Math.max(0, n);
+    }
+
+    /** Current {@code -T} value (0 = no flag). */
+    public static int getReactorThreads() {
+        return reactorThreadsForCurrentRun;
+    }
+
+    /**
+     * Compute the per-daemon {@code -T} value for a given variant fan-out.
+     * Formula: {@code max(1, floor(cores / variantThreads))}. Picked so that
+     * {@code (intra-daemon reactor threads) × (parallel daemons) ≈ cores},
+     * keeping the CPU saturated without oversubscribing when N variant builds
+     * each spawn an mvnd daemon with its own internal reactor.
+     */
+    public static int reactorThreadsFor(int variantThreads) {
+        int cores = Runtime.getRuntime().availableProcessors();
+        return Math.max(1, cores / Math.max(1, variantThreads));
+    }
+
+    /** {@code ["-T<n>"]} when set, empty array otherwise — used inside {@code buildCommand*}. */
+    private static String[] reactorFlagOrEmpty() {
+        int n = reactorThreadsForCurrentRun;
+        return n > 0 ? new String[]{"-T" + n} : new String[0];
+    }
+
+    /**
      * Build the full Maven command array for a normal build.
      * @param executableArgs executable prefix, e.g. {@code ["mvn"]} or {@code ["mvnd", "--maven-home", "/path"]}
      */
     public static String[] buildCommand(String[] executableArgs, String mavenGoal) {
         return concat(
                 executableArgs,
+                reactorFlagOrEmpty(),
                 new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
                 SKIP_STATIC_ANALYSIS,
+                BOUND_PARALLELISM,
                 new String[]{mavenGoal});
     }
 
@@ -54,9 +97,11 @@ private static final boolean FRESH_RUN = false;
     public static String[] buildCommandOffline(String[] executableArgs, String mavenGoal) {
         return concat(
                 executableArgs,
+                reactorFlagOrEmpty(),
                 new String[]{"-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
                 SKIP_STATIC_ANALYSIS,
+                BOUND_PARALLELISM,
                 new String[]{mavenGoal});
     }
 
@@ -68,8 +113,10 @@ private static final boolean FRESH_RUN = false;
     public static String[] buildCompileOnlyCommand(String[] executableArgs) {
         return concat(
                 executableArgs,
+                reactorFlagOrEmpty(),
                 new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
                 SKIP_STATIC_ANALYSIS,
+                BOUND_PARALLELISM,
                 new String[]{"compile"});
     }
 
@@ -77,8 +124,10 @@ private static final boolean FRESH_RUN = false;
     public static String[] buildCompileOnlyCommandOffline(String[] executableArgs) {
         return concat(
                 executableArgs,
+                reactorFlagOrEmpty(),
                 new String[]{"-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
                 SKIP_STATIC_ANALYSIS,
+                BOUND_PARALLELISM,
                 new String[]{"compile"});
     }
 
@@ -92,10 +141,12 @@ private static final boolean FRESH_RUN = false;
                                                  int bestModules) {
         return concat(
                 executableArgs,
+                reactorFlagOrEmpty(),
                 new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
                         "-Dcicd.bestModules=" + bestModules},
                 SKIP_STATIC_ANALYSIS,
+                BOUND_PARALLELISM,
                 new String[]{mavenGoal});
     }
 
@@ -243,13 +294,19 @@ private static final boolean FRESH_RUN = false;
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     private static final int    THREAD_FALLBACK         = 4;
-    private static final long   RAM_HEADROOM            = 5L * 1024 * 1024 * 1024;  // 5 GB reserved for OS (dedicated VM)
+    // 10 GB headroom (not 5) absorbs RAM that the baseline measurement structurally
+    // cannot see when N>1 daemons run concurrently: orchestrator JVM growth across
+    // a long variant phase, per-daemon JIT/metaspace/code-cache creep, page-cache
+    // pinning under sustained N× I/O, and small fixed costs from extra mvnd CLI
+    // launchers and fuse-overlayfs daemons. The cap formula otherwise runs at
+    // exactly 100% of nameplate capacity and OOMs on ~10% workload variance.
+    private static final long   RAM_HEADROOM            = 10L * 1024 * 1024 * 1024;
     private static final long   RAM_PER_THREAD_DEFAULT  = 10L * 1024 * 1024 * 1024; // 10 GB assumed when peak unknown
 
     /**
      * Compute the number of parallel Maven variant threads.
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − 5 GB) / peak, cores − 2))}.
+     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 2))}.
      *
      * <ul>
      *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build via
@@ -257,7 +314,7 @@ private static final boolean FRESH_RUN = false;
      *   <li>When {@code peakBuildRamBytes == 0} (unknown): divides spare RAM by
      *       {@value #RAM_PER_THREAD_DEFAULT} bytes (10 GB) as a conservative estimate.</li>
      * </ul>
-     * Spare RAM = {@code MemAvailable − 5 GB} headroom for OS (dedicated VM).
+     * Spare RAM = {@code MemAvailable − 10 GB} headroom for OS + variance slack.
      * Result is capped at {@code availableProcessors − 2} and floored at 1.
      * Returns {@value #THREAD_FALLBACK} on any error (e.g. non-Linux systems).
      *
@@ -359,7 +416,30 @@ private static final boolean FRESH_RUN = false;
             // Java 17+.  The JVM crashes immediately (exit 134) and surefire reports 0 tests
             // while Maven still exits BUILD SUCCESS due to -Dmaven.test.failure.ignore=true.
             // The pipeline does not use JaCoCo coverage data, so skipping it globally is safe.
-            "-Djacoco.skip=true"
+            "-Djacoco.skip=true",
+            // maven-javadoc-plugin :jar forks a per-module javadoc JVM (~300 MB resident each).
+            // Multi-module projects bound to the package phase can trigger 30+ forks per build,
+            // multiplied by the variant fan-out under mvnd's parallel reactor.  The
+            // *-javadoc.jar artefact is never consumed for merge-conflict evaluation.
+            "-Dmaven.javadoc.skip=true"
+    };
+
+    /**
+     * Cap the per-Maven-invocation parallelism of plugins we still need to run.
+     * Defaults are usually safe, but a project's pom.xml can override surefire to
+     * {@code forkCount=1C} (one test JVM per CPU core) or enable intra-fork parallel
+     * tests — multiplied by the variant fan-out under mvnd's parallel reactor that
+     * scales into dozens of test JVMs and breaks the cap formula's per-thread RAM
+     * model. Command-line {@code -D} overrides any pom.xml setting.
+     */
+    private static final String[] BOUND_PARALLELISM = {
+            // surefire: one test JVM per Maven invocation, no intra-fork test threads
+            "-DforkCount=1",
+            "-Dsurefire.parallel=none",
+            // failsafe (integration tests, when mavenGoal=verify): same bound
+            "-Dfailsafe.forkCount=1",
+            // compiler: keep javac in-process — no separate JVM per module compile
+            "-Dmaven.compiler.fork=false"
     };
 
     private static final int TIMEOUT_MULTIPLIER = 10;

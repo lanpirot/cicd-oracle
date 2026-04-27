@@ -65,7 +65,11 @@ RQ1 large artefacts (`all_conflicts.csv`, fold CSVs, `.pt` checkpoints, predicti
 
 ### Key Configuration (`config/AppConfig.java`)
 
-Central source of truth for all paths, timeouts, Java installations, and feature flags. Machine-specific paths (e.g., `JAVA_HOMES`) must match the actual JDK installations on the host — run `scripts/setup_vm.sh` on a fresh VM which installs all required JDKs and prints the expected paths. `PYTHON_EXECUTABLE` is resolved at startup by walking up from cwd to find `.venv/bin/python3`; falls back to system `python3`. `MAX_THREADS` is computed dynamically by `computeMaxThreads()` as `max(1, min((MemAvailable − 5 GB) / peakBuildRamBytes, cores − 2))`, falling back to 4 on error.
+Central source of truth for all paths, timeouts, Java installations, and feature flags. Machine-specific paths (e.g., `JAVA_HOMES`) must match the actual JDK installations on the host — run `scripts/setup_vm.sh` on a fresh VM which installs all required JDKs and prints the expected paths. `PYTHON_EXECUTABLE` is resolved at startup by walking up from cwd to find `.venv/bin/python3`; falls back to system `python3`. `MAX_THREADS` is computed dynamically by `computeMaxThreads()` as `max(1, min((MemAvailable − 10 GB) / peakBuildRamBytes, cores − 2))`, falling back to 4 on error. The 10 GB headroom (raised from 5 GB) absorbs orchestrator JVM growth, per-daemon JIT/metaspace creep, page-cache pinning under sustained N× I/O, and other RAM that the baseline measurement structurally cannot see when N>1 daemons run concurrently.
+
+`AppConfig.reactorThreadsFor(variantThreads)` returns `max(1, floor(cores / variantThreads))` and the orchestrator calls `setReactorThreads()` before each phase: baseline uses `reactorThreadsFor(MAX_THREADS)` so its peak measurement is taken under the same per-daemon reactor parallelism a parallel variant phase will reproduce; parallel modes use `reactorThreadsFor(actualThreads)`; sequential modes drop the flag entirely. The `-T<n>` flag is then injected by `buildCommand*` in `AppConfig`.
+
+Always pass `-DoverlayTmpDir=/dev/shm` (local and on the VM). Both the human-baseline build and the variants write under `OVERLAY_TMP_DIR/projects/`, so when that path is on tmpfs they share the same I/O backing and the per-daemon RAM measurement reflects what the variant phase will actually do.
 
 Overridable at runtime via system properties: `freshRun`, `maxConflictMerges`, `reanalyzeSuccess`, `rq3BestMode`.
 

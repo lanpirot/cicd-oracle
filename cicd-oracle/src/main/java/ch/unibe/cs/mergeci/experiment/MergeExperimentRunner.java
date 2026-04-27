@@ -128,7 +128,11 @@ public class MergeExperimentRunner {
         // unmounts what it can and deletes every non-mounted entry. Daemons are killed
         // between modes (see ResolutionVariantRunner) so by the next mode start no
         // overlays should be held live, and this call fully drains the scratch dir.
-        Path tmpProjectDir = tmpDir.resolve("projects");
+        // Baseline (mainProject) and variants share the overlay temp dir so they
+        // sit on the same filesystem — when -DoverlayTmpDir points at a tmpfs
+        // (e.g. /dev/shm), both use RAM, and RamSampler's per-daemon peak measured
+        // on the baseline reflects the same I/O backing the variant phase will use.
+        Path tmpProjectDir = AppConfig.OVERLAY_TMP_DIR.resolve("projects");
         OverlayMount.cleanupStaleMounts(tmpProjectDir);
 
         // Time the analysis

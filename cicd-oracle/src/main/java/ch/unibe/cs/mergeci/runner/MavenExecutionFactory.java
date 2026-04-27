@@ -111,6 +111,12 @@ public class MavenExecutionFactory {
             }
 
             // ── Baseline measurement ──────────────────────────────────────────
+            // Pin the baseline's mvnd reactor parallelism to the same per-daemon
+            // -T that parallel variant modes will use.  Without this, the baseline
+            // measures peak RAM under mvnd's default (~cores/2+1) reactor threads,
+            // but the variant phase runs with floor(cores/N) — and the cap formula
+            // divides spareRam by a peak that doesn't match the workload.
+            AppConfig.setReactorThreads(AppConfig.reactorThreadsFor(AppConfig.MAX_THREADS));
             long rawBaselineSeconds;
             long measuredPeakRam = 0;
             long measuredDirGrowth = 0;
@@ -158,6 +164,11 @@ public class MavenExecutionFactory {
                 threads = AppConfig.computeMaxThreads(measuredPeakRam);
             }
             maxThreads = threads;
+            // Pin per-daemon reactor parallelism for the variant phase.  Parallel modes
+            // get -T = floor(cores/threads) so that (intra-daemon × parallel-daemons)
+            // ≈ cores; sequential modes drop the flag and let mvnd use its default
+            // (their single daemon is the only thing using cores anyway).
+            AppConfig.setReactorThreads(isParallel ? AppConfig.reactorThreadsFor(threads) : 0);
             if (!skipVariants) {
                 System.out.printf("[budget: %ds, threads: %d]%n", totalBudgetSeconds, threads);
             } else {
