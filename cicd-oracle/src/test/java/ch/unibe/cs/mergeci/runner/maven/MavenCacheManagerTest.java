@@ -44,9 +44,11 @@ class MavenCacheManagerTest extends BaseTest {
         File nonExistentSource = tempDir.resolve("non-existent").toFile();
         File destination = tempDir.resolve("destination").toFile();
 
-        boolean result = cacheManager.copyTargetDirectories(nonExistentSource, destination);
-
-        assertFalse(result, "Should return false when source doesn't exist");
+        // Missing source = donor was demoted before we started; surface the typed
+        // signal so the caller can re-fetch and retry.
+        assertThrows(MavenCacheManager.DonorVanishedException.class,
+                () -> cacheManager.copyTargetDirectories(nonExistentSource, destination),
+                "Should throw DonorVanishedException when source doesn't exist");
     }
 
     @Test
@@ -56,9 +58,9 @@ class MavenCacheManagerTest extends BaseTest {
         Files.writeString(sourceFile, "test");
         File destination = tempDir.resolve("destination").toFile();
 
-        boolean result = cacheManager.copyTargetDirectories(sourceFile.toFile(), destination);
-
-        assertFalse(result, "Should return false when source is a file, not directory");
+        assertThrows(MavenCacheManager.DonorVanishedException.class,
+                () -> cacheManager.copyTargetDirectories(sourceFile.toFile(), destination),
+                "Should throw DonorVanishedException when source is a file, not directory");
     }
 
     @Test

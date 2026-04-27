@@ -22,6 +22,19 @@ import java.util.stream.Stream;
  */
 public class MavenCacheManager {
 
+    /**
+     * Signals that the donor source path was missing or vanished mid-walk —
+     * typically because the donor was demoted (and its tree deleted) by another
+     * thread while we were copying from it. Distinguished from generic I/O
+     * failures so callers can retry against the current donor instead of
+     * proceeding with no warmed cache.
+     */
+    public static class DonorVanishedException extends RuntimeException {
+        public DonorVanishedException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
     private final Path sharedCacheLocation;
 
     /**
@@ -80,8 +93,9 @@ public class MavenCacheManager {
      */
     public boolean copyTargetDirectories(File sourceProject, File destinationProject) {
         if (!sourceProject.exists() || !sourceProject.isDirectory()) {
-            System.err.println("Source project not found: " + sourceProject);
-            return false;
+            // Donor was demoted (and rm-rf'd by the promoting thread) before we
+            // even started. Caller can re-fetch the current donor and retry.
+            throw new DonorVanishedException("Donor source missing: " + sourceProject, null);
         }
 
         if (!destinationProject.exists()) {
@@ -92,6 +106,17 @@ public class MavenCacheManager {
             walk.filter(path -> path.toFile().isDirectory() &&
                             path.getFileName().toString().equals("target"))
                     .forEach(targetDir -> copyTargetDirectory(targetDir, sourceProject, destinationProject));
+        } catch (java.io.UncheckedIOException e) {
+            // Stream-time I/O failure. NoSuchFileException = donor tree deleted
+            // mid-walk → typed signal so the caller can retry against the current
+            // donor. Other unchecked I/O is best-effort partial copy (variant
+            // recompiles whatever didn't make it).
+            if (e.getCause() instanceof java.nio.file.NoSuchFileException) {
+                throw new DonorVanishedException(
+                        "Donor " + sourceProject + " tree vanished mid-walk", e);
+            }
+            System.err.println("Donor copy partial (non-vanish I/O): " + e.getMessage());
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
             return false;

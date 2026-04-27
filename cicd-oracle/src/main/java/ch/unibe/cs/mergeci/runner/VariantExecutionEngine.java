@@ -309,10 +309,7 @@ public class VariantExecutionEngine {
                 if (!config.useOverlay) {
                     cacheManager.injectCacheArtifacts(variantPath);
                 }
-                Path donorPath = donorTracker.getDonorPath();
-                if (donorPath != null) {
-                    cacheManager.copyTargetDirectories(donorPath.toFile(), variantPath.toFile());
-                }
+                warmFromDonorWithRetry(donorTracker, cacheManager, variantPath, variantIndex);
             }
 
             // 3. Apply conflict resolution (AFTER cache copy for timestamp ordering)
@@ -397,6 +394,41 @@ public class VariantExecutionEngine {
                 try { slot.close(); } catch (Exception ignored) {}
             }
         }
+    }
+
+    /**
+     * Copy warmed target/ trees from the current donor into {@code variantPath}.
+     * If the donor was demoted (and rm-rf'd) mid-copy, re-fetch the current donor
+     * and retry up to 3 attempts in total. If retries run out — or the new donor
+     * is the same as the one we just failed on — log a warning and proceed with no
+     * warmed cache (the variant rebuilds those classes from scratch, no failure).
+     */
+    private void warmFromDonorWithRetry(DonorTracker donorTracker,
+                                        MavenCacheManager cacheManager,
+                                        Path variantPath,
+                                        int variantIndex) {
+        Path donor = donorTracker.getDonorPath();
+        if (donor == null) return; // no donor yet — normal early in a mode
+
+        Path lastTried = null;
+        int attempts = 0;
+        while (donor != null && !donor.equals(lastTried) && attempts < 3) {
+            attempts++;
+            try {
+                cacheManager.copyTargetDirectories(donor.toFile(), variantPath.toFile());
+                return; // success (full or best-effort partial)
+            } catch (MavenCacheManager.DonorVanishedException dve) {
+                lastTried = donor;
+                donor = donorTracker.getDonorPath();
+                if (donor != null && !donor.equals(lastTried) && attempts < 3) {
+                    LOG.info("Variant {} cache warm: donor {} vanished, retrying with {}",
+                            variantIndex, lastTried, donor);
+                }
+            }
+        }
+        LOG.warn("Variant {} cache warm gave up after {} attempt(s); "
+                + "building without warmed cache (last donor {})",
+                variantIndex, attempts, lastTried);
     }
 
     private VariantSlot allocateSlot(VariantBuildContext context,
