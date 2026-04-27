@@ -336,8 +336,7 @@ public class VariantExecutionEngine {
             OverlayMount m2Overlay = acquireThreadM2Overlay(projectName);
             Path repoLocal = m2Overlay != null ? m2Overlay.mountPoint() : null;
             try {
-                int timeout = stopCondition.remainingSeconds();
-                if (timeout == 0) return; // deadline expired
+                if (stopCondition.remainingSeconds() == 0) return; // deadline expired
 
                 TwoPhaseRunner runner = new TwoPhaseRunner(
                         commandResolver,

@@ -347,7 +347,13 @@ public class MavenExecutionFactory {
 
         @Override
         public int remainingSeconds() {
-            return (int) Duration.between(Instant.now(), deadline).getSeconds();
+            // Clamp to 0 once the deadline has passed: the interface contract is
+            // 0 = expired, -1 = no deadline. Returning a negative number past
+            // the deadline made callers (the per-variant timeout closure in
+            // VariantExecutionEngine) hit the no-deadline fallback (600s) and
+            // let in-flight variants run that long past the merge deadline.
+            long secs = Duration.between(Instant.now(), deadline).getSeconds();
+            return (int) Math.max(secs, 0);
         }
     }
 
