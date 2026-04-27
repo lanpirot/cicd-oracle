@@ -121,8 +121,6 @@ public class DonorTracker {
         synchronized (this) {
             VariantScore currentScore = donorScore.get();
             if (currentScore != null && !candidateScore.isBetterThan(currentScore)) {
-                LOG.info("[cache-donor] variant {} NOT promoted — score {} vs donor {}'s {}",
-                        candidateKey, fmt(candidateScore), donorKey.get(), fmt(currentScore));
                 return null;
             }
 

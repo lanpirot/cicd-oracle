@@ -100,7 +100,6 @@ public class OverlayMount implements AutoCloseable {
         if (!Files.isDirectory(overlayTmpDir)) return;
 
         for (String mountpoint : listFuseMountsUnder(overlayTmpDir)) {
-            System.err.println("[overlay] cleaning up stale mount: " + mountpoint);
             Path mp = Path.of(mountpoint);
             tryUnmount(mp, false);
             tryUnmount(mp, true); // lazy fallback even if regular succeeded (idempotent)
