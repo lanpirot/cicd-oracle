@@ -239,9 +239,14 @@ public class VariantExecutionEngine {
 
             // Close the per-thread m2 overlays that we kept alive across variants.
             // Workers have been shut down, so nothing will ask for one after this.
-            for (OverlayMount m2 : threadM2Overlays.values()) {
+            //
+            // Each close() spends ~6s retrying a regular unmount because mvnd daemons
+            // (idleTimeout = 3h) keep FDs open on the m2 overlay until they exit.
+            // Closing in parallel turns N×6s of mode-teardown into ~6s wall — matters
+            // because cache_parallel + parallel hit this at every merge boundary.
+            threadM2Overlays.values().parallelStream().forEach(m2 -> {
                 try { m2.close(); } catch (Exception ignored) {}
-            }
+            });
             threadM2Overlays.clear();
         }
     }
