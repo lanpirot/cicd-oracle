@@ -556,6 +556,16 @@ public class ResolutionVariantRunner {
                     output.setBaselineFailureType(MergeFailureType.COMPILE_FAILURE.name());
                 }
             }
+            case SCAN_FAILURE -> {
+                // Maven exited before any module reached compile (unparseable POM,
+                // unresolvable parent, missing project descriptor, mvnw bootstrap failure).
+                // No source change can rescue these unless the build descriptor itself
+                // had the conflict markers — in which case a variant may produce a clean POM.
+                output.setBaselineBroken(true);
+                output.setBaselineFailureType(hasBuildFileMarkers
+                        ? MergeFailureType.BROKEN_MERGE.name()
+                        : MergeFailureType.INFRA_FAILURE.name());
+            }
             case SUCCESS -> {
                 TestTotal tests = processed.getAnalysisResult().testResults().get(projectName);
                 if (tests == null || tests.getRunNum() == 0) {
