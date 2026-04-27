@@ -144,28 +144,50 @@ def variant_score(variant: dict) -> tuple | None:
     return (modules, tests)
 
 
-def is_impact_merge(merge: dict) -> bool:
+def baseline_score_of(baseline_merge: dict) -> tuple | None:
     """
-    A merge is 'impact' if at least one non-baseline variant has a
-    different score than the baseline (variantIndex 0).
-    Mirrors Java filterImpactMerges.
+    Score the human-baseline build of a merge. The baseline lives in its own
+    human_baseline/<commit>.json file as the single variant with variantIndex==0.
+    """
+    for v in baseline_merge.get("variants", []):
+        if v.get("variantIndex") == 0:
+            return variant_score(v)
+    return None
+
+
+def variant_timed_out(variant: dict) -> bool:
+    """True if the variant didn't finish — either the runner killed it (variant.timedOut)
+    or Maven recorded a TIMEOUT buildStatus."""
+    if variant.get("timedOut"):
+        return True
+    cr = variant.get("compilationResult")
+    return cr is not None and cr.get("buildStatus") == "TIMEOUT"
+
+
+def is_impact_merge(merge: dict, baseline_score: tuple | None) -> bool:
+    """
+    A merge is 'impact' if at least one explored variant produced a different
+    outcome than the human baseline. Comparison rules (only applied when the
+    baseline itself is scoreable):
+      - timed-out variants are skipped (no opinion — we don't know what they'd do)
+      - non-timeout variants that still couldn't be scored (e.g. buildStatus == null)
+        count as DIFFERENT — a scoreable baseline that produced no status under a
+        different resolution is itself a regression
+      - otherwise compare the (modulesPassed, testsPassed) tuple
+    Mirrors Java filterImpactMerges modulo the null-compilation rule.
     """
     if merge.get("numConflictChunks", 0) == 0:
         return False
-    variants = merge.get("variants", [])
-    baseline_score = None
-    for v in variants:
-        if v.get("variantIndex") == 0:
-            baseline_score = variant_score(v)
-            break
     if baseline_score is None:
         return False
-    for v in variants:
+    for v in merge.get("variants", []):
         if v.get("variantIndex") == 0:
+            continue  # defensive — exploration variants start at index 1
+        if variant_timed_out(v):
             continue
         score = variant_score(v)
         if score is None:
-            continue  # timeout — excluded
+            return True  # didn't time out but produced no scoreable result → different
         if score != baseline_score:
             return True
     return False
@@ -174,17 +196,28 @@ def is_impact_merge(merge: dict) -> bool:
 def compute_statistics(all_data: dict) -> dict:
     """
     Compute cross-mode statistics (impact set, Java ratio data).
-    Uses the first available non-baseline mode for impact detection.
+    Pulls the per-merge baseline from human_baseline/<commit>.json and compares
+    it against variants from the first available exploration mode.
+    Preference order: cache_parallel > parallel > no_optimization > cache_sequential.
+    cache_parallel explores the largest variant set per merge so it gives the
+    tightest bound on whether resolution choice is impactful.
     Returns a dict with keys: all_merges (list), impact_set (set of mergeCommit strings).
     """
     source_mode = next(
-        (m for m in ["no_optimization", "parallel", "cache_parallel"] if all_data.get(m)),
+        (m for m in ["cache_parallel", "parallel", "no_optimization", "cache_sequential"]
+         if all_data.get(m)),
         None,
     )
     if source_mode is None:
         return {"all_merges": [], "impact_set": set()}
     all_merges = list(all_data[source_mode].values())
-    impact_set = {m["mergeCommit"] for m in all_merges if is_impact_merge(m)}
+    baselines = all_data.get("human_baseline", {})
+    impact_set = set()
+    for m in all_merges:
+        commit = m["mergeCommit"]
+        bscore = baseline_score_of(baselines[commit]) if commit in baselines else None
+        if is_impact_merge(m, bscore):
+            impact_set.add(commit)
     return {"all_merges": all_merges, "impact_set": impact_set}
 
 
@@ -472,28 +505,37 @@ def draw_graph(ax, mode_markers, mode_steps, title, ylabel):
 
 def draw_java_ratio_chart(ax, all_merges: list, impact_set: set):
     """
-    Bar chart: fraction of conflict files that are Java vs. impact rate.
-    5 equal-width buckets spanning [0, 1].
+    Bar chart: impact rate by Java-conflict-file category.
+    Three categories — chosen because real merges cluster bimodally at the
+    extremes (ratio==0 or ratio==1):
+      - "No Java conflicts" (ratio == 0): only XML/resources/build files conflict
+      - "Mixed"             (0 < ratio < 1)
+      - "All Java"          (ratio == 1)
     """
-    labels   = [r"$[0.0,\,0.2)$", r"$[0.2,\,0.4)$", r"$[0.4,\,0.6)$",
-                r"$[0.6,\,0.8)$", r"$[0.8,\,1.0]$"]
-    totals  = [0] * 5
-    impacts = [0] * 5
+    labels  = ["No Java conflicts\n(ratio = 0)",
+               r"Mixed" "\n" r"($0 < \mathrm{ratio} < 1$)",
+               "All Java\n(ratio = 1)"]
+    totals  = [0, 0, 0]
+    impacts = [0, 0, 0]
 
     for merge in all_merges:
         total_files = merge.get("numConflictFiles", 0)
         if total_files == 0:
             continue
         java_files = merge.get("numJavaConflictFiles", 0)
-        ratio  = java_files / total_files
-        bucket = min(4, int(ratio / 0.2))
+        if java_files == 0:
+            bucket = 0
+        elif java_files == total_files:
+            bucket = 2
+        else:
+            bucket = 1
         totals[bucket] += 1
         if merge.get("mergeCommit") in impact_set:
             impacts[bucket] += 1
 
-    impact_rates = [impacts[i] / totals[i] if totals[i] > 0 else 0.0 for i in range(5)]
+    impact_rates = [impacts[i] / totals[i] if totals[i] > 0 else 0.0 for i in range(3)]
 
-    x    = list(range(5))
+    x    = list(range(3))
     bars = ax.bar(x, impact_rates, color="#2c7bb6", edgecolor="white", linewidth=0.5,
                   zorder=3)
 
@@ -501,7 +543,7 @@ def draw_java_ratio_chart(ax, all_merges: list, impact_set: set):
         label = rf"${imp}/{tot}$" if USE_LATEX else f"{imp}/{tot}"
         ax.text(bar.get_x() + bar.get_width() / 2,
                 bar.get_height() + 0.02,
-                label, ha="center", va="bottom", fontsize=8)
+                label, ha="center", va="bottom", fontsize=9)
 
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
@@ -510,6 +552,7 @@ def draw_java_ratio_chart(ax, all_merges: list, impact_set: set):
     ax.set_ylabel(r"Impact rate (fraction of merges)")
     ax.set_title(r"Java Conflict File Ratio vs.\ Impact Rate")
     ax.set_ylim(0, 1.15)
+    ax.margins(x=0.15)
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
     ax.grid(True, axis="y", alpha=0.3, zorder=0)
 

@@ -94,7 +94,8 @@ def _merge_json(mode: str, merge_variants: list, baseline_secs: int,
     }
 
 
-def build_mock_experiment_dir(tmp_path: Path, rng: random.Random) -> Path:
+def build_mock_experiment_dir(tmp_path: Path, rng: random.Random,
+                              hb_secs: int = HUMAN_BASELINE_SECS) -> Path:
     """
     Write four mode directories under tmp_path, each with one JSON file
     for PROJECT_NAME.  Returns tmp_path.
@@ -104,15 +105,15 @@ def build_mock_experiment_dir(tmp_path: Path, rng: random.Random) -> Path:
         0,
         tests_passed   = HUMAN_TESTS_PASSED,
         modules_passed = HUMAN_MODULES_PASSED,
-        finish_secs    = HUMAN_BASELINE_SECS,
+        finish_secs    = hb_secs,
     )
     _write_mode(tmp_path, "human_baseline",
                 _merge_json("human_baseline", [baseline_variant],
-                            HUMAN_BASELINE_SECS, HUMAN_BASELINE_SECS))
+                            hb_secs, hb_secs))
 
     # ── variant modes ─────────────────────────────────────────────────────────
-    min_finish = 0.9 * HUMAN_BASELINE_SECS          # 15.3 s
-    max_finish = 3.0 * HUMAN_BASELINE_SECS          # 51.0 s
+    min_finish = 0.9 * hb_secs
+    max_finish = 3.0 * hb_secs
 
     for mode, count in VARIANT_COUNTS.items():
         variants = []
@@ -126,7 +127,7 @@ def build_mock_experiment_dir(tmp_path: Path, rng: random.Random) -> Path:
                              for v in variants))
         _write_mode(tmp_path, mode,
                     _merge_json(mode, variants,
-                                HUMAN_BASELINE_SECS, total_secs))
+                                hb_secs, total_secs))
 
     return tmp_path
 
@@ -230,17 +231,40 @@ class TestPlotResultsMockup(unittest.TestCase):
 
     # ── Improvement markers ───────────────────────────────────────────────────
 
-    def test_human_baseline_marker_at_relative_time_one(self):
+    def test_human_baseline_marker_at_effective_relative_time(self):
+        # The mock baseline (17 s) is below the 30 s effective-baseline floor,
+        # so the marker lands at hb_secs / 30, not at 1.0.
         data = pr.load_all_data(self.tmp_path)
         module_markers, _ = pr.assemble_plot_data(data, pr.module_stats)
         hb_markers = module_markers.get("human_baseline", [])
         self.assertEqual(len(hb_markers), 1,
                          "human_baseline should have exactly one marker per merge")
         rel_t, rate = hb_markers[0]
-        self.assertAlmostEqual(rel_t, 1.0, places=3,
-                               msg="human_baseline marker must be at relative time 1.0")
+        expected_rel_t = HUMAN_BASELINE_SECS / max(HUMAN_BASELINE_SECS,
+                                                   pr.MIN_EFFECTIVE_BASELINE_SECS)
+        self.assertAlmostEqual(rel_t, expected_rel_t, places=3,
+                               msg="human_baseline marker must sit at "
+                                   "hb_secs / max(hb_secs, MIN_EFFECTIVE_BASELINE_SECS)")
         self.assertAlmostEqual(rate, 1.0, places=3,
                                msg="human_baseline marker must be at relative score 1.0")
+
+    def test_human_baseline_marker_at_relative_time_one_above_floor(self):
+        # When the baseline exceeds MIN_EFFECTIVE_BASELINE_SECS the floor is
+        # inert, so the marker must sit exactly at relative time 1.0.
+        hb_secs = 37
+        self.assertGreater(hb_secs, pr.MIN_EFFECTIVE_BASELINE_SECS,
+                           "test precondition: hb_secs must exceed the floor")
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            build_mock_experiment_dir(tmp, random.Random(SEED), hb_secs=hb_secs)
+            data = pr.load_all_data(tmp)
+            module_markers, _ = pr.assemble_plot_data(data, pr.module_stats)
+            hb_markers = module_markers.get("human_baseline", [])
+            self.assertEqual(len(hb_markers), 1)
+            rel_t, rate = hb_markers[0]
+            self.assertAlmostEqual(rel_t, 1.0, places=3,
+                                   msg="above-floor baseline must land at relative time 1.0")
+            self.assertAlmostEqual(rate, 1.0, places=3)
 
     def test_improvement_markers_monotonically_increasing(self):
         """Each mode's markers must be strictly increasing in success rate."""
