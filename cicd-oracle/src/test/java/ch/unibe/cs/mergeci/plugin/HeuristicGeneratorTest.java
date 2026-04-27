@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class HeuristicGeneratorTest {
 
     private static IVariantGenerator createGenerator(int numChunks) throws IOException {
+        return createGenerator(numChunks, new Random(42));
+    }
+
+    private static IVariantGenerator createGenerator(int numChunks, Random random) throws IOException {
         PatternHeuristics heuristics = PatternHeuristics.loadFromResource(
                 "pattern-heuristics/learnt_historical_pattern_distribution.csv");
-        StrategySelector selector = new StrategySelector(heuristics);
+        StrategySelector selector = new StrategySelector(heuristics, random);
         return new IVariantGenerator() {
             @Override
             public Optional<List<String>> nextVariant() {

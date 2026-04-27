@@ -51,7 +51,7 @@ class PluginIntegrationTest extends BaseTest {
     void createMockRepo() throws Exception {
         repoPath = tempDir.resolve("mockRepo");
         Files.createDirectories(repoPath);
-        git = Git.init().setDirectory(repoPath.toFile()).call();
+        git = Git.init().setDirectory(repoPath.toFile()).setInitialBranch("main").call();
         git.getRepository().getConfig().setString("user", null, "email", "test@test.com");
         git.getRepository().getConfig().setString("user", null, "name", "Test");
 

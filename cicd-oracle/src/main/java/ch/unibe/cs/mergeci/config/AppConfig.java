@@ -1,8 +1,12 @@
 package ch.unibe.cs.mergeci.config;
 
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
+import java.util.stream.Stream;
 
 
 public class AppConfig {
@@ -155,19 +159,78 @@ private static final boolean FRESH_RUN = false;
     }
 
     // ========== JAVA INSTALLATIONS ==========
-    // NOTE: These paths are machine-specific and MUST match the actual JDK installations.
-    // On a fresh VM, run `scripts/setup_vm.sh` which installs all required JDKs and
-    // prints the expected paths. On an existing machine:
-    //   Linux: ls /usr/lib/jvm/     macOS: ls /Library/Java/JavaVirtualMachines/
     // Used by JavaVersionResolver to switch to the closest compatible JDK when a
     // repository requires a specific Java version.
-    public static final Map<Integer, Path> JAVA_HOMES = Map.of(
-            8,  Paths.get("/usr/lib/jvm/jdk1.8.0_202"),
-            11, Paths.get("/usr/lib/jvm/jdk-11.0.2"),
-            17, Paths.get("/usr/lib/jvm/java-17-openjdk-amd64"),
-            21, Paths.get("/usr/lib/jvm/jdk-21.0.2"),
-            25, Paths.get("/usr/lib/jvm/jdk-25.0.1")
-    );
+    //
+    // Resolution order:
+    //   1. ~/.cicd-oracle/java-homes.properties — explicit override (lines like `21=/path/to/jdk`).
+    //   2. Auto-discovery: scan /usr/lib/jvm/* for directories with bin/javac and a
+    //      `release` file, parse JAVA_VERSION=, map major version → path. Symlinks
+    //      are skipped so we prefer canonical install names.
+    //
+    // To pin a specific install on a host with several JDKs of the same major version,
+    // create the override file. Otherwise auto-discovery picks the first match in
+    // sorted-name order.
+    public static final Map<Integer, Path> JAVA_HOMES = resolveJavaHomes();
+
+    private static Map<Integer, Path> resolveJavaHomes() {
+        Map<Integer, Path> override = readJavaHomesOverride();
+        if (!override.isEmpty()) return Map.copyOf(override);
+        return Map.copyOf(scanJvmDir(Paths.get("/usr/lib/jvm")));
+    }
+
+    private static Map<Integer, Path> readJavaHomesOverride() {
+        Path propsFile = Paths.get(System.getProperty("user.home"), ".cicd-oracle", "java-homes.properties");
+        if (!Files.isRegularFile(propsFile)) return Map.of();
+        Properties props = new Properties();
+        try (var in = Files.newBufferedReader(propsFile)) {
+            props.load(in);
+        } catch (IOException e) {
+            return Map.of();
+        }
+        Map<Integer, Path> result = new TreeMap<>();
+        for (String key : props.stringPropertyNames()) {
+            try {
+                int v = Integer.parseInt(key.trim());
+                Path p = Paths.get(props.getProperty(key).trim());
+                if (Files.isExecutable(p.resolve("bin/javac"))) result.put(v, p);
+            } catch (NumberFormatException ignored) { /* skip malformed lines */ }
+        }
+        return result;
+    }
+
+    static Map<Integer, Path> scanJvmDir(Path baseDir) {
+        Map<Integer, Path> result = new TreeMap<>();
+        if (!Files.isDirectory(baseDir)) return result;
+        try (Stream<Path> entries = Files.list(baseDir)) {
+            entries.filter(p -> !Files.isSymbolicLink(p))
+                    .filter(Files::isDirectory)
+                    .filter(p -> Files.isExecutable(p.resolve("bin/javac")))
+                    .sorted()
+                    .forEach(p -> {
+                        int v = readJavaMajorVersion(p);
+                        if (v > 0) result.putIfAbsent(v, p);
+                    });
+        } catch (IOException ignored) { /* return whatever we managed to discover */ }
+        return result;
+    }
+
+    private static int readJavaMajorVersion(Path javaHome) {
+        Path releaseFile = javaHome.resolve("release");
+        if (!Files.isRegularFile(releaseFile)) return -1;
+        try {
+            for (String line : Files.readAllLines(releaseFile)) {
+                if (!line.startsWith("JAVA_VERSION=")) continue;
+                String v = line.substring("JAVA_VERSION=".length()).replace("\"", "").trim();
+                String[] parts = v.split("\\.");
+                if (parts.length == 0 || parts[0].isEmpty()) return -1;
+                // Java 8 reports "1.8.0_202"; Java 9+ reports "21.0.2".
+                if ("1".equals(parts[0]) && parts.length >= 2) return Integer.parseInt(parts[1]);
+                return Integer.parseInt(parts[0]);
+            }
+        } catch (IOException | NumberFormatException ignored) { /* unreadable / malformed */ }
+        return -1;
+    }
 
     // Maven -D flags that are safe to always pass: they skip style/validation plugins
     // that have no effect on compilation or test execution. Discovered incrementally

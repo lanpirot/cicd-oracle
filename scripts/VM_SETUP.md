@@ -32,24 +32,21 @@ Repos (55 GB) are cloned on-demand — no need to transfer unless you want to sk
 
 ## 3. Configure on the VM
 
-### 3a. Update JAVA_HOMES
+### 3a. JDK discovery
 
-Check installed JDK paths:
+`AppConfig.JAVA_HOMES` auto-scans `/usr/lib/jvm/*` at startup, parsing each
+install's `release` file to map major version → path. After step 1 the VM has
+JDK 8/11/17/21/25 installed, so no manual config is needed.
 
-```bash
-ls /usr/lib/jvm/
+To pin a specific install (multiple JDKs of the same major version, or a JDK
+outside `/usr/lib/jvm/`), drop a `~/.cicd-oracle/java-homes.properties`:
+
+```properties
+21=/opt/mycustom/jdk-21
+17=/usr/lib/jvm/java-17-openjdk-amd64
 ```
 
-Edit `cicd-oracle/src/main/java/ch/unibe/cs/mergeci/config/AppConfig.java` — update the `JAVA_HOMES` map to match:
-
-```java
-public static final Map<Integer, Path> JAVA_HOMES = Map.of(
-    8,  Paths.get("/usr/lib/jvm/temurin-8-jdk-amd64"),
-    11, Paths.get("/usr/lib/jvm/temurin-11-jdk-amd64"),
-    17, Paths.get("/usr/lib/jvm/java-17-openjdk-amd64"),
-    21, Paths.get("/usr/lib/jvm/java-21-openjdk-amd64")
-);
-```
+The override file replaces auto-discovery entirely when present.
 
 ### 3b. Build
 
@@ -67,20 +64,52 @@ mvn test
 
 ## 4. Run experiments
 
-Use `-DexperimentTag=<tag>` to namespace results (e.g. by git tag):
+Always run inside a `tmux` session — the pipeline takes hours to days and SSH
+disconnects would otherwise kill it.
+
+Required system properties on every run:
+
+| Flag | Why |
+|---|---|
+| `-DoverlayTmpDir=/dev/shm` | Both the human-baseline build and variants write under this path. Putting it on tmpfs makes their I/O share the same backing, so the per-daemon RAM measurement reflects what the variant phase actually does. The VM has `/dev/shm` mounted at ~46 GiB. |
+| `-DexperimentTag=<tag>` | Namespaces results to `~/data/bruteforcemerge/<tag>/rq2/`. Use the git tag or branch name. |
 
 ```bash
-# Pre-overlayfs baseline
-git checkout rq2-before-overlayfs
-mvn clean package
-java -DexperimentTag=rq2-before-overlayfs -cp "target/*:target/lib/*" \
-    ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
+# Start a named session, build, and launch the pipeline
+ssh -p 2033 seg@calculon.inf.unibe.ch
+tmux new -s rq2
 
-# Current master
-git checkout master
+cd ~/projects/merge++/cicd-oracle/cicd-oracle
 mvn clean package
-java -DexperimentTag=master -cp "target/*:target/lib/*" \
-    ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
+java -DoverlayTmpDir=/dev/shm -DexperimentTag=master \
+     -cp "target/*:target/lib/*" \
+     ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner
+
+# Detach with Ctrl-b d (the session keeps running). To attach later:
+ssh -p 2033 seg@calculon.inf.unibe.ch -t tmux attach -t rq2
 ```
 
-Results go to `~/data/bruteforcemerge/<tag>/rq2/`.
+To compare against the pre-overlayfs baseline, repeat the run with
+`git checkout rq2-before-overlayfs` and `-DexperimentTag=rq2-before-overlayfs`
+in a separate tmux session.
+
+For unattended runs, redirect output so detaching doesn't lose history:
+
+```bash
+tmux new -d -s rq2 \
+  "cd ~/projects/merge++/cicd-oracle/cicd-oracle && \
+   mvn clean package && \
+   java -DoverlayTmpDir=/dev/shm -DexperimentTag=master \
+        -cp 'target/*:target/lib/*' \
+        ch.unibe.cs.mergeci.experiment.RQ2PipelineRunner \
+   2>&1 | tee ~/rq2-master.log"
+```
+
+Optional system properties (override defaults from `AppConfig`):
+
+| Flag | Effect |
+|---|---|
+| `-DfreshRun=true` | Wipe all data/output dirs at startup (full reset). |
+| `-DreanalyzeSuccess=true` | Re-analyze repos already marked SUCCESS without re-cloning. |
+| `-DmaxConflictMerges=N` | Cap merges per project (default 5). |
+| `-Drq3BestMode=<name>` | Override which mode RQ3 reads from (e.g. `cache_parallel`). |
