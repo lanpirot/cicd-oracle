@@ -66,6 +66,16 @@ plt.rcParams.update({
 DEFAULT_VARIANT_DIR = Path("/home/lanpirot/data/bruteforcemerge/variant_experiments")
 DEFAULT_OUTPUT_PDF  = Path("plots.pdf")
 
+# Variant runtime budget is max(10 * baseline, 300s) = 10 * max(baseline, 30s).
+# Normalise relative time against this effective baseline (= budget / 10) so
+# floor-budget projects don't drift past 10x. No additional clipping needed.
+MIN_EFFECTIVE_BASELINE_SECS = 30.0
+RELATIVE_TIME_CAP            = 10.0  # right edge of the chart (= budget / eff_hb)
+
+
+def effective_baseline_secs(hb_secs: float) -> float:
+    return max(hb_secs, MIN_EFFECTIVE_BASELINE_SECS)
+
 MODES = ["human_baseline", "no_optimization", "cache_sequential", "parallel", "cache_parallel"]
 MODE_LABELS = {
     "human_baseline":   "Human Baseline",
@@ -266,6 +276,7 @@ def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
     if human_baseline_secs <= 0 or hb_num <= 0:
         return []
 
+    eff_hb = effective_baseline_secs(human_baseline_secs)
     timed = [(get_finish_time(v), metric_fn(v)[0]) for v in variants]
     timed.sort(key=lambda x: x[0])
 
@@ -275,7 +286,7 @@ def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
         rate = num / hb_num
         if rate > best_rate:
             best_rate = rate
-            markers.append((finish / human_baseline_secs, rate))
+            markers.append((finish / eff_hb, rate))
     return markers
 
 
@@ -318,11 +329,104 @@ def assemble_plot_data(all_data: dict, metric_fn):
                 continue
 
             if mode == "human_baseline":
-                # Always lands at (t=1.0, score=1.0) by definition
-                mode_steps[mode].append([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0)])
-                mode_markers[mode].append((1.0, 1.0))
+                # Lands at (hb_secs / effective_hb, 1.0) — equals 1.0 except
+                # for floor-budget projects where eff_hb > hb_secs.
+                hb_x = hb_secs / effective_baseline_secs(hb_secs)
+                mode_steps[mode].append([(0.0, 0.0), (hb_x, 0.0), (hb_x, 1.0)])
+                mode_markers[mode].append((hb_x, 1.0))
             else:
                 markers = improvement_markers(variants, metric_fn, hb_secs, hb_num)
+                if markers:
+                    mode_markers[mode].extend(markers)
+                    mode_steps[mode].append([(0.0, 0.0)] + markers)
+
+    return mode_markers, mode_steps
+
+
+# ── Combined quality (modules × tests, Laplace-smoothed) ──────────────────────
+
+def combined_quality(variant: dict, hb_modules: int, hb_tests: int) -> float | None:
+    """Smoothed combined-quality score for a variant, relative to the human baseline.
+
+    Y = (modules_passed + 1)/(hb_modules + 1) * (tests_passed + 1)/(hb_tests + 1)
+
+    The +1 Laplace smoothing keeps the modules signal alive when tests_passed = 0
+    (and vice versa) so a single zero factor doesn't annihilate the product.
+    By construction the human baseline scores exactly 1.0.
+    Returns None for variants without a scoreable compilationResult (TIMEOUT or missing).
+    """
+    cr = variant.get("compilationResult")
+    if cr is None or cr.get("buildStatus") in (None, "TIMEOUT"):
+        return None
+    m_pass, _ = module_stats(variant)
+    t_pass, _ = test_stats(variant)
+    return ((m_pass + 1) / (hb_modules + 1)) * ((t_pass + 1) / (hb_tests + 1))
+
+
+def combined_improvement_markers(variants: list, hb_secs: float,
+                                 hb_modules: int, hb_tests: int) -> list[tuple[float, float]]:
+    """(relativeTime, combinedQuality) Pareto frontier for one merge's variants."""
+    if hb_secs <= 0:
+        return []
+    eff_hb = effective_baseline_secs(hb_secs)
+    timed = []
+    for v in variants:
+        score = combined_quality(v, hb_modules, hb_tests)
+        if score is None:
+            continue
+        timed.append((get_finish_time(v), score))
+    timed.sort(key=lambda x: x[0])
+    markers = []
+    best = -1.0
+    for finish, score in timed:
+        if score > best:
+            best = score
+            markers.append((finish / eff_hb, score))
+    return markers
+
+
+def assemble_combined_plot_data(all_data: dict):
+    """Mirror of assemble_plot_data for the combined modules*tests quality.
+
+    Filter mirrors chart 01: include any merge whose baseline compiled at least
+    one module. Laplace smoothing handles the hb_tests = 0 edge naturally.
+    """
+    all_commits = set(all_data["human_baseline"].keys())
+
+    mode_markers = defaultdict(list)
+    mode_steps   = defaultdict(list)
+
+    for commit in all_commits:
+        baseline_merge = all_data["human_baseline"].get(commit)
+        if not baseline_merge:
+            continue
+        hb_secs = float(baseline_merge.get("budgetBasisSeconds", 0))
+        if hb_secs <= 0:
+            continue
+
+        hb_variants = baseline_merge.get("variants") or []
+        hb_variant = next((v for v in hb_variants if v.get("variantIndex") == 0), None)
+        if hb_variant is None:
+            continue
+        hb_modules, _ = module_stats(hb_variant)
+        hb_tests, _   = test_stats(hb_variant)
+        if hb_modules <= 0:
+            continue
+
+        for mode in MODES:
+            merge = all_data[mode].get(commit)
+            if not merge:
+                continue
+            variants = merge.get("variants") or []
+            if not variants:
+                continue
+
+            if mode == "human_baseline":
+                hb_x = hb_secs / effective_baseline_secs(hb_secs)
+                mode_steps[mode].append([(0.0, 0.0), (hb_x, 0.0), (hb_x, 1.0)])
+                mode_markers[mode].append((hb_x, 1.0))
+            else:
+                markers = combined_improvement_markers(variants, hb_secs, hb_modules, hb_tests)
                 if markers:
                     mode_markers[mode].extend(markers)
                     mode_steps[mode].append([(0.0, 0.0)] + markers)
@@ -360,7 +464,7 @@ def draw_graph(ax, mode_markers, mode_steps, title, ylabel):
     ax.set_xlabel("Relative time  (1.0 = human baseline duration)", fontsize=10)
     ax.set_ylabel(ylabel, fontsize=10)
     ax.set_title(title, fontsize=12)
-    ax.set_xlim(left=0)
+    ax.set_xlim(0, RELATIVE_TIME_CAP + 0.2)
     ax.set_ylim(bottom=0)
     ax.legend(loc="lower right", fontsize=8)
     ax.grid(True, alpha=0.3)
@@ -1685,11 +1789,15 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
     module_mode_markers = module_mode_steps = None
     test_mode_markers = test_mode_steps = None
 
+    combined_mode_markers = combined_mode_steps = None
+
     if rq == "rq3":
         print("Assembling module success data ...")
         module_mode_markers, module_mode_steps = assemble_plot_data(all_data, module_stats)
         print("Assembling test success data ...")
         test_mode_markers, test_mode_steps = assemble_plot_data(all_data, test_stats)
+        print("Assembling combined-quality data ...")
+        combined_mode_markers, combined_mode_steps = assemble_combined_plot_data(all_data)
 
     print("Computing impact statistics ...")
     stats = compute_statistics(all_data)
@@ -1712,6 +1820,13 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
                        title=r"Test Success Rate vs.\ Relative Time",
                        ylabel=r"Tests passed (relative to human baseline $= 1.0$)")
             _save_fig(fig, results_dir, "02_test_success_rate", pdf)
+
+            # Chart 2c: Combined quality (modules x tests, Laplace-smoothed)
+            fig, ax = plt.subplots(figsize=(10, 6))
+            draw_graph(ax, combined_mode_markers, combined_mode_steps,
+                       title=r"Combined Quality (Modules $\times$ Tests) vs.\ Relative Time",
+                       ylabel=r"Combined quality (relative to human baseline $= 1.0$)")
+            _save_fig(fig, results_dir, "02c_combined_quality", pdf)
 
             # Chart 3: Java conflict file ratio vs. impact rate
             if stats["all_merges"]:
