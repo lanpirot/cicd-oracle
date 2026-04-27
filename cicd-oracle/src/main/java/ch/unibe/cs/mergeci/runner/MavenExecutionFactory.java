@@ -305,9 +305,12 @@ public class MavenExecutionFactory {
             double wallClockSeconds = outcome.elapsed().toMillis() / 1000.0;
             double sinceMergeStart = Duration.between(variantsStart, Instant.now()).toMillis() / 1000.0;
 
-            // Only keep clean (non-timed-out) results
-            if (cr != null && cr.getBuildStatus() != null
-                    && cr.getBuildStatus() != CompilationResult.Status.TIMEOUT) {
+            // Record every variant whose CompilationResult was successfully parsed —
+            // including TIMEOUT, since the inferred module counts and any
+            // surefire-reports the build managed to flush before the kill are real
+            // signal (a variant that built farther than the human baseline before
+            // timing out is meaningful for RQ2).
+            if (cr != null && cr.getBuildStatus() != null) {
                 compilationResults.put(key, cr);
                 testResults.put(key, tt);
                 variantFinishSeconds.put(key, wallClockSeconds);
