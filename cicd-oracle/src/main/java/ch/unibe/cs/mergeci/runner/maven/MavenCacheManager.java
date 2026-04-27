@@ -161,8 +161,14 @@ public class MavenCacheManager {
 
         try {
             FileUtils.copyDirectoryCompatibilityMode(targetDir.toFile(), destDir);
+        } catch (java.nio.file.NoSuchFileException e) {
+            // A specific file under the donor target/ tree disappeared mid-copy —
+            // surface as the typed signal so the caller can retry with the current
+            // (post-demotion) donor rather than continuing with a partial cache.
+            throw new DonorVanishedException(
+                    "Donor file vanished mid-copy: " + e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            // Other I/O failures (permission, disk full, etc.) — best-effort partial.
             System.err.println("Failed to copy " + destDir + ": " + e.getMessage());
         }
     }
