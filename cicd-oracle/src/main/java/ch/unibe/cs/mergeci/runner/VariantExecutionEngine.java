@@ -315,8 +315,9 @@ public class VariantExecutionEngine {
                     cacheManager.injectMavenHookOnly(variantPath);
                 }
             }
+            TestTotal donorTtAtWarm = null;
             if (config.useCache) {
-                warmFromDonorWithRetry(donorTracker, cacheManager, variantPath, variantIndex);
+                donorTtAtWarm = warmFromDonorWithRetry(donorTracker, cacheManager, variantPath, variantIndex);
             }
 
             // 3. Apply conflict resolution (AFTER cache copy for timestamp ordering)
@@ -358,6 +359,18 @@ public class VariantExecutionEngine {
                 CompilationResult cr = tpResult.compilationResult();
                 if (cr == null) cr = new CompilationResult(logFile);
                 TestTotal tt = tpResult.testsRan() ? new TestTotal(variantPath.toFile()) : new TestTotal();
+
+                // If the build-cache extension cache-hit on every test-running module,
+                // surefire is skipped and no fresh reports are written → hasData=false.
+                // Inherit from the donor we warmed against (captured at warm time, not now —
+                // the donor may already have rotated by the time we get here). The cache
+                // extension proved the variant's source matches the donor's at the module
+                // level, so the donor's test outcomes are this variant's test outcomes.
+                if (config.useCache && donorTtAtWarm != null
+                        && cr.getBuildStatus() == CompilationResult.Status.SUCCESS
+                        && !tt.isHasData() && donorTtAtWarm.isHasData()) {
+                    tt = TestTotal.copyOf(donorTtAtWarm);
+                }
 
                 // 6. Donor promotion
                 if (cr != null) {
@@ -409,33 +422,38 @@ public class VariantExecutionEngine {
      * and retry up to 3 attempts in total. If retries run out — or the new donor
      * is the same as the one we just failed on — log a warning and proceed with no
      * warmed cache (the variant rebuilds those classes from scratch, no failure).
+     *
+     * @return the donor's TestTotal captured at the moment of the successful copy
+     *         (consumed later if the cache extension skips surefire), or null when
+     *         no warm happened or no donor existed.
      */
-    private void warmFromDonorWithRetry(DonorTracker donorTracker,
-                                        MavenCacheManager cacheManager,
-                                        Path variantPath,
-                                        int variantIndex) {
-        Path donor = donorTracker.getDonorPath();
-        if (donor == null) return; // no donor yet — normal early in a mode
+    private TestTotal warmFromDonorWithRetry(DonorTracker donorTracker,
+                                             MavenCacheManager cacheManager,
+                                             Path variantPath,
+                                             int variantIndex) {
+        DonorTracker.DonorSnapshot snap = donorTracker.getDonorSnapshot();
+        if (snap.path() == null) return null; // no donor yet — normal early in a mode
 
         Path lastTried = null;
         int attempts = 0;
-        while (donor != null && !donor.equals(lastTried) && attempts < 3) {
+        while (snap.path() != null && !snap.path().equals(lastTried) && attempts < 3) {
             attempts++;
             try {
-                cacheManager.copyTargetDirectories(donor.toFile(), variantPath.toFile());
-                return; // success (full or best-effort partial)
+                cacheManager.copyTargetDirectories(snap.path().toFile(), variantPath.toFile());
+                return snap.testTotal(); // success (full or best-effort partial)
             } catch (MavenCacheManager.DonorVanishedException dve) {
-                lastTried = donor;
-                donor = donorTracker.getDonorPath();
-                if (donor != null && !donor.equals(lastTried) && attempts < 3) {
+                lastTried = snap.path();
+                snap = donorTracker.getDonorSnapshot();
+                if (snap.path() != null && !snap.path().equals(lastTried) && attempts < 3) {
                     LOG.info("Variant {} cache warm: donor {} vanished, retrying with {}",
-                            variantIndex, lastTried, donor);
+                            variantIndex, lastTried, snap.path());
                 }
             }
         }
         LOG.warn("Variant {} cache warm gave up after {} attempt(s); "
                 + "building without warmed cache (last donor {})",
                 variantIndex, attempts, lastTried);
+        return null;
     }
 
     private VariantSlot allocateSlot(VariantBuildContext context,

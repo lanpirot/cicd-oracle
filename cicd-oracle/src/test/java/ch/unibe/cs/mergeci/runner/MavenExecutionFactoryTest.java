@@ -404,6 +404,45 @@ public class MavenExecutionFactoryTest extends BaseTest {
             assertNull(old);
             assertNull(tracker.getDonorPath());
         }
+
+        @Test
+        void promote_storesDonorTestTotalForSnapshot() {
+            // Variants that warm from this donor capture its TestTotal at warm time so
+            // that, if the build-cache extension later skips surefire on a full module
+            // hit, the variant can inherit the donor's results instead of recording 0.
+            DonorTracker tracker = new DonorTracker();
+            TestTotal warmerTests = tests(42);
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(2, 0), warmerTests, "1");
+
+            assertSame(warmerTests, tracker.getDonorTestTotal());
+            DonorTracker.DonorSnapshot snap = tracker.getDonorSnapshot();
+            assertEquals(Path.of("/tmp/v1"), snap.path());
+            assertEquals("1", snap.key());
+            assertSame(warmerTests, snap.testTotal());
+        }
+
+        @Test
+        void snapshot_reflectsLatestPromotion() {
+            DonorTracker tracker = new DonorTracker();
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v1"), cr(2, 0), tests(10), "1");
+            TestTotal v2Tests = tests(20);
+            tracker.promoteDonorIfBetter(Path.of("/tmp/v2"), cr(2, 0), v2Tests, "2");
+
+            DonorTracker.DonorSnapshot snap = tracker.getDonorSnapshot();
+            assertEquals(Path.of("/tmp/v2"), snap.path(),
+                    "snapshot must point at the most recent donor, not a stale one");
+            assertSame(v2Tests, snap.testTotal(),
+                    "snapshot's testTotal must belong to the same donor as its path");
+        }
+
+        @Test
+        void snapshot_isEmptyBeforeFirstPromotion() {
+            DonorTracker tracker = new DonorTracker();
+            DonorTracker.DonorSnapshot snap = tracker.getDonorSnapshot();
+            assertNull(snap.path());
+            assertNull(snap.key());
+            assertNull(snap.testTotal());
+        }
     }
 
     // ── computeMaxThreads ───────────────────────────────────────────────────

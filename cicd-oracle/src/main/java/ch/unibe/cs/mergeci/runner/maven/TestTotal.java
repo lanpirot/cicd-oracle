@@ -41,6 +41,18 @@ public class TestTotal {
     public TestTotal() {
     }
 
+    /** Copy of another instance, useful when inheriting cached-but-not-rerun results from a donor. */
+    public static TestTotal copyOf(TestTotal other) {
+        TestTotal copy = new TestTotal();
+        copy.runNum      = other.runNum;
+        copy.failuresNum = other.failuresNum;
+        copy.errorsNum   = other.errorsNum;
+        copy.skippedNum  = other.skippedNum;
+        copy.elapsedTime = other.elapsedTime;
+        copy.hasData     = other.hasData;
+        return copy;
+    }
+
     public TestTotal(File projectDir) {
 
         this.projectDir = projectDir;

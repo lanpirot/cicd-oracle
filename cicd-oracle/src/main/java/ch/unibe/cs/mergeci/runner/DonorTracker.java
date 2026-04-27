@@ -29,7 +29,16 @@ public class DonorTracker {
     private final AtomicReference<VariantScore> donorScore = new AtomicReference<>();
     private final AtomicReference<String> donorKey = new AtomicReference<>();
     private final AtomicReference<Map<String, List<String>>> donorPatterns = new AtomicReference<>();
+    private final AtomicReference<TestTotal> donorTestTotal = new AtomicReference<>();
     private final AtomicInteger bestSuccessfulModules = new AtomicInteger(0);
+
+    /**
+     * Atomic snapshot of donor identity + TestTotal at a single instant. Use this — rather
+     * than separate getter calls — when the caller needs path and testTotal that belong to
+     * the SAME donor (e.g. cache-warm code that copies from {@code path} and then needs the
+     * matching {@code testTotal} for inheritance after a cache-skip surefire run).
+     */
+    public record DonorSnapshot(Path path, String key, TestTotal testTotal) {}
 
     /** Current donor path, or null if no donor has been promoted yet. */
     public Path getDonorPath() {
@@ -44,6 +53,17 @@ public class DonorTracker {
     /** Score of the current donor, or null. */
     public VariantScore getDonorScore() {
         return donorScore.get();
+    }
+
+    /** TestTotal of the current donor, or null. May lag {@link #getDonorPath()} by one
+     *  rotation under contention — prefer {@link #getDonorSnapshot()} when consistency matters. */
+    public TestTotal getDonorTestTotal() {
+        return donorTestTotal.get();
+    }
+
+    /** Consistent snapshot of donor identity + TestTotal taken under the promotion lock. */
+    public synchronized DonorSnapshot getDonorSnapshot() {
+        return new DonorSnapshot(donorPath.get(), donorKey.get(), donorTestTotal.get());
     }
 
     /** Resolution patterns of the current donor, or null. */
@@ -129,6 +149,7 @@ public class DonorTracker {
             donorPath.set(candidatePath);
             donorScore.set(candidateScore);
             donorKey.set(candidateKey);
+            donorTestTotal.set(candidateTt);
             LOG.info("[cache-donor] PROMOTED variant {} as new donor ({} → {}, prev donor: {})",
                     candidateKey, fmt(currentScore), fmt(candidateScore), oldKey);
             return oldDonor;
