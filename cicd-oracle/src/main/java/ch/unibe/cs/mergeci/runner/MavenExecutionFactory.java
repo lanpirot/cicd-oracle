@@ -145,10 +145,18 @@ public class MavenExecutionFactory {
             long totalBudgetSeconds = AppConfig.variantBudget(baselineSeconds);
 
             // ── Overlay base ──────────────────────────────────────────────────
+            // The cache manager is created here (not later) so that cache-mode overlay
+            // builds can inject .mvn/extensions.xml into the shared base directory once.
+            // Variants overlay-mounted on top inherit the registration of both the
+            // maven-build-cache extension and the maven-hook (early-abort gate).
+            MavenCacheManager cacheManager = new MavenCacheManager(logDir.resolveSibling("shared-cache"));
             Path basePath = null;
             long baseSizeBytes = 0;
             if (useOverlay && !skipVariants) {
                 basePath = builder.buildBase(context, AppConfig.OVERLAY_TMP_DIR);
+                if (isCache) {
+                    cacheManager.injectCacheArtifacts(basePath);
+                }
                 baseSizeBytes = org.apache.commons.io.FileUtils.sizeOfDirectory(basePath.toFile());
                 System.out.printf("[overlay] base: %d MB, dir growth: %d MB%n",
                         baseSizeBytes / 1024 / 1024, measuredDirGrowth / 1024 / 1024);
@@ -182,8 +190,12 @@ public class MavenExecutionFactory {
                 if (!skipVariants) {
                     Instant deadline = variantsStart.plusSeconds(totalBudgetSeconds);
 
+                    // singlePhase=isCache: extensions.xml (registering the maven-hook
+                    // alongside the build-cache extension) is only injected in cache modes,
+                    // so the early-abort gate can only fire there. Non-cache modes fall back
+                    // to TwoPhaseRunner's compile-then-test gating.
                     VariantExecutionEngine.EngineConfig engineConfig = new VariantExecutionEngine.EngineConfig(
-                            threads, useOverlay, isCache, false, stopOnPerfect,
+                            threads, useOverlay, isCache, isCache, stopOnPerfect,
                             AppConfig.TMP_DIR, logDir,
                             resolvedJavaHome,
                             useOverlay ? AppConfig.TMP_DIR : null,
@@ -196,7 +208,6 @@ public class MavenExecutionFactory {
                             variantsStart);
                     DeadlineStopCondition deadlineStop = new DeadlineStopCondition(deadline);
 
-                    MavenCacheManager cacheManager = new MavenCacheManager(logDir.resolveSibling("shared-cache"));
                     VariantExecutionEngine engine = new VariantExecutionEngine(
                             engineConfig, deadlineStop, pipelineListener);
                     engine.run(context, builder, donorTracker, cacheManager, basePath);

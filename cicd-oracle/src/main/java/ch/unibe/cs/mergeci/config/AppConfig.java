@@ -96,20 +96,6 @@ private static final boolean FRESH_RUN = false;
     }
 
     /**
-     * Same as {@link #buildCommand} but with {@code -o} (offline) prepended, for cache builds.
-     */
-    public static String[] buildCommandOffline(String[] executableArgs, String mavenGoal) {
-        return concat(
-                executableArgs,
-                reactorFlagOrEmpty(),
-                new String[]{"-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE, MAVEN_TEST_FAILURE_IGNORE,
-                        SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE},
-                SKIP_STATIC_ANALYSIS,
-                BOUND_PARALLELISM,
-                new String[]{mavenGoal});
-    }
-
-    /**
      * Compile-only command: runs {@code mvn compile} without test-related flags.
      * Used for the two-phase optimization: compile first, skip test phase if the variant
      * can't beat the current best on successful modules.
@@ -119,17 +105,6 @@ private static final boolean FRESH_RUN = false;
                 executableArgs,
                 reactorFlagOrEmpty(),
                 new String[]{MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
-                SKIP_STATIC_ANALYSIS,
-                BOUND_PARALLELISM,
-                new String[]{"compile"});
-    }
-
-    /** Same as {@link #buildCompileOnlyCommand} but with {@code -o} (offline) for cache builds. */
-    public static String[] buildCompileOnlyCommandOffline(String[] executableArgs) {
-        return concat(
-                executableArgs,
-                reactorFlagOrEmpty(),
-                new String[]{"-o", MAVEN_BATCH_MODE, MAVEN_FAIL_MODE},
                 SKIP_STATIC_ANALYSIS,
                 BOUND_PARALLELISM,
                 new String[]{"compile"});
