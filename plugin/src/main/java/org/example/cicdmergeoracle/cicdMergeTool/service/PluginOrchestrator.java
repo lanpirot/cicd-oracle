@@ -4,7 +4,6 @@ import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.runner.DonorTracker;
-import ch.unibe.cs.mergeci.runner.IVariantGenerator;
 import ch.unibe.cs.mergeci.runner.OverlayMount;
 import ch.unibe.cs.mergeci.runner.VariantBuildContext;
 import ch.unibe.cs.mergeci.runner.VariantExecutionEngine;
@@ -54,6 +53,7 @@ public class PluginOrchestrator {
 
     private volatile Future<?> coordinatorFuture;
     private volatile boolean exhausted;
+    private volatile HeuristicGeneratorFactory.HeuristicGenerator currentGenerator;
     private Path tempDir;
     private VariantProjectBuilder builder;
     private boolean useOverlay;
@@ -174,7 +174,10 @@ public class PluginOrchestrator {
                 org.example.cicdmergeoracle.cicdMergeTool.util.GitUtils
                         .getNonConflictObjectsFromCurrentMerge(git);
 
-        IVariantGenerator generator = generatorFactory.create(null, repoPath, totalChunks);
+        HeuristicGeneratorFactory.HeuristicGenerator generator =
+                (HeuristicGeneratorFactory.HeuristicGenerator)
+                        generatorFactory.create(null, repoPath, totalChunks);
+        this.currentGenerator = generator;
 
         return new VariantBuildContext(
                 repoPath,
@@ -200,6 +203,17 @@ public class PluginOrchestrator {
 
     public boolean isExhausted() {
         return exhausted;
+    }
+
+    /**
+     * Reset the generator's enumeration to the start so previously-skipped
+     * pattern combinations get re-emitted. Called when the user pins MANUAL
+     * (or changes manual text); dedup at submission time keeps already-done
+     * variants from re-running.
+     */
+    public void restartGenerator() {
+        HeuristicGeneratorFactory.HeuristicGenerator g = currentGenerator;
+        if (g != null) g.restart();
     }
 
     public void cancel() {

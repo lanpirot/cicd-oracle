@@ -47,21 +47,34 @@ public class HeuristicGeneratorFactory implements IVariantGeneratorFactory {
 
     @Override
     public IVariantGenerator create(String mergeId, Path repoPath, int numChunks) {
-        StrategySelector selector = new StrategySelector(heuristics);
-        return new HeuristicGenerator(selector, numChunks);
+        return new HeuristicGenerator(heuristics, numChunks);
     }
 
-    private static class HeuristicGenerator implements IVariantGenerator {
-        private final StrategySelector selector;
+    /**
+     * Heuristic-based generator with a resettable enumeration.
+     * Calling {@link #restart()} replaces the underlying {@link StrategySelector}
+     * so the generator re-emits assignments from the start — used when the user
+     * pins a MANUAL chunk so previously-skipped pattern combinations get explored
+     * against the new manual text. Dedup at submission time prevents already-done
+     * variants from being re-run.
+     */
+    public static class HeuristicGenerator implements IVariantGenerator {
+        private final PatternHeuristics heuristics;
         private final int numChunks;
+        private StrategySelector selector;
 
-        HeuristicGenerator(StrategySelector selector, int numChunks) {
-            this.selector = selector;
+        HeuristicGenerator(PatternHeuristics heuristics, int numChunks) {
+            this.heuristics = heuristics;
             this.numChunks = numChunks;
+            this.selector = new StrategySelector(heuristics);
+        }
+
+        public synchronized void restart() {
+            this.selector = new StrategySelector(heuristics);
         }
 
         @Override
-        public Optional<List<String>> nextVariant() {
+        public synchronized Optional<List<String>> nextVariant() {
             while (!selector.allStrategiesExhausted(numChunks)) {
                 PatternStrategy strategy = selector.selectStrategy(numChunks);
                 if (strategy == null) break;

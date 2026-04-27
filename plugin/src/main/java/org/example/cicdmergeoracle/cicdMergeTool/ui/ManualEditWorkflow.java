@@ -35,6 +35,7 @@ class ManualEditWorkflow {
     private final JButton pinManualButton;
     private final JButton cancelManualButton;
     private final Runnable onPinChanged;
+    private final Runnable onManualConfirmed;
 
     private int manualEditRow = -1;
     int getManualEditRow() { return manualEditRow; }
@@ -47,13 +48,15 @@ class ManualEditWorkflow {
     ManualEditWorkflow(Project ideProject, Path projectPath,
                        ChunkTableModel chunkModel,
                        JButton pinManualButton, JButton cancelManualButton,
-                       Runnable onPinChanged) {
+                       Runnable onPinChanged,
+                       Runnable onManualConfirmed) {
         this.ideProject = ideProject;
         this.projectPath = projectPath;
         this.chunkModel = chunkModel;
         this.pinManualButton = pinManualButton;
         this.cancelManualButton = cancelManualButton;
         this.onPinChanged = onPinChanged;
+        this.onManualConfirmed = onManualConfirmed;
 
         ideProject.getMessageBus().connect().subscribe(
                 FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
@@ -108,6 +111,7 @@ class ManualEditWorkflow {
         if (manualEditRow < 0 || manualEditFile == null) return false;
 
         String text = readManualEditContent();
+        boolean confirmed = false;
         if (text != null) {
             LOG.info("Pinning MANUAL for chunk {}: {} chars", manualEditRow, text.length());
             // Pin all ConflictBlocks in the same working-tree chunk group
@@ -119,9 +123,11 @@ class ManualEditWorkflow {
                 session.getPinnedChunks().put(idx, "MANUAL");
                 session.bumpManualVersion(idx);
             }
+            confirmed = true;
         }
 
         cleanupManualEdit();
+        if (confirmed) onManualConfirmed.run();
         return true;
     }
 

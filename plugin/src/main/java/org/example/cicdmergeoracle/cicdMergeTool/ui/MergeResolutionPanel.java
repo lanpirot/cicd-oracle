@@ -109,7 +109,7 @@ public class MergeResolutionPanel {
         this.ideProject = ideProject;
         this.manualEdit = new ManualEditWorkflow(
                 ideProject, this.projectPath, chunkModel, pinManualButton, cancelManualButton,
-                this::onPinChanged);
+                this::onPinChanged, this::onManualPinConfirmed);
         this.spinnerTimer = new Timer(100, e -> {
             spinnerIndex = (spinnerIndex + 1) % SPINNER_FRAMES.length;
             updateInFlightLabel(currentInFlight);
@@ -230,7 +230,7 @@ public class MergeResolutionPanel {
         dashboardTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         var cm = dashboardTable.getColumnModel();
         // #, Modules, Tests, Time (s) — initial preferred widths only
-        int[] pref = {30, 60, 50, 55};
+        int[] pref = {12, 24, 20, 22};
         for (int i = 0; i < pref.length && i < cm.getColumnCount(); i++) {
             cm.getColumn(i).setPreferredWidth(pref[i]);
         }
@@ -812,6 +812,18 @@ public class MergeResolutionPanel {
             }
         } finally {
             suppressResolutionListener = false;
+        }
+    }
+
+    /**
+     * Called when a chunk is pinned to MANUAL or its manual text is changed.
+     * Resets the running generator's enumeration so previously-skipped pattern
+     * combinations get explored against the new manual text. Dedup at submission
+     * time prevents already-done variants from re-running.
+     */
+    private void onManualPinConfirmed() {
+        if (orchestrator != null && !orchestrator.isExhausted()) {
+            orchestrator.restartGenerator();
         }
     }
 
