@@ -272,9 +272,7 @@ public class MavenCommandResolver {
             }
             for (String line : output.split("\n")) {
                 if (line.startsWith("Maven home:")) {
-                    String home = line.substring("Maven home:".length()).trim();
-                    System.out.printf("  mvnd: using wrapper Maven home: %s%n", home);
-                    return home;
+                    return line.substring("Maven home:".length()).trim();
                 }
             }
         } catch (Exception e) {
