@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -66,8 +66,11 @@ public class MavenExecutionFactory {
 
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
-        this.compilationResults = new TreeMap<>();
-        this.testResults = new TreeMap<>();
+        // ConcurrentSkipListMap preserves the sorted-key semantics of TreeMap while being
+        // safe under concurrent put() from PipelineLifecycleListener.onVariantComplete,
+        // which is invoked from every parallel worker thread.
+        this.compilationResults = new ConcurrentSkipListMap<>();
+        this.testResults = new ConcurrentSkipListMap<>();
     }
 
     /**
@@ -91,10 +94,13 @@ public class MavenExecutionFactory {
     public IJustInTimeRunner createJustInTimeRunner(boolean isParallel, boolean isCache, boolean skipVariants,
                                                      long storedBaselineSeconds, long storedPeakRamBytes,
                                                      long storedDirGrowthBytes, boolean stopOnPerfect) {
-        compilationResults = new TreeMap<>();
-        testResults = new TreeMap<>();
-        variantFinishSeconds = new TreeMap<>();
-        variantSinceMergeStartSeconds = new TreeMap<>();
+        // Thread-safe sorted maps — PipelineLifecycleListener.onVariantComplete writes
+        // from every parallel worker thread; plain TreeMap puts race during rebalancing
+        // and surface as NPE in TreeMap.rotateLeft (observed on dicoogle, variant 572).
+        compilationResults = new ConcurrentSkipListMap<>();
+        testResults = new ConcurrentSkipListMap<>();
+        variantFinishSeconds = new ConcurrentSkipListMap<>();
+        variantSinceMergeStartSeconds = new ConcurrentSkipListMap<>();
         budgetExhausted = false;
         cacheDonorKeys = ConcurrentHashMap.newKeySet();
         donorTracker = new DonorTracker();
