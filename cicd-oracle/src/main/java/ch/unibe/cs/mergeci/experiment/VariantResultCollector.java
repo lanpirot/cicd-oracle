@@ -205,10 +205,20 @@ public class VariantResultCollector {
         boolean hasVariants = compilationResults.keySet().stream().anyMatch(k -> !k.equals(projectName));
 
         if (!hasVariants) {
-            // Human baseline: single result
+            // Human baseline: single result. Report the post-install build time (the
+            // duration that drives the variant budget basis), not the wall-clock total
+            // which on SNAPSHOT multi-module projects also includes the pre-install step.
             CompilationResult cr = compilationResults.get(projectName);
             TestTotal tt = testResults.get(projectName);
-            return formatBuildStats(cr, tt) + " | " + formatTime(executionTime);
+            ExperimentTiming timing = result.runExecutionTime();
+            long buildTime = (timing != null && timing.getHumanBaselineExecutionTime() != null)
+                    ? timing.getHumanBaselineExecutionTime().getSeconds()
+                    : executionTime;
+            String timeStr = formatTime(buildTime) + " build";
+            if (executionTime - buildTime >= 5) {
+                timeStr += " (" + formatTime(executionTime) + " wall)";
+            }
+            return formatBuildStats(cr, tt) + " | " + timeStr;
         }
 
         // Find best variant: most successful modules → most passed tests → first to finish

@@ -173,4 +173,54 @@ class VariantResultCollectorTest extends BaseTest {
 
         assertEquals(BASELINE_SECONDS, output.getVariantsExecutionTimeSeconds());
     }
+
+    // ── getSuccessSummary ─────────────────────────────────────────────────────
+
+    @Test
+    void getSuccessSummary_humanBaselineReportsBuildTime() throws Exception {
+        // BASELINE_SECONDS=70 (post-install build) vs executionTimeSeconds=200 (wall, incl. pre-install).
+        // The summary must surface the 70s build time, not the 200s wall clock — the
+        // budget is keyed off build time, so that's what the user needs to see.
+        MergeExperimentRunner.ProcessedMerge processed = buildProcessedMerge(false, Map.of());
+        String summary = new VariantResultCollector().getSuccessSummary(processed);
+
+        assertTrue(summary.contains("1m 10s build"),
+                "summary must include post-install build time as 'build'; got: " + summary);
+        assertTrue(summary.contains("3m 20s wall"),
+                "summary must include wall-clock total when it differs from build; got: " + summary);
+    }
+
+    @Test
+    void getSuccessSummary_humanBaselineHidesWallWhenEqual() throws Exception {
+        // No pre-install: build time and wall time match — don't clutter the line.
+        DatasetReader.MergeInfo info = new DatasetReader.MergeInfo();
+        info.setMergeCommit("abc123");
+        info.setParent1("p1");
+        info.setParent2("p2");
+
+        TestTotal tests = new TestTotal();
+        tests.setRunNum(10);
+        tests.setHasData(true);
+
+        Map<String, CompilationResult> compilationResults = new TreeMap<>();
+        compilationResults.put(PROJECT_NAME, null);
+        Map<String, TestTotal> testResults = new TreeMap<>();
+        testResults.put(PROJECT_NAME, tests);
+
+        ExperimentTiming timing = new ExperimentTiming();
+        timing.setHumanBaselineExecutionTime(Duration.ofSeconds(45));
+
+        Path fakePath = Paths.get("/tmp", PROJECT_NAME);
+        VariantProjectBuilder analyzer = new VariantProjectBuilder(fakePath, AppConfig.TEST_TMP_DIR, AppConfig.TEST_TMP_DIR);
+
+        MergeExperimentRunner.MergeAnalysisResult result = new MergeExperimentRunner.MergeAnalysisResult(
+                analyzer, compilationResults, testResults, 45L, timing, Map.of(),
+                null, false, null, Collections.emptySet(), 0, 9, 0L, 0L);
+        MergeExperimentRunner.ProcessedMerge processed = MergeExperimentRunner.ProcessedMerge.completed(info, 1, result);
+
+        String summary = new VariantResultCollector().getSuccessSummary(processed);
+        assertTrue(summary.contains("45s build"), "summary should show build time; got: " + summary);
+        assertFalse(summary.contains("wall"),
+                "wall-clock should be omitted when equal to build time; got: " + summary);
+    }
 }
