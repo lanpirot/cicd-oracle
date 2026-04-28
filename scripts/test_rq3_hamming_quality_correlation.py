@@ -27,7 +27,7 @@ def _write_conflicts_csv(rows: list[dict]) -> Path:
     tmp = tempfile.NamedTemporaryFile(
         mode="w", suffix=".csv", delete=False, newline=""
     )
-    fieldnames = ["merge_id", "filename", "chunkIndex", "y_conflictResolutionResult"]
+    fieldnames = ["commitId", "filename", "chunkIndex", "y_conflictResolutionResult"]
     writer = csv.DictWriter(tmp, fieldnames=fieldnames, extrasaction="ignore")
     writer.writeheader()
     writer.writerows(rows)
@@ -87,6 +87,51 @@ class TestPathNormalisation(unittest.TestCase):
 
 
 
+# ── Per-chunk distance rules ──────────────────────────────────────────────────
+
+class TestChunkDistance(unittest.TestCase):
+    """
+    Per-chunk rule:
+      hb=OURS,   v=OURS         → 0
+      hb=OURS,   v=THEIRS       → 1
+      hb=OURS,   v=THEIRS:BASE  → 1   (composite never matches a primitive hb)
+      hb=MANUAL, v=anything     → 1   (CHUNK_NONCANONICAL: outside variant space)
+      Composite vs composite is order-insensitive (set equality).
+    """
+
+    def test_primitive_match(self):
+        self.assertEqual(rq3.chunk_distance("CHUNK_CANONICAL_OURS", "OURS"), 0)
+
+    def test_primitive_mismatch(self):
+        self.assertEqual(rq3.chunk_distance("CHUNK_CANONICAL_OURS", "THEIRS"), 1)
+
+    def test_primitive_vs_composite(self):
+        self.assertEqual(rq3.chunk_distance("CHUNK_CANONICAL_OURS", "THEIRS:BASE"), 1)
+
+    def test_manual_always_one(self):
+        # CHUNK_NONCANONICAL is the GT label for MANUAL: no variant pattern can match it.
+        for v in ("OURS", "THEIRS", "BASE", "EMPTY", "OURS:THEIRS", "BASE:OURS:THEIRS"):
+            self.assertEqual(rq3.chunk_distance("CHUNK_NONCANONICAL", v), 1, f"v={v}")
+
+    def test_composite_match_order_insensitive(self):
+        # CHUNK_SEMICANONICAL_OURSTHEIRS matches both OURS:THEIRS and THEIRS:OURS.
+        self.assertEqual(rq3.chunk_distance("CHUNK_SEMICANONICAL_OURSTHEIRS", "OURS:THEIRS"), 0)
+        self.assertEqual(rq3.chunk_distance("CHUNK_SEMICANONICAL_OURSTHEIRS", "THEIRS:OURS"), 0)
+
+    def test_composite_mismatch(self):
+        self.assertEqual(rq3.chunk_distance("CHUNK_SEMICANONICAL_OURSTHEIRS", "OURS:BASE"), 1)
+
+    def test_total_range_is_zero_to_n(self):
+        # n=3 matched chunks: all-match → 0, all-mismatch → 3.
+        gt = {"F.java": ["CHUNK_CANONICAL_OURS",
+                         "CHUNK_CANONICAL_THEIRS",
+                         "CHUNK_CANONICAL_BASE"]}
+        self.assertEqual(rq3.hamming_distance(
+            {"F.java": ["OURS", "THEIRS", "BASE"]}, gt), 0)
+        self.assertEqual(rq3.hamming_distance(
+            {"F.java": ["THEIRS", "OURS", "OURS"]}, gt), 3)
+
+
 # ── Chunk ordering ────────────────────────────────────────────────────────────
 
 class TestChunkOrdering(unittest.TestCase):
@@ -102,11 +147,11 @@ class TestChunkOrdering(unittest.TestCase):
         The loaded list must be in chunkIndex order (1, 2, 3) = OURS, THEIRS, BASE.
         """
         csv_path = _write_conflicts_csv([
-            {"merge_id": "abc", "filename": "Foo.java",
+            {"commitId": "abc", "filename": "Foo.java",
              "chunkIndex": "3", "y_conflictResolutionResult": "BASE"},
-            {"merge_id": "abc", "filename": "Foo.java",
+            {"commitId": "abc", "filename": "Foo.java",
              "chunkIndex": "1", "y_conflictResolutionResult": "OURS"},
-            {"merge_id": "abc", "filename": "Foo.java",
+            {"commitId": "abc", "filename": "Foo.java",
              "chunkIndex": "2", "y_conflictResolutionResult": "THEIRS"},
         ])
         try:
@@ -126,9 +171,9 @@ class TestChunkOrdering(unittest.TestCase):
         GT would be ["THEIRS", "OURS"] and Hamming would be 2.
         """
         csv_path = _write_conflicts_csv([
-            {"merge_id": "xyz", "filename": "Bar.java",
+            {"commitId": "xyz", "filename": "Bar.java",
              "chunkIndex": "2", "y_conflictResolutionResult": "THEIRS"},
-            {"merge_id": "xyz", "filename": "Bar.java",
+            {"commitId": "xyz", "filename": "Bar.java",
              "chunkIndex": "1", "y_conflictResolutionResult": "OURS"},
         ])
         try:
@@ -144,9 +189,9 @@ class TestChunkOrdering(unittest.TestCase):
         Guards against the failure mode where sorting hides a real mismatch.
         """
         csv_path = _write_conflicts_csv([
-            {"merge_id": "m1", "filename": "X.java",
+            {"commitId": "m1", "filename": "X.java",
              "chunkIndex": "2", "y_conflictResolutionResult": "THEIRS"},
-            {"merge_id": "m1", "filename": "X.java",
+            {"commitId": "m1", "filename": "X.java",
              "chunkIndex": "1", "y_conflictResolutionResult": "OURS"},
         ])
         try:
