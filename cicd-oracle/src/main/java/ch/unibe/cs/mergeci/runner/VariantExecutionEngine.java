@@ -365,10 +365,12 @@ public class VariantExecutionEngine {
                 // the donor may already have rotated by the time we get here). The cache
                 // extension proved the variant's source matches the donor's at the module
                 // level, so the donor's test outcomes are this variant's test outcomes.
+                boolean usedCache = false;
                 if (config.useCache && donorTtAtWarm != null
                         && cr.getBuildStatus() == CompilationResult.Status.SUCCESS
                         && !tt.isHasData() && donorTtAtWarm.isHasData()) {
                     tt = TestTotal.copyOf(donorTtAtWarm);
+                    usedCache = true;
                 }
 
                 // 6. Donor promotion
@@ -394,7 +396,7 @@ public class VariantExecutionEngine {
                         variantKey, variantIndex,
                         variant.extractPatterns(),
                         cr, tt, tpResult.testsRan(),
-                        elapsed, logFile, variantPath, isDonor);
+                        elapsed, logFile, variantPath, isDonor, usedCache);
                 listener.onVariantComplete(outcome);
 
                 // 8. Perfect variant check (engine-level concern, not delegated)

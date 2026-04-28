@@ -199,13 +199,21 @@ public class MavenExecutionFactory {
                 if (!skipVariants) {
                     Instant deadline = variantsStart.plusSeconds(totalBudgetSeconds);
 
+                    // Per-mode log directory so that compilation logs from one mode are
+                    // not overwritten when a later mode runs the same variant index.
+                    // Without this, the most-recent mode's log is the only one that
+                    // survives, which makes it impossible to diagnose mode-specific
+                    // build failures retrospectively.
+                    Path engineLogDir = logDir.resolve(modeName(isParallel, isCache));
+                    java.nio.file.Files.createDirectories(engineLogDir);
+
                     // singlePhase=isCache: extensions.xml (registering the maven-hook
                     // alongside the build-cache extension) is only injected in cache modes,
                     // so the early-abort gate can only fire there. Non-cache modes fall back
                     // to TwoPhaseRunner's compile-then-test gating.
                     VariantExecutionEngine.EngineConfig engineConfig = new VariantExecutionEngine.EngineConfig(
                             threads, useOverlay, isCache, isCache, stopOnPerfect,
-                            AppConfig.TMP_DIR, logDir,
+                            AppConfig.TMP_DIR, engineLogDir,
                             resolvedJavaHome,
                             useOverlay ? AppConfig.TMP_DIR : null,
                             m2OverlayEnabled ? M2_OVERLAY_DIR : null,
@@ -328,6 +336,9 @@ public class MavenExecutionFactory {
                 if (outcome.isDonor()) {
                     cacheDonorKeys.add(key);
                 }
+                if (outcome.usedCache()) {
+                    cacheHitKeys.add(key);
+                }
             }
         }
     }
@@ -358,6 +369,23 @@ public class MavenExecutionFactory {
     }
 
     // ── Static utilities ──────────────────────────────────────────────────
+
+    /**
+     * Resolve the display-name of the variant mode that matches the given
+     * {@code (isParallel, isCache)} flags. Used to give each variant mode its
+     * own log subdirectory so that one mode's compilation logs don't
+     * overwrite another's. Falls back to a synthesised name if no enum matches
+     * (shouldn't happen for the four known variant modes).
+     */
+    private static String modeName(boolean isParallel, boolean isCache) {
+        for (ch.unibe.cs.mergeci.util.Utility.Experiments e :
+                ch.unibe.cs.mergeci.util.Utility.Experiments.values()) {
+            if (!e.isSkipVariants() && e.isParallel() == isParallel && e.isCache() == isCache) {
+                return e.getName();
+            }
+        }
+        return (isCache ? "cache_" : "") + (isParallel ? "parallel" : "sequential");
+    }
 
     /**
      * Returns true when a variant is "perfect": all modules built successfully

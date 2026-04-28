@@ -22,5 +22,6 @@ public record VariantOutcome(
         Duration elapsed,
         Path logFile,
         Path variantPath,
-        boolean isDonor
+        boolean isDonor,
+        boolean usedCache
 ) {}
