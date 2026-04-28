@@ -924,62 +924,77 @@ def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None 
 
 def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | None = None):
     """
-    Box plot: per-merge speedup ratio (cold / median-warm) for each cache mode.
-    Each data point is one merge: ratio of the cache-warmer's build time to
-    the median build time of its warmed variants.
+    Box plot: per-merge cache speedup, comparing the median per-variant build
+    time in a cache mode against the corresponding no-cache mode for the same
+    merge. Excludes donor variants from the cache mode (donors pay a one-off
+    warming cost that's amortised across the rest; including them would just
+    measure warmer overhead, not cache benefit). Compares apples-to-apples:
+    Sequential+Cache vs Sequential, Parallel+Cache vs Parallel.
+
+    Ratio = median(no-cache mode own_t) / median(cache mode non-donor own_t).
+    >1.0 → cache mode is faster (the headline claim caching is supposed to make).
+    <1.0 → cache overhead exceeds savings (e.g. when build-cache rarely hits).
     """
-    CACHE_MODES = ["cache_sequential", "cache_parallel"]
+    PAIRS = [("cache_sequential", "no_optimization", "S+ / S"),
+             ("cache_parallel",   "parallel",        "P+ / P")]
 
     box_data = []
     box_labels = []
     box_colors = []
     sig_lines = []
 
-    for mode in CACHE_MODES:
+    for cache_mode, base_mode, label in PAIRS:
         ratios = []
-        cold_times = []
-        warm_medians = []
-        merges = all_data.get(mode, {})
-        commits = valid_commits if valid_commits is not None else sorted(merges.keys())
+        base_medians = []
+        cache_medians = []
+        cache_merges = all_data.get(cache_mode, {})
+        base_merges  = all_data.get(base_mode, {})
+        if valid_commits is not None:
+            commits = valid_commits
+        else:
+            commits = sorted(set(cache_merges.keys()) & set(base_merges.keys()))
         for commit in commits:
-            merge = merges.get(commit)
-            if merge is None:
+            cmerge = cache_merges.get(commit)
+            bmerge = base_merges.get(commit)
+            if cmerge is None or bmerge is None:
                 continue
-            cold_t = None
-            warm_ts = []
-            for v in merge.get("variants", []):
+            cache_warm = []
+            for v in cmerge.get("variants", []):
+                if v.get("variantIndex", 0) == 0 or v.get("timedOut", False):
+                    continue
+                if v.get("isCacheDonor", False) or v.get("isCacheWarmer", False):
+                    continue  # exclude donor: it pays warming cost
+                own = v.get("ownExecutionSeconds")
+                if own is not None and own > 0:
+                    cache_warm.append(own)
+            base_times = []
+            for v in bmerge.get("variants", []):
                 if v.get("variantIndex", 0) == 0 or v.get("timedOut", False):
                     continue
                 own = v.get("ownExecutionSeconds")
-                if own is None or own <= 0:
-                    continue
-                if v.get("isCacheDonor", False) or v.get("isCacheWarmer", False):
-                    cold_t = own
-                else:
-                    warm_ts.append(own)
-            if cold_t is not None and warm_ts:
-                warm_med = sorted(warm_ts)[len(warm_ts) // 2]
-                ratios.append(cold_t / warm_med)
-                cold_times.append(cold_t)
-                warm_medians.append(warm_med)
+                if own is not None and own > 0:
+                    base_times.append(own)
+            if cache_warm and base_times:
+                cw_med = sorted(cache_warm)[len(cache_warm) // 2]
+                bt_med = sorted(base_times)[len(base_times) // 2]
+                if cw_med > 0:
+                    ratios.append(bt_med / cw_med)
+                    base_medians.append(bt_med)
+                    cache_medians.append(cw_med)
 
         if ratios:
             box_data.append(ratios)
-            # Label shows the ratio being computed, e.g. "Sequential (S+ / S)"
-            noncache = "S" if mode == "cache_sequential" else "P"
-            cache_short = MODE_SHORT[mode]
-            box_labels.append(
-                f"Cache Speedup ({cache_short} / {noncache})\nn={len(ratios)}")
-            box_colors.append(MODE_COLORS[mode])
+            box_labels.append(f"Cache Speedup ({label})\nn={len(ratios)}")
+            box_colors.append(MODE_COLORS[cache_mode])
 
-            if len(cold_times) >= 3 and HAS_SCIPY:
+            if len(base_medians) >= 3 and HAS_SCIPY:
                 try:
-                    _, p = wilcoxon(cold_times, warm_medians)
-                    d = _cliffs_delta(cold_times, warm_medians)
+                    _, p = wilcoxon(base_medians, cache_medians)
+                    d = _cliffs_delta(base_medians, cache_medians)
                     med_ratio = sorted(ratios)[len(ratios) // 2]
                     sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else "ns"
                     sig_lines.append(
-                        f"{cache_short}/{noncache}: med={med_ratio:.2f}x, "
+                        f"{label}: med={med_ratio:.2f}x, "
                         f"p={p:.4f}{sig}, d={d:+.2f} ({_cliffs_delta_label(d)})"
                     )
                 except ValueError:
@@ -997,15 +1012,15 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
         patch.set_facecolor(color)
         patch.set_alpha(0.7)
 
-    # Reference line at ratio=1 (no speedup)
+    # Reference line at ratio=1 (no speedup); above the line = cache faster.
     ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
-               label="no speedup")
+               label="no speedup (cache = no-cache)")
 
     ax.set_yscale("log")
     ax.set_xticks(positions)
     ax.set_xticklabels(box_labels, fontsize=9)
-    ax.set_ylabel("Speedup ratio (cold / median warm, log scale)")
-    ax.set_title("Cache Warmup Effect: Per-Merge Speedup Ratio")
+    ax.set_ylabel("Speedup ratio (no-cache median / cache-warm median, log scale)")
+    ax.set_title("Cache vs No-Cache: Per-Merge Speedup Ratio (warm variants only)")
     ax.legend(loc="upper right", fontsize=8)
     ax.grid(True, axis="y", alpha=0.3, which="both")
 
