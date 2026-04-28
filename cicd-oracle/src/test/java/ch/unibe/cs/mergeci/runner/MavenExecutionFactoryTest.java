@@ -126,6 +126,42 @@ public class MavenExecutionFactoryTest extends BaseTest {
             long result = MavenExecutionFactory.normalizeBaselineSeconds(100, tt, cr);
             assertEquals(210, result); // 160 + 50
         }
+
+        @Test
+        void reactorParallel_testElapsedExceedsWallClock_inflatesOnlyByTestFailures() {
+            // Real tika numbers: wall 323s, sum-of-module-test-elapsed 690.71s,
+            // 108/108 modules, 2004/2093 passing tests.  The pre-fix formula
+            // returned 721 (parallel-summed, ignoring wall clock); the fix should
+            // inflate the wall clock only by the test-failure ratio.
+            //   expected = 323 * 2093/2004 = 337.3 → 337
+            CompilationResult cr = CompilationResult.forTest(CompilationResult.Status.SUCCESS,
+                    List.of(module("A", CompilationResult.Status.SUCCESS),
+                            module("B", CompilationResult.Status.SUCCESS)));
+            TestTotal tt = testTotal(2093, 6, 83, 690.71f);
+            long result = MavenExecutionFactory.normalizeBaselineSeconds(323, tt, cr);
+            assertEquals(337, result);
+        }
+
+        @Test
+        void reactorParallel_allTestsPass_returnsRawWallClock() {
+            // testElapsed > wall clock, but every test passed → no inflation
+            CompilationResult cr = CompilationResult.forTest(CompilationResult.Status.SUCCESS,
+                    List.of(module("A", CompilationResult.Status.SUCCESS),
+                            module("B", CompilationResult.Status.SUCCESS)));
+            TestTotal tt = testTotal(500, 0, 0, 200f);
+            assertEquals(60, MavenExecutionFactory.normalizeBaselineSeconds(60, tt, cr));
+        }
+
+        @Test
+        void reactorParallel_zeroPassingTests_returnsMavenBuildTimeout() {
+            // Even in the parallel branch, "no tests passed" must fall back to the
+            // build-timeout sentinel — same contract as the sequential branch.
+            CompilationResult cr = CompilationResult.forTest(CompilationResult.Status.SUCCESS,
+                    List.of(module("A", CompilationResult.Status.SUCCESS)));
+            TestTotal tt = testTotal(50, 50, 0, 200f);
+            assertEquals(AppConfig.MAVEN_BUILD_TIMEOUT,
+                    MavenExecutionFactory.normalizeBaselineSeconds(60, tt, cr));
+        }
     }
 
     // ── SNAPSHOT multi-module detection ────────────────────────────��─────────

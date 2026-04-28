@@ -432,11 +432,17 @@ public class MavenExecutionFactory {
      * then scales each independently: c' = c * totalModules/successfulModules,
      * t' = t * runTests/passedTests. Returns c' + t'.
      * Falls back to {@link AppConfig#MAVEN_BUILD_TIMEOUT} when nothing succeeded.
+     *
+     * <p>When the build runs with reactor parallelism (mvnd's per-daemon -T flag), the per-module
+     * surefire elapsedTime values sum to more than the wall clock, so the sequential decomposition
+     * c = total - testElapsed becomes negative. In that case the wall clock already covers both
+     * compile and (parallel) test work, and we only inflate it by the test-failure ratio. Without
+     * this branch, multi-module reactor builds get a budget keyed off the parallel-summed test
+     * time, which can be 2x+ too large.
      */
     static long normalizeBaselineSeconds(long totalBuildSeconds, TestTotal testTotal,
                                                   CompilationResult compilationResult) {
         float testElapsed = (testTotal != null) ? testTotal.getElapsedTime() : 0;
-        float compilationTime = Math.max(0, totalBuildSeconds - testElapsed);
 
         if (compilationResult != null) {
             int totalModules = compilationResult.getTotalModules();
@@ -444,6 +450,28 @@ public class MavenExecutionFactory {
             if (totalModules > 1 && successfulModules == 0) {
                 return AppConfig.MAVEN_BUILD_TIMEOUT;
             }
+        }
+
+        if (testElapsed > totalBuildSeconds) {
+            // Reactor-parallel tests: sum-of-module-elapsed exceeds wall clock.
+            // The compile/test split is meaningless; only inflate for test failures.
+            if (testTotal != null) {
+                int runTests = testTotal.getRunNum();
+                int passedTests = runTests - testTotal.getFailuresNum() - testTotal.getErrorsNum();
+                if (runTests > 0 && passedTests == 0) {
+                    return AppConfig.MAVEN_BUILD_TIMEOUT;
+                }
+                if (passedTests > 0 && passedTests < runTests) {
+                    return (long) (totalBuildSeconds * ((float) runTests / passedTests));
+                }
+            }
+            return totalBuildSeconds;
+        }
+
+        float compilationTime = totalBuildSeconds - testElapsed;
+        if (compilationResult != null) {
+            int totalModules = compilationResult.getTotalModules();
+            int successfulModules = compilationResult.getSuccessfulModules();
             if (totalModules > 1 && successfulModules < totalModules) {
                 compilationTime = compilationTime * totalModules / successfulModules;
             }
