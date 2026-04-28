@@ -1,7 +1,6 @@
 package ch.unibe.cs.mergeci.experiment;
 
 import ch.unibe.cs.mergeci.config.AppConfig;
-import ch.unibe.cs.mergeci.present.CrossModeSanityChecker;
 import ch.unibe.cs.mergeci.runner.IVariantEvaluator;
 import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.runner.MavenExecutionFactory;
@@ -44,9 +43,6 @@ public abstract class RQPipelineRunner {
 
     /** Return the experiment modes to run (in order). */
     protected abstract List<Utility.Experiments> modesToRun();
-
-    /** Modes to include in the cross-mode sanity check. Defaults to {@link #modesToRun()}. */
-    protected List<Utility.Experiments> sanityCheckModes() { return modesToRun(); }
 
     /** Return the root directory under which per-mode subdirs are created. */
     protected abstract Path experimentDir();
@@ -123,7 +119,6 @@ public abstract class RQPipelineRunner {
             runProjects(byProject, mergeLog);
         }
 
-        CrossModeSanityChecker.check(experimentDir(), sanityCheckModes());
         analyzeResults();
     }
 

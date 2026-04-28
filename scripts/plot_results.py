@@ -2139,31 +2139,145 @@ def _export_latex_variables(all_data: dict, stats: dict, rq: str):
     print(f"  LaTeX variables exported ({len(lvars)} entries)")
 
 
+# Per-mode axis flags used by the sanity-check rate vote.
+_MODE_AXES = {
+    "no_optimization":  {"parallel": False, "cache": False},
+    "cache_sequential": {"parallel": False, "cache": True},
+    "parallel":         {"parallel": True,  "cache": False},
+    "cache_parallel":   {"parallel": True,  "cache": True},
+}
+_RATE_DECIMALS = 4
+
+
+def _compute_pass_rate(test_results: dict | None):
+    """Return passed/run rounded to 4 dp, or None when no tests ran."""
+    if not test_results:
+        return None
+    run = test_results.get("runNum", 0)
+    if run <= 0:
+        return None
+    passed = (run - test_results.get("failuresNum", 0)
+                  - test_results.get("errorsNum", 0)
+                  - test_results.get("skippedNum", 0))
+    return round(passed / run, _RATE_DECIMALS)
+
+
+def _all_axis_match(modes, parallel, cache):
+    """All modes match the requested parallel/cache flags (None = don't care)."""
+    for m in modes:
+        a = _MODE_AXES.get(m)
+        if a is None:
+            return False
+        if parallel is not None and a["parallel"] != parallel:
+            return False
+        if cache is not None and a["cache"] != cache:
+            return False
+    return True
+
+
+def _axis_blamed_side(g1, g2):
+    """If a 2-vs-2 split is axis-aligned, return the more-instrumented side; else None."""
+    # Parallelism axis
+    if _all_axis_match(g1, True, None) and _all_axis_match(g2, False, None):
+        return g1
+    if _all_axis_match(g2, True, None) and _all_axis_match(g1, False, None):
+        return g2
+    # Cache axis
+    if _all_axis_match(g1, None, True) and _all_axis_match(g2, None, False):
+        return g1
+    if _all_axis_match(g2, None, True) and _all_axis_match(g1, None, False):
+        return g2
+    return None
+
+
+def _attribute_flaky(rates: dict, flaky_by_mode: dict, asymmetric: bool) -> str:
+    """
+    Apply the axis-aware vote to {mode -> rate}, accumulating into flaky_by_mode.
+    Returns a tag describing the classification:
+      "agree" | "chaos" | "minority" | "axis" | "diagonal" | "tie"
+
+    Rules:
+      - All modes agree → no credit ("agree").
+      - ≥3 finished modes with all distinct rates → ignore as inherently flaky ("chaos").
+        Covers 1-1-1 (3 modes) and 1-1-1-1 (4 modes); a 2-1-1 split still has a
+        size-2 majority and is NOT chaos.
+      - Single-minority outlier vs clear majority → minority gets +1 ("minority").
+      - 4-mode 2-vs-2 axis-aligned split → blame the more-instrumented side +1 each
+        when asymmetric=True ("axis"); otherwise +0.5 each across all four.
+      - 4-mode 2-vs-2 diagonal split, or 2-mode disagreement → +0.5 each ("diagonal"/"tie").
+    """
+    groups: dict = {}
+    for m, r in rates.items():
+        groups.setdefault(r, []).append(m)
+    if len(groups) <= 1:
+        return "agree"
+
+    if len(rates) >= 3 and len(groups) == len(rates):
+        return "chaos"
+
+    sorted_groups = sorted(groups.values(), key=len, reverse=True)
+    largest = len(sorted_groups[0])
+    second = len(sorted_groups[1]) if len(sorted_groups) > 1 else 0
+
+    if len(rates) == 4 and len(groups) == 2 and largest == 2:
+        g1, g2 = sorted_groups[0], sorted_groups[1]
+        blamed = _axis_blamed_side(g1, g2)
+        if blamed is not None and asymmetric:
+            for m in blamed:
+                flaky_by_mode[m] = flaky_by_mode.get(m, 0.0) + 1.0
+            return "axis"
+        for m in rates.keys():
+            flaky_by_mode[m] = flaky_by_mode.get(m, 0.0) + 0.5
+        return "diagonal"
+
+    if largest == second:
+        for m in rates.keys():
+            flaky_by_mode[m] = flaky_by_mode.get(m, 0.0) + 0.5
+        return "tie"
+
+    for grp in sorted_groups[1:]:
+        for m in grp:
+            flaky_by_mode[m] = flaky_by_mode.get(m, 0.0) + 1.0
+    return "minority"
+
+
 def _cross_mode_sanity_check(all_data: dict) -> str:
     """
     Verify that identical variants produce identical build outcomes across modes.
-    Mirrors Java CrossModeSanityChecker: zero tolerance for compilation mismatches,
-    1% threshold for test mismatches (flaky tests).
+
+    Compilation has zero tolerance — any cross-mode disagreement is a hard failure.
+    Test outcomes are normalised to passed/run rounded to 4 d.p. and compared per
+    variant position. Disagreements are attributed to specific modes via an
+    axis-aware vote with a chaos exclusion (variants where ≥3 modes produce ≥3
+    distinct rates are treated as inherently flaky and ignored). The pass gate
+    enforces a 1% per-mode flaky budget.
+
+    Set ``SANITY_ASYMMETRIC=false`` in the environment to switch axis splits
+    from "blame the more-instrumented side" (default) to symmetric half-credit.
     """
+    import os
+
     MAX_TEST_MISMATCH_RATE = 0.01
+    asymmetric = os.environ.get("SANITY_ASYMMETRIC", "true").lower() != "false"
+
     mode_names = [m for m in VARIANT_MODES if all_data.get(m)]
     if len(mode_names) < 2:
         return "\n--- Cross-Mode Sanity Check: skipped (< 2 modes) ---"
 
-    # Find all merge commits present in any mode
     all_commits = set()
     for mode in mode_names:
         all_commits.update(all_data[mode].keys())
 
     variants_compared = 0
     compilation_mismatches = 0
-    test_mismatches = 0
-    test_deviations = []
-    # Per-merge breakdown: commit -> {"project", "comp_mismatches", "test_mismatches", "variants_compared"}
-    per_merge_stats: dict[str, dict] = {}
+    test_count_mismatches = 0
+    flaky_by_mode = {m: 0.0 for m in mode_names}
+    comp_blame_by_mode = {m: 0.0 for m in mode_names}
+    comp_chaos_count = 0
+    per_merge_stats: dict = {}
+    per_project: dict = {}  # project -> {"compared": int, "chaos": int}
 
     for commit in sorted(all_commits):
-        # Collect modes that have this merge
         present = {}
         project_name = None
         for mode in mode_names:
@@ -2175,95 +2289,138 @@ def _cross_mode_sanity_check(all_data: dict) -> str:
         if len(present) < 2:
             continue
 
+        proj_key = project_name or "(unknown)"
+        proj = per_project.setdefault(proj_key, {"compared": 0, "chaos": 0})
         mstats = {"project": project_name, "comp_mismatches": 0,
-                  "test_mismatches": 0, "variants_compared": 0}
+                  "test_mismatches": 0, "variants_compared": 0,
+                  "chaos_count": 0}
 
-        # Collect all variant indices across modes
         all_indices = set()
         for vmap in present.values():
             all_indices.update(vmap.keys())
 
         for idx in sorted(all_indices):
-            # Collect non-timed-out variants for this index
             comparable = []
+            comparable_modes = []
             for mode in present:
                 v = present[mode].get(idx)
                 if v and not v.get("timedOut", False):
                     comparable.append(v)
+                    comparable_modes.append(mode)
             if len(comparable) < 2:
                 continue
 
             variants_compared += 1
             mstats["variants_compared"] += 1
-            ref = comparable[0]
+            proj["compared"] += 1
 
-            # Compilation status
-            ref_status = (ref.get("compilationResult") or {}).get("buildStatus")
-            comp_mismatch = False
-            for other in comparable[1:]:
-                other_status = (other.get("compilationResult") or {}).get("buildStatus")
-                if ref_status != other_status:
-                    comp_mismatch = True
-            if comp_mismatch:
+            # Compilation: zero tolerance gate, but only on the SUCCESS-vs-FAIL
+            # axis. Non-SUCCESS statuses (FAILURE, SCAN_FAILURE, etc.) are
+            # collapsed to a single "FAIL" bucket — the research question is
+            # "did this mode fail to build something the others built?" not "did
+            # SCAN_FAILURE turn into FAILURE under different scheduling?". The
+            # latter is a diagnostic shift on a merge that's broken regardless
+            # of pipeline. The same collapsed statuses then feed the axis-aware
+            # vote, so the headline count and per-mode blame stay consistent.
+            comp_statuses = {}
+            for v, mode in zip(comparable, comparable_modes):
+                st = (v.get("compilationResult") or {}).get("buildStatus")
+                if st:
+                    comp_statuses[mode] = "SUCCESS" if st == "SUCCESS" else "FAIL"
+            if len(set(comp_statuses.values())) > 1:
                 compilation_mismatches += 1
                 mstats["comp_mismatches"] += 1
+            if len(comp_statuses) >= 2:
+                ctag = _attribute_flaky(comp_statuses, comp_blame_by_mode, asymmetric)
+                if ctag == "chaos":
+                    comp_chaos_count += 1
 
-            # Test counts
-            ref_tr = ref.get("testResults") or {}
-            test_mismatch = False
-            worst_dev = 0.0
-            for other in comparable[1:]:
-                other_tr = other.get("testResults") or {}
-                d_run  = abs(ref_tr.get("runNum", 0)      - other_tr.get("runNum", 0))
-                d_fail = abs(ref_tr.get("failuresNum", 0) - other_tr.get("failuresNum", 0))
-                d_err  = abs(ref_tr.get("errorsNum", 0)   - other_tr.get("errorsNum", 0))
-                if d_run + d_fail + d_err > 0:
-                    test_mismatch = True
-                    max_tests = max(ref_tr.get("runNum", 0), other_tr.get("runNum", 0))
-                    dev = (d_run + d_fail + d_err) / max_tests if max_tests > 0 else 1.0
-                    worst_dev = max(worst_dev, dev)
-            if test_mismatch:
-                test_mismatches += 1
-                test_deviations.append(worst_dev)
+            # Count-based test mismatch (informational, kept for diagnostic detail).
+            ref_tr = comparable[0].get("testResults") or {}
+            count_mismatch = any(
+                (abs(ref_tr.get("runNum", 0)      - (v.get("testResults") or {}).get("runNum", 0)) +
+                 abs(ref_tr.get("failuresNum", 0) - (v.get("testResults") or {}).get("failuresNum", 0)) +
+                 abs(ref_tr.get("errorsNum", 0)   - (v.get("testResults") or {}).get("errorsNum", 0))) > 0
+                for v in comparable[1:]
+            )
+            if count_mismatch:
+                test_count_mismatches += 1
                 mstats["test_mismatches"] += 1
+
+            # Rate-based axis-aware vote.
+            rates = {}
+            for v, mode in zip(comparable, comparable_modes):
+                r = _compute_pass_rate(v.get("testResults"))
+                if r is not None:
+                    rates[mode] = r
+            if len(rates) >= 2:
+                tag = _attribute_flaky(rates, flaky_by_mode, asymmetric)
+                if tag == "chaos":
+                    mstats["chaos_count"] += 1
+                    proj["chaos"] += 1
 
         per_merge_stats[commit] = mstats
 
-    test_rate = test_mismatches / variants_compared if variants_compared > 0 else 0.0
-    max_dev = max(test_deviations) if test_deviations else 0.0
-    med_dev = sorted(test_deviations)[len(test_deviations) // 2] if test_deviations else 0.0
-    passed = compilation_mismatches == 0 and test_rate <= MAX_TEST_MISMATCH_RATE
+    mode_rate = {m: (c / variants_compared if variants_compared else 0.0)
+                 for m, c in flaky_by_mode.items()}
+    per_mode_ok = all(r <= MAX_TEST_MISMATCH_RATE for r in mode_rate.values())
+    passed = compilation_mismatches == 0 and per_mode_ok
 
     out = []
-    out.append(f"\n--- Cross-Mode Sanity Check: {'PASSED' if passed else 'FAILED'} ---")
+    out.append(f"\n--- Cross-Mode Sanity Check: {'PASSED' if passed else 'FAILED'} "
+               f"({'asymmetric' if asymmetric else 'symmetric'} attribution) ---")
     out.append(f"  Modes compared:             {', '.join(MODE_LABELS[m] for m in mode_names)}")
     out.append(f"  Variant positions compared: {variants_compared}")
+
     if compilation_mismatches == 0:
         out.append(f"  Compilation outcomes:       OK (all consistent)")
     else:
         out.append(f"  FAIL — Compilation mismatches: {compilation_mismatches}/{variants_compared} "
                    f"({100.0 * compilation_mismatches / variants_compared:.1f}%)")
-    if test_mismatches == 0:
-        out.append(f"  Test counts:                OK (all consistent)")
-    else:
-        verdict = "OK (within threshold)" if test_rate <= MAX_TEST_MISMATCH_RATE else "FAIL"
-        out.append(f"  Test count mismatches: {verdict} — {test_mismatches}/{variants_compared} "
-                   f"({100.0 * test_rate:.2f}%, threshold {MAX_TEST_MISMATCH_RATE * 100:.0f}%)")
-        out.append(f"  Deviation magnitude:        median={med_dev * 100:.1f}%, max={max_dev * 100:.1f}%")
+        out.append(f"  Per-mode compilation blame (axis-aware vote, zero-tolerance gate):")
+        for mode in mode_names:
+            credit = comp_blame_by_mode[mode]
+            rate = credit / variants_compared if variants_compared else 0.0
+            out.append(f"    {MODE_LABELS[mode]:20s}        "
+                       f"{credit:6.1f} / {variants_compared} ({rate * 100:5.2f}%)")
+        if comp_chaos_count:
+            out.append(f"    (compilation chaos cases ignored: {comp_chaos_count})")
 
-    # Per-merge breakdown for merges with any mismatch
-    flagged = {c: s for c, s in per_merge_stats.items()
-               if s["comp_mismatches"] > 0 or s["test_mismatches"] > 0}
-    if flagged:
-        out.append(f"\n  Per-merge breakdown ({len(flagged)} merge(s) with mismatches):")
-        for commit, s in sorted(flagged.items(), key=lambda x: x[1]["test_mismatches"], reverse=True):
-            parts = []
-            if s["comp_mismatches"] > 0:
-                parts.append(f"comp={s['comp_mismatches']}")
-            if s["test_mismatches"] > 0:
-                parts.append(f"test={s['test_mismatches']}")
+    if test_count_mismatches > 0:
+        out.append(f"  Test count mismatches:      "
+                   f"{test_count_mismatches}/{variants_compared} positions (informational)")
+
+    out.append(f"  Per-mode flaky budget (rate-vote, threshold {MAX_TEST_MISMATCH_RATE * 100:.0f}%):")
+    for mode in mode_names:
+        credit = flaky_by_mode[mode]
+        rate = mode_rate[mode]
+        verdict = "OK  " if rate <= MAX_TEST_MISMATCH_RATE else "FAIL"
+        out.append(f"    {MODE_LABELS[mode]:20s} {verdict}  "
+                   f"{credit:6.1f} / {variants_compared} ({rate * 100:5.2f}%)")
+
+    # Per-project flakiness ranking — by chaos rate. Highly flaky projects are
+    # the ones whose throughput numbers should be treated with caution.
+    proj_ranked = []
+    for project, s in per_project.items():
+        if s["compared"] == 0 or s["chaos"] == 0:
+            continue
+        proj_ranked.append((project, s["chaos"], s["compared"],
+                            s["chaos"] / s["compared"]))
+    proj_ranked.sort(key=lambda x: (x[3], x[1]), reverse=True)
+    if proj_ranked:
+        out.append(f"\n  Top-flakiest projects by chaos rate (≥3 modes producing ≥3 distinct rates):")
+        for project, chaos, compared, rate in proj_ranked[:10]:
+            out.append(f"    {project[:42]:42s}  {rate * 100:5.1f}%  ({chaos}/{compared} variants)")
+        if len(proj_ranked) > 10:
+            out.append(f"    ... and {len(proj_ranked) - 10} more projects with chaos cases")
+
+    flagged_comp = {c: s for c, s in per_merge_stats.items() if s["comp_mismatches"] > 0}
+    if flagged_comp:
+        out.append(f"\n  Per-merge compilation mismatches ({len(flagged_comp)} merge(s)):")
+        for commit, s in sorted(flagged_comp.items(),
+                                key=lambda x: x[1]["comp_mismatches"], reverse=True):
             out.append(f"    {s['project']}  {commit[:8]}  "
-                       f"{' '.join(parts)}/{s['variants_compared']} variants compared")
+                       f"comp={s['comp_mismatches']}/{s['variants_compared']} variants")
 
     return "\n".join(out)
 

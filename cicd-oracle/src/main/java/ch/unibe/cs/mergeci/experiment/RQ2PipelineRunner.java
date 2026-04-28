@@ -71,12 +71,6 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
                 .count();
     }
 
-    /** Compare S (no_optimization) against P+ (cache_parallel). */
-    @Override
-    protected List<Utility.Experiments> sanityCheckModes() {
-        return List.of(Utility.Experiments.no_cache_no_parallel, Utility.Experiments.cache_parallel);
-    }
-
     public static void main(String[] args) throws Exception {
         new RQ2PipelineRunner().run();
     }
