@@ -334,13 +334,15 @@ private static final boolean FRESH_RUN = false;
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     private static final int    THREAD_FALLBACK         = 4;
-    // 10 GB headroom (not 5) absorbs RAM that the baseline measurement structurally
-    // cannot see when N>1 daemons run concurrently: orchestrator JVM growth across
-    // a long variant phase, per-daemon JIT/metaspace/code-cache creep, page-cache
-    // pinning under sustained N× I/O, and small fixed costs from extra mvnd CLI
-    // launchers and fuse-overlayfs daemons. The cap formula otherwise runs at
-    // exactly 100% of nameplate capacity and OOMs on ~10% workload variance.
-    private static final long   RAM_HEADROOM            = 10L * 1024 * 1024 * 1024;
+    // 16 GB headroom (raised from 10) absorbs RAM that the baseline measurement
+    // structurally cannot see when N>1 daemons run concurrently: orchestrator JVM
+    // growth across a long variant phase, per-daemon JIT/metaspace/code-cache
+    // creep, page-cache pinning under sustained N× I/O, and small fixed costs
+    // from extra mvnd CLI launchers and fuse-overlayfs daemons. 10 GB was not
+    // enough for projects whose variant-phase RAM grows substantially above the
+    // baseline-measured peak (jenkinsci/ghprb-plugin OOM-killed the run with
+    // 29 daemons × ~550 MB resident at 01:56 UTC on 2026-04-29).
+    private static final long   RAM_HEADROOM            = 16L * 1024 * 1024 * 1024;
     private static final long   RAM_PER_THREAD_DEFAULT  = 10L * 1024 * 1024 * 1024; // 10 GB assumed when peak unknown
 
     /**
