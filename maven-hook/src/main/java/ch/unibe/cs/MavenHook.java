@@ -15,8 +15,14 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
@@ -29,19 +35,26 @@ import java.util.List;
  * </ol>
  *
  * <h3>Early-abort gate</h3>
- * When {@code -Dcicd.bestModules=N} is set, the hook tracks successful/failed modules.
- * After each module completes, if the remaining modules can't push the successful count
- * to N or above, it writes a sidecar JSON ({@code .cicd-hook-result.json}) to the reactor
- * root and throws to abort the build.  The caller reads the sidecar to get accurate module
- * counts even when Maven exits abnormally.
+ * When {@code -Dcicd.threshold-file=<path>} points to a shared file containing a single
+ * integer, the hook tracks successful/failed modules in this build. After every module
+ * completes, it atomically posts its own {@code successfulModules} to the file (raising
+ * the high-water mark), reads back the latest threshold, and aborts if the remaining
+ * modules can no longer push the successful count to that threshold. Cross-JVM
+ * synchronisation uses {@link FileLock}; the file is the source of truth shared across
+ * every variant build running in parallel for the same merge run. On abort, a sidecar
+ * JSON ({@code .cicd-hook-result.json}) is written to the reactor root so the caller
+ * can read accurate module counts even when Maven exits abnormally.
  */
 @Named
 @Singleton
 public class MavenHook extends AbstractEventSpy {
     private boolean isReportsDeleted;
 
-    /** Threshold from -Dcicd.bestModules; -1 means disabled. */
-    private int bestModulesThreshold = -1;
+    /** Shared cross-JVM threshold file from -Dcicd.threshold-file; null disables the gate. */
+    private Path thresholdFile;
+    /** Last threshold value read — used only for sidecar/log messages. */
+    private int lastSeenThreshold = -1;
+
     private int successfulModules;
     private int completedModules;
     private int totalReactorModules;
@@ -53,14 +66,10 @@ public class MavenHook extends AbstractEventSpy {
     public void init(Context context) throws Exception {
         log.info("Extension initialized!");
         isReportsDeleted = false;
-        String prop = System.getProperty("cicd.bestModules");
-        if (prop != null) {
-            try {
-                bestModulesThreshold = Integer.parseInt(prop);
-                log.info("Early-abort gate enabled: bestModules threshold = {}", bestModulesThreshold);
-            } catch (NumberFormatException e) {
-                log.warn("Invalid cicd.bestModules value: {}", prop);
-            }
+        String filePath = System.getProperty("cicd.threshold-file");
+        if (filePath != null && !filePath.isBlank()) {
+            thresholdFile = Paths.get(filePath);
+            log.info("Early-abort gate enabled: threshold file = {}", thresholdFile);
         }
     }
 
@@ -140,23 +149,60 @@ public class MavenHook extends AbstractEventSpy {
     }
 
     /**
-     * After each module completes, check if it's still possible to reach the threshold.
-     * If not, write the sidecar and abort.
+     * Post our running {@code successfulModules} to the shared file (atomic max),
+     * read the latest threshold, and abort if we can no longer reach it.
      */
     private void checkEarlyAbortGate(MavenSession session) throws Exception {
-        if (bestModulesThreshold < 0 || earlyAborted) return;
+        if (thresholdFile == null || earlyAborted) return;
+
+        int threshold = postAndReadThreshold(successfulModules);
+        if (threshold < 0) return; // file IO failed — treat as gate inactive
+        lastSeenThreshold = threshold;
+        if (threshold == 0) return; // no variant has set a high-water mark yet
 
         int remaining = totalReactorModules - completedModules;
         int bestPossible = successfulModules + remaining;
 
-        if (bestPossible < bestModulesThreshold) {
+        if (bestPossible < threshold) {
             earlyAborted = true;
             log.info("[early-abort] {} successful + {} remaining = {} < threshold {} — aborting",
-                    successfulModules, remaining, bestPossible, bestModulesThreshold);
+                    successfulModules, remaining, bestPossible, threshold);
             writeSidecar(session);
             throw new RuntimeException(
                     "cicd-early-abort: " + successfulModules + "/" + totalReactorModules
-                            + " cannot reach threshold " + bestModulesThreshold);
+                            + " cannot reach threshold " + threshold);
+        }
+    }
+
+    /**
+     * Atomic read-and-post under {@link FileLock}. Reads the current int from the
+     * threshold file, writes back {@code max(current, ourModules)}, returns the
+     * value the file now holds. Returns -1 on IO failure (caller treats as gate inactive).
+     */
+    private int postAndReadThreshold(int ourModules) {
+        try (FileChannel ch = FileChannel.open(thresholdFile,
+                StandardOpenOption.READ, StandardOpenOption.WRITE);
+             FileLock lock = ch.lock()) {
+            ByteBuffer buf = ByteBuffer.allocate(64);
+            int bytesRead = ch.read(buf, 0);
+            int current = 0;
+            if (bytesRead > 0) {
+                String s = new String(buf.array(), 0, bytesRead, StandardCharsets.UTF_8).trim();
+                if (!s.isEmpty()) {
+                    try { current = Integer.parseInt(s); } catch (NumberFormatException ignored) {}
+                }
+            }
+            int newVal = Math.max(current, ourModules);
+            if (newVal != current) {
+                byte[] bytes = String.valueOf(newVal).getBytes(StandardCharsets.UTF_8);
+                ch.position(0);
+                ch.write(ByteBuffer.wrap(bytes));
+                ch.truncate(bytes.length);
+            }
+            return newVal;
+        } catch (IOException e) {
+            log.warn("Threshold file read/post failed: {}", e.getMessage());
+            return -1;
         }
     }
 
@@ -173,7 +219,7 @@ public class MavenHook extends AbstractEventSpy {
                     "{\"successfulModules\": %d, \"completedModules\": %d, \"totalModules\": %d, "
                             + "\"earlyAborted\": %b, \"threshold\": %d}",
                     successfulModules, completedModules, totalReactorModules,
-                    earlyAborted, bestModulesThreshold);
+                    earlyAborted, lastSeenThreshold);
             Files.writeString(sidecar, json);
             log.info("Wrote sidecar: {}", sidecar);
         } catch (IOException e) {

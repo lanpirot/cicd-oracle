@@ -109,9 +109,11 @@ public class PluginOrchestrator {
                 }
 
                 Path logDir = tempDir.resolve("log");
+                Path thresholdFile = tempDir.resolve("threshold.int");
+                java.nio.file.Files.writeString(thresholdFile, "0");
 
                 VariantExecutionEngine.EngineConfig config = new VariantExecutionEngine.EngineConfig(
-                        threadCount, useOverlay, true, true, false,
+                        threadCount, useOverlay, true, thresholdFile, false,
                         tempDir, logDir, null, tempDir, null, null);
 
                 PluginLifecycleListener listener = new PluginLifecycleListener(

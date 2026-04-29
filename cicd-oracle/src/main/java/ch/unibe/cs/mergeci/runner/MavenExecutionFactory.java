@@ -207,12 +207,17 @@ public class MavenExecutionFactory {
                     Path engineLogDir = logDir.resolve(modeName(isParallel, isCache));
                     java.nio.file.Files.createDirectories(engineLogDir);
 
-                    // singlePhase=isCache: extensions.xml (registering the maven-hook
-                    // alongside the build-cache extension) is only injected in cache modes,
-                    // so the early-abort gate can only fire there. Non-cache modes fall back
-                    // to TwoPhaseRunner's compile-then-test gating.
+                    // The maven-hook is installed in every mode (both injectCacheArtifacts
+                    // and injectMavenHookOnly register it), so the early-abort gate fires
+                    // uniformly. The threshold file is the cross-JVM source of truth for the
+                    // gate: every variant's hook posts its running successful-module count
+                    // here under FileLock and re-reads the latest threshold per-module, so a
+                    // faster variant can lift the gate on every variant currently running.
+                    Path thresholdFile = engineLogDir.resolve("threshold.int");
+                    java.nio.file.Files.writeString(thresholdFile, "0");
+
                     VariantExecutionEngine.EngineConfig engineConfig = new VariantExecutionEngine.EngineConfig(
-                            threads, useOverlay, isCache, isCache, stopOnPerfect,
+                            threads, useOverlay, isCache, thresholdFile, stopOnPerfect,
                             AppConfig.TMP_DIR, engineLogDir,
                             resolvedJavaHome,
                             useOverlay ? AppConfig.TMP_DIR : null,

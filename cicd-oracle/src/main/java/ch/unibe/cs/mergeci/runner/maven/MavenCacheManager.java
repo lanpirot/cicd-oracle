@@ -82,9 +82,9 @@ public class MavenCacheManager {
      * cause surefire to skip a few test classes in unhooked modes, breaking
      * cross-mode sanity comparisons by variant index.
      *
-     * <p>The hook's early-abort gate is a no-op unless {@code -Dcicd.bestModules}
-     * is passed, so installing it in non-cache modes does not change their
-     * gating behavior.
+     * <p>The hook's early-abort gate is a no-op unless {@code -Dcicd.threshold-file}
+     * is passed, so installing it does not change gating behaviour for callers that
+     * do not opt in.
      */
     public void injectMavenHookOnly(Path projectDir) {
         try {

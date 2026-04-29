@@ -97,35 +97,22 @@ private static final boolean FRESH_RUN = false;
     }
 
     /**
-     * Compile-only command: runs {@code mvn compile} without test-related flags.
-     * Used for the two-phase optimization: compile first, skip test phase if the variant
-     * can't beat the current best on successful modules.
-     */
-    public static String[] buildCompileOnlyCommand(String[] executableArgs) {
-        return concat(
-                executableArgs,
-                reactorFlagOrEmpty(),
-                new String[]{MAVEN_BATCH_MODE, MAVEN_FORCE_UPDATE, MAVEN_FAIL_MODE},
-                SKIP_STATIC_ANALYSIS,
-                BOUND_PARALLELISM,
-                new String[]{"compile"});
-    }
-
-    /**
-     * Full build+test command with the early-abort gate.  The maven-hook reads
-     * {@code -Dcicd.bestModules=N} and aborts after compile if the variant can't
-     * reach N successful modules — replacing the two-phase compile-then-test split
-     * with a single Maven invocation that self-terminates.
+     * Full build+test command with the early-abort gate. The maven-hook reads
+     * {@code -Dcicd.threshold-file=<path>} (a shared cross-JVM file containing the
+     * current high-water successful-module count). After every module the hook posts
+     * its own running count to that file (atomic max under FileLock), reads back the
+     * latest threshold, and aborts the build if the remaining modules cannot push the
+     * successful count to that threshold.
      */
     public static String[] buildCommandWithGate(String[] executableArgs, String mavenGoal,
-                                                 int bestModules) {
+                                                 java.nio.file.Path thresholdFile) {
         return concat(
                 executableArgs,
                 reactorFlagOrEmpty(),
                 new String[]{MAVEN_BATCH_MODE, MAVEN_FORCE_UPDATE, MAVEN_FAIL_MODE,
                         MAVEN_TEST_FAILURE_IGNORE,
                         SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
-                        "-Dcicd.bestModules=" + bestModules},
+                        "-Dcicd.threshold-file=" + thresholdFile.toAbsolutePath()},
                 SKIP_STATIC_ANALYSIS,
                 BOUND_PARALLELISM,
                 new String[]{mavenGoal});

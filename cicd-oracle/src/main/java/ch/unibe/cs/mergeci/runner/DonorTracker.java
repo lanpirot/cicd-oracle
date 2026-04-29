@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -30,7 +29,6 @@ public class DonorTracker {
     private final AtomicReference<String> donorKey = new AtomicReference<>();
     private final AtomicReference<Map<String, List<String>>> donorPatterns = new AtomicReference<>();
     private final AtomicReference<TestTotal> donorTestTotal = new AtomicReference<>();
-    private final AtomicInteger bestSuccessfulModules = new AtomicInteger(0);
 
     /**
      * Atomic snapshot of donor identity + TestTotal at a single instant. Use this — rather
@@ -102,19 +100,6 @@ public class DonorTracker {
             }
         }
         return total == 0 ? 1.0 : (double) matches / total;
-    }
-
-    /** Highest successful-module count seen across all variants (including non-donors). */
-    public int getBestSuccessfulModules() {
-        return bestSuccessfulModules.get();
-    }
-
-    /**
-     * Record that a variant compiled this many modules successfully.
-     * Updates the high-water mark used by the two-phase gate.
-     */
-    public void updateBestModules(int modules) {
-        bestSuccessfulModules.updateAndGet(old -> Math.max(old, modules));
     }
 
     /**

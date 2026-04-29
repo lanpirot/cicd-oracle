@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <ul>
  *   <li>{@link VariantLifecycleListener} — hooks for UI, dedup, scoring, result collection</li>
  *   <li>{@link VariantStopCondition} — deadline, pause/resume, cancel</li>
- *   <li>{@link EngineConfig} — parallelism, overlay, cache, singlePhase, stableCwd</li>
+ *   <li>{@link EngineConfig} — parallelism, overlay, cache, threshold file, stableCwd</li>
  * </ul>
  *
  * <p>Uses a semaphore-gated thread pool: one variant is submitted as each slot frees,
@@ -51,7 +51,8 @@ public class VariantExecutionEngine {
      * @param threadCount     number of parallel build threads (1 = sequential)
      * @param useOverlay      use fuse-overlayfs for variant isolation
      * @param useCache        enable donor cache warming
-     * @param singlePhase     true = maven-hook early-abort gate (one invocation)
+     * @param thresholdFile   shared cross-JVM file for the maven-hook early-abort gate;
+     *                        non-null enables the gate
      * @param stopOnPerfect   stop after a variant with all modules + all tests passing
      * @param tempDir         base temp directory for variant builds
      * @param logDir          directory for Maven build logs
@@ -65,7 +66,7 @@ public class VariantExecutionEngine {
             int threadCount,
             boolean useOverlay,
             boolean useCache,
-            boolean singlePhase,
+            Path thresholdFile,
             boolean stopOnPerfect,
             Path tempDir,
             Path logDir,
@@ -346,10 +347,9 @@ public class VariantExecutionEngine {
                         },
                         config.logDir,
                         javaHomeHolder[0],
-                        config.singlePhase,
                         config.stableCwd);
                 TwoPhaseRunner.TwoPhaseResult tpResult = runner.run(
-                        variantPath, variantKey, donorTracker, repoLocal);
+                        variantPath, variantKey, config.thresholdFile, repoLocal);
 
                 if (stopCondition.isStopped()) return;
 
@@ -373,10 +373,10 @@ public class VariantExecutionEngine {
                     usedCache = true;
                 }
 
-                // 6. Donor promotion
-                if (cr != null) {
-                    donorTracker.updateBestModules(cr.getSuccessfulModules());
-                }
+                // 6. Donor promotion. The maven-hook posts successful-module counts to
+                // the shared threshold file as it observes them during the build, so we
+                // do not need a redundant update here — the gate threshold has already
+                // been raised by the time the variant returns.
                 if (config.useCache) {
                     Map<String, java.util.List<String>> patterns = variant.extractPatterns();
                     Path oldDonor = donorTracker.promoteDonorIfBetter(
