@@ -334,29 +334,46 @@ private static final boolean FRESH_RUN = false;
 
     // ========== PHASES 2+3: MAVEN RUNNER ==========
     private static final int    THREAD_FALLBACK         = 4;
-    // 16 GB headroom (raised from 10) absorbs RAM that the baseline measurement
-    // structurally cannot see when N>1 daemons run concurrently: orchestrator JVM
-    // growth across a long variant phase, per-daemon JIT/metaspace/code-cache
-    // creep, page-cache pinning under sustained N× I/O, and small fixed costs
-    // from extra mvnd CLI launchers and fuse-overlayfs daemons. 10 GB was not
-    // enough for projects whose variant-phase RAM grows substantially above the
-    // baseline-measured peak (jenkinsci/ghprb-plugin OOM-killed the run with
-    // 29 daemons × ~550 MB resident at 01:56 UTC on 2026-04-29).
-    private static final long   RAM_HEADROOM            = 16L * 1024 * 1024 * 1024;
+    // 10 GB headroom for variance the baseline measurement *can* see: orchestrator
+    // JVM short-term spikes, fuse-overlayfs daemons, system slack.
+    private static final long   RAM_HEADROOM            = 10L * 1024 * 1024 * 1024;
     private static final long   RAM_PER_THREAD_DEFAULT  = 10L * 1024 * 1024 * 1024; // 10 GB assumed when peak unknown
+
+    // Per-thread "long-run creep" the baseline measurement *cannot* see, because
+    // the baseline runs ONE Maven build for ~baselineSeconds, while a worker thread
+    // in the variant phase runs MANY builds for ~10× baselineSeconds. Sources of
+    // creep that compound over the variant phase per thread:
+    //   - mvnd daemon JIT/metaspace/code-cache growth across many compile-test cycles
+    //   - per-thread m2 overlay accumulating dependencies as Maven resolves more
+    //     transitive deps over successive variant builds (m2 overlays live on tmpfs;
+    //     bytes there are RAM)
+    //   - in cache modes, the donor's m2+target gets copied into each new variant
+    //     working dir, growing as the donor matures
+    // These are not captured by RamSampler's snapshot of MemAvailable during the
+    // baseline build. Symptom: jenkinsci/ghprb-plugin OOM-killed twice on 2026-04-29
+    // despite (90 - 10) / 2.55 = 31 threads predicted-safe under the old formula.
+    // 1 GB is a conservative empirical estimate; raise if OOMs persist for projects
+    // with long variantBudgetSeconds and modest peak baseline RAM.
+    private static final long   PER_THREAD_LONG_RUN_CREEP = 1L * 1024 * 1024 * 1024;
 
     /**
      * Compute the number of parallel Maven variant threads.
      *
-     * <p>Formula: {@code max(1, min((MemAvailable − 10 GB) / peak, cores − 2))}.
+     * <p>Formula:
+     * {@code max(1, min((MemAvailable − 10 GB) / (peak + 1 GB creep), cores − 2))}.
      *
      * <ul>
      *   <li>When {@code peakBuildRamBytes > 0} (measured during the baseline build via
-     *       {@code MemAvailable} sampling): divides spare RAM by the measured peak.</li>
+     *       {@code MemAvailable} sampling): divides spare RAM by the measured peak
+     *       plus a 1 GB long-run creep allowance.</li>
      *   <li>When {@code peakBuildRamBytes == 0} (unknown): divides spare RAM by
-     *       {@value #RAM_PER_THREAD_DEFAULT} bytes (10 GB) as a conservative estimate.</li>
+     *       {@value #RAM_PER_THREAD_DEFAULT} bytes (10 GB) as a conservative estimate
+     *       (plus the creep allowance).</li>
      * </ul>
      * Spare RAM = {@code MemAvailable − 10 GB} headroom for OS + variance slack.
+     * The 1 GB creep allowance accounts for tmpfs growth, daemon JIT/metaspace creep,
+     * and donor-cache copies that compound over the variant phase but aren't visible
+     * to the single-build baseline measurement.
      * Result is capped at {@code availableProcessors − 2} and floored at 1.
      * Returns {@value #THREAD_FALLBACK} on any error (e.g. non-Linux systems).
      *
@@ -383,7 +400,11 @@ private static final boolean FRESH_RUN = false;
 
             long memAvailable = readMemAvailable();
             long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM - persistentRamBytes);
-            long ramPerThread = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
+            long measuredPeak = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
+            // Add per-thread creep to account for unmeasured RAM that grows over the
+            // variant phase but doesn't show up during the (single, short) baseline.
+            // See comment on PER_THREAD_LONG_RUN_CREEP for rationale.
+            long ramPerThread = measuredPeak + PER_THREAD_LONG_RUN_CREEP;
             int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
             return Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
         } catch (Exception e) {

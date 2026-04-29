@@ -233,20 +233,24 @@ public abstract class RQPipelineRunner {
                         AppConfig.TMP_DIR, ex.getName(),
                         generatorFactory(), evaluator(), stopOnPerfect(), mergeLog);
             } finally {
-                // Kill mvnd daemons after each (project, mode) pair. Within a mode we
-                // reuse one daemon per worker thread (unique maven.repo.local per thread
-                // slot), but at mode boundary we wipe the slate clean so memory stays
-                // bounded across modes and overlays can be unmounted without daemon FDs
-                // keeping them busy.
+                // Kill mvnd daemons after each (project, mode) pair, *including*
+                // human_baseline. Within a mode we reuse one daemon per worker thread
+                // (unique maven.repo.local per thread slot), but at the mode boundary
+                // we wipe the slate clean so memory stays bounded across modes and
+                // overlays can be unmounted without daemon FDs keeping them busy.
                 //
-                // Then sweep the overlay temp dirs: the donor variant's project overlay
+                // Killing after human_baseline matters: the baseline build spawns an
+                // mvnd daemon that would otherwise idle (3 h timeout) through the
+                // entire no_optimization phase, holding ~500 MB resident for nothing.
+                new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON).stopDaemons();
+
+                // Sweep the overlay temp dirs: the donor variant's project overlay
                 // and the last-variant-per-thread overlays are intentionally kept alive
                 // during a mode (donor preserved by design; last-variant busy because
                 // the daemon just finished it). With daemons dead, those mounts are now
-                // cleanly unmountable — do it here so the mode ends with zero lingering
-                // fuse-overlayfs state.
+                // cleanly unmountable. human_baseline doesn't create variant overlays,
+                // so skip the sweep there.
                 if (!ex.isSkipVariants()) {
-                    new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON).stopDaemons();
                     OverlayMount.cleanupStaleMounts(AppConfig.OVERLAY_TMP_DIR.resolve("projects"));
                     OverlayMount.cleanupStaleMounts(MavenExecutionFactory.M2_OVERLAY_DIR);
                 }
