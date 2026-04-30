@@ -920,6 +920,61 @@ def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None 
         _annotate_significance(ax, summary)
 
 
+# ── RQ2 Chart: Variants per second (throughput rate) ─────────────────────────
+
+def _variants_per_second(merge: dict) -> float | None:
+    """Throughput: completed (non-baseline, non-timed-out) variants
+    divided by the wall-clock time spent in the variant phase.
+    A mode that produced 0 finished variants in a positive-length variant
+    phase is a valid 0.0-throughput data point — keep it, don't skip."""
+    elapsed = merge.get("variantsExecutionTimeSeconds", 0)
+    if elapsed is None or elapsed <= 0:
+        return None
+    count = sum(1 for v in merge.get("variants", [])
+                if v.get("variantIndex", 0) != 0 and not v.get("timedOut", False))
+    return count / float(elapsed)
+
+
+def draw_variants_per_second(ax, all_data: dict, valid_commits: list[str] | None = None):
+    """Box plot (log scale): variants completed per second of variant-phase wall-clock.
+    Uses the widest possible n (commits present in all 4 variant modes) — does NOT
+    require a measurable baseline budget or scoreable variants the way the
+    count-based throughput chart does."""
+    if valid_commits is None:
+        valid_commits = sorted(
+            set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
+        )
+    groups = _collect_paired_metric(all_data, VARIANT_MODES, _variants_per_second,
+                                    valid_commits)
+    if not groups:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    plot_modes = [m for m in VARIANT_MODES if groups.get(m)]
+    data = [groups[m] for m in plot_modes]
+    positions = list(range(len(plot_modes)))
+
+    bp = ax.boxplot(data, positions=positions, widths=0.5, patch_artist=True,
+                    showfliers=True, flierprops=dict(markersize=3, alpha=0.5))
+    for patch, mode in zip(bp["boxes"], plot_modes):
+        patch.set_facecolor(MODE_COLORS[mode])
+        patch.set_alpha(0.7)
+
+    ax.set_yscale("log")
+    ax.set_xticks(positions)
+    ax.set_xticklabels([f"{MODE_LABELS[m]} ({MODE_SHORT[m]})\nn={len(groups[m])}"
+                        for m in plot_modes])
+    ax.set_ylabel("Variants per second of variant-phase wall-clock (log scale)")
+    ax.set_title("Variant Throughput Rate by Execution Mode")
+    ax.grid(True, axis="y", alpha=0.3, which="both")
+
+    friedman_p = _friedman_test(groups, plot_modes)
+    pairwise = _pairwise_wilcoxon(groups, plot_modes)
+    summary = _significance_summary(friedman_p, pairwise)
+    if summary:
+        _annotate_significance(ax, summary)
+
+
 # ── RQ2 Chart: Cache warmup speedup ratio ────────────────────────────────────
 
 def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | None = None):
@@ -1014,18 +1069,38 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
 
     # Reference line at ratio=1 (no speedup); above the line = cache faster.
     ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
-               label="no speedup (cache = no-cache)")
+               label="no speedup (ratio = 1)")
 
-    ax.set_yscale("log")
     ax.set_xticks(positions)
     ax.set_xticklabels(box_labels, fontsize=9)
-    ax.set_ylabel("Speedup ratio (no-cache median / cache-warm median, log scale)")
+    ax.set_ylabel("Speedup ratio = no-cache median ÷ cache-warm median")
     ax.set_title("Cache vs No-Cache: Per-Merge Speedup Ratio (warm variants only)")
+
+    # Cap y at 2.5 — anything above is an extreme outlier (visible as flier dots);
+    # without the cap the box bodies get squashed against the bottom.
+    ax.set_ylim(0.0, 2.5)
+
+    # Direction labels inside the plot, hugging the left y-axis, so readers
+    # immediately see which side of y=1 favours cache. Use mathtext for the
+    # comparison operators so they render consistently regardless of backend.
+    ax.text(0.01, 0.97, r"↑  ratio $>$ 1: cache faster",
+            transform=ax.transAxes, ha="left", va="top", fontsize=9,
+            color="#2e7d32")
+    ax.text(0.01, 0.03, r"↓  ratio $<$ 1: cache slower",
+            transform=ax.transAxes, ha="left", va="bottom", fontsize=9,
+            color="#b71c1c")
+
     ax.legend(loc="upper right", fontsize=8)
     ax.grid(True, axis="y", alpha=0.3, which="both")
 
+    # Significance summary in the top-right, dropped down enough to clear the
+    # "no speedup" legend entry above it.
     if sig_lines:
-        _annotate_significance(ax, "\n".join(sig_lines))
+        ax.text(0.98, 0.86, "\n".join(sig_lines),
+                transform=ax.transAxes, fontsize=7,
+                ha="right", va="top", fontfamily="monospace", zorder=99,
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="wheat", alpha=1.0,
+                          edgecolor="tan", linewidth=0.5))
 
 
 # ── RQ2 helper: time to best variant (used by interaction plot + rank chart) ──
@@ -1635,7 +1710,7 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
 
 def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None = None):
     """
-    Like the marginal cost curve but for cache modes only, split by didUseCache.
+    Like the marginal cost curve but for cache modes only, split by hadWarmCacheReady.
     Four series: S+ warm, S+ cold, P+ warm, P+ cold.
     """
     import numpy as np
@@ -1643,7 +1718,7 @@ def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None
     max_x = 0
     max_y = 0.0
 
-    # (mode, didUseCache, label, color, marker, zorder)
+    # (mode, hadWarmCacheReady, label, color, marker, zorder)
     # Cold lines drawn first; warm lines on top so they're visible.
     series_defs = [
         ("cache_sequential", False, "S+ (no cache)",    "#e31a1c", "o", 4),
@@ -1652,9 +1727,9 @@ def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None
         ("cache_parallel",   True,  "P+ (warm cache)",  "#b2df8a", "^", 5),
     ]
 
-    for mode, use_cache, label, color, marker, z in series_defs:
+    for mode, warm_ready, label, color, marker, z in series_defs:
         # Collect per-merge: variantIndex -> normalised build time,
-        # only for variants matching the didUseCache flag.
+        # only for variants matching the hadWarmCacheReady flag.
         # key = variantIndex, value = list of normalised times across merges
         from collections import defaultdict as _defaultdict
         index_vals: dict[int, list[float]] = _defaultdict(list)
@@ -1673,7 +1748,7 @@ def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None
                 idx = v.get("variantIndex", 0)
                 if idx == 0:
                     continue
-                if v.get("didUseCache", False) != use_cache:
+                if v.get("hadWarmCacheReady", v.get("didUseCache", False)) != warm_ready:
                     continue
                 own = v.get("ownExecutionSeconds")
                 if own is None:
@@ -1905,6 +1980,12 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         draw_variants_completed(ax, all_data)
         _save_fig(fig, results_dir, "05_variant_throughput", pdf)
 
+        # Chart 5b: Variants per second (throughput rate)
+        print("Drawing variant throughput rate chart ...")
+        fig, ax = plt.subplots(figsize=(9, 6))
+        draw_variants_per_second(ax, all_data)
+        _save_fig(fig, results_dir, "05b_variants_per_second", pdf)
+
         # Chart 6: Cache warmup speedup ratio
         print("Drawing cache warmup speedup chart ...")
         fig, ax = plt.subplots(figsize=(9, 6))
@@ -2051,7 +2132,7 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
             non_baseline = [v for v in variants if v.get("variantIndex", 0) != 0]
             if not non_baseline:
                 continue
-            did_use = [v for v in non_baseline if v.get("didUseCache", False)]
+            did_use = [v for v in non_baseline if v.get("hadWarmCacheReady", v.get("didUseCache", False))]
             ratio = len(did_use) / len(non_baseline)
             all_ratios.append(ratio)
             if did_use:

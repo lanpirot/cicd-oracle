@@ -23,5 +23,5 @@ public record VariantOutcome(
         Path logFile,
         Path variantPath,
         boolean isDonor,
-        boolean usedCache
+        boolean hadWarmCacheReady
 ) {}

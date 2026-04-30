@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.present;
 
+import ch.unibe.cs.mergeci.conflict.MergeStatistics;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 
 import java.util.ArrayList;
@@ -18,6 +19,18 @@ import java.util.Set;
  */
 public class VariantResolutionAnalyzer {
 
+    /** Cross-mode baseline records (mergeCommit → human-baseline merge), used as a fallback
+     *  when the merge's own variant-0 data is unavailable (non-baseline mode JSONs). */
+    private final Map<String, MergeOutputJSON> baselineLookup;
+
+    public VariantResolutionAnalyzer() {
+        this(Map.of());
+    }
+
+    public VariantResolutionAnalyzer(Map<String, MergeOutputJSON> baselineLookup) {
+        this.baselineLookup = baselineLookup;
+    }
+
     /**
      * Find merges where at least one variant has as many or more successful tests than the original.
      */
@@ -25,7 +38,7 @@ public class VariantResolutionAnalyzer {
         List<MergeOutputJSON> result = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            Optional<VariantScore> baselineScore = baselineScore(merge);
+            Optional<VariantScore> baselineScore = MergeStatistics.scoreFor(merge, baselineLookup);
             if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariants()) {
@@ -48,7 +61,7 @@ public class VariantResolutionAnalyzer {
         List<MergeOutputJSON> result = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            Optional<VariantScore> baselineScore = baselineScore(merge);
+            Optional<VariantScore> baselineScore = MergeStatistics.scoreFor(merge, baselineLookup);
             if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariants()) {
@@ -65,16 +78,19 @@ public class VariantResolutionAnalyzer {
     }
 
     /**
-     * Extract uniform resolution patterns from successful variants.
-     * A pattern is "uniform" if all conflicts in a variant use the same resolution pattern.
+     * Per-variant uniform-pattern list: one entry per non-baseline variant that
+     * (a) is at-least-as-good-as the baseline AND (b) uses the same single
+     * pattern across every conflict chunk. List length = total such variants
+     * across all merges (one merge can contribute many entries).
      *
-     * @return List of uniform pattern names (e.g., "OursPattern", "TheirsPattern")
+     * <p>Use this when the question is "what fraction of the successful search
+     * space is uniform?" — the variant-level view of the search.
      */
     public List<String> extractUniformPatterns(List<MergeOutputJSON> merges) {
         List<String> patternList = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            Optional<VariantScore> baselineScore = baselineScore(merge);
+            Optional<VariantScore> baselineScore = MergeStatistics.scoreFor(merge, baselineLookup);
             if (baselineScore.isEmpty()) continue;
 
             for (MergeOutputJSON.Variant variant : merge.getVariants()) {
@@ -96,6 +112,67 @@ public class VariantResolutionAnalyzer {
         }
 
         return patternList;
+    }
+
+    /**
+     * Per-merge uniform-pattern list: at most one entry per merge. A merge contributes
+     * its lexicographically-smallest uniform pattern from any variant that
+     * (a) is at-least-as-good-as the baseline AND (b) uses a single pattern across
+     * every conflict chunk. List length = number of merges where a uniform-pattern
+     * resolution exists at all.
+     *
+     * <p>Use this when the question is "for how many merges does a uniform-pattern
+     * fix exist, and which pattern wins?" — the merge-level claim a paper makes.
+     */
+    public List<String> extractUniformPatternsPerMerge(List<MergeOutputJSON> merges) {
+        List<String> patternList = new ArrayList<>();
+
+        for (MergeOutputJSON merge : merges) {
+            Optional<VariantScore> baselineScore = MergeStatistics.scoreFor(merge, baselineLookup);
+            if (baselineScore.isEmpty()) continue;
+
+            String chosen = null;
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+                if (variant.getVariantIndex() == 0) continue;
+                Optional<VariantScore> vs = variantScore(variant);
+                if (vs.isEmpty() || !vs.get().isAtLeastAsGoodAs(baselineScore.get())) continue;
+
+                Set<String> uniquePatterns = variant.getConflictPatterns().values()
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .collect(HashSet::new, HashSet::add, HashSet::addAll);
+                if (uniquePatterns.size() != 1) continue;
+
+                String pat = uniquePatterns.iterator().next();
+                if (chosen == null || pat.compareTo(chosen) < 0) {
+                    chosen = pat;
+                }
+            }
+            if (chosen != null) patternList.add(chosen);
+        }
+
+        return patternList;
+    }
+
+    /**
+     * Count, across all given merges, the number of non-baseline variants whose score
+     * is at-least-as-good-as the baseline. Used as the denominator for the variant-level
+     * uniform-pattern view.
+     */
+    public int countSuccessfulVariants(List<MergeOutputJSON> merges) {
+        int count = 0;
+        for (MergeOutputJSON merge : merges) {
+            Optional<VariantScore> baselineScore = MergeStatistics.scoreFor(merge, baselineLookup);
+            if (baselineScore.isEmpty()) continue;
+            for (MergeOutputJSON.Variant variant : merge.getVariants()) {
+                if (variant.getVariantIndex() == 0) continue;
+                Optional<VariantScore> vs = variantScore(variant);
+                if (vs.isPresent() && vs.get().isAtLeastAsGoodAs(baselineScore.get())) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     /**
@@ -144,10 +221,6 @@ public class VariantResolutionAnalyzer {
                 .map(VariantResolutionAnalyzer::variantScore)
                 .flatMap(Optional::stream)
                 .max(Comparator.naturalOrder());
-    }
-
-    static Optional<VariantScore> baselineScore(MergeOutputJSON merge) {
-        return VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
     }
 
     private static Optional<VariantScore> variantScore(MergeOutputJSON.Variant variant) {

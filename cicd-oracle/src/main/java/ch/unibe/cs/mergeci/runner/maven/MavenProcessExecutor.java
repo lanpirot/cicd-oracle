@@ -42,7 +42,16 @@ public class MavenProcessExecutor {
         run(createProcessBuilder(stableCwd, outputFile, javaHome, withPomFlag), outputFile, withPomFlag);
     }
 
-    /** Insert {@code -f <dir>} after executable args in the command array. */
+    /**
+     * Insert {@code -f <dir>} and {@code -Dmaven.multiModuleProjectDirectory=<dir>} after
+     * executable args in the command array.
+     *
+     * <p>The {@code multiModuleProjectDirectory} flag is mandatory when cwd is not the
+     * project root: Maven derives it from cwd by walking up to find {@code .mvn/}, and
+     * uses it to locate {@code .mvn/extensions.xml}. Without it, project-level
+     * extensions like {@code maven-build-cache-extension} silently fail to load
+     * (the SPI-discovered ones such as {@code maven-hook} keep working, masking the bug).
+     */
     private static String[] insertPomFlag(String[] command, Path projectDir) {
         // Find insertion point: skip executable (mvnd) and --maven-home /path if present
         int insertAt = 1;
@@ -52,11 +61,13 @@ public class MavenProcessExecutor {
                 break;
             }
         }
-        String[] result = new String[command.length + 2];
+        String mmpdFlag = "-Dmaven.multiModuleProjectDirectory=" + projectDir.toAbsolutePath();
+        String[] result = new String[command.length + 3];
         System.arraycopy(command, 0, result, 0, insertAt);
         result[insertAt] = "-f";
         result[insertAt + 1] = projectDir.toString();
-        System.arraycopy(command, insertAt, result, insertAt + 2, command.length - insertAt);
+        result[insertAt + 2] = mmpdFlag;
+        System.arraycopy(command, insertAt, result, insertAt + 3, command.length - insertAt);
         return result;
     }
 

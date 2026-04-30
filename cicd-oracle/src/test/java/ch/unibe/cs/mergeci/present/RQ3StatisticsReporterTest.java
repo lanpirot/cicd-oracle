@@ -25,7 +25,7 @@ class RQ3StatisticsReporterTest extends BaseTest {
         MergeOutputJSON merge = createBrokenBaselineMerge("m1");
         addSuccessVariant(merge, 1, 10, 0, 0);
 
-        Optional<VariantScore> base = VariantResolutionAnalyzer.baselineScore(merge);
+        Optional<VariantScore> base = MergeStatistics.scoreFor(merge, Map.of());
         Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
 
         assertTrue(base.isPresent());
@@ -39,7 +39,7 @@ class RQ3StatisticsReporterTest extends BaseTest {
         MergeOutputJSON merge = createSuccessBaselineMerge("m1", 10, 5, 0);
         addSuccessVariant(merge, 1, 10, 0, 0);
 
-        Optional<VariantScore> base = VariantResolutionAnalyzer.baselineScore(merge);
+        Optional<VariantScore> base = MergeStatistics.scoreFor(merge, Map.of());
         Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
 
         assertTrue(base.isPresent());
@@ -65,7 +65,7 @@ class RQ3StatisticsReporterTest extends BaseTest {
         MergeOutputJSON merge = createSuccessBaselineMerge("m1", 50, 0, 0);
         addSuccessVariant(merge, 1, 50, 10, 0); // more failures
 
-        Optional<VariantScore> base = VariantResolutionAnalyzer.baselineScore(merge);
+        Optional<VariantScore> base = MergeStatistics.scoreFor(merge, Map.of());
         Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
 
         assertTrue(base.isPresent());
@@ -123,7 +123,7 @@ class RQ3StatisticsReporterTest extends BaseTest {
     private void assertScores(MergeOutputJSON merge,
                               int expectedBaseModules, int expectedBaseTests,
                               int expectedBestModules, int expectedBestTests) {
-        Optional<VariantScore> base = VariantResolutionAnalyzer.baselineScore(merge);
+        Optional<VariantScore> base = MergeStatistics.scoreFor(merge, Map.of());
         Optional<VariantScore> best = VariantResolutionAnalyzer.bestVariantScore(merge);
         assertTrue(base.isPresent(), "baseline should be scoreable for " + merge.getMergeCommit());
         assertTrue(best.isPresent(), "best variant should be scoreable for " + merge.getMergeCommit());

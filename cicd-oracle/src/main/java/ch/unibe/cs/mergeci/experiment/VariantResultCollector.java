@@ -130,8 +130,8 @@ public class VariantResultCollector {
             variant.setVariantIndex(variantIndex);
             boolean isDonor = cacheDonorKeys != null && cacheDonorKeys.contains(key);
             variant.setCacheDonor(isDonor);
-            boolean didUse = cacheHitKeys != null && cacheHitKeys.contains(key);
-            variant.setDidUseCache(didUse);
+            boolean warmReady = cacheHitKeys != null && cacheHitKeys.contains(key);
+            variant.setHadWarmCacheReady(warmReady);
             variant.setCompilationResult(entry.getValue());
             variant.setTestResults(testResults.get(key));
             variant.setConflictPatterns(builder.getConflictPatterns().get(variantIndex - 1));

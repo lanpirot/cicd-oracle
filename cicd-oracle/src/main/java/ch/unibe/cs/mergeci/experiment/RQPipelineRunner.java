@@ -180,6 +180,9 @@ public abstract class RQPipelineRunner {
         System.out.println("\n══════════════════════════════════════════════════════════");
         System.out.println("  Analysis Phase");
         System.out.println("══════════════════════════════════════════════════════════");
+        System.out.println("================================================================================");
+        System.out.println("CI/CD Merge Resolver - Presentation Phase");
+        System.out.println("================================================================================");
 
         for (Utility.Experiments ex : modesToRun()) {
             Path modeDir = experimentDir().resolve(ex.getName());
@@ -243,6 +246,9 @@ public abstract class RQPipelineRunner {
                 // mvnd daemon that would otherwise idle (3 h timeout) through the
                 // entire no_optimization phase, holding ~500 MB resident for nothing.
                 new MavenCommandResolver(AppConfig.USE_MAVEN_DAEMON).stopDaemons();
+
+                // Wipe the shared maven-build-cache so it doesn't bleed into the next mode.
+                FileUtils.deleteQuietly(AppConfig.SHARED_CACHE_DIR.toFile());
 
                 // Sweep the overlay temp dirs: the donor variant's project overlay
                 // and the last-variant-per-thread overlays are intentionally kept alive

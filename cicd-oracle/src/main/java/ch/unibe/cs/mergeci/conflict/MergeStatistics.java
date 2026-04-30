@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,9 @@ public class MergeStatistics {
     private final MergeSubsets singleModule;
     private final MergeSubsets multiModule;
     private final int multiModuleCount;
+    /** Per-merge baseline records loaded from {@code human_baseline}, keyed by merge commit.
+     *  Empty when this MergeStatistics was built for the human_baseline mode itself. */
+    private final Map<String, MergeOutputJSON> baselineLookup;
 
     private MergeStatistics(
             List<MergeOutputJSON> allMerges,
@@ -28,13 +32,15 @@ public class MergeStatistics {
             List<MergeOutputJSON> noImpactMerges,
             MergeSubsets singleModule,
             MergeSubsets multiModule,
-            int multiModuleCount) {
+            int multiModuleCount,
+            Map<String, MergeOutputJSON> baselineLookup) {
         this.allMerges = allMerges;
         this.impactMerges = impactMerges;
         this.noImpactMerges = noImpactMerges;
         this.singleModule = singleModule;
         this.multiModule = multiModule;
         this.multiModuleCount = multiModuleCount;
+        this.baselineLookup = baselineLookup;
     }
 
     /**
@@ -45,7 +51,24 @@ public class MergeStatistics {
      * @return Computed statistics
      */
     public static MergeStatistics from(List<MergeOutputJSON> merges) {
-        List<MergeOutputJSON> impactMerges = filterImpactMerges(merges);
+        return from(merges, Map.of());
+    }
+
+    /**
+     * Create statistics from a list of merges with an external baseline lookup.
+     * Non-baseline mode JSONs do not include variant 0, so the baseline must be provided
+     * here (typically the human_baseline merge records keyed by
+     * {@link MergeOutputJSON#getMergeCommit()}). Used as a fallback when the merge's
+     * own variant-0 data is unavailable, and also exposed via {@link #getBaselineLookup()}
+     * for downstream analyzers (resolution, ranking, time).
+     *
+     * @param merges          All merge results to analyze
+     * @param baselineLookup  Map of mergeCommit → human-baseline merge record
+     * @return Computed statistics
+     */
+    public static MergeStatistics from(List<MergeOutputJSON> merges,
+                                       Map<String, MergeOutputJSON> baselineLookup) {
+        List<MergeOutputJSON> impactMerges = filterImpactMerges(merges, baselineLookup);
         List<MergeOutputJSON> noImpactMerges = merges.stream()
                 .filter(m -> !impactMerges.contains(m))
                 .toList();
@@ -70,7 +93,8 @@ public class MergeStatistics {
                 noImpactMerges,
                 singleModule,
                 multiModule,
-                multiModuleCount
+                multiModuleCount,
+                baselineLookup
         );
     }
 
@@ -80,14 +104,14 @@ public class MergeStatistics {
         return new MergeSubsets(impact, noImpact);
     }
 
-    private static List<MergeOutputJSON> filterImpactMerges(List<MergeOutputJSON> merges) {
+    private static List<MergeOutputJSON> filterImpactMerges(List<MergeOutputJSON> merges,
+                                                            Map<String, MergeOutputJSON> baselineLookup) {
         List<MergeOutputJSON> result = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
             if (merge.getNumConflictChunks() == 0) continue;
 
-            Optional<VariantScore> baselineScore =
-                    VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
+            Optional<VariantScore> baselineScore = scoreFor(merge, baselineLookup);
             if (baselineScore.isEmpty()) continue; // no scoreable baseline
 
             for (MergeOutputJSON.Variant variant : merge.getVariants()) {
@@ -104,6 +128,20 @@ public class MergeStatistics {
         }
 
         return result;
+    }
+
+    /**
+     * Resolve the baseline {@link VariantScore} for a merge, preferring inline variant-0
+     * data and falling back to the cross-mode lookup when the merge's JSON is non-baseline.
+     */
+    public static Optional<VariantScore> scoreFor(MergeOutputJSON merge,
+                                                  Map<String, MergeOutputJSON> baselineLookup) {
+        Optional<VariantScore> inline =
+                VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
+        if (inline.isPresent()) return inline;
+        MergeOutputJSON baseline = baselineLookup.get(merge.getMergeCommit());
+        if (baseline == null) return Optional.empty();
+        return VariantScore.of(baseline.getCompilationResult(), baseline.getTestResults());
     }
 
     private static List<MergeOutputJSON> filterSingleModule(List<MergeOutputJSON> merges) {

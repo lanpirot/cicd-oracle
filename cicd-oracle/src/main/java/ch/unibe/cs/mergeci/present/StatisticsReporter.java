@@ -21,9 +21,9 @@ public class StatisticsReporter {
     public StatisticsReporter(MergeStatistics statistics, String experimentName) {
         this.statistics = statistics;
         this.experimentName = experimentName;
-        this.resolutionAnalyzer = new VariantResolutionAnalyzer();
-        this.rankingAnalyzer = new VariantRankingAnalyzer(resolutionAnalyzer);
-        this.timeAnalyzer = new ExecutionTimeAnalyzer();
+        this.resolutionAnalyzer = new VariantResolutionAnalyzer(statistics.getBaselineLookup());
+        this.rankingAnalyzer = new VariantRankingAnalyzer(resolutionAnalyzer, statistics.getBaselineLookup());
+        this.timeAnalyzer = new ExecutionTimeAnalyzer(statistics.getBaselineLookup());
     }
 
     /**
@@ -43,14 +43,20 @@ public class StatisticsReporter {
 
         printHeader();
         printOverviewStatistics(allMerges, impactMerges, noImpactMerges);
-        printModuleBreakdown(allMerges, impactMerges, noImpactMerges);
-        printJavaRatioImpactChart(allMerges, impactMerges);
-        printResolutionAnalysis(impactMerges);
-        printRankings(impactMerges);
-        printExecutionTimeAnalysis(impactMerges);
-        printConflictChunksRankings(impactMerges);
+        if (!isHumanBaseline()) {
+            printModuleBreakdown(allMerges, impactMerges, noImpactMerges);
+            printJavaRatioImpactChart(allMerges, impactMerges);
+            printResolutionAnalysis(impactMerges);
+            printRankings(impactMerges);
+            printExecutionTimeAnalysis(impactMerges);
+            printConflictChunksRankings(impactMerges);
+        }
         printFooter();
         exportLatexVariables(allMerges, impactMerges);
+    }
+
+    private boolean isHumanBaseline() {
+        return "human_baseline".equals(experimentName);
     }
 
     private void printHeader() {
@@ -91,11 +97,13 @@ public class StatisticsReporter {
         System.out.printf("  ├─ Multi-module:    %4d (%3d%%)\n",
                 statistics.getMultiModuleCount(),
                 countPercent(allMerges.size(), statistics.getMultiModuleCount()));
-        System.out.printf("  └─ Single-module:   %4d (%3d%%)\n\n",
+        System.out.printf("  └─ Single-module:   %4d (%3d%%)\n",
                 allMerges.size() - statistics.getMultiModuleCount(),
                 countPercent(allMerges.size(), allMerges.size() - statistics.getMultiModuleCount()));
 
-        System.out.printf("  Impact Analysis:\n");
+        if (isHumanBaseline()) return;
+
+        System.out.printf("\n  Impact Analysis:\n");
         System.out.printf("  ├─ Impact:          %4d (%3d%%) ← Any variant has a different score\n",
                 impactMerges.size(),
                 countPercent(allMerges.size(), impactMerges.size()));
@@ -108,6 +116,8 @@ public class StatisticsReporter {
             List<MergeOutputJSON> allMerges,
             List<MergeOutputJSON> impactMerges,
             List<MergeOutputJSON> noImpactMerges) {
+
+        if (impactMerges.isEmpty()) return; // identical to Overview when all merges are no-impact
 
         printSectionHeader("Module Type Breakdown");
 
@@ -194,43 +204,68 @@ public class StatisticsReporter {
             List<MergeOutputJSON> withResolutionSingle,
             List<MergeOutputJSON> withResolutionMulti) {
 
-        List<String> patterns = resolutionAnalyzer.extractUniformPatterns(impactMerges);
-        List<String> patternsFromResolved = resolutionAnalyzer.extractUniformPatterns(withResolution);
+        // ── Per-merge view (Option A): "Of the merges with at least one resolution,
+        // how many admit a uniform-pattern fix, and which pattern wins?"
+        // Useful for paper claims — denominator is merges, numerator is merges-with-uniform-fix.
+        List<String> mergeLevel = resolutionAnalyzer.extractUniformPatternsPerMerge(withResolution);
 
-        System.out.println("  Uniform Patterns (Same resolution for all chunks):");
+        System.out.println("  Uniform Patterns — Per Merge (≥1 variant solves all chunks with one pattern):");
 
         if (!withResolution.isEmpty()) {
             System.out.printf("  ├─ All resolved:    %4d/%4d (%3d%%)\n",
-                    patternsFromResolved.size(),
+                    mergeLevel.size(),
                     withResolution.size(),
-                    countPercent(withResolution.size(), patternsFromResolved.size()));
+                    countPercent(withResolution.size(), mergeLevel.size()));
         }
 
         if (!withResolutionSingle.isEmpty()) {
-            List<String> singleModulePatterns = resolutionAnalyzer.extractUniformPatterns(withResolutionSingle);
+            List<String> single = resolutionAnalyzer.extractUniformPatternsPerMerge(withResolutionSingle);
             System.out.printf("  ├─ Single-module:   %4d/%4d (%3d%%)\n",
-                    singleModulePatterns.size(),
+                    single.size(),
                     withResolutionSingle.size(),
-                    countPercent(withResolutionSingle.size(), singleModulePatterns.size()));
+                    countPercent(withResolutionSingle.size(), single.size()));
         }
 
-        if (!impactMultiModule.isEmpty()) {
-            List<String> multiModulePatterns = resolutionAnalyzer.extractUniformPatterns(impactMultiModule);
+        if (!withResolutionMulti.isEmpty()) {
+            List<String> multi = resolutionAnalyzer.extractUniformPatternsPerMerge(withResolutionMulti);
             System.out.printf("  └─ Multi-module:    %4d/%4d (%3d%%)\n",
-                    multiModulePatterns.size(),
-                    impactMultiModule.size(),
-                    countPercent(impactMultiModule.size(), multiModulePatterns.size()));
+                    multi.size(),
+                    withResolutionMulti.size(),
+                    countPercent(withResolutionMulti.size(), multi.size()));
         }
 
-        // Pattern distribution
-        if (!patterns.isEmpty()) {
-            System.out.println("\n  Pattern Distribution:");
-            Map<String, Integer> grouped = resolutionAnalyzer.groupPatternsByCount(patterns);
+        if (!mergeLevel.isEmpty()) {
+            System.out.println("\n  Per-Merge Pattern Distribution (winning pattern, one per merge):");
+            Map<String, Integer> grouped = resolutionAnalyzer.groupPatternsByCount(mergeLevel);
             grouped.forEach((pattern, count) ->
-                    System.out.printf("  ├─ %-15s %4d (%5.2f%%)\n",
+                    System.out.printf("  ├─ %-20s %4d (%5.2f%%)\n",
                             pattern + ":",
                             count,
-                            (float) count * 100 / patterns.size()));
+                            (float) count * 100 / mergeLevel.size()));
+        }
+
+        // ── Per-variant view (Option B): "Of the successful variants the search produced,
+        // what fraction were uniform, and how do uniform patterns split among themselves?"
+        // Useful for understanding the search-space shape — denominator is variants.
+        List<String> variantLevel = resolutionAnalyzer.extractUniformPatterns(impactMerges);
+        int successfulVariants = resolutionAnalyzer.countSuccessfulVariants(impactMerges);
+
+        if (successfulVariants > 0) {
+            System.out.printf("%n  Uniform Patterns — Per Variant (across all successful variants):%n");
+            System.out.printf("  └─ Uniform variants: %4d/%4d (%3d%%)%n",
+                    variantLevel.size(),
+                    successfulVariants,
+                    countPercent(successfulVariants, variantLevel.size()));
+        }
+
+        if (!variantLevel.isEmpty()) {
+            System.out.println("\n  Per-Variant Pattern Distribution (one entry per uniform variant):");
+            Map<String, Integer> grouped = resolutionAnalyzer.groupPatternsByCount(variantLevel);
+            grouped.forEach((pattern, count) ->
+                    System.out.printf("  ├─ %-20s %4d (%5.2f%%)\n",
+                            pattern + ":",
+                            count,
+                            (float) count * 100 / variantLevel.size()));
         }
     }
 
@@ -313,6 +348,8 @@ public class StatisticsReporter {
     private void printJavaRatioImpactChart(
             List<MergeOutputJSON> allMerges,
             List<MergeOutputJSON> impactMerges) {
+
+        if (impactMerges.isEmpty()) return; // chart conveys nothing when impact rate is uniformly 0
 
         printSectionHeader("Java Conflict File Ratio vs Impact Rate");
         System.out.println("  Fraction of conflict files that are Java → fraction of merges that are impact\n");
@@ -410,7 +447,8 @@ public class StatisticsReporter {
         for (MergeOutputJSON merge : allMerges) {
             if (merge.isBaselineBroken()) brokenBaselines++;
 
-            Optional<VariantScore> baseOpt = VariantResolutionAnalyzer.baselineScore(merge);
+            Optional<VariantScore> baseOpt =
+                    MergeStatistics.scoreFor(merge, statistics.getBaselineLookup());
             Optional<VariantScore> bestOpt = VariantResolutionAnalyzer.bestVariantScore(merge);
             if (baseOpt.isEmpty() || bestOpt.isEmpty()) continue;
 

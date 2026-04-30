@@ -1,6 +1,7 @@
 package ch.unibe.cs.mergeci.present;
 
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,28 @@ import java.util.Map;
  */
 public class ExecutionTimeAnalyzer {
 
+    private final Map<String, MergeOutputJSON> baselineLookup;
+
+    public ExecutionTimeAnalyzer() {
+        this(Map.of());
+    }
+
+    public ExecutionTimeAnalyzer(Map<String, MergeOutputJSON> baselineLookup) {
+        this.baselineLookup = baselineLookup;
+    }
+
+    /**
+     * Resolve the baseline build's totalTime for a merge, preferring inline variant-0
+     * data and falling back to the cross-mode lookup when the merge's JSON is non-baseline.
+     */
+    private double baselineTimeFor(MergeOutputJSON merge) {
+        CompilationResult inline = merge.getCompilationResult();
+        if (inline != null) return inline.getTotalTime();
+        MergeOutputJSON baseline = baselineLookup.get(merge.getMergeCommit());
+        if (baseline == null || baseline.getCompilationResult() == null) return 0.0;
+        return baseline.getCompilationResult().getTotalTime();
+    }
+
     /**
      * Calculate average ratio of variant execution time to baseline merge time.
      *
@@ -23,8 +46,8 @@ public class ExecutionTimeAnalyzer {
         List<Double> ratios = new ArrayList<>();
 
         for (MergeOutputJSON merge : merges) {
-            if (merge.getCompilationResult() == null || merge.getVariants() == null) continue;
-            double baselineTime = merge.getCompilationResult().getTotalTime();
+            if (merge.getVariants() == null) continue;
+            double baselineTime = baselineTimeFor(merge);
             double variantTime = merge.getVariantsExecutionTimeSeconds();
 
             if (baselineTime > 0) {

@@ -359,18 +359,24 @@ public class VariantExecutionEngine {
                 if (cr == null) cr = new CompilationResult(logFile);
                 TestTotal tt = tpResult.testsRan() ? new TestTotal(variantPath.toFile()) : new TestTotal();
 
-                // If the build-cache extension cache-hit on every test-running module,
-                // surefire is skipped and no fresh reports are written → hasData=false.
-                // Inherit from the donor we warmed against (captured at warm time, not now —
-                // the donor may already have rotated by the time we get here). The cache
-                // extension proved the variant's source matches the donor's at the module
-                // level, so the donor's test outcomes are this variant's test outcomes.
-                boolean usedCache = false;
-                if (config.useCache && donorTtAtWarm != null
+                // hadWarmCacheReady reflects whether donor target/ trees were copied into
+                // this variant before its build started — i.e. whether any donor parts were
+                // available for the build-cache extension to consult. It does NOT mean any
+                // compilation work was actually skipped; the build-cache extension may still
+                // hash-miss and rebuild from scratch. It is set independently of the build's
+                // outcome: a variant that copied donor artefacts and then failed (or was
+                // gated) still "had a warm cache ready" for the build to consult.
+                boolean hadWarmCacheReady = config.useCache && donorTtAtWarm != null;
+
+                // Separately: when the build-cache extension cache-hit on every
+                // test-running module, surefire is skipped and no fresh reports are
+                // written → hasData=false. Inherit the donor's test outcomes in that
+                // specific case (the cache extension has already proven module-level
+                // source equivalence; donor's tests are this variant's tests).
+                if (hadWarmCacheReady
                         && cr.getBuildStatus() == CompilationResult.Status.SUCCESS
                         && !tt.isHasData() && donorTtAtWarm.isHasData()) {
                     tt = TestTotal.copyOf(donorTtAtWarm);
-                    usedCache = true;
                 }
 
                 // 6. Donor promotion. The maven-hook posts successful-module counts to
@@ -403,7 +409,7 @@ public class VariantExecutionEngine {
                         variantKey, variantIndex,
                         variant.extractPatterns(),
                         cr, tt, tpResult.testsRan(),
-                        elapsed, logFile, variantPath, isDonor, usedCache);
+                        elapsed, logFile, variantPath, isDonor, hadWarmCacheReady);
                 listener.onVariantComplete(outcome);
 
                 // 8. Perfect variant check (engine-level concern, not delegated)

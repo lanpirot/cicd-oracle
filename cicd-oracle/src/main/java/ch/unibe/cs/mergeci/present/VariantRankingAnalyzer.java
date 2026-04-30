@@ -1,5 +1,6 @@
 package ch.unibe.cs.mergeci.present;
 
+import ch.unibe.cs.mergeci.conflict.MergeStatistics;
 import ch.unibe.cs.mergeci.experiment.MergeOutputJSON;
 
 import java.util.ArrayList;
@@ -15,9 +16,16 @@ import java.util.stream.Collectors;
  */
 public class VariantRankingAnalyzer {
     private final VariantResolutionAnalyzer resolutionAnalyzer;
+    private final Map<String, MergeOutputJSON> baselineLookup;
 
     public VariantRankingAnalyzer(VariantResolutionAnalyzer resolutionAnalyzer) {
+        this(resolutionAnalyzer, Map.of());
+    }
+
+    public VariantRankingAnalyzer(VariantResolutionAnalyzer resolutionAnalyzer,
+                                  Map<String, MergeOutputJSON> baselineLookup) {
         this.resolutionAnalyzer = resolutionAnalyzer;
+        this.baselineLookup = baselineLookup;
     }
 
     /**
@@ -65,7 +73,7 @@ public class VariantRankingAnalyzer {
      */
     private List<String> findBestResolutions(MergeOutputJSON merge) {
         java.util.Optional<VariantScore> baselineOpt =
-                VariantScore.of(merge.getCompilationResult(), merge.getTestResults());
+                MergeStatistics.scoreFor(merge, baselineLookup);
         if (baselineOpt.isEmpty()) return List.of(); // no scoreable baseline, skip
 
         VariantScore bestScore = baselineOpt.get();

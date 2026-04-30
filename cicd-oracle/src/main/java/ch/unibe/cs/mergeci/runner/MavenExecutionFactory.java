@@ -156,7 +156,7 @@ public class MavenExecutionFactory {
             // modes get the maven-hook (for stable fixReactorArtifact + stale-report
             // cleanup → comparable test counts by variant index across modes); only cache
             // modes additionally get the maven-build-cache extension and its config.
-            MavenCacheManager cacheManager = new MavenCacheManager(logDir.resolveSibling("shared-cache"));
+            MavenCacheManager cacheManager = new MavenCacheManager(AppConfig.SHARED_CACHE_DIR);
             Path basePath = null;
             long baseSizeBytes = 0;
             if (useOverlay && !skipVariants) {
@@ -341,7 +341,7 @@ public class MavenExecutionFactory {
                 if (outcome.isDonor()) {
                     cacheDonorKeys.add(key);
                 }
-                if (outcome.usedCache()) {
+                if (outcome.hadWarmCacheReady()) {
                     cacheHitKeys.add(key);
                 }
             }

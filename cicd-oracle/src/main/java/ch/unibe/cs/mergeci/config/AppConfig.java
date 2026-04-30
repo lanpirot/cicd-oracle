@@ -214,6 +214,12 @@ private static final boolean FRESH_RUN = false;
      *  When unset, defaults to TMP_DIR (HDD) — variants still benefit from overlayfs CoW. */
     public static final Path OVERLAY_TMP_DIR = Path.of(
             System.getProperty("overlayTmpDir", TMP_DIR.toString()));
+    /** Shared maven-build-cache extension storage. Defaults to a sibling of OVERLAY_TMP_DIR
+     *  so cache lookups stay on the same backing filesystem as the variant builds (RAM when
+     *  overlayTmpDir=/dev/shm). Override with {@code -DsharedCacheDir=...}. */
+    public static final Path SHARED_CACHE_DIR = Path.of(
+            System.getProperty("sharedCacheDir",
+                    OVERLAY_TMP_DIR.resolve("shared-cache").toString()));
     /** Shared input data: SQL dump, all_conflicts.csv, maven_conflicts.csv, maven_check_cache.json. */
     public static final Path COMMON_DIR = DATA_BASE_DIR.resolve("common");
     /** Shared CSV of LaTeX variables populated by Java pipelines and Python scripts. */
