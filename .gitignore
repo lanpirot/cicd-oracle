@@ -52,6 +52,7 @@ scripts/__pycache__/
 scripts/*.pdf
 
 ### My ignore ###
+.claude/
 **/src/test/**/test-merge-projects/
 temp/
 dataset_temp/
