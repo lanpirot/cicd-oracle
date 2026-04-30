@@ -386,7 +386,14 @@ public class VariantExecutionEngine {
                         donorTracker.setDonorPatterns(patterns);
                     }
                     if (oldDonor != null && !oldDonor.equals(variantPath)) {
-                        deleteQuietly(oldDonor);
+                        // The demoted donor is an overlay mount when useOverlay; deleteQuietly
+                        // would only chew through the FUSE view without unmounting, leaking the
+                        // mount. unmountAndDelete fusermount3-detaches first, then deletes.
+                        if (config.useOverlay) {
+                            OverlayMount.unmountAndDelete(oldDonor);
+                        } else {
+                            deleteQuietly(oldDonor);
+                        }
                     }
                 }
 

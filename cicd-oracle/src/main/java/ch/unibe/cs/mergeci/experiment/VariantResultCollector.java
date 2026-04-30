@@ -247,6 +247,7 @@ public class VariantResultCollector {
         for (String key : compilationResults.keySet()) {
             if (key.equals(projectName)) continue;
             CompilationResult cr = compilationResults.get(key);
+            if (cr != null && cr.getBuildStatus() == CompilationResult.Status.TIMEOUT) continue;
             TestTotal tt = testResults.get(key);
             int modules = effectiveSuccessfulModules(cr);
             int tests = tt != null ? tt.getPassedTests() : 0;

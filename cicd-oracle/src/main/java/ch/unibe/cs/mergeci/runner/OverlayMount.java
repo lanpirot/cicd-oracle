@@ -87,6 +87,34 @@ public class OverlayMount implements AutoCloseable {
     }
 
     /**
+     * Unmount and delete a single overlay by path, when only the mountpoint is known
+     * (the {@link OverlayMount} instance was lost — e.g. an old donor whose slot
+     * reference was dropped when it was promoted). Mirrors {@link #close()}'s logic:
+     * regular unmount → lazy fallback → delete the mountpoint and its sibling
+     * {@code _upper}/{@code _work} dirs. No-op if the path is not mounted and the
+     * directory doesn't exist.
+     */
+    public static void unmountAndDelete(Path mountPoint) {
+        if (mountPoint == null) return;
+        if (isMounted(mountPoint)) {
+            tryUnmount(mountPoint, false);
+            if (isMounted(mountPoint)) tryUnmount(mountPoint, true);
+        }
+        if (isMounted(mountPoint)) {
+            // Still mounted (lazy unmount queued, FDs not yet released). Don't recurse
+            // through the live FUSE view; cleanupStaleMounts will sweep on the next run.
+            return;
+        }
+        deleteQuietly(mountPoint);
+        Path parent = mountPoint.getParent();
+        String name = mountPoint.getFileName().toString();
+        if (parent != null) {
+            deleteQuietly(parent.resolve(name + "_upper"));
+            deleteQuietly(parent.resolve(name + "_work"));
+        }
+    }
+
+    /**
      * Clean up stale entries under {@code overlayTmpDir} — currently-mounted fuse-overlayfs
      * overlays, leftover mountpoint dirs, {@code *_upper}/{@code *_work}/{@code *_base} dirs.
      *
