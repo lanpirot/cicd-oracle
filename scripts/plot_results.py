@@ -298,15 +298,22 @@ def get_finish_time(variant: dict, fallback_seconds: float = 0.0) -> float:
 # ── Per-merge improvement markers ─────────────────────────────────────────────
 
 def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
-                        hb_num: float) -> list[tuple[float, float]]:
+                        hb_num: float, smooth: bool = False) -> list[tuple[float, float]]:
     """
     For a list of variant dicts, returns (relativeTime, relativeScore) markers
     where relativeTime  = totalTimeSinceMergeStartSeconds / budgetBasisSeconds
           relativeScore = metric_fn(v)[0] / hb_num  (1.0 = human baseline quality)
+
+    If smooth=True, applies Laplace smoothing: rate = (num+1)/(hb_num+1).  This
+    keeps the chart usable for merges whose human baseline scored 0 on this
+    metric (e.g. projects with no tests) — the smoothed baseline still lands at
+    1.0 by construction.
     Only variants that strictly improve on all previous variants are kept.
     metric_fn(variant) -> (numerator, denominator)
     """
-    if human_baseline_secs <= 0 or hb_num <= 0:
+    if human_baseline_secs <= 0:
+        return []
+    if not smooth and hb_num <= 0:
         return []
 
     eff_hb = effective_baseline_secs(human_baseline_secs)
@@ -316,7 +323,7 @@ def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
     markers = []
     best_rate = -1.0
     for finish, num in timed:
-        rate = num / hb_num
+        rate = ((num + 1) / (hb_num + 1)) if smooth else (num / hb_num)
         if rate > best_rate:
             best_rate = rate
             markers.append((finish / eff_hb, rate))
@@ -325,11 +332,15 @@ def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
 
 # ── Plot data assembly ─────────────────────────────────────────────────────────
 
-def assemble_plot_data(all_data: dict, metric_fn):
+def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
     """
     Returns dict: mode -> list of (relativeTime, relativeScore) improvement markers,
     where relativeScore is normalised so that 1.0 = human baseline score for that merge.
     Also returns dict: mode -> list of step-function series (each a list of (x,y) for one merge).
+
+    If smooth=True, the metric uses Laplace smoothing — required when many
+    merges have a baseline score of 0 on this metric (e.g. projects with no
+    tests).  The baseline still lands at 1.0 by construction.
     """
     all_commits = set(all_data["human_baseline"].keys())
 
@@ -350,8 +361,8 @@ def assemble_plot_data(all_data: dict, metric_fn):
         if hb_variant is None:
             continue
         hb_num, _ = metric_fn(hb_variant)
-        if hb_num <= 0:
-            continue  # can't normalise against zero
+        if not smooth and hb_num <= 0:
+            continue  # can't normalise against zero (smoothing handles it)
 
         for mode in MODES:
             merge = all_data[mode].get(commit)
@@ -368,7 +379,8 @@ def assemble_plot_data(all_data: dict, metric_fn):
                 mode_steps[mode].append([(0.0, 0.0), (hb_x, 0.0), (hb_x, 1.0)])
                 mode_markers[mode].append((hb_x, 1.0))
             else:
-                markers = improvement_markers(variants, metric_fn, hb_secs, hb_num)
+                markers = improvement_markers(variants, metric_fn, hb_secs, hb_num,
+                                              smooth=smooth)
                 if markers:
                     mode_markers[mode].extend(markers)
                     mode_steps[mode].append([(0.0, 0.0)] + markers)
@@ -378,7 +390,7 @@ def assemble_plot_data(all_data: dict, metric_fn):
 
 # ── Combined quality (modules × tests, Laplace-smoothed) ──────────────────────
 
-def combined_quality(variant: dict, hb_modules: int, hb_tests: int) -> float | None:
+def combined_quality(variant: dict, hb_modules: int, hb_tests: int) -> float:
     """Smoothed combined-quality score for a variant, relative to the human baseline.
 
     Y = (modules_passed + 1)/(hb_modules + 1) * (tests_passed + 1)/(hb_tests + 1)
@@ -386,11 +398,11 @@ def combined_quality(variant: dict, hb_modules: int, hb_tests: int) -> float | N
     The +1 Laplace smoothing keeps the modules signal alive when tests_passed = 0
     (and vice versa) so a single zero factor doesn't annihilate the product.
     By construction the human baseline scores exactly 1.0.
-    Returns None for variants without a scoreable compilationResult (TIMEOUT or missing).
+
+    Mirrors chart 01: TIMEOUT variants with partial module/test successes still
+    contribute their partial counts (module_stats / test_stats already handle
+    that).  Missing compilationResult collapses to (0, 0).
     """
-    cr = variant.get("compilationResult")
-    if cr is None or cr.get("buildStatus") in (None, "TIMEOUT"):
-        return None
     m_pass, _ = module_stats(variant)
     t_pass, _ = test_stats(variant)
     return ((m_pass + 1) / (hb_modules + 1)) * ((t_pass + 1) / (hb_tests + 1))
@@ -402,12 +414,8 @@ def combined_improvement_markers(variants: list, hb_secs: float,
     if hb_secs <= 0:
         return []
     eff_hb = effective_baseline_secs(hb_secs)
-    timed = []
-    for v in variants:
-        score = combined_quality(v, hb_modules, hb_tests)
-        if score is None:
-            continue
-        timed.append((get_finish_time(v), score))
+    timed = [(get_finish_time(v), combined_quality(v, hb_modules, hb_tests))
+             for v in variants]
     timed.sort(key=lambda x: x[0])
     markers = []
     best = -1.0
@@ -1076,9 +1084,9 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
     ax.set_ylabel("Speedup ratio = no-cache median ÷ cache-warm median")
     ax.set_title("Cache vs No-Cache: Per-Merge Speedup Ratio (warm variants only)")
 
-    # Cap y at 2.5 — anything above is an extreme outlier (visible as flier dots);
+    # Cap y at 8.0 — anything above is an extreme outlier (visible as flier dots);
     # without the cap the box bodies get squashed against the bottom.
-    ax.set_ylim(0.0, 2.5)
+    ax.set_ylim(0.0, 8.0)
 
     # Direction labels inside the plot, hugging the left y-axis, so readers
     # immediately see which side of y=1 favours cache. Use mathtext for the
@@ -1136,6 +1144,31 @@ def _time_to_best_variant(merge: dict) -> float | None:
     if best_time is None:
         return None
     return best_time / budget
+
+
+def _best_variant_index(merge: dict) -> int | None:
+    """
+    variantIndex of the merge's best-scoring non-baseline variant.
+    Ties on score are broken by the lowest variantIndex (i.e. earliest
+    in the canonical run order).
+    """
+    best_score = None
+    best_idx = None
+    for v in merge.get("variants", []):
+        idx = v.get("variantIndex", 0)
+        if idx == 0:
+            continue
+        if v.get("timedOut", False):
+            continue
+        score = variant_score(v)
+        if score is None:
+            continue
+        if (best_score is None
+                or score > best_score
+                or (score == best_score and idx < best_idx)):
+            best_score = score
+            best_idx = idx
+    return best_idx
 
 
 # ── RQ2 Chart: Mode rank evolution over time ─────────────────────────────────
@@ -1700,7 +1733,7 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
     ax.set_xlim(left=0, right=max_x + 1 if max_x > 0 else None)
     # Dynamic y-axis: accommodate the tallest median curve with 15% headroom
     if per_thread:
-        y_top = max(max_y * 1.15, 1.1)  # tighter crop for per-thread view
+        y_top = 0.25  # fixed crop for per-thread view
     else:
         y_top = max(max_y * 1.15, 1.5)  # keep baseline line comfortably visible
     ax.set_ylim(bottom=0, top=y_top)
@@ -1873,6 +1906,54 @@ def _draw_overhead_violin(ax, overhead_data, value_index, ylabel, ylim=None):
                 f"n={len(ys)}", ha="center", va="bottom", fontsize=7, color="gray")
 
 
+def draw_best_variant_index_box(ax, all_data: dict):
+    """
+    Boxplot of the variantIndex of each merge's best-scoring non-baseline
+    variant, per mode. Ties on score are broken by lowest variantIndex.
+    Answers: how deep into the trial sequence do you have to go before
+    the best variant appears?
+    """
+    box_data = []
+    box_labels = []
+    box_colors = []
+
+    for mode in VARIANT_MODES:
+        merges = all_data.get(mode, {})
+        indices = []
+        for merge in merges.values():
+            idx = _best_variant_index(merge)
+            if idx is not None:
+                indices.append(idx)
+        if not indices:
+            continue
+        box_data.append(indices)
+        box_labels.append(f"{MODE_LABELS[mode]}\nn={len(indices)}")
+        box_colors.append(MODE_COLORS[mode])
+
+    if not box_data:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    positions = list(range(len(box_data)))
+    bp = ax.boxplot(box_data, positions=positions, widths=0.5, patch_artist=True,
+                    showfliers=True, flierprops=dict(markersize=3, alpha=0.5))
+
+    for patch, color in zip(bp["boxes"], box_colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.7)
+
+    medians = [sorted(d)[len(d) // 2] for d in box_data]
+    for pos, med in zip(positions, medians):
+        ax.text(pos, med, f"  med={med}",
+                ha="left", va="center", fontsize=8, color="black")
+
+    ax.set_xticks(positions)
+    ax.set_xticklabels(box_labels, fontsize=9)
+    ax.set_ylabel("variantIndex of best variant (lower = found earlier in run order)")
+    ax.set_title("Best-Variant Position in Run Order (per merge)")
+    ax.grid(True, axis="y", alpha=0.3)
+
+
 def _save_fig(fig, results_dir: Path, name: str, combined_pdf=None):
     """Save a figure as an individual PDF and optionally append to a combined PdfPages."""
     path = results_dir / f"{name}.pdf"
@@ -1928,7 +2009,11 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         print("Assembling module success data ...")
         module_mode_markers, module_mode_steps = assemble_plot_data(all_data, module_stats)
         print("Assembling test success data ...")
-        test_mode_markers, test_mode_steps = assemble_plot_data(all_data, test_stats)
+        # Tests need Laplace smoothing — many baselines pass 0 tests
+        # (projects with no test suite), which would otherwise drop the
+        # whole merge from the chart.
+        test_mode_markers, test_mode_steps = assemble_plot_data(
+            all_data, test_stats, smooth=True)
         print("Assembling combined-quality data ...")
         combined_mode_markers, combined_mode_steps = assemble_combined_plot_data(all_data)
 
@@ -1947,11 +2032,12 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
                        ylabel=r"Modules built (relative to human baseline $= 1.0$)")
             _save_fig(fig, results_dir, "01_module_success_rate", pdf)
 
-            # Chart 2: Test success rate vs. relative time
+            # Chart 2: Test success rate vs. relative time (Laplace-smoothed)
             fig, ax = plt.subplots(figsize=(10, 6))
             draw_graph(ax, test_mode_markers, test_mode_steps,
                        title=r"Test Success Rate vs.\ Relative Time",
-                       ylabel=r"Tests passed (relative to human baseline $= 1.0$)")
+                       ylabel=(r"Tests passed (Laplace-smoothed, "
+                               r"relative to human baseline $= 1.0$)"))
             _save_fig(fig, results_dir, "02_test_success_rate", pdf)
 
             # Chart 2c: Combined quality (modules x tests, Laplace-smoothed)
@@ -2066,6 +2152,15 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
             ax.set_title("(b) Relative setup overhead per variant")
             fig.tight_layout()
             _save_fig(fig, results_dir, "10b_setup_overhead_relative", pdf)
+
+        # Chart 11: Best variant position in run order (RQ3-only — uses
+        # the much larger merge set to characterise where in the run order
+        # the winner typically appears).
+        if rq == "rq3":
+            print("Drawing best-variant index chart ...")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            draw_best_variant_index_box(ax, all_data)
+            _save_fig(fig, results_dir, "11_best_variant_index", pdf)
 
     # Write console summary to text file
     _write_console_summary(results_dir, all_data, stats, rq)
