@@ -5,6 +5,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
@@ -76,7 +78,8 @@ public class MavenHook extends AbstractEventSpy {
     @Override
     public void onEvent(Object event) throws Exception {
         log.debug("Event: {}", event.getClass().getName());
-        if (event instanceof ExecutionEvent ee) {
+        if (event instanceof ExecutionEvent) {
+            ExecutionEvent ee = (ExecutionEvent) event;
 
             log.debug("Type: {}", ee.getType());
             log.debug("MojoExecution: {}", ee.getMojoExecution());
@@ -117,6 +120,7 @@ public class MavenHook extends AbstractEventSpy {
                 MavenSession session = ee.getSession();
                 for (MavenProject sibling : session.getProjects()) {
                     fixReactorArtifact(sibling);
+                    attachRestoredTestJarIfMissing(sibling);
                 }
             }
 
@@ -124,6 +128,7 @@ public class MavenHook extends AbstractEventSpy {
             if (ee.getType() == ExecutionEvent.Type.ProjectSucceeded) {
                 MavenProject project = ee.getProject();
                 fixReactorArtifact(project);
+                attachRestoredTestJarIfMissing(project);
                 if (isCodeModule(project)) {
                     completedModules++;
                     successfulModules++;
@@ -133,6 +138,7 @@ public class MavenHook extends AbstractEventSpy {
             if (ee.getType() == ExecutionEvent.Type.ProjectFailed) {
                 MavenProject project = ee.getProject();
                 fixReactorArtifact(project);
+                attachRestoredTestJarIfMissing(project);
                 if (isCodeModule(project)) {
                     completedModules++;
                     checkEarlyAbortGate(ee.getSession());
@@ -259,6 +265,89 @@ public class MavenHook extends AbstractEventSpy {
             log.info("Fixed reactor artifact for {} → {}",
                     project.getArtifactId(), classesDir);
         }
+    }
+
+    /**
+     * Re-attach a {@code tests}-classifier artifact for a project whose test-jar
+     * metadata was lost — either because the maven-build-cache extension restored
+     * the project but didn't re-attach the test-jar (hawkbit symptom), or because
+     * the variant build runs a goal that doesn't include the {@code package} phase
+     * (so {@code mvn-jar-plugin:test-jar} never fires) yet downstream reactor modules
+     * still depend on {@code <project>:jar:tests:<version>} for compile/test-compile.
+     *
+     * <p>The attached artifact's {@code file} is whichever of these exists, in order:
+     * <ol>
+     *   <li>{@code target/<finalName>-tests.jar} — the proper jar (created when the
+     *       package phase ran)</li>
+     *   <li>{@code target/test-classes/} — the directory of compiled test classes
+     *       (always present after {@code test-compile}). Maven's compiler accepts
+     *       directories on classpath, so downstream modules that need
+     *       {@code <project>:jar:tests} for compilation can use this.</li>
+     * </ol>
+     *
+     * <p>Idempotent: skips packaging types that don't produce test-jars, skips when an
+     * attached artifact with classifier "tests" already exists, skips when neither
+     * the jar nor the test-classes dir exists on disk.
+     *
+     * <p>Separate concern from {@link #fixReactorArtifact}, which fixes the project's
+     * MAIN artifact. The earlier attempt to clobber the main artifact's file regressed
+     * cache_parallel because RestoredArtifact is a lazy wrapper; this method
+     * deliberately leaves the main artifact alone and only ADDS an attachment.
+     */
+    private void attachRestoredTestJarIfMissing(MavenProject project) {
+        String packaging = project.getPackaging();
+        if (!"jar".equals(packaging) && !"bundle".equals(packaging)) return;
+
+        // Some packaging configurations (e.g. parent POMs masquerading as jar in
+        // synthetic test setups, or pre-validation projects) leave Build null or
+        // partially-populated. Don't NPE the EventSpy dispatcher in those cases —
+        // EventSpyDispatcher swallows the exception with a "Failed to notify spy"
+        // warning and the rest of the build continues, but the warning shows up in
+        // every variant's log and obscures real problems.
+        org.apache.maven.model.Build build = project.getBuild();
+        if (build == null) return;
+        String dir = build.getDirectory();
+        String finalName = build.getFinalName();
+        String testOutputDir = build.getTestOutputDirectory();
+        if (dir == null || finalName == null || testOutputDir == null) return;
+
+        java.util.List<Artifact> attached = project.getAttachedArtifacts();
+        if (attached != null) {
+            for (Artifact a : attached) {
+                if ("tests".equals(a.getClassifier()) && "jar".equals(a.getType())) {
+                    return; // already attached
+                }
+            }
+        }
+
+        File testJarFile = new File(dir, finalName + "-tests.jar");
+        File testClassesDir = new File(testOutputDir);
+
+        File artifactFile;
+        if (testJarFile.isFile()) {
+            artifactFile = testJarFile;
+        } else if (testClassesDir.isDirectory()) {
+            artifactFile = testClassesDir;
+        } else {
+            return;
+        }
+
+        DefaultArtifactHandler handler = new DefaultArtifactHandler("test-jar");
+        handler.setExtension("jar");
+        handler.setLanguage("java");
+        handler.setAddedToClasspath(true);
+        DefaultArtifact testArtifact = new DefaultArtifact(
+                project.getGroupId(),
+                project.getArtifactId(),
+                project.getVersion(),
+                "test",
+                "test-jar",
+                "tests",
+                handler);
+        testArtifact.setFile(artifactFile);
+        project.addAttachedArtifact(testArtifact);
+        log.info("Attached restored test-jar for {} → {}",
+                project.getArtifactId(), artifactFile);
     }
 
     @Override

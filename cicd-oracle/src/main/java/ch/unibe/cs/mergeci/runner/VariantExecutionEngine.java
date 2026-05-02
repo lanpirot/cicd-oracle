@@ -99,6 +99,37 @@ public class VariantExecutionEngine {
     private final ConcurrentHashMap<Long, OverlayMount> threadM2Overlays = new ConcurrentHashMap<>();
     private final AtomicInteger nextM2Slot = new AtomicInteger(0);
 
+    /**
+     * Per-worker-thread variant overlay mount. Mounted at a STABLE path
+     * {@code projects/<projectName>_t<slot>/} on first use of the thread and reused
+     * for every subsequent variant that lands on the same thread. Each variant's
+     * conflict-resolved files are written into the same upper layer (overwriting the
+     * previous variant's), and (in non-cache modes) {@code target/} dirs are wiped
+     * between variants to keep the no-cache baseline honest.
+     *
+     * <p>Why stable: mvnd daemons cache GAV → source-file-path mappings across builds.
+     * Per-variant mountpoints poison that cache the moment a variant is torn down; a
+     * stable per-thread mountpoint keeps the path the daemon's cache pinned to alive
+     * for the whole variant phase. See the historical band-aid (now removed) below
+     * for the failure mode this avoids.
+     *
+     * <p>Closed at the end of {@code run()} alongside the m2 overlays.
+     */
+    private final ConcurrentHashMap<Long, OverlayMount> threadVariantMounts = new ConcurrentHashMap<>();
+    private final AtomicInteger nextVariantSlot = new AtomicInteger(0);
+
+    /**
+     * Pause the engine indefinitely on the first variant whose build returns
+     * {@link CompilationResult.Status#SCAN_FAILURE} (the parent.relativePath signature).
+     * Set via {@code -DpauseOnFirstScanFailure=true}. Used to inspect the live mvnd
+     * daemon's state after a known-bad outcome instead of re-running the whole
+     * pipeline for each fix attempt.
+     */
+    private static final boolean PAUSE_ON_FIRST_SCAN_FAILURE =
+            Boolean.getBoolean("pauseOnFirstScanFailure");
+    private final java.util.concurrent.atomic.AtomicBoolean pausedOnFailure =
+            new java.util.concurrent.atomic.AtomicBoolean(false);
+
     public VariantExecutionEngine(EngineConfig config,
                                    VariantStopCondition stopCondition,
                                    VariantLifecycleListener listener) {
@@ -238,18 +269,36 @@ public class VariantExecutionEngine {
             exhausted = !stopCondition.isCancelled() && pendingRetry.isEmpty();
             listener.onRunFinished(exhausted);
 
-            // Close the per-thread m2 overlays that we kept alive across variants.
-            // Workers have been shut down, so nothing will ask for one after this.
+            // Close the per-thread m2 overlays AND per-thread variant mounts that we
+            // kept alive across variants. Workers have been shut down, so nothing will
+            // ask for one after this.
             //
             // Each close() spends ~6s retrying a regular unmount because mvnd daemons
-            // (idleTimeout = 3h) keep FDs open on the m2 overlay until they exit.
-            // Closing in parallel turns N×6s of mode-teardown into ~6s wall — matters
-            // because cache_parallel + parallel hit this at every merge boundary.
-            threadM2Overlays.values().parallelStream().forEach(m2 -> {
-                try { m2.close(); } catch (Exception ignored) {}
+            // (idleTimeout = 3h) keep FDs open on the overlays until they exit. Closing
+            // in parallel turns N×6s of mode-teardown into ~6s wall — matters because
+            // cache_parallel + parallel hit this at every merge boundary.
+            java.util.stream.Stream.concat(
+                    threadM2Overlays.values().stream(),
+                    threadVariantMounts.values().stream()
+            ).parallel().forEach(m -> {
+                try { m.close(); } catch (Exception ignored) {}
             });
             threadM2Overlays.clear();
+            threadVariantMounts.clear();
+
+            // Final donor's snapshot dir is left alive on the previous code path
+            // (we never demoted it, the run just ended). Sweep the whole donor staging
+            // root so it doesn't carry over into later modes / merges.
+            if (overlayBasePath != null) {
+                deleteQuietly(donorStagingRoot(overlayBasePath));
+            }
         }
+    }
+
+    /** Per-base staging dir for donor snapshots: sibling of basePath, name suffix _donors. */
+    private static Path donorStagingRoot(Path overlayBasePath) {
+        String baseName = overlayBasePath.getFileName().toString();
+        return overlayBasePath.getParent().resolve(baseName + "_donors");
     }
 
     /**
@@ -271,6 +320,81 @@ public class VariantExecutionEngine {
                 return null; // graceful fallback; next variant on this thread retries
             }
         });
+    }
+
+    /**
+     * Return (creating on first use) the per-worker-thread variant overlay mount for
+     * the current thread. The mount is at a STABLE path so the mvnd daemon's
+     * GAV → source-file-path cache stays valid across every variant on this thread.
+     * Returns {@code null} (caller falls back to a per-variant mount) if creation
+     * fails.
+     */
+    private OverlayMount acquireThreadVariantMount(String projectName, Path overlayBasePath) {
+        long tid = Thread.currentThread().threadId();
+        return threadVariantMounts.computeIfAbsent(tid, k -> {
+            int slot = nextVariantSlot.getAndIncrement();
+            try {
+                return OverlayMount.create(
+                        overlayBasePath, overlayBasePath.getParent(),
+                        projectName + "_t" + slot);
+            } catch (IOException e) {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Recursively delete every {@code target/} directory under the variant mount.
+     * Called between variants on the same stable per-thread mount in non-cache modes,
+     * so the no_optimization baseline does not accidentally inherit the prior
+     * variant's compiled classes (which would be cross-variant incremental
+     * compilation — a real speedup, but not what no-cache claims to measure).
+     *
+     * <p>Walks the OverlayFS upper layer directly (a normal directory on the host
+     * filesystem) rather than the mountpoint, so we skip the per-readdir FUSE round
+     * trip that walking through the mount would cost. Maven's {@code target/} output
+     * always lands in upper because it's all newly-created files; lower never holds
+     * a {@code target/} (the base extraction is just sources).
+     *
+     * <p>Cache modes deliberately keep {@code target/}: the build-cache extension
+     * hashes per-module and rebuilds whatever changed; donor warming overlays its
+     * own {@code target/} on top.
+     */
+    private static void wipeTargetDirsInUpper(OverlayMount mount) {
+        Path upper = mount.upperDir();
+        try (java.util.stream.Stream<Path> walk = Files.walk(upper)) {
+            walk.filter(p -> Files.isDirectory(p) && p.getFileName() != null
+                            && "target".equals(p.getFileName().toString()))
+                    .sorted(java.util.Comparator.reverseOrder()) // deepest first
+                    .forEach(VariantExecutionEngine::deleteQuietly);
+        } catch (IOException ignored) {
+            // best-effort; the next variant either rebuilds cleanly or surfaces the
+            // failure on its own
+        }
+    }
+
+    /**
+     * Snapshot a freshly-built variant's {@code target/} trees (and pom edits) into a
+     * separate path so the per-thread variant mount can be reused for the next variant
+     * without corrupting the donor. The donor staging path lives outside any thread's
+     * mount and is treated as a plain directory by {@link MavenCacheManager#copyTargetDirectories}.
+     *
+     * @return path to the snapshot, or {@code null} if snapshotting failed
+     */
+    private static Path snapshotDonor(MavenCacheManager cacheManager,
+                                      Path variantMount,
+                                      Path overlayBasePath,
+                                      String donorKey) {
+        Path snapshotPath = donorStagingRoot(overlayBasePath)
+                .resolve("donor_" + donorKey + "_" + System.nanoTime());
+        try {
+            Files.createDirectories(snapshotPath);
+            cacheManager.copyTargetDirectories(variantMount.toFile(), snapshotPath.toFile());
+            return snapshotPath;
+        } catch (Exception e) {
+            deleteQuietly(snapshotPath);
+            return null;
+        }
     }
 
     /**
@@ -383,7 +507,36 @@ public class VariantExecutionEngine {
                 // the shared threshold file as it observes them during the build, so we
                 // do not need a redundant update here — the gate threshold has already
                 // been raised by the time the variant returns.
-                if (config.useCache) {
+                //
+                // The donor's published path is a SNAPSHOT of the variant's target/ trees
+                // taken into a separate staging dir (overlayBase/../donors/...), NOT the
+                // live per-thread mount — otherwise the next variant on this thread would
+                // overwrite the donor's classes the moment it starts.
+                if (config.useCache && DonorTracker.isDonorUsable(cr)
+                        && config.useOverlay && overlayBasePath != null) {
+                    Path snapshotPath = snapshotDonor(cacheManager, variantPath,
+                            overlayBasePath, String.valueOf(variantIndex));
+                    if (snapshotPath != null) {
+                        Map<String, java.util.List<String>> patterns = variant.extractPatterns();
+                        Path oldDonor = donorTracker.promoteDonorIfBetter(
+                                snapshotPath, cr, tt, String.valueOf(variantIndex));
+                        isDonor = snapshotPath.equals(donorTracker.getDonorPath());
+                        if (isDonor) {
+                            donorTracker.setDonorPatterns(patterns);
+                        } else {
+                            // Lost the promotion race or our score did not beat current.
+                            deleteQuietly(snapshotPath);
+                        }
+                        if (oldDonor != null && !oldDonor.equals(snapshotPath)) {
+                            // The previous donor lives in donor staging too — plain rm -rf,
+                            // no FUSE mount to unmount.
+                            deleteQuietly(oldDonor);
+                        }
+                    }
+                } else if (config.useCache && !config.useOverlay) {
+                    // Non-overlay (no fuse) cache mode keeps the legacy per-variant
+                    // donor-by-path model — the variant directory IS the donor and is
+                    // skipped from cleanup below when promoted.
                     Map<String, java.util.List<String>> patterns = variant.extractPatterns();
                     Path oldDonor = donorTracker.promoteDonorIfBetter(
                             variantPath, cr, tt, String.valueOf(variantIndex));
@@ -392,14 +545,7 @@ public class VariantExecutionEngine {
                         donorTracker.setDonorPatterns(patterns);
                     }
                     if (oldDonor != null && !oldDonor.equals(variantPath)) {
-                        // The demoted donor is an overlay mount when useOverlay; deleteQuietly
-                        // would only chew through the FUSE view without unmounting, leaking the
-                        // mount. unmountAndDelete fusermount3-detaches first, then deletes.
-                        if (config.useOverlay) {
-                            OverlayMount.unmountAndDelete(oldDonor);
-                        } else {
-                            deleteQuietly(oldDonor);
-                        }
+                        deleteQuietly(oldDonor);
                     }
                 }
 
@@ -412,6 +558,27 @@ public class VariantExecutionEngine {
                         elapsed, logFile, variantPath, isDonor, hadWarmCacheReady);
                 listener.onVariantComplete(outcome);
 
+                // 7b. Debug: pause indefinitely on the first SCAN_FAILURE (the
+                //     parent.relativePath signature) when -DpauseOnFirstScanFailure=true.
+                //     Lets a human attach with jcmd / mvnd --status and inspect the live
+                //     daemon's cached GAV → path map without re-running the pipeline.
+                if (PAUSE_ON_FIRST_SCAN_FAILURE
+                        && cr.getBuildStatus() == CompilationResult.Status.SCAN_FAILURE
+                        && pausedOnFailure.compareAndSet(false, true)) {
+                    LOG.error("[debug-pause] variant {} failed with SCAN_FAILURE.\n"
+                                    + "  variant mount : {}\n"
+                                    + "  log file      : {}\n"
+                                    + "  alive mvnd PIDs: run `pgrep -f mvnd.id=` from another shell\n"
+                                    + "  engine paused — kill -INT this JVM to release.",
+                            variantKey, variantPath, logFile);
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try { Thread.sleep(60_000); } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            break;
+                        }
+                    }
+                }
+
                 // 8. Perfect variant check (engine-level concern, not delegated)
                 if (config.stopOnPerfect && isPerfect(cr, tt)) {
                     LOG.info("Perfect variant found ({}) — stopping early", variantKey);
@@ -423,62 +590,18 @@ public class VariantExecutionEngine {
                 // Note: m2Overlay is thread-scoped and closed at engine-run end; not here.
             }
         } finally {
-            // 9. Cleanup (unless this variant is the donor)
+            // 9. Cleanup. With the per-thread stable variant mount (overlay mode), the
+            //    slot is engine-owned and stays alive across variants — slot.close() is
+            //    a no-op (overlay==null in the slot). For non-overlay mode the slot owns
+            //    a per-variant directory which is deleted unless this variant became the
+            //    donor.
+            //
+            //    No daemon-kill here: the mvnd daemon (one per worker thread, matched on
+            //    -Dmaven.repo.local) intentionally survives the entire variant phase. The
+            //    GAV → source-file-path cache it builds up stays valid because the
+            //    variant mount path is now stable per thread.
             if (!isDonor && slot != null) {
                 try { slot.close(); } catch (Exception ignored) {}
-            }
-            // 10. SEQUENTIAL MODE BAND-AID — KILL THE DAEMON BETWEEN VARIANTS.
-            //
-            // This defeats most of mvnd's value (a daemon that survives one build is
-            // basically not a daemon) and we should replace it.  It is checked in only
-            // because it makes the hertzbeat-class regression go away while we work
-            // out the real fix.
-            //
-            // What goes wrong without it:
-            //   mvnd reuses one DefaultMaven / Aether RepositorySystemSession across
-            //   every build on a daemon; that session caches GAV → MavenProject
-            //   mappings keyed by source file path.  After variant 1 builds and its
-            //   directory is deleted, the daemon's cache still holds
-            //   `monitor:1.0 → /tmp/.../hertzbeat_1/pom.xml` pointing at a vanished
-            //   file.  Variant 2 in /tmp/.../hertzbeat_2 can't reconcile its own
-            //   ../pom.xml against that stale entry → "'parent.relativePath' points
-            //   at wrong local POM" → SCAN_FAILURE for every variant after the first.
-            //   We confirmed this empirically: 10 parallel variants → 10 daemon IDs
-            //   (one per thread, no leak); 16 sequential variants → 1 daemon ID
-            //   (severe leak).  Disk-level scrub of _remote.repositories and
-            //   *.lastUpdated does not help — the blocking state is in the daemon's
-            //   JVM, not on disk.
-            //
-            // What we actually want: keep one mvnd daemon alive for the merge's
-            // entire variant phase (or until budget exhaustion) so we get the
-            // daemon's startup amortisation, but invalidate the GAV→path mapping
-            // before each variant runs.  Avenues to pursue:
-            //   - Stable variant directory path: mount each variant's overlay at
-            //     /tmp/.../<projectName>/ instead of /tmp/.../<projectName>_<idx>/.
-            //     Then the cached path stays valid because content (not path)
-            //     changes per variant.  Needs an unmount-without-killing-mvnd story
-            //     since mvnd holds FDs.
-            //   - Per-variant unique -Dmaven.repo.local that resolves (via symlink)
-            //     to the same shared overlay: forces mvnd to spawn a fresh daemon
-            //     per variant via its match key, keeps the dep cache shared.
-            //     Memory cost grows with variant count (445 variants on hawkbit
-            //     ~ 222 GB of idle daemons); needs combination with idle-timeout
-            //     trimming.
-            //   - Maven plugin / extension that calls
-            //     session.getProjectBuildingResults().clear() (or similar) at
-            //     SessionStarted of each subsequent build on the same daemon.
-            //     Most surgical but depends on Maven internals.
-            //
-            // SIDE EFFECT we already see and need to address: hawkbit cache_sequential
-            // got worse with this band-aid (17/445 → 1/293).  The daemon's cached
-            // metadata for that project (test-jar attached-artifact info on
-            // hawkbit-rest-core) was actually compensating for a separate cache-
-            // extension restoration gap; killing the daemon removes that
-            // compensation and the test-jar ":tests" dependency lookups fail
-            // wholesale.  The right fix has to keep the daemon alive AND clear
-            // only the stale parent-POM mapping.
-            if (config.threadCount == 1) {
-                commandResolver.stopDaemons();
             }
         }
     }
@@ -528,11 +651,41 @@ public class VariantExecutionEngine {
                                      Path overlayBasePath,
                                      int variantIndex) throws IOException {
         if (config.useOverlay) {
-            OverlayMount overlay = builder.buildVariantOverlay(overlayBasePath, variantIndex);
-            return new VariantSlot(overlay.mountPoint(), overlay);
+            // Stable per-thread mount: same path across every variant on this worker, so
+            // the mvnd daemon's cached GAV → source-file-path mapping stays valid for the
+            // whole variant phase. The overlay is owned by the engine (closed in run()'s
+            // finally), NOT by the per-variant slot.
+            OverlayMount overlay = acquireThreadVariantMount(context.getProjectName(), overlayBasePath);
+            if (overlay != null) {
+                if (!config.useCache) {
+                    // No-cache modes wipe target/ between variants on the same thread so we
+                    // do not silently cross-pollinate compiled classes from variant N into
+                    // variant N+1's "no-cache" measurement.
+                    //
+                    // Cache modes deliberately KEEP target/: the build-cache extension and
+                    // maven-compiler-plugin's incremental compile mode both expect a
+                    // self-consistent target/ tree. Wiping just target/<module>/ leaves the
+                    // compiler plugin without target/maven-status/.../createdFiles.lst that
+                    // it tries to read when it sees restored class files, producing
+                    // "Error reading old mojo status: createdFiles.lst (No such file or
+                    // directory)" and a build-blocking failure even on hertzbeat-class
+                    // small projects.
+                    //
+                    // The known cost: projects whose code generation is daemon-mojo-cached
+                    // (e.g. jsqlparser javacc-jjtree) may carry stale generated sources
+                    // from V_n into V_n+1 because the daemon's mojo state thinks the
+                    // generator already ran. That is a real regression vs the old per-
+                    // variant-directory model and is documented for follow-up.
+                    wipeTargetDirsInUpper(overlay);
+                }
+                return new VariantSlot(overlay.mountPoint(), null, true /* engineOwned */);
+            }
+            // Fallback: per-variant mount (legacy path) if per-thread mount creation failed.
+            OverlayMount overlay2 = builder.buildVariantOverlay(overlayBasePath, variantIndex);
+            return new VariantSlot(overlay2.mountPoint(), overlay2, false);
         } else {
             Path path = builder.buildVariantBase(context, variantIndex);
-            return new VariantSlot(path, null);
+            return new VariantSlot(path, null, false);
         }
     }
 
@@ -554,10 +707,20 @@ public class VariantExecutionEngine {
         } catch (Exception ignored) {}
     }
 
-    /** Abstracts over overlay mount vs full-copy variant directories. */
-    private record VariantSlot(Path path, OverlayMount overlay) implements AutoCloseable {
+    /**
+     * Abstracts over overlay mount vs full-copy variant directories.
+     *
+     * <p>{@code engineOwned == true} marks slots whose lifetime is the engine's
+     * (per-thread stable mount): close is a no-op, the engine reclaims the resource
+     * in its own {@code finally}. Without this guard, close would treat the mount
+     * point as a per-variant directory and rm-rf the entire mount on the first
+     * variant teardown, deleting pom.xml from underneath the daemon.
+     */
+    private record VariantSlot(Path path, OverlayMount overlay, boolean engineOwned)
+            implements AutoCloseable {
         @Override
         public void close() throws Exception {
+            if (engineOwned) return;
             if (overlay != null) {
                 overlay.close();
             } else if (path != null && path.toFile().exists()) {
