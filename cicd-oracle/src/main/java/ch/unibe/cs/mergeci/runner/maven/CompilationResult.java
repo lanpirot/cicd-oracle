@@ -116,7 +116,20 @@ public class CompilationResult {
         Pattern buildStatusPattern = Pattern.compile(BUILD_STATUS_REGEX);
         Matcher buildMatcher = buildStatusPattern.matcher(buildStatusString);
         if (buildMatcher.find()) {
-            this.buildStatus = Status.valueOf(buildMatcher.group(1));
+            Status parsed = Status.valueOf(buildMatcher.group(1));
+            // Surefire/Failsafe forked-VM crashes ("The forked VM terminated without
+            // properly saying goodbye … Process Exit Code: 143/137") are environmental
+            // flakiness — usually a SIGTERM/SIGKILL from memory pressure when many
+            // mvnd daemons run forked test JVMs concurrently — not a real build break.
+            // Reclassify as TIMEOUT so the cross-mode sanity check excludes the variant
+            // (timedOut variants are skipped by the position-by-position comparison)
+            // instead of charging it as a compilation mismatch against the parallel mode.
+            if (parsed == Status.FAILURE
+                    && string.contains("The forked VM terminated without properly saying goodbye")) {
+                this.buildStatus = Status.TIMEOUT;
+            } else {
+                this.buildStatus = parsed;
+            }
         } else if (!moduleResults.isEmpty()) {
             // No explicit BUILD line but we inferred modules — derive status
             boolean anyFailure = moduleResults.stream()

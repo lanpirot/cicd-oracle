@@ -99,6 +99,30 @@
             <plugins>
 <!--                <plugin artifactId="maven-surefire-plugin"/>-->
                 <plugin artifactId="maven-failsafe-plugin"/>
+                <!--
+                    JaCoCo's prepare-agent sets the @{argLine} / ${failsafe.jacoco.args}
+                    property that surefire/failsafe expand into the forked JVM command line.
+                    When the cache extension skips prepare-agent (cache hit), the property is
+                    never set, but failsafe/surefire still run (forced or unhit) and the literal
+                    "${failsafe.jacoco.args}" is passed to java, crashing the fork with
+                    "Could not find or load main class ${failsafe.jacoco.args}".
+                    Always run jacoco:prepare-agent so the property is resolved before any
+                    forked test JVM starts.
+                -->
+                <plugin artifactId="jacoco-maven-plugin"/>
+                <!--
+                    Enforcer must run in cache mode just as it runs in non-cache mode.
+                    The cache extension's reactor sometimes constructs a slightly different
+                    transitive dependency tree on cache-miss modules than the same merge's
+                    fresh build does (observed on tika/tika-example: DependencyConvergence
+                    fails only in cache mode). Without runAlways, enforcer was skipped on
+                    cache-hit modules and run only on cache-miss ones — producing a
+                    cache-mode-specific FAILURE the non-cache modes never saw. With
+                    runAlways, enforcer runs identically across modes: a real merge-induced
+                    convergence break fails in both, a cache-construction artifact has
+                    visibility we can act on.
+                -->
+                <plugin artifactId="maven-enforcer-plugin"/>
             </plugins>
             <executions>
                 <execution artifactId="maven-deploy-plugin">

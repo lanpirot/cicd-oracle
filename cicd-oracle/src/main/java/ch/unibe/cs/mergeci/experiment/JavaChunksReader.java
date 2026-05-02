@@ -45,6 +45,8 @@ public class JavaChunksReader {
      */
     public List<DatasetReader.MergeInfo> sample(Path csvPath, int maxRepos, int mergesPerRepo) throws IOException {
         Set<String> foldIds = loadFoldAssignedIds();
+        String debugCommit = System.getProperty("debugMergeCommit", "").trim();
+        String debugProject = System.getProperty("debugProjectName", "").trim();
 
         // project_name → list of MergeRow — preserves first-seen project order
         Map<String, List<MergeRow>> byProject = new LinkedHashMap<>();
@@ -76,6 +78,9 @@ public class JavaChunksReader {
                 String commitId    = fields[idxCommitId].trim();
                 String commitTime  = fields[idxCommitTime].trim();
                 String remoteUrl   = fields[idxRemoteUrl].trim();
+
+                if (!debugCommit.isEmpty() && !commitId.startsWith(debugCommit)) continue;
+                if (!debugProject.isEmpty() && !projectName.equals(debugProject)) continue;
 
                 byProject.computeIfAbsent(projectName, k -> new ArrayList<>())
                         .add(new MergeRow(mergeId, commitTime, remoteUrl, commitId, projectName));

@@ -427,6 +427,59 @@ public class VariantExecutionEngine {
             if (!isDonor && slot != null) {
                 try { slot.close(); } catch (Exception ignored) {}
             }
+            // 10. SEQUENTIAL MODE BAND-AID — KILL THE DAEMON BETWEEN VARIANTS.
+            //
+            // This defeats most of mvnd's value (a daemon that survives one build is
+            // basically not a daemon) and we should replace it.  It is checked in only
+            // because it makes the hertzbeat-class regression go away while we work
+            // out the real fix.
+            //
+            // What goes wrong without it:
+            //   mvnd reuses one DefaultMaven / Aether RepositorySystemSession across
+            //   every build on a daemon; that session caches GAV → MavenProject
+            //   mappings keyed by source file path.  After variant 1 builds and its
+            //   directory is deleted, the daemon's cache still holds
+            //   `monitor:1.0 → /tmp/.../hertzbeat_1/pom.xml` pointing at a vanished
+            //   file.  Variant 2 in /tmp/.../hertzbeat_2 can't reconcile its own
+            //   ../pom.xml against that stale entry → "'parent.relativePath' points
+            //   at wrong local POM" → SCAN_FAILURE for every variant after the first.
+            //   We confirmed this empirically: 10 parallel variants → 10 daemon IDs
+            //   (one per thread, no leak); 16 sequential variants → 1 daemon ID
+            //   (severe leak).  Disk-level scrub of _remote.repositories and
+            //   *.lastUpdated does not help — the blocking state is in the daemon's
+            //   JVM, not on disk.
+            //
+            // What we actually want: keep one mvnd daemon alive for the merge's
+            // entire variant phase (or until budget exhaustion) so we get the
+            // daemon's startup amortisation, but invalidate the GAV→path mapping
+            // before each variant runs.  Avenues to pursue:
+            //   - Stable variant directory path: mount each variant's overlay at
+            //     /tmp/.../<projectName>/ instead of /tmp/.../<projectName>_<idx>/.
+            //     Then the cached path stays valid because content (not path)
+            //     changes per variant.  Needs an unmount-without-killing-mvnd story
+            //     since mvnd holds FDs.
+            //   - Per-variant unique -Dmaven.repo.local that resolves (via symlink)
+            //     to the same shared overlay: forces mvnd to spawn a fresh daemon
+            //     per variant via its match key, keeps the dep cache shared.
+            //     Memory cost grows with variant count (445 variants on hawkbit
+            //     ~ 222 GB of idle daemons); needs combination with idle-timeout
+            //     trimming.
+            //   - Maven plugin / extension that calls
+            //     session.getProjectBuildingResults().clear() (or similar) at
+            //     SessionStarted of each subsequent build on the same daemon.
+            //     Most surgical but depends on Maven internals.
+            //
+            // SIDE EFFECT we already see and need to address: hawkbit cache_sequential
+            // got worse with this band-aid (17/445 → 1/293).  The daemon's cached
+            // metadata for that project (test-jar attached-artifact info on
+            // hawkbit-rest-core) was actually compensating for a separate cache-
+            // extension restoration gap; killing the daemon removes that
+            // compensation and the test-jar ":tests" dependency lookups fail
+            // wholesale.  The right fix has to keep the daemon alive AND clear
+            // only the stale parent-POM mapping.
+            if (config.threadCount == 1) {
+                commandResolver.stopDaemons();
+            }
         }
     }
 
