@@ -399,9 +399,25 @@ private static final boolean FRESH_RUN = false;
             // See comment on PER_THREAD_LONG_RUN_CREEP for rationale.
             long ramPerThread = measuredPeak + PER_THREAD_LONG_RUN_CREEP;
             int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
-            return Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
+            int  computed     = Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
+            // Laptop ('moehre') has 32 cores but suffers severe mvnd cold-start contention
+            // past ~8 concurrent daemons (sweep on real vavr validate: 4-conc 11s/build, 8-conc
+            // 18s/build, 16-conc 39s/build, 30-conc 50s/build). Cap to 8 there; VM (calculon)
+            // runs the unrestricted formula, which we'll re-evaluate once CRIU-clone lands.
+            String host = System.getenv().getOrDefault("HOSTNAME", "");
+            if (host.isEmpty()) host = readHostname();
+            if (host.startsWith("moehre")) return Math.min(computed, 8);
+            return computed;
         } catch (Exception e) {
             return THREAD_FALLBACK;
+        }
+    }
+
+    private static String readHostname() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "";
         }
     }
 
