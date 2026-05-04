@@ -420,10 +420,14 @@ private static final boolean FRESH_RUN = false;
             long memAvailable = readMemAvailable();
             long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM - persistentRamBytes);
             long measuredPeak = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
-            // Add per-thread creep to account for unmeasured RAM that grows over the
-            // variant phase but doesn't show up during the (single, short) baseline.
-            // See comment on PER_THREAD_LONG_RUN_CREEP for rationale.
-            long ramPerThread = measuredPeak + PER_THREAD_LONG_RUN_CREEP;
+            // Floor per-thread cost at the mvnd -Xmx ceiling. Each long-lived mvnd
+            // daemon may commit up to its heap cap as it JITs and runs many compile/
+            // test cycles; the single-build baseline measurement cannot see that.
+            // Without this floor, a 730 MB measured peak + 1 GB creep = 1.73 GB,
+            // and the formula picked 30 threads on a 90 GB VM with -Xmx4g — 30×4=120 GB
+            // > RAM, global OOM-killed the orchestrator on librec, 2026-05-04.
+            long xmxFloor = parseXmxBytes(MAVEN_SUBPROCESS_HEAP);
+            long ramPerThread = Math.max(measuredPeak + PER_THREAD_LONG_RUN_CREEP, xmxFloor);
             int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
             int  computed     = Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
             // Laptop ('moehre') has 32 cores but suffers severe mvnd cold-start contention
@@ -445,6 +449,27 @@ private static final boolean FRESH_RUN = false;
         } catch (Exception e) {
             return "";
         }
+    }
+
+    /**
+     * Parse the {@code -Xmx<n>[kmg]} byte count from a Maven heap flag string.
+     * Returns 0 if the flag is missing or unparseable; callers should treat 0 as
+     * "no Xmx contract, do not floor".
+     */
+    static long parseXmxBytes(String heapFlag) {
+        if (heapFlag == null) return 0;
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("-Xmx(\\d+)([kKmMgG]?)")
+                .matcher(heapFlag);
+        if (!m.find()) return 0;
+        long n = Long.parseLong(m.group(1));
+        String unit = m.group(2).toLowerCase();
+        return switch (unit) {
+            case "g" -> n * 1024L * 1024 * 1024;
+            case "m" -> n * 1024L * 1024;
+            case "k" -> n * 1024L;
+            default  -> n;
+        };
     }
 
     /** Read {@code MemAvailable} from {@code /proc/meminfo} (Linux). */
