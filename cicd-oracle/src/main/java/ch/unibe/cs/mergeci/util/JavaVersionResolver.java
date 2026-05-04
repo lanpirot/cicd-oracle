@@ -3,13 +3,15 @@ package ch.unibe.cs.mergeci.util;
 import ch.unibe.cs.mergeci.config.AppConfig;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * Detects Java version requirements from pom.xml and maps them to installed JDKs.
@@ -86,26 +88,42 @@ public class JavaVersionResolver {
     /**
      * Returns true when the project's Java source files reference APIs introduced in Java 9+.
      * Only scans when pom.xml declared Java 8 or lower; skips {@code target/} and {@code .git/}.
+     *
+     * <p>Uses {@link Files#walkFileTree} with explicit pre-visit pruning and tolerant
+     * {@code visitFileFailed} so the walk survives transient {@code NoSuchFileException}s.
+     * fuse-overlayfs occasionally returns stale dirents in the merged view after the
+     * upper layer is modified directly (see {@code wipeTargetDirsInUpper}); a single
+     * stale entry must not abort the whole scan.
      */
     private static boolean sourceRequiresJava9(Path projectPath) {
-        try (Stream<Path> walk = Files.walk(projectPath)) {
-            return walk
-                    .filter(p -> {
-                        String s = p.toString();
-                        return !s.contains("/target/") && !s.contains("/.git/");
-                    })
-                    .filter(p -> p.toString().endsWith(".java"))
-                    .anyMatch(p -> {
-                        try {
-                            String src = Files.readString(p);
-                            return JAVA9_API_SYMBOLS.stream().anyMatch(src::contains);
-                        } catch (IOException e) {
-                            return false;
+        boolean[] found = {false};
+        try {
+            Files.walkFileTree(projectPath, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                    String name = dir.getFileName() == null ? "" : dir.getFileName().toString();
+                    if ("target".equals(name) || ".git".equals(name)) return FileVisitResult.SKIP_SUBTREE;
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (!file.toString().endsWith(".java")) return FileVisitResult.CONTINUE;
+                    try {
+                        String src = Files.readString(file);
+                        if (JAVA9_API_SYMBOLS.stream().anyMatch(src::contains)) {
+                            found[0] = true;
+                            return FileVisitResult.TERMINATE;
                         }
-                    });
-        } catch (IOException e) {
-            return false;
-        }
+                    } catch (IOException ignored) {}
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException ignored) {}
+        return found[0];
     }
 
     /**
