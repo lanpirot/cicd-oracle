@@ -7,13 +7,15 @@ import org.eclipse.jgit.lib.ObjectStream;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileUtils {
     public static void saveFilesFromObjectId(Path projectRoot, Map<String, ObjectId> files, Git git) throws IOException {
@@ -141,9 +143,20 @@ public class FileUtils {
      * Patching the file directly is the only reliable way to force tests to run.
      */
     public static void enableTestsInAllPoms(Path projectDir) {
-        try (Stream<Path> stream = Files.walk(projectDir)) {
-            stream.filter(p -> p.getFileName().toString().equals("pom.xml"))
-                  .forEach(FileUtils::patchSkipTestsInPom);
+        try {
+            Files.walkFileTree(projectDir, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if ("pom.xml".equals(String.valueOf(file.getFileName()))) {
+                        patchSkipTestsInPom(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         } catch (IOException e) {
             System.err.println("Warning: failed to walk " + projectDir + " for pom.xml patching: " + e.getMessage());
         }
@@ -163,12 +176,29 @@ public class FileUtils {
         }
     }
 
+    /**
+     * List every regular file under {@code dir}, tolerant of per-path I/O failures.
+     *
+     * <p>The variant working tree lives on a fuse-overlayfs mount; when something
+     * (e.g. {@code wipeTargetDirsInUpper}) deletes from the upper layer directly,
+     * the merged view's dirent cache can briefly list a child whose inode is gone.
+     * A naive {@code Files.walk} aborts the whole stream on the resulting
+     * {@code NoSuchFileException}; here we skip that one entry and keep walking.
+     */
     public static List<Path> listFilesUsingFileWalk(Path dir) throws IOException {
-        try (Stream<Path> stream = Files.walk(dir, 100)) {
-            return stream
-                    .filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
-        }
+        List<Path> out = new ArrayList<>();
+        Files.walkFileTree(dir, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                if (attrs.isRegularFile()) out.add(file);
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return out;
     }
 
     private static String getFileName(String path) {
