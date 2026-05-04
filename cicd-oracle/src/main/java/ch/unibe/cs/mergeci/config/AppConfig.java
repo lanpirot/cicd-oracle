@@ -420,13 +420,16 @@ private static final boolean FRESH_RUN = false;
             long memAvailable = readMemAvailable();
             long spareRam     = Math.max(0, memAvailable - RAM_HEADROOM - persistentRamBytes);
             long measuredPeak = (perThreadRamBytes > 0) ? perThreadRamBytes : RAM_PER_THREAD_DEFAULT;
-            // Floor per-thread cost at the mvnd -Xmx ceiling. Each long-lived mvnd
-            // daemon may commit up to its heap cap as it JITs and runs many compile/
-            // test cycles; the single-build baseline measurement cannot see that.
-            // Without this floor, a 730 MB measured peak + 1 GB creep = 1.73 GB,
-            // and the formula picked 30 threads on a 90 GB VM with -Xmx4g — 30×4=120 GB
-            // > RAM, global OOM-killed the orchestrator on librec, 2026-05-04.
-            long xmxFloor = parseXmxBytes(MAVEN_SUBPROCESS_HEAP);
+            // Floor per-thread cost at the mvnd daemon's expected total-process RSS.
+            // The -Xmx flag bounds the Java HEAP, not the OS process: a long-lived
+            // mvnd daemon's actual RSS = Xmx + native (metaspace, code cache, JNI,
+            // thread stacks, off-heap buffers) ≈ Xmx × 1.5 empirically. Floor the
+            // formula at that value so the per-thread accounting matches what the
+            // kernel will actually charge. (First attempt floored at Xmx alone:
+            // librec/cache_parallel was OOM-killed at 15:28 on 2026-05-04 with 19
+            // threads × ~4 GB observed RSS = ~76 GB, blowing past the 80 GB spareRam
+            // budget once the orchestrator added its ~5.7 GB.)
+            long xmxFloor = parseXmxBytes(MAVEN_SUBPROCESS_HEAP) * 3 / 2;
             long ramPerThread = Math.max(measuredPeak + PER_THREAD_LONG_RUN_CREEP, xmxFloor);
             int  coreCap      = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
             int  computed     = Math.max(1, Math.min((int)(spareRam / ramPerThread), coreCap));
