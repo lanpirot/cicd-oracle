@@ -135,6 +135,19 @@ public abstract class RQPipelineRunner {
             String projectName = entry.getKey();
             List<DatasetReader.MergeInfo> merges = entry.getValue();
 
+            // Resume fast-path: when every merge in the project is already accounted for
+            // (all-mode JSONs present, or recorded as a permanent infra-skip in
+            // attempted_merges.csv), there is nothing to do for this project. Skip the
+            // clone / parent-commit RevWalk / per-mode CSV reload churn — at ~hundreds of ms
+            // per project this is the dominant cost on resumed runs across 500 projects.
+            if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess()
+                    && allMergesAlreadyAccountedFor(merges)) {
+                System.out.println();
+                System.out.printf("  Project %d/%d: %s — all %d merge(s) already accounted for, skipping%n",
+                        projectIndex, totalProjects, projectName, merges.size());
+                continue;
+            }
+
             System.out.println();
             System.out.println("════════════════════════════════════════════════════════════");
             System.out.printf("  Project %d/%d: %s  (%d merges)%n", projectIndex, totalProjects, projectName, merges.size());
@@ -298,6 +311,48 @@ public abstract class RQPipelineRunner {
                 baselineFile.delete();
             }
         }
+    }
+
+    /** Lazy cache of merge commits that were permanently skipped at human_baseline (infra failure,
+     *  no tests). Populated once on the first project that needs the resume fast-path. */
+    private java.util.Set<String> hbInfraSkipped;
+
+    private java.util.Set<String> hbInfraSkippedMerges() {
+        if (hbInfraSkipped != null) return hbInfraSkipped;
+        java.util.Set<String> out = new java.util.HashSet<>();
+        Path csv = experimentDir().resolve("attempted_merges.csv");
+        if (csv.toFile().exists()) {
+            try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader(csv.toFile()))) {
+                String line; r.readLine(); // header
+                while ((line = r.readLine()) != null) {
+                    String[] cols = line.split(",", -1);
+                    if (cols.length < 6) continue;
+                    if ("human_baseline".equals(cols[3]) && "SKIPPED".equals(cols[4])
+                            && !cols[5].contains("already processed") && !cols[2].isEmpty()) {
+                        out.add(cols[2]);
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Warning: could not read " + csv + ": " + e.getMessage());
+            }
+        }
+        return hbInfraSkipped = out;
+    }
+
+    /** Returns true iff every merge already has a JSON in every mode, or the merge was
+     *  permanently skipped at human_baseline (infra failure → no variant runs ever happen). */
+    private boolean allMergesAlreadyAccountedFor(List<DatasetReader.MergeInfo> merges) {
+        java.util.Set<String> hbSkipped = hbInfraSkippedMerges();
+        for (DatasetReader.MergeInfo info : merges) {
+            String filename = info.getMergeCommit() + AppConfig.JSON;
+            if (hbSkipped.contains(info.getMergeCommit())) continue;
+            for (Utility.Experiments ex : modesToRun()) {
+                if (!experimentDir().resolve(ex.getName()).resolve(filename).toFile().exists()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /** Count JSON files in the human_baseline directory. */
