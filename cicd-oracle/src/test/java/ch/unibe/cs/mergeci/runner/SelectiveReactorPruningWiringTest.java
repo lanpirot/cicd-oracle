@@ -4,6 +4,7 @@ import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.runner.ConflictModuleAnalyzer.AffectedModules;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -96,5 +97,37 @@ class SelectiveReactorPruningWiringTest extends BaseTest {
     void donorTracker_perModuleEmptyBeforePromotion() {
         DonorTracker tracker = new DonorTracker();
         assertTrue(tracker.getDonorPerModule().isEmpty());
+    }
+
+    @Test
+    void factoryFlag_offByDefault() {
+        // No System.setProperty in this test — verify the unset default.
+        System.clearProperty("selectiveReactorPruning");
+        assertFalse(MavenExecutionFactory.isSelectiveReactorPruningEnabled());
+    }
+
+    @Test
+    void factoryFlag_onWhenPropertyTrue() {
+        System.setProperty("selectiveReactorPruning", "true");
+        try {
+            assertTrue(MavenExecutionFactory.isSelectiveReactorPruningEnabled());
+        } finally {
+            System.clearProperty("selectiveReactorPruning");
+        }
+    }
+
+    @Test
+    void factoryFlag_offWhenPropertyExplicitFalse() {
+        System.setProperty("selectiveReactorPruning", "false");
+        try {
+            assertFalse(MavenExecutionFactory.isSelectiveReactorPruningEnabled());
+        } finally {
+            System.clearProperty("selectiveReactorPruning");
+        }
+    }
+
+    @AfterEach
+    void cleanupProperty() {
+        System.clearProperty("selectiveReactorPruning");
     }
 }

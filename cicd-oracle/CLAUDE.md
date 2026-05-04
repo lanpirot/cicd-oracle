@@ -71,7 +71,9 @@ Central source of truth for all paths, timeouts, Java installations, and feature
 
 Always pass `-DoverlayTmpDir=/dev/shm` (local and on the VM). Both the human-baseline build and the variants write under `OVERLAY_TMP_DIR/projects/`, so when that path is on tmpfs they share the same I/O backing and the per-daemon RAM measurement reflects what the variant phase will actually do.
 
-Overridable at runtime via system properties: `freshRun`, `maxConflictMerges`, `reanalyzeSuccess`, `rq3BestMode`.
+Overridable at runtime via system properties: `freshRun`, `maxConflictMerges`, `reanalyzeSuccess`, `rq3BestMode`, `selectiveReactorPruning`.
+
+**`selectiveReactorPruning=true`** (off by default) enables phase-1 reactor pruning: per merge, `ConflictModuleAnalyzer` walks each conflict file to its enclosing module pom and computes the downstream-closure of those modules. The engine then runs one full-reactor donor variant with `mvn install` (so unaffected modules' jars land in the per-thread `~/.m2/`) and every subsequent variant with `mvn -pl <affected> -Dmaven.build.cache.enabled=false`. Per-module test counts from the donor are merged into pruned variants' `TestTotal` so cross-variant scoring stays comparable. When the analyzer can't safely prune (root-pom conflict, file outside any module, single-module project), it returns the all-affected sentinel and the engine transparently falls back to the legacy full-reactor path. See `docs/selective_reactor_pruning_plan.md`.
 
 ### Maven Execution (`runner/maven`)
 

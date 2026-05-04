@@ -807,6 +807,28 @@ public class MavenExecutionFactoryTest extends BaseTest {
             builder.runTestsJustInTime(context, runner);
             return factory;
         }
+
+        /**
+         * Selective reactor pruning toggle on a single-module project: analyzer must
+         * return the all-affected sentinel (root pom is the only enclosing pom for any
+         * conflict), so the engine transparently falls back to the non-pruned path and
+         * produces the same outcomes as if the flag were off.
+         *
+         * <p>This is the production-wiring smoke test: confirms {@code MavenExecutionFactory}
+         * reads the property, plumbs {@code AffectedModules} into {@code EngineConfig},
+         * and the engine handles the all-affected sentinel without error.
+         */
+        @Test
+        void selectiveReactorPruning_singleModule_fallsBackTransparently() throws Exception {
+            System.setProperty("selectiveReactorPruning", "true");
+            try {
+                MavenExecutionFactory factory = runMode(false, false);
+                assertFalse(factory.getCompilationResults().isEmpty(),
+                        "pruning toggle should not break execution on single-module project");
+            } finally {
+                System.clearProperty("selectiveReactorPruning");
+            }
+        }
     }
 
     // ── Helper methods ──────────────────────────────────────────────────────

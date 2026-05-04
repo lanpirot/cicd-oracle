@@ -64,6 +64,17 @@ public class MavenExecutionFactory {
     /** Whether to use overlayFS isolation for the local Maven repo in parallel builds. */
     private static final boolean m2OverlayEnabled = OverlayMount.isAvailable();
 
+    /**
+     * Selective reactor pruning toggle ({@code -DselectiveReactorPruning=true}).
+     * When on, every variant after the donor builds with {@code mvn -pl <affected>},
+     * skipping modules that the merge's conflicts could not have changed. Off by default;
+     * see {@code docs/selective_reactor_pruning_plan.md}. Read at each createJustInTimeRunner
+     * call (cheap, and lets tests flip the property between scenarios).
+     */
+    static boolean isSelectiveReactorPruningEnabled() {
+        return Boolean.getBoolean("selectiveReactorPruning");
+    }
+
     public MavenExecutionFactory(Path logDir) {
         this.logDir = logDir;
         // ConcurrentSkipListMap preserves the sorted-key semantics of TreeMap while being
@@ -216,13 +227,29 @@ public class MavenExecutionFactory {
                     Path thresholdFile = engineLogDir.resolve("threshold.int");
                     java.nio.file.Files.writeString(thresholdFile, "0");
 
+                    // Selective reactor pruning (opt-in via -DselectiveReactorPruning=true).
+                    // When enabled, the engine runs one full-reactor donor (`mvn install`),
+                    // then builds every subsequent variant with `mvn -pl <affected>`.
+                    // ConflictModuleAnalyzer returns the all-affected sentinel when pruning
+                    // would be unsafe (parent-pom conflict, file outside any module, etc.),
+                    // and the engine then transparently falls back to the legacy full-reactor path.
+                    ConflictModuleAnalyzer.AffectedModules affected = isSelectiveReactorPruningEnabled()
+                            ? ConflictModuleAnalyzer.analyze(
+                                    context.getRepositoryPath(),
+                                    context.getConflictFileMap().keySet())
+                            : null;
+                    if (affected != null) {
+                        System.out.printf("[reactor-pruning] %s%n", affected);
+                    }
+
                     VariantExecutionEngine.EngineConfig engineConfig = new VariantExecutionEngine.EngineConfig(
                             threads, useOverlay, isCache, thresholdFile, stopOnPerfect,
                             AppConfig.TMP_DIR, engineLogDir,
                             resolvedJavaHome,
                             useOverlay ? AppConfig.TMP_DIR : null,
                             m2OverlayEnabled ? M2_OVERLAY_DIR : null,
-                            AppConfig.USE_MAVEN_DAEMON);
+                            AppConfig.USE_MAVEN_DAEMON,
+                            affected);
 
                     PipelineLifecycleListener pipelineListener = new PipelineLifecycleListener(
                             compilationResults, testResults, variantFinishSeconds,
