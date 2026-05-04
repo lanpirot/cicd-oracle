@@ -151,10 +151,19 @@ public class VariantExecutionEngine {
 
     /**
      * Pause the engine indefinitely on the first variant whose build returns
-     * {@link CompilationResult.Status#SCAN_FAILURE} (the parent.relativePath signature).
-     * Set via {@code -DpauseOnFirstScanFailure=true}. Used to inspect the live mvnd
-     * daemon's state after a known-bad outcome instead of re-running the whole
-     * pipeline for each fix attempt.
+     * {@link CompilationResult.Status#SCAN_FAILURE}.
+     *
+     * <p>Empirical root cause (verified on commons-collections + others): compound
+     * patterns (e.g. {@code OURS:THEIRS}) applied to a {@code pom.xml} conflict
+     * concatenate both sides verbatim, producing duplicated XML elements (typically
+     * two adjacent {@code <version>} tags). Maven exits at scan with
+     * {@code Non-parseable POM ...: Duplicated tag: 'version'}; the log has neither a
+     * Reactor Summary nor a {@code BUILD} line, which {@link CompilationResult}
+     * surfaces as SCAN_FAILURE.
+     *
+     * <p>Set via {@code -DpauseOnFirstScanFailure=true} when investigating a new
+     * SCAN_FAILURE shape; lets a human attach via mvnd diagnostics to inspect the
+     * live daemon and the variant's malformed POM without re-running the pipeline.
      */
     private static final boolean PAUSE_ON_FIRST_SCAN_FAILURE =
             Boolean.getBoolean("pauseOnFirstScanFailure");
@@ -678,10 +687,11 @@ public class VariantExecutionEngine {
                         elapsed, logFile, variantPath, isDonor, hadWarmCacheReady);
                 listener.onVariantComplete(outcome);
 
-                // 7b. Debug: pause indefinitely on the first SCAN_FAILURE (the
-                //     parent.relativePath signature) when -DpauseOnFirstScanFailure=true.
-                //     Lets a human attach with jcmd / mvnd --status and inspect the live
-                //     daemon's cached GAV → path map without re-running the pipeline.
+                // 7b. Debug: pause indefinitely on the first SCAN_FAILURE when
+                //     -DpauseOnFirstScanFailure=true. The common shape is a malformed
+                //     pom.xml from compound patterns concatenating duplicate <version>
+                //     tags; lets a human inspect the variant's POM and the live mvnd
+                //     daemon state without re-running the pipeline.
                 if (PAUSE_ON_FIRST_SCAN_FAILURE
                         && cr.getBuildStatus() == CompilationResult.Status.SCAN_FAILURE
                         && pausedOnFailure.compareAndSet(false, true)) {
