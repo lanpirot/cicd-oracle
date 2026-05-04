@@ -370,17 +370,22 @@ public class VariantExecutionEngine {
                 activeFutures.add(holder[0]);
             }
 
-            // Wait for remaining in-flight variants to finish, with a hard cap.
-            // A wedged worker (mvnd registry lock after daemon crash, FUSE-overlayfs
-            // op under load, shared-cache lock orphan) used to freeze this drain
-            // forever. The grace = max(60s, 10% of deadline budget) lets normal
-            // shutdown finish but does not let a hang persist past it; on timeout
-            // we fall through to executor.shutdownNow() below.
-            int graceSecs = Math.max(60, Math.max(0, stopCondition.remainingSeconds()) / 10 + 60);
-            if (!slots.tryAcquire(config.threadCount, graceSecs, TimeUnit.SECONDS)) {
-                LOG.warn("Drain timed out after {}s with {} in-flight variant(s); "
-                        + "forcing shutdown — likely mvnd/FUSE deadlock.",
-                        graceSecs, submitted.size());
+            // Wait for in-flight variants to finish. Two cases:
+            //   1) Deadline already expired (remaining == 0): per-variant timeouts
+            //      have collapsed to 0, so processes should die in seconds. Allow a
+            //      short grace (60s) for cleanup, then fall through to shutdownNow.
+            //   2) Loop ended because the generator was exhausted with budget left:
+            //      each in-flight variant's own per-process timeout is bounded by
+            //      the same deadline, so waiting `remainingSeconds()` here is the
+            //      most we'd ever need before they self-terminate.
+            // Without the bound, a wedged worker (FUSE-overlayfs op stuck, mvnd
+            // registry lock after daemon crash) used to freeze the drain forever.
+            int waitSecs = Math.max(0, stopCondition.remainingSeconds());
+            if (waitSecs == 0) waitSecs = 60;
+            if (!slots.tryAcquire(config.threadCount, waitSecs, TimeUnit.SECONDS)) {
+                LOG.warn("Drain incomplete: {} variant(s) still in-flight after {}s; "
+                        + "forcing shutdown. Their results are dropped from this mode.",
+                        submitted.size(), waitSecs);
             } else {
                 slots.release(config.threadCount);
             }
