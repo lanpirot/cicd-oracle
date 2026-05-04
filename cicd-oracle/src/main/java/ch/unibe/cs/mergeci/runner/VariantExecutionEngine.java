@@ -61,6 +61,13 @@ public class VariantExecutionEngine {
      * @param m2OverlayDir    directory for per-variant ~/.m2/repository overlay isolation; null = disabled
      * @param useMavenDaemon  whether to use mvnd (Maven Daemon) for builds;
      *                        {@code null} = auto-detect (uses mvnd if available on PATH)
+     * @param affectedModules selective-reactor-pruning configuration. {@code null} = pruning OFF
+     *                        (every variant builds the full reactor, current behavior). When non-null
+     *                        and not {@link ConflictModuleAnalyzer.AffectedModules#isAll() all-affected},
+     *                        the engine runs a single donor variant first ({@code mvn install}, full
+     *                        reactor) so unaffected modules' jars land in {@code ~/.m2/}, then every
+     *                        subsequent variant builds with {@code mvn -pl <affected>} and inherits
+     *                        donor's per-module test counts for skipped modules.
      */
     public record EngineConfig(
             int threadCount,
@@ -73,8 +80,22 @@ public class VariantExecutionEngine {
             String javaHome,
             Path stableCwd,
             Path m2OverlayDir,
-            Boolean useMavenDaemon
-    ) {}
+            Boolean useMavenDaemon,
+            ConflictModuleAnalyzer.AffectedModules affectedModules
+    ) {
+        /** Backwards-compatible 11-arg constructor that disables pruning (for existing callers). */
+        public EngineConfig(int threadCount, boolean useOverlay, boolean useCache,
+                            Path thresholdFile, boolean stopOnPerfect, Path tempDir, Path logDir,
+                            String javaHome, Path stableCwd, Path m2OverlayDir, Boolean useMavenDaemon) {
+            this(threadCount, useOverlay, useCache, thresholdFile, stopOnPerfect, tempDir, logDir,
+                    javaHome, stableCwd, m2OverlayDir, useMavenDaemon, null);
+        }
+
+        /** True iff selective reactor pruning is active for this run. */
+        public boolean pruningEnabled() {
+            return affectedModules != null && !affectedModules.isAll();
+        }
+    }
 
     private final EngineConfig config;
     private final VariantStopCondition stopCondition;
@@ -117,6 +138,11 @@ public class VariantExecutionEngine {
      */
     private final ConcurrentHashMap<Long, OverlayMount> threadVariantMounts = new ConcurrentHashMap<>();
     private final AtomicInteger nextVariantSlot = new AtomicInteger(0);
+
+    /** Pruning spec for the currently-executing variant. Set by {@code run()} before the
+     *  donor bootstrap (donor()) and again before the main loop (prune(csv)). Volatile so
+     *  worker threads see the post-bootstrap update without needing a lock. */
+    private volatile TwoPhaseRunner.PruningSpec currentPruningSpec;
 
     /**
      * Pause the engine indefinitely on the first variant whose build returns
@@ -180,8 +206,53 @@ public class VariantExecutionEngine {
 
         boolean justResumed = false;
         boolean perfectFound = false;
+        boolean pruningActive = config.pruningEnabled();
+        AtomicInteger variantStartIndex = new AtomicInteger(1);
 
         try {
+            // ── Phase 0: donor bootstrap (only when selective reactor pruning is enabled) ──
+            // Build a single full-reactor variant with `mvn install` so unaffected modules'
+            // jars are installed into the per-thread ~/.m2/. Subsequent variants can then
+            // use `mvn -pl <affected>` and resolve unaffected modules from there.
+            //
+            // Synchronous on the calling thread: parallelism stays cold for ~10–60s, accepted
+            // as bootstrap cost. If the donor build fails to produce a usable donor (the
+            // variant didn't compile, or promotion didn't take), we silently fall back to the
+            // legacy non-pruned path so the run still produces results.
+            if (pruningActive) {
+                List<VariantProject> bootstrapBatch = context.collectAllVariants(1);
+                if (!bootstrapBatch.isEmpty()) {
+                    VariantProject donorVariant = listener.transformVariant(bootstrapBatch.get(0));
+                    int donorIdx = variantStartIndex.getAndIncrement();
+                    currentPruningSpec = TwoPhaseRunner.PruningSpec.donor();
+                    if (listener.beforeSubmit(donorVariant, donorIdx)) {
+                        try {
+                            buildAndTest(context, builder, donorTracker, cacheManager,
+                                    commandResolver, overlayBasePath, donorVariant,
+                                    donorIdx, javaHomeHolder);
+                        } catch (Exception e) {
+                            LOG.warn("Pruning bootstrap donor build failed", e);
+                        }
+                    }
+                    if (donorTracker.getDonorPath() == null
+                            || donorTracker.getDonorPerModule().isEmpty()) {
+                        LOG.warn("Pruning bootstrap did not yield a usable donor "
+                                + "(donorPath={}, perModuleSize={}); falling back to non-pruned "
+                                + "execution for this run.",
+                                donorTracker.getDonorPath(),
+                                donorTracker.getDonorPerModule().size());
+                        pruningActive = false;
+                        currentPruningSpec = null;
+                    }
+                }
+            }
+            if (pruningActive) {
+                String csv = String.join(",", config.affectedModules.modules());
+                currentPruningSpec = TwoPhaseRunner.PruningSpec.prune(csv);
+                LOG.info("[reactor-pruning] active: subsequent variants build with -pl {}", csv);
+            }
+            variantCounter.set(variantStartIndex.get());
+
             while (!stopCondition.isCancelled()) {
                 stopCondition.waitIfPaused();
                 if (stopCondition.isCancelled()) break;
@@ -472,8 +543,9 @@ public class VariantExecutionEngine {
                         config.logDir,
                         javaHomeHolder[0],
                         config.stableCwd);
+                TwoPhaseRunner.PruningSpec spec = currentPruningSpec;
                 TwoPhaseRunner.TwoPhaseResult tpResult = runner.run(
-                        variantPath, variantKey, config.thresholdFile, repoLocal);
+                        variantPath, variantKey, config.thresholdFile, repoLocal, spec);
 
                 if (stopCondition.isStopped()) return;
 
@@ -482,6 +554,23 @@ public class VariantExecutionEngine {
                 CompilationResult cr = tpResult.compilationResult();
                 if (cr == null) cr = new CompilationResult(logFile);
                 TestTotal tt = tpResult.testsRan() ? new TestTotal(variantPath.toFile()) : new TestTotal();
+
+                // 5b. Pruned-variant test inheritance: only `affectedModules` were rebuilt,
+                //     so `tt` only has counts for those. Merge donor's per-module counts for
+                //     the modules we skipped so this variant's reported total reflects what
+                //     a full-reactor build would have measured. Donor-bootstrap variant
+                //     itself is not pruned (spec.affectedModulesCsv == null) — skip there.
+                if (spec != null && spec.affectedModulesCsv() != null) {
+                    Map<String, TestTotal.ModuleTotal> donorPerModule = donorTracker.getDonorPerModule();
+                    if (!donorPerModule.isEmpty()) {
+                        java.util.Set<String> built = new java.util.HashSet<>(
+                                java.util.Arrays.asList(spec.affectedModulesCsv().split(",")));
+                        java.util.List<String> skipped = donorPerModule.keySet().stream()
+                                .filter(m -> !built.contains(m))
+                                .toList();
+                        tt = TestTotal.mergeWithDonor(tt, donorPerModule, skipped);
+                    }
+                }
 
                 // hadWarmCacheReady reflects whether donor target/ trees were copied into
                 // this variant before its build started — i.e. whether any donor parts were

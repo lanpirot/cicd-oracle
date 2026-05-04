@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +30,9 @@ public class DonorTracker {
     private final AtomicReference<String> donorKey = new AtomicReference<>();
     private final AtomicReference<Map<String, List<String>>> donorPatterns = new AtomicReference<>();
     private final AtomicReference<TestTotal> donorTestTotal = new AtomicReference<>();
+    /** Snapshot of the donor's per-module test breakdown, used by pruned variants to
+     *  inherit counts for skipped modules. Set when the donor is promoted; null until then. */
+    private final AtomicReference<Map<String, TestTotal.ModuleTotal>> donorPerModule = new AtomicReference<>();
 
     /**
      * Atomic snapshot of donor identity + TestTotal at a single instant. Use this — rather
@@ -57,6 +61,16 @@ public class DonorTracker {
      *  rotation under contention — prefer {@link #getDonorSnapshot()} when consistency matters. */
     public TestTotal getDonorTestTotal() {
         return donorTestTotal.get();
+    }
+
+    /**
+     * Per-module test counts captured from the donor's full-reactor build. Used by pruned
+     * variants ({@code mvn -pl <affected>}) to merge donor's counts for skipped modules
+     * into their own (built-only) totals. Returns an empty map when no donor is set.
+     */
+    public Map<String, TestTotal.ModuleTotal> getDonorPerModule() {
+        Map<String, TestTotal.ModuleTotal> m = donorPerModule.get();
+        return m == null ? Collections.emptyMap() : m;
     }
 
     /** Consistent snapshot of donor identity + TestTotal taken under the promotion lock. */
@@ -135,6 +149,8 @@ public class DonorTracker {
             donorScore.set(candidateScore);
             donorKey.set(candidateKey);
             donorTestTotal.set(candidateTt);
+            donorPerModule.set(candidateTt == null ? null
+                    : Map.copyOf(candidateTt.getPerModule()));
             LOG.info("[cache-donor] PROMOTED variant {} as new donor ({} → {}, prev donor: {})",
                     candidateKey, fmt(currentScore), fmt(candidateScore), oldKey);
             return oldDonor;

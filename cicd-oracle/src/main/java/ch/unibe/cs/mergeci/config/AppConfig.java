@@ -97,6 +97,32 @@ private static final boolean FRESH_RUN = false;
     }
 
     /**
+     * Selective-reactor-pruning command: limits the reactor to {@code affectedModulesCsv}
+     * (a comma-separated module path list passed to {@code -pl}) and disables the
+     * maven-build-cache extension via {@code -Dmaven.build.cache.enabled=false}. The donor
+     * variant must have run {@code mvn install} first so unaffected modules are resolvable
+     * from the per-thread {@code ~/.m2/}.
+     *
+     * <p>No {@code -am} — empirically confirmed to re-execute the full lifecycle on upstream
+     * modules. Affected set must be the downstream-closure of the conflict modules, computed
+     * by {@link ch.unibe.cs.mergeci.runner.ConflictModuleAnalyzer}.
+     */
+    public static String[] buildPrunedCommand(String[] executableArgs, String mavenGoal,
+                                                String affectedModulesCsv) {
+        return concat(
+                executableArgs,
+                reactorFlagOrEmpty(),
+                new String[]{MAVEN_BATCH_MODE, MAVEN_FORCE_UPDATE, MAVEN_FAIL_MODE,
+                        MAVEN_TEST_FAILURE_IGNORE,
+                        SKIP_TESTS_OVERRIDE, MAVEN_TEST_SKIP_OVERRIDE,
+                        "-Dmaven.build.cache.enabled=false",
+                        "-pl", affectedModulesCsv},
+                SKIP_STATIC_ANALYSIS,
+                BOUND_PARALLELISM,
+                new String[]{mavenGoal});
+    }
+
+    /**
      * Full build+test command with the early-abort gate. The maven-hook reads
      * {@code -Dcicd.threshold-file=<path>} (a shared cross-JVM file containing the
      * current high-water successful-module count). After every module the hook posts

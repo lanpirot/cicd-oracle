@@ -80,5 +80,3 @@
 [INFO] Finished at: 2025-12-08T18:22:50+01:00
 [INFO] Final Memory: 34M/148M
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.19.1:test (default-test) on project dubbo-common: Execution default-test of goal org.apache.maven.plugins:maven-surefire-plugin:2.19.1:test failed: The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
-[ERROR] Command was cmd.exe /X /C ""C:\Program Files\Java\jdk-23\bin\java" -server -Xms256m -Xmx512m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -javaagent:C:\\Users\\vova\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.1\\org.jacoco.agent-0.8.1-runtime.jar=destfile=C:\\Users\\vova\\Documents\\BernUni\\S

@@ -14,7 +14,11 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,6 +33,12 @@ public class TestTotal {
     /** True only when at least one surefire/failsafe report was successfully parsed.
      *  False means no test reports were found — distinguishable from "ran 0 tests". */
     private boolean hasData;
+
+    /** Per-module breakdown keyed by module directory relative to {@code projectDir}
+     *  (POSIX-style, e.g. {@code "para-server"}). Empty for the JSON-deserialized form;
+     *  populated only when constructed from a fresh build's project tree. */
+    @JsonIgnore
+    private Map<String, ModuleTotal> perModule = new LinkedHashMap<>();
 
     @JsonIgnore
     private File projectDir;
@@ -50,7 +60,66 @@ public class TestTotal {
         copy.skippedNum  = other.skippedNum;
         copy.elapsedTime = other.elapsedTime;
         copy.hasData     = other.hasData;
+        copy.perModule   = new LinkedHashMap<>(other.perModule);
         return copy;
+    }
+
+    /** Per-module aggregated counters. Mirrors the project-wide fields. */
+    @Getter
+    @Setter
+    public static final class ModuleTotal {
+        private int runNum;
+        private int failuresNum;
+        private int errorsNum;
+        private int skippedNum;
+        private float elapsedTime;
+        public ModuleTotal() {}
+        public ModuleTotal(int run, int failures, int errors, int skipped, float elapsed) {
+            this.runNum = run; this.failuresNum = failures; this.errorsNum = errors;
+            this.skippedNum = skipped; this.elapsedTime = elapsed;
+        }
+        void add(TestResult r) {
+            runNum      += r.getRunNum();
+            failuresNum += r.getFailuresNum();
+            errorsNum   += r.getErrorsNum();
+            skippedNum  += r.getSkippedNum();
+            elapsedTime += r.getElapsedTime();
+        }
+    }
+
+    /**
+     * Combine a pruned-variant TestTotal with the donor's per-module breakdown:
+     * built modules use the variant's counts, skipped modules inherit the donor's.
+     *
+     * @param variant       the just-built variant's TestTotal (only contains built modules)
+     * @param donorPerModule donor's per-module breakdown — must cover every module the donor saw
+     * @param skippedModules modules the variant did NOT build (inherited from donor)
+     * @return a new TestTotal whose project-wide fields = variant's fields + donor's fields for {@code skippedModules}
+     */
+    public static TestTotal mergeWithDonor(TestTotal variant,
+                                            Map<String, ModuleTotal> donorPerModule,
+                                            Collection<String> skippedModules) {
+        TestTotal merged = copyOf(variant);
+        if (donorPerModule == null) return merged;
+        Set<String> skipped = Set.copyOf(skippedModules);
+        for (String m : skipped) {
+            ModuleTotal d = donorPerModule.get(m);
+            if (d == null) continue;
+            merged.runNum      += d.runNum;
+            merged.failuresNum += d.failuresNum;
+            merged.errorsNum   += d.errorsNum;
+            merged.skippedNum  += d.skippedNum;
+            merged.elapsedTime += d.elapsedTime;
+            if (d.runNum > 0 || d.failuresNum > 0 || d.errorsNum > 0 || d.skippedNum > 0) {
+                merged.hasData = true;
+            }
+            merged.perModule.put(m, copyModule(d));
+        }
+        return merged;
+    }
+
+    private static ModuleTotal copyModule(ModuleTotal m) {
+        return new ModuleTotal(m.runNum, m.failuresNum, m.errorsNum, m.skippedNum, m.elapsedTime);
     }
 
     public TestTotal(File projectDir) {
@@ -67,6 +136,7 @@ public class TestTotal {
             paths = FileUtils.listFilesUsingFileWalk(projectDir.toPath());
 
 
+        Path projectRoot = projectDir.toPath().toAbsolutePath().normalize();
         for (Path file : paths) {
             if (pathMatcher.matches(file) || failsafeMatcher.matches(file)) {
                 TestResult testResult = TestResult.createTestResultFromFile(file.toFile());
@@ -77,6 +147,8 @@ public class TestTotal {
                 skippedNum += testResult.getSkippedNum();
                 elapsedTime += testResult.getElapsedTime();
                 hasData = true;
+                String module = enclosingModule(projectRoot, file);
+                perModule.computeIfAbsent(module, k -> new ModuleTotal()).add(testResult);
             }
         }
         } catch (IOException e) {
@@ -99,6 +171,25 @@ public class TestTotal {
                 // XML fallback is best-effort; keep the txt-based (zero) result on failure
             }
         }
+    }
+
+    /**
+     * Walk up from a surefire/failsafe report toward {@code projectRoot}, returning the
+     * relative directory of the nearest enclosing {@code pom.xml} (POSIX-style separators).
+     * Empty string means "the root pom is the only enclosing pom" (single-module project, or
+     * an aggregator-attached report). Used to bucket per-module test counts.
+     */
+    static String enclosingModule(Path projectRoot, Path reportFile) {
+        Path p = reportFile.toAbsolutePath().normalize().getParent();
+        while (p != null && p.startsWith(projectRoot)) {
+            if (Files.isRegularFile(p.resolve("pom.xml"))) {
+                String rel = projectRoot.relativize(p).toString().replace('\\', '/');
+                return rel;
+            }
+            if (p.equals(projectRoot)) break;
+            p = p.getParent();
+        }
+        return "";
     }
 
     @Override

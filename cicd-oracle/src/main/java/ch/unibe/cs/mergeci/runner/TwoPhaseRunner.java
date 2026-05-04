@@ -66,17 +66,43 @@ public class TwoPhaseRunner {
      */
     public TwoPhaseResult run(Path variantPath, String key, Path thresholdFile,
                                Path mavenRepoLocal) throws IOException {
+        return run(variantPath, key, thresholdFile, mavenRepoLocal, null);
+    }
+
+    /**
+     * Run the build with the early-abort gate, optionally restricted to a pruned reactor.
+     *
+     * @param pruning when non-null, the reactor is limited to {@link PruningSpec#affectedModulesCsv()}
+     *                via {@code -pl}, the build-cache extension is disabled, and (if
+     *                {@link PruningSpec#goalOverride()} is non-null) the resolved goal is replaced.
+     *                Donor builds typically pass {@code goalOverride="install"} with no
+     *                {@code affectedModulesCsv} (full reactor); pruned variants pass an
+     *                affected list with no goal override.
+     */
+    public TwoPhaseResult run(Path variantPath, String key, Path thresholdFile,
+                               Path mavenRepoLocal, PruningSpec pruning) throws IOException {
         String[] execArgs = commandResolver.resolveExecutableArgs(variantPath);
         String mavenGoal = commandResolver.resolveMavenGoal(variantPath);
+        if (pruning != null && pruning.goalOverride() != null) {
+            mavenGoal = pruning.goalOverride();
+        }
         Path fullLog = logDir.resolve(key + "_compilation");
         Path sidecar = variantPath.resolve(".cicd-hook-result.json");
 
         int timeout = timeoutSupplier.getAsInt();
         if (timeout <= 0) return new TwoPhaseResult(null, false);
 
-        String[] cmd = (thresholdFile != null)
-                ? AppConfig.buildCommandWithGate(execArgs, mavenGoal, thresholdFile)
-                : AppConfig.buildCommand(execArgs, mavenGoal);
+        String[] cmd;
+        if (pruning != null && pruning.affectedModulesCsv() != null) {
+            // Pruned variants don't get the early-abort gate: the gate's threshold is
+            // module-count, but a pruned variant builds only a subset of modules so its
+            // count is structurally lower than the donor's — the gate would always fire.
+            cmd = AppConfig.buildPrunedCommand(execArgs, mavenGoal, pruning.affectedModulesCsv());
+        } else if (thresholdFile != null) {
+            cmd = AppConfig.buildCommandWithGate(execArgs, mavenGoal, thresholdFile);
+        } else {
+            cmd = AppConfig.buildCommand(execArgs, mavenGoal);
+        }
 
         executeMaven(variantPath, fullLog, timeout, withRepoLocal(cmd, mavenRepoLocal));
 
@@ -114,4 +140,19 @@ public class TwoPhaseRunner {
 
     /** Result of a build with optional early-abort gate. */
     public record TwoPhaseResult(CompilationResult compilationResult, boolean testsRan) {}
+
+    /**
+     * Selective-reactor-pruning instructions for a single Maven invocation.
+     *
+     * @param affectedModulesCsv comma-separated relative module paths for {@code -pl},
+     *                            or {@code null} to keep the full reactor
+     * @param goalOverride       Maven goal to use instead of the resolver's default,
+     *                            or {@code null} to keep the resolved goal. Use {@code "install"}
+     *                            for the donor variant so unaffected modules' jars land in
+     *                            the per-thread {@code ~/.m2/}.
+     */
+    public record PruningSpec(String affectedModulesCsv, String goalOverride) {
+        public static PruningSpec donor()                       { return new PruningSpec(null, "install"); }
+        public static PruningSpec prune(String csv)             { return new PruningSpec(csv, null); }
+    }
 }
