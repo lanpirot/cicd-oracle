@@ -247,7 +247,14 @@ public class VariantResultCollector {
         for (String key : compilationResults.keySet()) {
             if (key.equals(projectName)) continue;
             CompilationResult cr = compilationResults.get(key);
-            if (cr != null && cr.getBuildStatus() == CompilationResult.Status.TIMEOUT) continue;
+            // Note: TIMEOUT-status variants used to be skipped here, which produced
+            // "no result" for slow-test projects where every variant was killed
+            // mid-test (e.g. librec: 5s compile but tests run real ML training for
+            // tens of minutes). The maven-hook records per-module success on the
+            // way to the kill, so a TIMEOUT variant routinely carries partial
+            // CompilationResult.moduleResults (1/2 modules) and partial TestTotal
+            // (tests from surefire-reports already flushed). plot_results 01-03
+            // already treat these as valid highscores; ranking now matches.
             TestTotal tt = testResults.get(key);
             int modules = effectiveSuccessfulModules(cr);
             int tests = tt != null ? tt.getPassedTests() : 0;
