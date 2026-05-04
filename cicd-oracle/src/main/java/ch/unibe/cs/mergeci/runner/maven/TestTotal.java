@@ -133,7 +133,19 @@ public class TestTotal {
 
         List<Path> paths = null;
         try {
-            paths = FileUtils.listFilesUsingFileWalk(projectDir.toPath());
+            try {
+                paths = FileUtils.listFilesUsingFileWalk(projectDir.toPath());
+            } catch (java.nio.file.NoSuchFileException missing) {
+                // The variant's working tree (usually a fuse-overlayfs mount) is gone
+                // before we got to read surefire reports — most often a fuse-overlayfs
+                // daemon exit under tmpfs/RAM pressure on highly parallel runs. The
+                // CompilationResult was already parsed from the engineLogDir log file
+                // (which lives outside the mount), so we can still rank this variant by
+                // its module count; treat tests as "no data" rather than failing the
+                // whole worker and losing the compilation outcome too.
+                hasData = false;
+                paths = java.util.Collections.emptyList();
+            }
 
 
         Path projectRoot = projectDir.toPath().toAbsolutePath().normalize();
