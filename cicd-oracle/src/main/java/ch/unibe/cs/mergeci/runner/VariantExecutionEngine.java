@@ -447,19 +447,25 @@ public class VariantExecutionEngine {
      * variant's compiled classes (which would be cross-variant incremental
      * compilation — a real speedup, but not what no-cache claims to measure).
      *
-     * <p>Walks the OverlayFS upper layer directly (a normal directory on the host
-     * filesystem) rather than the mountpoint, so we skip the per-readdir FUSE round
-     * trip that walking through the mount would cost. Maven's {@code target/} output
-     * always lands in upper because it's all newly-created files; lower never holds
-     * a {@code target/} (the base extraction is just sources).
+     * <p>Walks <b>via the mountpoint</b>, not the upper layer. Earlier versions deleted
+     * directly in the upper layer "to skip a per-readdir FUSE round trip," but that left
+     * fuse-overlayfs's merged-view dcache stale: the next walker (Maven's
+     * {@code maven-resources-plugin} incremental check, our own {@link FileUtils}
+     * walks, etc.) saw a {@code target/} dirent whose inode was gone and threw
+     * {@code NoSuchFileException}. The visible damage was huge — e.g. on
+     * gentics/mesh's no_optimization mode every variant past v1 aborted at module 2
+     * with "{@code mesh.build.properties (No such file or directory)}", killing the
+     * whole 60-module reactor. Going through the mountpoint costs a few extra
+     * FUSE round-trips per variant boundary, but it is paid <i>between</i> variants
+     * (not in the build hot loop) and keeps the merged view coherent.
      *
      * <p>Cache modes deliberately keep {@code target/}: the build-cache extension
      * hashes per-module and rebuilds whatever changed; donor warming overlays its
      * own {@code target/} on top.
      */
     private static void wipeTargetDirsInUpper(OverlayMount mount) {
-        Path upper = mount.upperDir();
-        try (java.util.stream.Stream<Path> walk = Files.walk(upper)) {
+        Path mountPoint = mount.mountPoint();
+        try (java.util.stream.Stream<Path> walk = Files.walk(mountPoint)) {
             walk.filter(p -> Files.isDirectory(p) && p.getFileName() != null
                             && "target".equals(p.getFileName().toString()))
                     .sorted(java.util.Comparator.reverseOrder()) // deepest first
