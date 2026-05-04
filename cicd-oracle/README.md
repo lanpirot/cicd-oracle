@@ -98,6 +98,7 @@ Properties are passed as `-D` flags to `java` (not to Maven):
 | `maxThreads` | auto | Hard cap on parallel build threads (auto = `max(1, min((MemAvail−10GB)/peak, cores−2))`) |
 | `overlayTmpDir` | `~/tmp/bruteforce_tmp` | Overlay/variant build dir — **always set to `/dev/shm`** for both local and VM runs (see below) |
 | `projectDir` | `~/projects/merge++/cicd-oracle` | Repo root used to locate the Python plot script |
+| `selectiveReactorPruning` | `false` | Phase-1 selective reactor pruning. Per merge, walks each conflict file to its enclosing module pom and computes the downstream-closure of those modules. Engine then runs one full-reactor donor variant with `mvn install` (so unaffected modules' jars land in the per-thread `~/.m2/`) and every subsequent variant with `mvn -pl <affected> -Dmaven.build.cache.enabled=false`. Per-module test counts and per-module compilation results from the donor are merged into pruned variants so cross-variant scoring stays comparable. Transparently falls back to full-reactor when pruning is unsafe (root-pom conflict, file outside any module, single-module project, donor failed to install any module). See [`../docs/selective_reactor_pruning_plan.md`](../docs/selective_reactor_pruning_plan.md). |
 
 ### Required: `-DoverlayTmpDir=/dev/shm`
 

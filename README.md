@@ -51,3 +51,4 @@ All paths, timeouts, and feature flags are in `cicd-oracle/src/main/java/ch/unib
 | `maxConflictMerges` | `5` | Max qualifying merges per project |
 | `reanalyzeSuccess` | `false` | Re-run analysis on previously successful repos |
 | `rq3BestMode` | `cache_parallel` | Best mode from RQ2 to use in RQ3 |
+| `selectiveReactorPruning` | `false` | Enable selective reactor pruning: each variant phase runs one full-reactor donor (`mvn install`) then builds subsequent variants with `mvn -pl <affected modules>`, skipping modules unaffected by the merge's conflicts. Falls back to full reactor when pruning is unsafe (parent-pom conflict, single-module project, donor failed to install any module). See [`docs/selective_reactor_pruning_plan.md`](docs/selective_reactor_pruning_plan.md). |
