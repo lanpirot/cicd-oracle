@@ -186,6 +186,7 @@ public class FileUtils {
      * {@code NoSuchFileException}; here we skip that one entry and keep walking.
      */
     public static List<Path> listFilesUsingFileWalk(Path dir) throws IOException {
+        if (!Files.exists(dir)) throw new java.nio.file.NoSuchFileException(dir.toString());
         List<Path> out = new ArrayList<>();
         Files.walkFileTree(dir, new SimpleFileVisitor<>() {
             @Override

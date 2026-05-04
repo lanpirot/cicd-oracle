@@ -66,7 +66,7 @@ public class TwoPhaseRunner {
      */
     public TwoPhaseResult run(Path variantPath, String key, Path thresholdFile,
                                Path mavenRepoLocal) throws IOException {
-        return run(variantPath, key, thresholdFile, mavenRepoLocal, null);
+        return run(variantPath, key, thresholdFile, mavenRepoLocal, null, false);
     }
 
     /**
@@ -78,9 +78,15 @@ public class TwoPhaseRunner {
      *                Donor builds typically pass {@code goalOverride="install"} with no
      *                {@code affectedModulesCsv} (full reactor); pruned variants pass an
      *                affected list with no goal override.
+     * @param disableBuildCache when true, append {@code -Dmaven.build.cache.enabled=false}
+     *                so the (still-loaded) maven-build-cache extension short-circuits
+     *                without hashing inputs. Caller should set this in cache modes when
+     *                no donor has been warmed yet — paying the hash tax is pure waste
+     *                until something can actually be cache-hit.
      */
     public TwoPhaseResult run(Path variantPath, String key, Path thresholdFile,
-                               Path mavenRepoLocal, PruningSpec pruning) throws IOException {
+                               Path mavenRepoLocal, PruningSpec pruning,
+                               boolean disableBuildCache) throws IOException {
         String[] execArgs = commandResolver.resolveExecutableArgs(variantPath);
         String mavenGoal = commandResolver.resolveMavenGoal(variantPath);
         if (pruning != null && pruning.goalOverride() != null) {
@@ -103,6 +109,7 @@ public class TwoPhaseRunner {
         } else {
             cmd = AppConfig.buildCommand(execArgs, mavenGoal);
         }
+        if (disableBuildCache) cmd = appendArg(cmd, "-Dmaven.build.cache.enabled=false");
 
         executeMaven(variantPath, fullLog, timeout, withRepoLocal(cmd, mavenRepoLocal));
 
@@ -133,8 +140,12 @@ public class TwoPhaseRunner {
     /** Append {@code -Dmaven.repo.local=<path>} to a Maven command array. */
     public static String[] withRepoLocal(String[] cmd, Path repoLocal) {
         if (repoLocal == null) return cmd;
+        return appendArg(cmd, "-Dmaven.repo.local=" + repoLocal);
+    }
+
+    private static String[] appendArg(String[] cmd, String arg) {
         String[] result = java.util.Arrays.copyOf(cmd, cmd.length + 1);
-        result[cmd.length] = "-Dmaven.repo.local=" + repoLocal;
+        result[cmd.length] = arg;
         return result;
     }
 

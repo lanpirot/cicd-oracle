@@ -561,8 +561,14 @@ public class VariantExecutionEngine {
                         javaHomeHolder[0],
                         config.stableCwd);
                 TwoPhaseRunner.PruningSpec spec = currentPruningSpec;
+                // No donor warmed → the build-cache extension would only pay the input-hash
+                // tax on every module and miss every lookup. Disable it for this variant; the
+                // extension stays loaded but short-circuits. Once any thread promotes a donor,
+                // subsequent variants will warm and re-enable the cache normally.
+                boolean disableBuildCache = config.useCache && donorTtAtWarm == null;
                 TwoPhaseRunner.TwoPhaseResult tpResult = runner.run(
-                        variantPath, variantKey, config.thresholdFile, repoLocal, spec);
+                        variantPath, variantKey, config.thresholdFile, repoLocal, spec,
+                        disableBuildCache);
                 if (spec != null && "install".equals(spec.goalOverride())) {
                     // Bootstrap variant — record its CompilationResult so run() can decide
                     // whether pruning can proceed for the rest of the run.
