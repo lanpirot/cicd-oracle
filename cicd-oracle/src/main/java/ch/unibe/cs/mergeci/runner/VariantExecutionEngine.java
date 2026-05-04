@@ -144,6 +144,11 @@ public class VariantExecutionEngine {
      *  worker threads see the post-bootstrap update without needing a lock. */
     private volatile TwoPhaseRunner.PruningSpec currentPruningSpec;
 
+    /** Bootstrap variant's CompilationResult, captured by {@code buildAndTest} when
+     *  {@code currentPruningSpec.goalOverride() == "install"}. {@code run()} reads this
+     *  after the synchronous bootstrap call to decide whether pruning can safely proceed. */
+    private volatile CompilationResult bootstrapCompilation;
+
     /**
      * Pause the engine indefinitely on the first variant whose build returns
      * {@link CompilationResult.Status#SCAN_FAILURE} (the parent.relativePath signature).
@@ -234,13 +239,25 @@ public class VariantExecutionEngine {
                             LOG.warn("Pruning bootstrap donor build failed", e);
                         }
                     }
-                    if (donorTracker.getDonorPath() == null
-                            || donorTracker.getDonorPerModule().isEmpty()) {
-                        LOG.warn("Pruning bootstrap did not yield a usable donor "
-                                + "(donorPath={}, perModuleSize={}); falling back to non-pruned "
+                    // Bootstrap success ≠ donor promotion. Donor promotion (target/ snapshot
+                    // into a separate dir) happens only in cache modes; pruning's actual
+                    // requirement is that bootstrap's `mvn install` populated the per-thread
+                    // ~/.m2/ with at least one module's jar. Use the bootstrap variant's
+                    // CompilationResult directly: if any module installed successfully, the
+                    // unaffected upstream jars are resolvable from ~/.m2/ and pruned variants
+                    // can use `mvn -pl <affected>` safely. The bootstrap variant itself may
+                    // have FAILED on the affected (conflict-bearing) module — that's fine,
+                    // pruned variants will fail on the same module too, which is exactly the
+                    // signal we want.
+                    if (bootstrapCompilation == null
+                            || !DonorTracker.isDonorUsable(bootstrapCompilation)) {
+                        LOG.warn("Pruning bootstrap did not install any module "
+                                + "(bootstrapCompilation={}); falling back to non-pruned "
                                 + "execution for this run.",
-                                donorTracker.getDonorPath(),
-                                donorTracker.getDonorPerModule().size());
+                                bootstrapCompilation == null ? "null"
+                                    : (bootstrapCompilation.getBuildStatus()
+                                       + ", " + bootstrapCompilation.getSuccessfulModules()
+                                       + "/" + bootstrapCompilation.getTotalModules()));
                         pruningActive = false;
                         currentPruningSpec = null;
                     }
@@ -546,6 +563,11 @@ public class VariantExecutionEngine {
                 TwoPhaseRunner.PruningSpec spec = currentPruningSpec;
                 TwoPhaseRunner.TwoPhaseResult tpResult = runner.run(
                         variantPath, variantKey, config.thresholdFile, repoLocal, spec);
+                if (spec != null && "install".equals(spec.goalOverride())) {
+                    // Bootstrap variant — record its CompilationResult so run() can decide
+                    // whether pruning can proceed for the rest of the run.
+                    bootstrapCompilation = tpResult.compilationResult();
+                }
 
                 if (stopCondition.isStopped()) return;
 
@@ -555,12 +577,15 @@ public class VariantExecutionEngine {
                 if (cr == null) cr = new CompilationResult(logFile);
                 TestTotal tt = tpResult.testsRan() ? new TestTotal(variantPath.toFile()) : new TestTotal();
 
-                // 5b. Pruned-variant test inheritance: only `affectedModules` were rebuilt,
-                //     so `tt` only has counts for those. Merge donor's per-module counts for
-                //     the modules we skipped so this variant's reported total reflects what
-                //     a full-reactor build would have measured. Donor-bootstrap variant
-                //     itself is not pruned (spec.affectedModulesCsv == null) — skip there.
+                // 5b. Pruned-variant inheritance: only `affectedModules` were rebuilt, so the
+                //     variant's CompilationResult and TestTotal only cover those. Merge in the
+                //     donor's data for skipped modules so the variant reports what a full-reactor
+                //     build would have measured. Without this, pruned variants always score
+                //     lower (fewer successful modules, fewer test counts) than non-pruned ones
+                //     even when behaviorally equivalent. Donor-bootstrap variant itself is not
+                //     pruned (spec.affectedModulesCsv == null) — skip there.
                 if (spec != null && spec.affectedModulesCsv() != null) {
+                    cr = CompilationResult.mergeWithDonor(cr, bootstrapCompilation);
                     Map<String, TestTotal.ModuleTotal> donorPerModule = donorTracker.getDonorPerModule();
                     if (!donorPerModule.isEmpty()) {
                         java.util.Set<String> built = new java.util.HashSet<>(

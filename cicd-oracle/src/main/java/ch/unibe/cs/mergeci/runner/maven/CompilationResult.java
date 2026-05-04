@@ -59,6 +59,37 @@ public class CompilationResult {
         return new CompilationResult(buildStatus, moduleResults, 0f);
     }
 
+    /**
+     * Combine a pruned-variant CompilationResult with the donor's per-module breakdown:
+     * built modules use the variant's per-module outcomes; skipped modules inherit the
+     * donor's. Both sides are matched by {@code moduleName} (the artifactId Maven prints
+     * in its Reactor Summary). The returned result's {@code buildStatus} is the variant's
+     * (the variant's own success/failure on the affected modules is what matters); only
+     * the per-module list and its derived counts (totalModules, successfulModules) change.
+     *
+     * <p>Without this merge, pruned variants always report fewer successful modules than
+     * non-pruned variants, even when behaviorally equivalent — biasing variant scoring
+     * against every pruned variant.
+     */
+    public static CompilationResult mergeWithDonor(CompilationResult variant,
+                                                    CompilationResult donor) {
+        if (donor == null || donor.moduleResults == null || donor.moduleResults.isEmpty()) {
+            return variant;
+        }
+        java.util.Set<String> variantNames = variant.moduleResults == null
+                ? java.util.Set.of()
+                : variant.moduleResults.stream().map(ModuleResult::getModuleName)
+                        .collect(java.util.stream.Collectors.toSet());
+        List<ModuleResult> merged = new ArrayList<>();
+        // Donor order is the canonical reactor order — preserve it for skipped modules,
+        // then append the variant's own modules (typically in -pl order).
+        for (ModuleResult m : donor.moduleResults) {
+            if (!variantNames.contains(m.getModuleName())) merged.add(m);
+        }
+        if (variant.moduleResults != null) merged.addAll(variant.moduleResults);
+        return new CompilationResult(variant.buildStatus, merged, variant.totalTime);
+    }
+
     private CompilationResult(Status buildStatus, List<ModuleResult> moduleResults, float totalTime) {
         this.buildStatus = buildStatus;
         this.moduleResults = moduleResults != null ? moduleResults : new ArrayList<>();

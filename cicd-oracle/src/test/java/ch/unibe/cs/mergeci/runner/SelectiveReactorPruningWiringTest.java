@@ -3,6 +3,7 @@ package ch.unibe.cs.mergeci.runner;
 import ch.unibe.cs.mergeci.BaseTest;
 import ch.unibe.cs.mergeci.config.AppConfig;
 import ch.unibe.cs.mergeci.runner.ConflictModuleAnalyzer.AffectedModules;
+import ch.unibe.cs.mergeci.runner.maven.CompilationResult;
 import ch.unibe.cs.mergeci.runner.maven.TestTotal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -124,6 +125,66 @@ class SelectiveReactorPruningWiringTest extends BaseTest {
         } finally {
             System.clearProperty("selectiveReactorPruning");
         }
+    }
+
+    @Test
+    void compilationResult_mergeWithDonor_inheritsSkippedModules() {
+        // Donor: full reactor, all 4 modules succeeded
+        CompilationResult donor = CompilationResult.forTest(
+                CompilationResult.Status.SUCCESS,
+                List.of(
+                        modResult("para-core",   CompilationResult.Status.SUCCESS),
+                        modResult("para-client", CompilationResult.Status.SUCCESS),
+                        modResult("para-server", CompilationResult.Status.SUCCESS),
+                        modResult("para-war",    CompilationResult.Status.SUCCESS)));
+        // Pruned variant: only built para-server + para-war, both failed
+        CompilationResult variant = CompilationResult.forTest(
+                CompilationResult.Status.FAILURE,
+                List.of(
+                        modResult("para-server", CompilationResult.Status.FAILURE),
+                        modResult("para-war",    CompilationResult.Status.SKIPPED)));
+
+        CompilationResult merged = CompilationResult.mergeWithDonor(variant, donor);
+        assertEquals(4, merged.getTotalModules(),
+                "merged result should report all 4 modules from the full reactor");
+        assertEquals(2, merged.getSuccessfulModules(),
+                "para-core+para-client succeed (from donor); para-server fails, para-war skipped (from variant)");
+        // buildStatus stays variant's: pruned variant's own outcome on the affected modules
+        assertEquals(CompilationResult.Status.FAILURE, merged.getBuildStatus());
+    }
+
+    @Test
+    void compilationResult_mergeWithDonor_nullOrEmptyDonor_returnsVariant() {
+        CompilationResult variant = CompilationResult.forTest(
+                CompilationResult.Status.FAILURE,
+                List.of(modResult("X", CompilationResult.Status.FAILURE)));
+        assertSame(variant, CompilationResult.mergeWithDonor(variant, null));
+        CompilationResult emptyDonor = CompilationResult.forTest(
+                CompilationResult.Status.SUCCESS, List.of());
+        assertSame(variant, CompilationResult.mergeWithDonor(variant, emptyDonor));
+    }
+
+    @Test
+    void compilationResult_mergeWithDonor_variantOverridesDonorForBuiltModules() {
+        // Donor saw para-server SUCCESS (clean baseline build); variant saw para-server FAILURE
+        // (conflict broke it). Variant's outcome must win for that module.
+        CompilationResult donor = CompilationResult.forTest(
+                CompilationResult.Status.SUCCESS,
+                List.of(
+                        modResult("para-core",   CompilationResult.Status.SUCCESS),
+                        modResult("para-server", CompilationResult.Status.SUCCESS)));
+        CompilationResult variant = CompilationResult.forTest(
+                CompilationResult.Status.FAILURE,
+                List.of(modResult("para-server", CompilationResult.Status.FAILURE)));
+
+        CompilationResult merged = CompilationResult.mergeWithDonor(variant, donor);
+        assertEquals(2, merged.getTotalModules());
+        assertEquals(1, merged.getSuccessfulModules(), "para-core inherited; para-server overridden by variant");
+    }
+
+    private static CompilationResult.ModuleResult modResult(String name, CompilationResult.Status status) {
+        return CompilationResult.ModuleResult.builder()
+                .moduleName(name).status(status).timeElapsed(1.0f).build();
     }
 
     @AfterEach
