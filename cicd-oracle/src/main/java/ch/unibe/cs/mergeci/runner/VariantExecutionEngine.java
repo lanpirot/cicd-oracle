@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -319,8 +320,22 @@ public class VariantExecutionEngine {
                     continue;
                 }
 
-                // Block until a thread is free
-                slots.acquire();
+                // Block until a thread is free, but never past the deadline.
+                // An unbounded acquire() let one wedged worker (mvnd registry lock
+                // after a daemon crash, FUSE-overlayfs walk under load) freeze the
+                // whole engine forever — observed on librec/cache_parallel where
+                // all 30 workers piled up behind the first stuck slot ~75s before
+                // the budget would have expired.
+                int waitSecs = stopCondition.remainingSeconds();
+                if (waitSecs == 0) { pendingRetry.addFirst(variant); break; }
+                boolean got;
+                if (waitSecs < 0) {
+                    slots.acquire();
+                    got = true;
+                } else {
+                    got = slots.tryAcquire(waitSecs, TimeUnit.SECONDS);
+                }
+                if (!got) { pendingRetry.addFirst(variant); break; }
                 if (stopCondition.isStopped()) {
                     slots.release();
                     pendingRetry.addFirst(variant);
@@ -355,9 +370,20 @@ public class VariantExecutionEngine {
                 activeFutures.add(holder[0]);
             }
 
-            // Wait for remaining in-flight variants to finish
-            slots.acquire(config.threadCount);
-            slots.release(config.threadCount);
+            // Wait for remaining in-flight variants to finish, with a hard cap.
+            // A wedged worker (mvnd registry lock after daemon crash, FUSE-overlayfs
+            // op under load, shared-cache lock orphan) used to freeze this drain
+            // forever. The grace = max(60s, 10% of deadline budget) lets normal
+            // shutdown finish but does not let a hang persist past it; on timeout
+            // we fall through to executor.shutdownNow() below.
+            int graceSecs = Math.max(60, Math.max(0, stopCondition.remainingSeconds()) / 10 + 60);
+            if (!slots.tryAcquire(config.threadCount, graceSecs, TimeUnit.SECONDS)) {
+                LOG.warn("Drain timed out after {}s with {} in-flight variant(s); "
+                        + "forcing shutdown — likely mvnd/FUSE deadlock.",
+                        graceSecs, submitted.size());
+            } else {
+                slots.release(config.threadCount);
+            }
         } catch (InterruptedException e) {
             // Hard cancel interrupted the wait
         } finally {
