@@ -141,7 +141,7 @@ public abstract class RQPipelineRunner {
             // clone / parent-commit RevWalk / per-mode CSV reload churn — at ~hundreds of ms
             // per project this is the dominant cost on resumed runs across 500 projects.
             if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess()
-                    && allMergesAlreadyAccountedFor(merges)) {
+                    && allMergesAlreadyAccountedFor(projectName, merges)) {
                 System.out.println();
                 System.out.printf("  Project %d/%d: %s — all %d merge(s) already accounted for, skipping%n",
                         projectIndex, totalProjects, projectName, merges.size());
@@ -316,36 +316,44 @@ public abstract class RQPipelineRunner {
     /** Lazy cache of merge commits that were permanently skipped at human_baseline (infra failure,
      *  no tests). Populated once on the first project that needs the resume fast-path. */
     private java.util.Set<String> hbInfraSkipped;
+    /** Lazy cache of project names that PROJECT_FAILURE'd (typically clone timeout) — re-attempting
+     *  is guaranteed to fail again until we stop using GitHub. */
+    private java.util.Set<String> projectFailures;
 
-    private java.util.Set<String> hbInfraSkippedMerges() {
-        if (hbInfraSkipped != null) return hbInfraSkipped;
-        java.util.Set<String> out = new java.util.HashSet<>();
+    private void loadAttemptedMergesIfNeeded() {
+        if (hbInfraSkipped != null) return;
+        hbInfraSkipped = new java.util.HashSet<>();
+        projectFailures = new java.util.HashSet<>();
         Path csv = experimentDir().resolve("attempted_merges.csv");
-        if (csv.toFile().exists()) {
-            try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader(csv.toFile()))) {
-                String line; r.readLine(); // header
-                while ((line = r.readLine()) != null) {
-                    String[] cols = line.split(",", -1);
-                    if (cols.length < 6) continue;
-                    if ("human_baseline".equals(cols[3]) && "SKIPPED".equals(cols[4])
-                            && !cols[5].contains("already processed") && !cols[2].isEmpty()) {
-                        out.add(cols[2]);
-                    }
+        if (!csv.toFile().exists()) return;
+        try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader(csv.toFile()))) {
+            String line; r.readLine(); // header
+            while ((line = r.readLine()) != null) {
+                String[] cols = line.split(",", -1);
+                if (cols.length < 6) continue;
+                String project = cols[1], mergeCommit = cols[2], mode = cols[3], verdict = cols[4], reason = cols[5];
+                if ("PROJECT_FAILURE".equals(verdict) && !project.isEmpty()) {
+                    projectFailures.add(project);
+                } else if ("human_baseline".equals(mode) && "SKIPPED".equals(verdict)
+                        && !reason.contains("already processed") && !mergeCommit.isEmpty()) {
+                    hbInfraSkipped.add(mergeCommit);
                 }
-            } catch (IOException e) {
-                System.err.println("Warning: could not read " + csv + ": " + e.getMessage());
             }
+        } catch (IOException e) {
+            System.err.println("Warning: could not read " + csv + ": " + e.getMessage());
         }
-        return hbInfraSkipped = out;
     }
 
     /** Returns true iff every merge already has a JSON in every mode, or the merge was
-     *  permanently skipped at human_baseline (infra failure → no variant runs ever happen). */
-    private boolean allMergesAlreadyAccountedFor(List<DatasetReader.MergeInfo> merges) {
-        java.util.Set<String> hbSkipped = hbInfraSkippedMerges();
+     *  permanently skipped at human_baseline (infra failure → no variant runs ever happen),
+     *  or the whole project was a clone-timeout / PROJECT_FAILURE. */
+    private boolean allMergesAlreadyAccountedFor(String projectName,
+                                                  List<DatasetReader.MergeInfo> merges) {
+        loadAttemptedMergesIfNeeded();
+        if (projectFailures.contains(projectName)) return true;
         for (DatasetReader.MergeInfo info : merges) {
             String filename = info.getMergeCommit() + AppConfig.JSON;
-            if (hbSkipped.contains(info.getMergeCommit())) continue;
+            if (hbInfraSkipped.contains(info.getMergeCommit())) continue;
             for (Utility.Experiments ex : modesToRun()) {
                 if (!experimentDir().resolve(ex.getName()).resolve(filename).toFile().exists()) {
                     return false;
