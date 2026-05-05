@@ -894,10 +894,53 @@ def _count_completed_variants(merge: dict) -> float | None:
     return float(count)
 
 
-def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None = None):
-    """Box plot (log scale): number of completed variants per mode."""
-    groups = _collect_paired_metric(all_data, VARIANT_MODES, _count_completed_variants,
-                                    valid_commits)
+def _variant_built_module(v: dict) -> bool:
+    """True if the variant compiled at least one module successfully.
+    Falls back to buildStatus=SUCCESS for single-module projects whose
+    Reactor Summary has totalModules=0.
+    """
+    cr = v.get("compilationResult") or {}
+    if (cr.get("successfulModules") or 0) >= 1:
+        return True
+    return cr.get("totalModules", 0) == 0 and cr.get("buildStatus") == "SUCCESS"
+
+
+def _variant_ran_test(v: dict) -> bool:
+    """True if the variant's surefire reports record at least one executed test."""
+    tt = v.get("testResults") or {}
+    return (tt.get("runNum") or 0) >= 1
+
+
+def _count_variants_built_module(merge: dict) -> float | None:
+    """Count non-baseline, non-timed-out variants that built ≥ 1 module."""
+    variants = merge.get("variants", [])
+    if not variants:
+        return None
+    count = sum(1 for v in variants
+                if v.get("variantIndex", 0) != 0
+                and not v.get("timedOut", False)
+                and _variant_built_module(v))
+    return float(count)
+
+
+def _count_variants_ran_test(merge: dict) -> float | None:
+    """Count non-baseline, non-timed-out variants that ran ≥ 1 test."""
+    variants = merge.get("variants", [])
+    if not variants:
+        return None
+    count = sum(1 for v in variants
+                if v.get("variantIndex", 0) != 0
+                and not v.get("timedOut", False)
+                and _variant_ran_test(v))
+    return float(count)
+
+
+def _draw_variants_count_boxplot(ax, all_data: dict, metric, *,
+                                 ylabel: str, title: str,
+                                 valid_commits: list[str] | None = None):
+    """Shared boxplot body for charts 05 / 05c / 05d. ``metric`` is the per-merge
+    counting function (variants total / built $\geq$1 module / ran $\geq$1 test)."""
+    groups = _collect_paired_metric(all_data, VARIANT_MODES, metric, valid_commits)
     if not groups:
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
         return
@@ -916,16 +959,166 @@ def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None 
     ax.set_xticks(positions)
     ax.set_xticklabels([f"{MODE_LABELS[m]} ({MODE_SHORT[m]})\nn={len(groups[m])}"
                         for m in plot_modes])
-    ax.set_ylabel("Completed variants per merge (log scale)")
-    ax.set_title("Variant Throughput by Execution Mode")
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
     ax.grid(True, axis="y", alpha=0.3, which="both")
 
-    # Statistical tests
     friedman_p = _friedman_test(groups, plot_modes)
     pairwise = _pairwise_wilcoxon(groups, plot_modes)
     summary = _significance_summary(friedman_p, pairwise)
     if summary:
         _annotate_significance(ax, summary)
+
+
+def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None = None):
+    """Box plot (log scale): number of completed variants per mode."""
+    _draw_variants_count_boxplot(
+        ax, all_data, _count_completed_variants,
+        ylabel="Completed variants per merge (log scale)",
+        title="Variant Throughput by Execution Mode",
+        valid_commits=valid_commits,
+    )
+
+
+def draw_variants_built_module(ax, all_data: dict, valid_commits: list[str] | None = None):
+    """05c: Variants that compiled at least one module."""
+    _draw_variants_count_boxplot(
+        ax, all_data, _count_variants_built_module,
+        ylabel="Variants that built $\geq$1 module per merge (log scale)",
+        title="Variant Throughput ($\geq$1 module built)",
+        valid_commits=valid_commits,
+    )
+
+
+def draw_variants_ran_test(ax, all_data: dict, valid_commits: list[str] | None = None):
+    """05d: Variants that executed at least one test."""
+    _draw_variants_count_boxplot(
+        ax, all_data, _count_variants_ran_test,
+        ylabel="Variants that ran $\geq$1 test per merge (log scale)",
+        title="Variant Throughput ($\geq$1 test executed)",
+        valid_commits=valid_commits,
+    )
+
+
+# ── 05e: Per-merge time-to-best, normalized by best mode ─────────────────────
+
+def _time_to_best_seconds(merge: dict) -> float | None:
+    """Raw seconds: time at which this mode's best-scoring variant finished
+    (variantScore ties broken by earliest finish). None when the mode has no
+    scoreable, non-timed-out, non-baseline variant for this merge."""
+    best_score = None
+    best_time = None
+    for v in merge.get("variants", []):
+        if v.get("variantIndex", 0) == 0 or v.get("timedOut", False):
+            continue
+        score = variant_score(v)
+        if score is None:
+            continue
+        t = v.get("totalTimeSinceMergeStartSeconds")
+        if t is None or t <= 0:
+            continue
+        if best_score is None or score > best_score or (score == best_score and t < best_time):
+            best_score, best_time = score, t
+    return best_time
+
+
+def draw_time_to_best_normalized(ax, all_data: dict, valid_commits: list[str] | None = None,
+                                 sentinel: float = 10.0):
+    """05e: For each merge, divide each mode's time-to-best by the merge's
+    fastest mode time. The fastest mode plots at 1.0; slower modes plot at
+    ratio>1. Modes with no scoreable variant for that merge plot at ``sentinel``
+    (default 10.0) so "not found" sits in the same visual space as the data,
+    above a gray dashed reference line. A second-row x-tick label shows the
+    "not found" count per mode."""
+    if valid_commits is None:
+        valid_commits = sorted(
+            set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
+        )
+
+    groups = {m: [] for m in VARIANT_MODES}
+    sentinel_groups = {m: [] for m in VARIANT_MODES}
+    missing = {m: 0 for m in VARIANT_MODES}
+    seen_commits = {m: 0 for m in VARIANT_MODES}
+
+    for commit in valid_commits:
+        per_mode = {}
+        for m in VARIANT_MODES:
+            data = all_data.get(m, {}).get(commit)
+            if data is None:
+                continue
+            seen_commits[m] += 1
+            per_mode[m] = _time_to_best_seconds(data)
+
+        valid_times = [t for t in per_mode.values() if t is not None]
+        if not valid_times:
+            continue  # No mode found a best — entire merge is unrankable; skip.
+        best_t = min(valid_times)
+
+        for m in VARIANT_MODES:
+            t = per_mode.get(m)
+            if t is None:
+                # Mode failed to find any scoreable variant for this merge.
+                sentinel_groups[m].append(sentinel)
+                missing[m] += 1
+            else:
+                groups[m].append(t / best_t)
+
+    plot_modes = [m for m in VARIANT_MODES if (groups.get(m) or sentinel_groups.get(m))]
+    if not plot_modes:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    positions = list(range(len(plot_modes)))
+
+    # Box plot of valid ratios only — sentinels would distort the box statistics.
+    valid_data = [groups[m] for m in plot_modes]
+    box_positions = [p for p, d in zip(positions, valid_data) if d]
+    box_data = [d for d in valid_data if d]
+    if box_data:
+        bp = ax.boxplot(box_data, positions=box_positions, widths=0.5,
+                        patch_artist=True, showfliers=True,
+                        flierprops=dict(markersize=3, alpha=0.5))
+        for patch, m in zip(bp["boxes"],
+                            [pm for pm, d in zip(plot_modes, valid_data) if d]):
+            patch.set_facecolor(MODE_COLORS[m])
+            patch.set_alpha(0.7)
+
+    # Sentinel layer: scatter "not found" markers at y=sentinel with mild jitter.
+    import numpy as _np
+    rng = _np.random.default_rng(0)
+    for p, m in zip(positions, plot_modes):
+        n = len(sentinel_groups[m])
+        if n == 0:
+            continue
+        xs = p + rng.uniform(-0.18, 0.18, n)
+        ax.scatter(xs, [sentinel] * n, marker="x", s=28,
+                   color=MODE_COLORS[m], alpha=0.8, linewidths=1.2,
+                   zorder=3)
+
+    ax.axhline(1.0, linestyle=":", color="black", alpha=0.4, lw=1)
+    ax.axhline(sentinel, linestyle="--", color="gray", alpha=0.5, lw=1)
+    ax.text(len(plot_modes) - 0.5, sentinel * 1.05,
+            f"not found (sentinel = {sentinel:g})",
+            fontsize=8, color="gray", ha="right", va="bottom")
+
+    ax.set_yscale("log")
+    ax.set_ylim(0.8, sentinel * 1.6)
+    ax.set_xticks(positions)
+    ax.set_xticklabels([
+        f"{MODE_LABELS[m]} ({MODE_SHORT[m]})\nn={len(groups[m])}, missing={missing[m]}"
+        for m in plot_modes])
+    ax.set_ylabel("Time-to-best, normalized by fastest mode (1.0 = best per merge)")
+    ax.set_title("Per-merge Time-to-Best Across Modes")
+    ax.grid(True, axis="y", alpha=0.3, which="both")
+
+    # Stats only on the valid-ratio subset (sentinel is a censoring marker, not data).
+    valid_groups = {m: groups[m] for m in plot_modes if groups[m]}
+    if len(valid_groups) >= 2:
+        friedman_p = _friedman_test(valid_groups, list(valid_groups.keys()))
+        pairwise = _pairwise_wilcoxon(valid_groups, list(valid_groups.keys()))
+        summary = _significance_summary(friedman_p, pairwise)
+        if summary:
+            _annotate_significance(ax, summary)
 
 
 # ── RQ2 Chart: Variants per second (throughput rate) ─────────────────────────
@@ -2071,6 +2264,24 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         fig, ax = plt.subplots(figsize=(9, 6))
         draw_variants_per_second(ax, all_data)
         _save_fig(fig, results_dir, "05b_variants_per_second", pdf)
+
+        # Chart 5c: Variants that built at least one module
+        print("Drawing variant throughput chart ($\geq$1 module built) ...")
+        fig, ax = plt.subplots(figsize=(9, 6))
+        draw_variants_built_module(ax, all_data)
+        _save_fig(fig, results_dir, "05c_variants_built_module", pdf)
+
+        # Chart 5d: Variants that ran at least one test
+        print("Drawing variant throughput chart ($\geq$1 test executed) ...")
+        fig, ax = plt.subplots(figsize=(9, 6))
+        draw_variants_ran_test(ax, all_data)
+        _save_fig(fig, results_dir, "05d_variants_ran_test", pdf)
+
+        # Chart 5e: Per-merge time-to-best, normalized by fastest mode
+        print("Drawing time-to-best chart (normalized per merge) ...")
+        fig, ax = plt.subplots(figsize=(9, 6))
+        draw_time_to_best_normalized(ax, all_data)
+        _save_fig(fig, results_dir, "05e_time_for_best_variant", pdf)
 
         # Chart 6: Cache warmup speedup ratio
         print("Drawing cache warmup speedup chart ...")

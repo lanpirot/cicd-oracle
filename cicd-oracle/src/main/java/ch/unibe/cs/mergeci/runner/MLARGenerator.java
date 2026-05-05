@@ -36,7 +36,14 @@ public class MLARGenerator implements IVariantGenerator, AutoCloseable {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final int DEFAULT_VARIANTS = 1000;
-    private static final int STALL_TIMEOUT_SECONDS = 60;
+    // predict_mlar.py runs `generate_sequences(...)` to completion BEFORE emitting
+    // any variant (the print loop is at the tail of main()). So the "first stdout
+    // line" gap is governed by total sampling time, not per-variant latency.
+    // Empirical: merge_id=14932 (32 conflict chunks, fold-9 model on CPU torch)
+    // takes ~115s before the first emit, then flushes all variants in <1s. 60s
+    // tripped this every time. 300s covers ≥32-chunk merges with margin and still
+    // bounds a true hang to a finite wait.
+    private static final int STALL_TIMEOUT_SECONDS = 300;
     private static final String EOF_SENTINEL = "\0EOF\0";
 
     private final String mergeId;
