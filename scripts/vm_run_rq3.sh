@@ -126,9 +126,17 @@ run_remote "$(cat <<EOF
   cd ~/projects/merge++/cicd-oracle
   git fetch origin
   # -B creates or resets the local branch to point at origin/<branch> and switches
-  # to it. Idempotent regardless of the VM's prior HEAD state.
-  git checkout -B $BRANCH origin/$BRANCH
-  echo "HEAD: \$(git rev-parse --short HEAD) on \$(git rev-parse --abbrev-ref HEAD)"
+  # to it. The post-checkout LFS hook may exit non-zero on hosts without
+  # git-lfs installed (the repo tracks one CSV via LFS); the hook is advisory,
+  # so we tolerate it and verify HEAD explicitly below.
+  git checkout -B $BRANCH origin/$BRANCH || true
+  HEAD_SHA=\$(git rev-parse --short HEAD)
+  ORIGIN_SHA=\$(git rev-parse --short origin/$BRANCH)
+  if [ "\$HEAD_SHA" != "\$ORIGIN_SHA" ]; then
+    echo "FAIL: HEAD=\$HEAD_SHA != origin/$BRANCH=\$ORIGIN_SHA" >&2
+    exit 1
+  fi
+  echo "HEAD: \$HEAD_SHA on \$(git rev-parse --abbrev-ref HEAD)"
 EOF
 )"
 
