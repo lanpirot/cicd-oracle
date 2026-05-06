@@ -320,18 +320,21 @@ private static final boolean FRESH_RUN = false;
 
     // ========== RQ2: JAVA CHUNKS PIPELINE ==========
     public static final Path RQ2_VARIANT_EXPERIMENT_DIR = EXPERIMENT_BASE.resolve("rq2");
-    private static final int  RQ2_SAMPLE_REPOS_DEFAULT   = 50;
-    public static int getRQ2SampleRepos() {
-        return Integer.parseInt(System.getProperty("rq2SampleRepos", String.valueOf(RQ2_SAMPLE_REPOS_DEFAULT)));
-    }
-    private static final int  RQ2_MERGES_PER_REPO_DEFAULT = 1;
-    public static int getRQ2MergesPerRepo() {
-        return Integer.parseInt(System.getProperty("rq2MergesPerRepo", String.valueOf(RQ2_MERGES_PER_REPO_DEFAULT)));
+    /** Target number of *successful* merges (HB+variant JSONs) for RQ2. The pipeline
+     *  walks the round-robin queue until this many are recorded. */
+    private static final int  RQ2_SAMPLE_TARGET_DEFAULT   = 50;
+    public static int getRQ2SampleTarget() {
+        return Integer.parseInt(System.getProperty("rq2SampleTarget", String.valueOf(RQ2_SAMPLE_TARGET_DEFAULT)));
     }
 
     // ========== RQ3: LARGE-SCALE PIPELINE ==========
     public static final Path RQ3_VARIANT_EXPERIMENT_DIR = EXPERIMENT_BASE.resolve("rq3");
-    public static final int  RQ3_SAMPLE_TOTAL           = 500;
+    /** Target number of *successful* merges for RQ3. Same semantics as the RQ2 target:
+     *  the pipeline walks the round-robin queue until this many are recorded. */
+    private static final int  RQ3_SAMPLE_TARGET_DEFAULT   = 500;
+    public static int getRQ3SampleTarget() {
+        return Integer.parseInt(System.getProperty("rq3SampleTarget", String.valueOf(RQ3_SAMPLE_TARGET_DEFAULT)));
+    }
     /** Best experiment mode from RQ2 to use in RQ3. Overridable via system property rq3BestMode. */
     public static String getRQ3BestMode() {
         return System.getProperty("rq3BestMode", "cache_parallel");

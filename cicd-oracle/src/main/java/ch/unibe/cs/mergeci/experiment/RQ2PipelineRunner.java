@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * RQ2 pipeline: samples up to {@link AppConfig#RQ2_SAMPLE_REPOS} Maven projects,
- * taking {@link AppConfig#RQ2_MERGES_PER_REPO} merge(s) per project, then runs
- * all 5 experiment modes.
+ * RQ2 pipeline: walks the round-robin queue from {@link JavaChunksReader#sampleRoundRobin}
+ * and stops once {@link AppConfig#getRQ2SampleTarget()} successful merges are recorded.
+ * Runs all 5 experiment modes per merge.
  *
  * <p>The pipeline expects pre-existing results from a VM run (human_baseline plus
  * the four variant modes) in the experiment directory.  The per-merge resume logic
@@ -26,16 +26,12 @@ public class RQ2PipelineRunner extends RQPipelineRunner {
 
     @Override
     protected List<DatasetReader.MergeInfo> sampleMerges() throws IOException {
-        // Sample all fold-assigned Maven projects; run() stops once processedLimit() are done.
-        return new JavaChunksReader().sample(
-                AppConfig.MAVEN_CONFLICTS_CSV,
-                Integer.MAX_VALUE,
-                AppConfig.getRQ2MergesPerRepo());
+        return new JavaChunksReader().sampleRoundRobin(AppConfig.MAVEN_CONFLICTS_CSV);
     }
 
     @Override
     protected int processedLimit() {
-        return AppConfig.getRQ2SampleRepos();
+        return AppConfig.getRQ2SampleTarget();
     }
 
     @Override

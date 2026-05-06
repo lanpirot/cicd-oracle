@@ -92,8 +92,8 @@ Properties are passed as `-D` flags to `java` (not to Maven):
 | `reanalyzeSuccess` | `false` | Re-run previously successful repos without re-cloning |
 | `maxConflictMerges` | `5` | Max qualifying merges sampled per project |
 | `experimentTag` | `""` | Namespace RQ2/RQ3 output dirs (e.g. `rq2-with-mvnd` → `data/bruteforcemerge/rq2-with-mvnd/rq2/`) |
-| `rq2SampleRepos` | `50` | Number of repos to sample for RQ2 |
-| `rq2MergesPerRepo` | `1` | Merges per repo in RQ2 |
+| `rq2SampleTarget` | `50` | Target number of *successful* merges for RQ2 (queue is round-robin across all projects; pipeline stops once this many succeed) |
+| `rq3SampleTarget` | `500` | Target number of *successful* merges for RQ3 (same semantics as `rq2SampleTarget`) |
 | `rq3BestMode` | `cache_parallel` | Best experiment mode from RQ2 to use in RQ3 |
 | `maxThreads` | auto | Hard cap on parallel build threads (auto = `max(1, min((MemAvail−10GB)/peak, cores−2))`) |
 | `overlayTmpDir` | `~/tmp/bruteforce_tmp` | Overlay/variant build dir — **always set to `/dev/shm`** for both local and VM runs (see below) |
@@ -117,8 +117,7 @@ java \
   -DreanalyzeSuccess=false \
   -DmaxConflictMerges=3 \
   -DexperimentTag=rq2-with-mvnd \
-  -Drq2SampleRepos=50 \
-  -Drq2MergesPerRepo=1 \
+  -Drq2SampleTarget=50 \
   -Drq3BestMode=cache_parallel \
   -DmaxThreads=8 \
   -DoverlayTmpDir=/dev/shm \
@@ -212,7 +211,7 @@ Both pipelines are implemented as thin subclasses of `RQPipelineRunner` and diff
 
 | | RQ2 | RQ3 |
 |-|-----|-----|
-| Sampling | 50 projects × 1 merge (`JavaChunksReader.sample`) | 500 merges distributed across all projects (`JavaChunksReader.sampleDistributed`) |
+| Sampling | Round-robin queue across all projects (`JavaChunksReader.sampleRoundRobin`); stops at 50 successful merges | Same round-robin queue; stops at 500 successful merges |
 | Modes | All 5 | `human_baseline` + best mode (default: `cache_parallel`, override via `--best-mode`) |
 | Generator | ML-AR (`MLARGeneratorFactory`) | ML-AR (`MLARGeneratorFactory`) |
 | Input | `maven_conflicts.csv` | `maven_conflicts.csv` |

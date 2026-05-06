@@ -8,6 +8,7 @@ import ch.unibe.cs.mergeci.runner.IVariantGeneratorFactory;
 import ch.unibe.cs.mergeci.runner.MLARGeneratorFactory;
 import ch.unibe.cs.mergeci.util.Utility;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -15,16 +16,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * RQ3 pipeline: distributes {@link AppConfig#RQ3_SAMPLE_TOTAL} merges fairly across all
- * Maven projects, then runs {@code human_baseline} plus the best mode from RQ2
- * (configurable via system property {@code rq3BestMode}, default {@code cache_parallel}).
+ * RQ3 pipeline: walks the round-robin queue from {@link JavaChunksReader#sampleRoundRobin}
+ * and stops once {@link AppConfig#getRQ3SampleTarget()} successful merges are recorded.
+ * Runs {@code human_baseline} plus the best mode from RQ2 (configurable via system
+ * property {@code rq3BestMode}, default {@code cache_parallel}).
  */
 public class RQ3PipelineRunner extends RQPipelineRunner {
 
     @Override
     protected List<DatasetReader.MergeInfo> sampleMerges() throws IOException {
-        return new JavaChunksReader().sampleDistributed(
-                AppConfig.MAVEN_CONFLICTS_CSV, AppConfig.RQ3_SAMPLE_TOTAL);
+        return new JavaChunksReader().sampleRoundRobin(AppConfig.MAVEN_CONFLICTS_CSV);
+    }
+
+    @Override
+    protected int processedLimit() {
+        return AppConfig.getRQ3SampleTarget();
+    }
+
+    /**
+     * Progress = JSONs in the variant mode dir (the gate metric for "successful merge").
+     * Counting human_baseline alone would over-count: HB can succeed while the variant
+     * phase still skips the merge (chunk-count mismatch, etc.).
+     */
+    @Override
+    int countBaselineJsons() {
+        File[] files = experimentDir().resolve(AppConfig.getRQ3BestMode()).toFile().listFiles();
+        if (files == null) return 0;
+        return (int) Arrays.stream(files)
+                .filter(f -> f.getName().endsWith(AppConfig.JSON))
+                .count();
     }
 
     @Override

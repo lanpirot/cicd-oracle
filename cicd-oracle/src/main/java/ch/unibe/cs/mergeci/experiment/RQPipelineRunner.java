@@ -18,10 +18,7 @@ import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Abstract base for RQ2 and RQ3 experiment pipelines.
@@ -78,7 +75,7 @@ public abstract class RQPipelineRunner {
         System.out.println("║              " + getClass().getSimpleName() + " — Pipeline Settings");
         System.out.println("╠══════════════════════════════════════════════════════════╣");
         System.out.printf( "║  Fresh run           : %s%n", AppConfig.isFreshRun());
-        System.out.printf( "║  Project limit       : %s%n", limit == Integer.MAX_VALUE ? "unlimited" : limit);
+        System.out.printf( "║  Target merges       : %s%n", limit == Integer.MAX_VALUE ? "unlimited" : limit);
         System.out.printf( "║  Experiment modes    : %s%n", modes);
         System.out.printf( "║  Stop on perfect     : %s%n", stopOnPerfect());
         System.out.printf( "║  Generator           : %s%n",
@@ -98,10 +95,10 @@ public abstract class RQPipelineRunner {
         printSplash();
 
         List<DatasetReader.MergeInfo> allMerges = sampleMerges();
-        System.out.printf("Pipeline: sampled %d merges across %d projects%n",
-                allMerges.size(), countDistinctProjects(allMerges));
-
-        Map<String, List<DatasetReader.MergeInfo>> byProject = groupByProject(allMerges);
+        long distinctProjects = allMerges.stream()
+                .map(DatasetReader.MergeInfo::getProjectName).distinct().count();
+        System.out.printf("Pipeline: round-robin queue of %d merges across %d projects%n",
+                allMerges.size(), distinctProjects);
 
         if (AppConfig.isFreshRun()) {
             System.out.println("\n⚠  FRESH_RUN is enabled — this will wipe all prior data in " + experimentDir());
@@ -116,47 +113,44 @@ public abstract class RQPipelineRunner {
 
         try (AttemptedMergeLog mergeLog = new AttemptedMergeLog(
                 experimentDir().resolve("attempted_merges.csv"))) {
-            runProjects(byProject, mergeLog);
+            runMerges(allMerges, mergeLog);
         }
 
         analyzeResults();
     }
 
-    private void runProjects(Map<String, List<DatasetReader.MergeInfo>> byProject,
-                             AttemptedMergeLog mergeLog) throws Exception {
+    private void runMerges(List<DatasetReader.MergeInfo> merges,
+                           AttemptedMergeLog mergeLog) throws Exception {
         int limit = processedLimit();
-        int totalProjects = byProject.size();
-        int projectIndex = 0;
-        for (Map.Entry<String, List<DatasetReader.MergeInfo>> entry : byProject.entrySet()) {
+        int total = merges.size();
+        int idx = 0;
+        for (DatasetReader.MergeInfo info : merges) {
+            idx++;
             int completed = countBaselineJsons();
             if (completed >= limit) break;
 
-            projectIndex++;
-            String projectName = entry.getKey();
-            List<DatasetReader.MergeInfo> merges = entry.getValue();
+            String projectName = info.getProjectName();
+            List<DatasetReader.MergeInfo> singleton = List.of(info);
 
-            // Resume fast-path: when every merge in the project is already accounted for
-            // (all-mode JSONs present, or recorded as a permanent infra-skip in
-            // attempted_merges.csv), there is nothing to do for this project. Skip the
-            // clone / parent-commit RevWalk / per-mode CSV reload churn — at ~hundreds of ms
-            // per project this is the dominant cost on resumed runs across 500 projects.
+            // Resume fast-path: this exact merge already has results in every mode, or is
+            // recorded as a permanent infra-skip / project failure. Skip the clone /
+            // parent-commit RevWalk / per-mode CSV reload churn.
             if (!AppConfig.isFreshRun() && !AppConfig.isReanalyzeSuccess()
-                    && allMergesAlreadyAccountedFor(projectName, merges)) {
-                System.out.println();
-                System.out.printf("  Project %d/%d: %s — all %d merge(s) already accounted for, skipping%n",
-                        projectIndex, totalProjects, projectName, merges.size());
+                    && allMergesAlreadyAccountedFor(projectName, singleton)) {
                 continue;
             }
 
             System.out.println();
             System.out.println("════════════════════════════════════════════════════════════");
-            System.out.printf("  Project %d/%d: %s  (%d merges)%n", projectIndex, totalProjects, projectName, merges.size());
-            System.out.printf("  Completed baselines: %d/%d%n", completed, limit == Integer.MAX_VALUE ? totalProjects : limit);
+            System.out.printf("  Merge %d/%d (queue): %s — %s%n",
+                    idx, total, projectName, shortCommit(info.getMergeCommit()));
+            System.out.printf("  Successful so far: %d/%d%n", completed,
+                    limit == Integer.MAX_VALUE ? total : limit);
             System.out.println("════════════════════════════════════════════════════════════");
 
             Path repoPath;
             try {
-                repoPath = repoManager.getRepositoryPath(projectName, merges.get(0).getRemoteUrl());
+                repoPath = repoManager.getRepositoryPath(projectName, info.getRemoteUrl());
             } catch (IOException e) {
                 System.err.println("Skipping " + projectName + ": " + e.getMessage());
                 mergeLog.logProjectFailure(projectName, "clone failed: " + e.getMessage());
@@ -164,12 +158,10 @@ public abstract class RQPipelineRunner {
             }
 
             try {
-                for (DatasetReader.MergeInfo info : merges) {
-                    String[] parents = GitUtils.getParentCommits(repoPath, info.getMergeCommit());
-                    info.setParent1(parents[0]);
-                    info.setParent2(parents[1]);
-                }
-                runModes(projectName, merges, repoPath, mergeLog);
+                String[] parents = GitUtils.getParentCommits(repoPath, info.getMergeCommit());
+                info.setParent1(parents[0]);
+                info.setParent2(parents[1]);
+                runModes(projectName, singleton, repoPath, mergeLog);
             } catch (Exception e) {
                 System.err.println("Analysis failed for " + projectName + ": " + e.getMessage());
             } finally {
@@ -180,8 +172,12 @@ public abstract class RQPipelineRunner {
         int processed = countBaselineJsons();
 
         if (limit < Integer.MAX_VALUE) {
-            System.out.printf("Pipeline finished: %d/%d projects processed.%n", processed, limit);
+            System.out.printf("Pipeline finished: %d/%d successful merges.%n", processed, limit);
         }
+    }
+
+    private static String shortCommit(String full) {
+        return full == null || full.length() < 8 ? String.valueOf(full) : full.substring(0, 8) + "...";
     }
 
     /**
@@ -436,15 +432,4 @@ public abstract class RQPipelineRunner {
         }
     }
 
-    protected static Map<String, List<DatasetReader.MergeInfo>> groupByProject(List<DatasetReader.MergeInfo> merges) {
-        Map<String, List<DatasetReader.MergeInfo>> map = new LinkedHashMap<>();
-        for (DatasetReader.MergeInfo info : merges) {
-            map.computeIfAbsent(info.getProjectName(), k -> new ArrayList<>()).add(info);
-        }
-        return map;
-    }
-
-    protected static long countDistinctProjects(List<DatasetReader.MergeInfo> merges) {
-        return merges.stream().map(DatasetReader.MergeInfo::getProjectName).distinct().count();
-    }
 }
