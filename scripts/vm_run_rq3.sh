@@ -125,8 +125,9 @@ run_remote "$(cat <<EOF
   set -e
   cd ~/projects/merge++/cicd-oracle
   git fetch origin
-  git checkout $BRANCH 2>/dev/null || git switch -c $BRANCH origin/$BRANCH
-  git reset --hard origin/$BRANCH
+  # -B creates or resets the local branch to point at origin/<branch> and switches
+  # to it. Idempotent regardless of the VM's prior HEAD state.
+  git checkout -B $BRANCH origin/$BRANCH
   echo "HEAD: \$(git rev-parse --short HEAD) on \$(git rev-parse --abbrev-ref HEAD)"
 EOF
 )"
