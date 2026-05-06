@@ -1121,6 +1121,106 @@ def draw_time_to_best_normalized(ax, all_data: dict, valid_commits: list[str] | 
             _annotate_significance(ax, summary)
 
 
+def draw_time_to_best_in_baseline_units(ax, all_data: dict,
+                                        valid_commits: list[str] | None = None,
+                                        sentinel: float = 11.0):
+    """05f: For each mode, time-to-best as a multiple of the merge's human-baseline
+    build duration (the same X-axis basis as chart 7's "Variant Accumulation Over
+    Time"). 1.0 = took as long as the human baseline. Modes that found no
+    scoreable variant for that merge plot at ``sentinel`` (default 11.0, i.e. one
+    tick past the typical 10× variant-budget ceiling) above a gray dashed line
+    marked "not found"."""
+    if valid_commits is None:
+        valid_commits = sorted(
+            set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
+        )
+
+    groups = {m: [] for m in VARIANT_MODES}
+    sentinel_groups = {m: [] for m in VARIANT_MODES}
+    missing = {m: 0 for m in VARIANT_MODES}
+
+    for commit in valid_commits:
+        # budgetBasisSeconds is the human-baseline build duration (module-normalised
+        # for broken merges). Read it from any mode's JSON — it's an input to the
+        # variant phase and identical across modes for the same commit.
+        budget = None
+        for m in VARIANT_MODES:
+            data = all_data.get(m, {}).get(commit)
+            if data is None:
+                continue
+            b = data.get("budgetBasisSeconds", 0)
+            if b and b > 0:
+                budget = b
+                break
+        if budget is None:
+            continue  # No valid baseline duration — can't normalise this merge.
+
+        for m in VARIANT_MODES:
+            data = all_data.get(m, {}).get(commit)
+            if data is None:
+                continue
+            t = _time_to_best_seconds(data)
+            if t is None:
+                sentinel_groups[m].append(sentinel)
+                missing[m] += 1
+            else:
+                groups[m].append(t / budget)
+
+    plot_modes = [m for m in VARIANT_MODES if (groups.get(m) or sentinel_groups.get(m))]
+    if not plot_modes:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    positions = list(range(len(plot_modes)))
+
+    valid_data = [groups[m] for m in plot_modes]
+    box_positions = [p for p, d in zip(positions, valid_data) if d]
+    box_data = [d for d in valid_data if d]
+    if box_data:
+        bp = ax.boxplot(box_data, positions=box_positions, widths=0.5,
+                        patch_artist=True, showfliers=True,
+                        flierprops=dict(markersize=3, alpha=0.5))
+        for patch, m in zip(bp["boxes"],
+                            [pm for pm, d in zip(plot_modes, valid_data) if d]):
+            patch.set_facecolor(MODE_COLORS[m])
+            patch.set_alpha(0.7)
+
+    import numpy as _np
+    rng = _np.random.default_rng(0)
+    for p, m in zip(positions, plot_modes):
+        n = len(sentinel_groups[m])
+        if n == 0:
+            continue
+        xs = p + rng.uniform(-0.18, 0.18, n)
+        ax.scatter(xs, [sentinel] * n, marker="x", s=28,
+                   color=MODE_COLORS[m], alpha=0.8, linewidths=1.2,
+                   zorder=3)
+
+    ax.axhline(1.0, linestyle=":", color="black", alpha=0.4, lw=1)
+    ax.axhline(sentinel, linestyle="--", color="gray", alpha=0.5, lw=1)
+    ax.text(len(plot_modes) - 0.5, sentinel * 1.04,
+            f"not found (sentinel = {sentinel:g})",
+            fontsize=8, color="gray", ha="right", va="bottom")
+
+    ax.set_yscale("log")
+    ax.set_ylim(0.05, sentinel * 1.5)
+    ax.set_xticks(positions)
+    ax.set_xticklabels([
+        f"{MODE_LABELS[m]} ({MODE_SHORT[m]})\nn={len(groups[m])}, missing={missing[m]}"
+        for m in plot_modes])
+    ax.set_ylabel("Time-to-best (multiples of human-baseline build duration)")
+    ax.set_title("Per-merge Time-to-Best in Human-Baseline Units")
+    ax.grid(True, axis="y", alpha=0.3, which="both")
+
+    valid_groups = {m: groups[m] for m in plot_modes if groups[m]}
+    if len(valid_groups) >= 2:
+        friedman_p = _friedman_test(valid_groups, list(valid_groups.keys()))
+        pairwise = _pairwise_wilcoxon(valid_groups, list(valid_groups.keys()))
+        summary = _significance_summary(friedman_p, pairwise)
+        if summary:
+            _annotate_significance(ax, summary)
+
+
 # ── RQ2 Chart: Variants per second (throughput rate) ─────────────────────────
 
 def _variants_per_second(merge: dict) -> float | None:
@@ -1178,7 +1278,25 @@ def draw_variants_per_second(ax, all_data: dict, valid_commits: list[str] | None
 
 # ── RQ2 Chart: Cache warmup speedup ratio ────────────────────────────────────
 
-def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | None = None):
+def _quantile_slice(sorted_list: list, q: int, n_buckets: int) -> list:
+    """Return the q-th of ``n_buckets`` equal slices of a sorted list (0 = fastest).
+    Falls back to a single nearest element so very short lists still produce a
+    non-empty slice for every bucket — useful when a merge has only a few variants."""
+    n = len(sorted_list)
+    if n == 0:
+        return []
+    a = (n * q) // n_buckets
+    b = (n * (q + 1)) // n_buckets
+    if a >= b:
+        return [sorted_list[min(a, n - 1)]]
+    return sorted_list[a:b]
+
+
+def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | None = None,
+                              quantile: int | None = None, n_buckets: int = 4,
+                              pair_filter: tuple[str, str] | None = None,
+                              title: str | None = None,
+                              annotate_significance: bool = True):
     """
     Box plot: per-merge cache speedup, comparing the median per-variant build
     time in a cache mode against the corresponding no-cache mode for the same
@@ -1190,9 +1308,20 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
     Ratio = median(no-cache mode own_t) / median(cache mode non-donor own_t).
     >1.0 → cache mode is faster (the headline claim caching is supposed to make).
     <1.0 → cache overhead exceeds savings (e.g. when build-cache rarely hits).
+
+    When ``quantile`` is set, both cache and base time lists for each merge are
+    sorted ascending and only the q-th of ``n_buckets`` slices is kept before
+    medians are taken — so the ratio reflects speedups within one speed band.
+    Ranking is per-mode within a merge; we compare the same band across cache
+    and no-cache. ``quantile=None`` keeps the all-variants view.
+
+    ``pair_filter`` restricts the chart to a single (cache_mode, base_mode) pair
+    so the small-multiples layout can render one box per panel.
     """
     PAIRS = [("cache_sequential", "no_optimization", "S+ / S"),
              ("cache_parallel",   "parallel",        "P+ / P")]
+    if pair_filter is not None:
+        PAIRS = [p for p in PAIRS if (p[0], p[1]) == pair_filter]
 
     box_data = []
     box_labels = []
@@ -1231,6 +1360,11 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
                 if own is not None and own > 0:
                     base_times.append(own)
             if cache_warm and base_times:
+                if quantile is not None:
+                    cache_warm = _quantile_slice(sorted(cache_warm), quantile, n_buckets)
+                    base_times = _quantile_slice(sorted(base_times), quantile, n_buckets)
+                    if not cache_warm or not base_times:
+                        continue
                 cw_med = sorted(cache_warm)[len(cache_warm) // 2]
                 bt_med = sorted(base_times)[len(base_times) // 2]
                 if cw_med > 0:
@@ -1275,7 +1409,9 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
     ax.set_xticks(positions)
     ax.set_xticklabels(box_labels, fontsize=9)
     ax.set_ylabel("Speedup ratio = no-cache median ÷ cache-warm median")
-    ax.set_title("Cache vs No-Cache: Per-Merge Speedup Ratio (warm variants only)")
+    if title is None:
+        title = "Cache vs No-Cache: Per-Merge Speedup Ratio (warm variants only)"
+    ax.set_title(title)
 
     # Cap y at 8.0 — anything above is an extreme outlier (visible as flier dots);
     # without the cap the box bodies get squashed against the bottom.
@@ -1296,12 +1432,128 @@ def draw_cache_warmup_speedup(ax, all_data: dict, valid_commits: list[str] | Non
 
     # Significance summary in the top-right, dropped down enough to clear the
     # "no speedup" legend entry above it.
-    if sig_lines:
+    if sig_lines and annotate_significance:
         ax.text(0.98, 0.86, "\n".join(sig_lines),
                 transform=ax.transAxes, fontsize=7,
                 ha="right", va="top", fontfamily="monospace", zorder=99,
                 bbox=dict(boxstyle="round,pad=0.3", facecolor="wheat", alpha=1.0,
                           edgecolor="tan", linewidth=0.5))
+
+
+def _cache_speedup_ratios_by_quartile(all_data: dict, cache_mode: str, base_mode: str,
+                                      valid_commits: list[str] | None,
+                                      n_buckets: int = 4) -> list[list[float]]:
+    """For one mode pair, return a list of length ``n_buckets`` where entry ``q`` is
+    the list of per-merge speedup ratios computed only on variants in the q-th
+    speed bucket. Per-merge: sort cache-warm and base own_t lists ascending,
+    take the q-th equal slice from each, take medians, ratio = base/cache."""
+    cache_merges = all_data.get(cache_mode, {})
+    base_merges  = all_data.get(base_mode, {})
+    commits = (valid_commits if valid_commits is not None
+               else sorted(set(cache_merges.keys()) & set(base_merges.keys())))
+    out: list[list[float]] = [[] for _ in range(n_buckets)]
+    for commit in commits:
+        cmerge = cache_merges.get(commit)
+        bmerge = base_merges.get(commit)
+        if cmerge is None or bmerge is None:
+            continue
+        cache_warm = []
+        for v in cmerge.get("variants", []):
+            if v.get("variantIndex", 0) == 0 or v.get("timedOut", False):
+                continue
+            if v.get("isCacheDonor", False) or v.get("isCacheWarmer", False):
+                continue
+            own = v.get("ownExecutionSeconds")
+            if own is not None and own > 0:
+                cache_warm.append(own)
+        base_times = []
+        for v in bmerge.get("variants", []):
+            if v.get("variantIndex", 0) == 0 or v.get("timedOut", False):
+                continue
+            own = v.get("ownExecutionSeconds")
+            if own is not None and own > 0:
+                base_times.append(own)
+        if not cache_warm or not base_times:
+            continue
+        cache_warm.sort()
+        base_times.sort()
+        for q in range(n_buckets):
+            cw = _quantile_slice(cache_warm, q, n_buckets)
+            bt = _quantile_slice(base_times, q, n_buckets)
+            if not cw or not bt:
+                continue
+            cw_med = sorted(cw)[len(cw) // 2]
+            bt_med = sorted(bt)[len(bt) // 2]
+            if cw_med > 0:
+                out[q].append(bt_med / cw_med)
+    return out
+
+
+def draw_cache_warmup_speedup_quartiles(fig, all_data: dict,
+                                        valid_commits: list[str] | None = None,
+                                        n_buckets: int = 4):
+    """Two panels (one per mode pair). Each panel shows ``n_buckets`` box plots
+    side by side — one box per quartile of variants per merge sorted by build
+    time (fastest → slowest)."""
+    PAIRS = [
+        ("cache_sequential", "no_optimization", "Sequential: S+ / S"),
+        ("cache_parallel",   "parallel",        "Parallel: P+ / P"),
+    ]
+    quartile_labels = [
+        "Q1\n(fastest 1/4)",
+        "Q2",
+        "Q3",
+        f"Q{n_buckets}\n(slowest 1/4)",
+    ]
+    if n_buckets != 4:
+        quartile_labels = ([f"Q1\n(fastest 1/{n_buckets})"]
+                           + [f"Q{i+1}" for i in range(1, n_buckets - 1)]
+                           + [f"Q{n_buckets}\n(slowest 1/{n_buckets})"])
+
+    gs = fig.add_gridspec(len(PAIRS), 1, hspace=0.45)
+    axes = []
+    for r, (cache_mode, base_mode, panel_label) in enumerate(PAIRS):
+        sharey = axes[0] if axes else None
+        ax = fig.add_subplot(gs[r, 0], sharey=sharey)
+        axes.append(ax)
+
+        ratios = _cache_speedup_ratios_by_quartile(
+            all_data, cache_mode, base_mode, valid_commits, n_buckets=n_buckets)
+
+        positions = list(range(n_buckets))
+        non_empty = [(p, r_) for p, r_ in zip(positions, ratios) if r_]
+        if non_empty:
+            ps, data = zip(*non_empty)
+            bp = ax.boxplot(data, positions=list(ps), widths=0.5, patch_artist=True,
+                            showfliers=True, flierprops=dict(markersize=3, alpha=0.5))
+            for patch in bp["boxes"]:
+                patch.set_facecolor(MODE_COLORS[cache_mode])
+                patch.set_alpha(0.7)
+        else:
+            ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+
+        ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
+                   label="no speedup (ratio = 1)")
+        ax.set_xticks(positions)
+        ax.set_xticklabels([f"{lbl}\nn={len(ratios[i])}" for i, lbl in enumerate(quartile_labels)],
+                           fontsize=8)
+        ax.set_xlim(-0.5, n_buckets - 0.5)
+        ax.set_ylim(0.0, 8.0)
+        ax.set_ylabel("Speedup ratio = no-cache med ÷ cache-warm med")
+        ax.set_title(f"{panel_label}: per-merge speedup by variant-time quartile",
+                     fontsize=10)
+        ax.grid(True, axis="y", alpha=0.3, which="both")
+
+        # Direction labels — only on the first panel keep clutter low; second
+        # panel uses the same y-axis interpretation.
+        if r == 0:
+            ax.text(0.005, 0.97, r"↑  ratio $>$ 1: cache faster",
+                    transform=ax.transAxes, ha="left", va="top", fontsize=8,
+                    color="#2e7d32")
+            ax.text(0.005, 0.03, r"↓  ratio $<$ 1: cache slower",
+                    transform=ax.transAxes, ha="left", va="bottom", fontsize=8,
+                    color="#b71c1c")
+            ax.legend(loc="upper right", fontsize=8)
 
 
 # ── RQ2 helper: time to best variant (used by interaction plot + rank chart) ──
@@ -2283,10 +2535,16 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         draw_time_to_best_normalized(ax, all_data)
         _save_fig(fig, results_dir, "05e_time_for_best_variant", pdf)
 
-        # Chart 6: Cache warmup speedup ratio
-        print("Drawing cache warmup speedup chart ...")
+        # Chart 5f: Time-to-best in multiples of human-baseline duration
+        print("Drawing time-to-best chart (human-baseline units) ...")
         fig, ax = plt.subplots(figsize=(9, 6))
-        draw_cache_warmup_speedup(ax, all_data)
+        draw_time_to_best_in_baseline_units(ax, all_data)
+        _save_fig(fig, results_dir, "05f_time_for_best_variant_hb_units", pdf)
+
+        # Chart 6: Cache warmup speedup ratio — 2x4 grid (mode pair × quartile)
+        print("Drawing cache warmup speedup chart ...")
+        fig = plt.figure(figsize=(13, 7.5))
+        draw_cache_warmup_speedup_quartiles(fig, all_data)
         _save_fig(fig, results_dir, "06_cache_warmup_speedup", pdf)
 
         # Chart 7: Mode rank evolution over time
