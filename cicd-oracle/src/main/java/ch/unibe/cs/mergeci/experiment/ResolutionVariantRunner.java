@@ -536,19 +536,22 @@ public class ResolutionVariantRunner {
         boolean hasBuildFileMarkers = BuildFailureClassifier.hasBuildFileConflictMarkers(repoPath);
         output.setBuildFileConflictMarkers(hasBuildFileMarkers);
 
-        // Hard ceiling: HB phases that exceed MAVEN_BUILD_TIMEOUT total wall time
-        // (SNAPSHOT pre-install + baseline build + overhead) are discarded. Without
-        // this, a multi-module project whose individual Maven invocations stay below
-        // the per-process cap can still produce a normalized baseline of several
-        // thousand seconds and a 10× variant budget that consumes 10+ hours per merge.
-        // Applied only in human_baseline mode; variant modes legitimately run for the
-        // full variant budget (which can far exceed MAVEN_BUILD_TIMEOUT).
-        if ("human_baseline".equals(output.getMode())
-                && processed.getAnalysisResult().executionTimeSeconds() > AppConfig.MAVEN_BUILD_TIMEOUT) {
-            output.setBaselineBroken(true);
-            output.setBaselineFailureType(MergeFailureType.TIMEOUT.name());
-            output.setVariantsSkipped(true);
-            return;
+        // Hard ceiling: HB *build* wall time > MAVEN_BUILD_TIMEOUT → discard. Excludes
+        // SNAPSHOT pre-install (a fixed setup cost the variant budget never replays).
+        // Catches projects whose actual baseline build runs long enough to inflate the
+        // normalized basis into a multi-thousand-second budget. Applied only in
+        // human_baseline mode; variant modes legitimately run to the variant budget.
+        if ("human_baseline".equals(output.getMode())) {
+            ch.unibe.cs.mergeci.runner.ExperimentTiming timing =
+                    processed.getAnalysisResult().runExecutionTime();
+            long hbBuildSeconds = (timing != null && timing.getHumanBaselineExecutionTime() != null)
+                    ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
+            if (hbBuildSeconds > AppConfig.MAVEN_BUILD_TIMEOUT) {
+                output.setBaselineBroken(true);
+                output.setBaselineFailureType(MergeFailureType.TIMEOUT.name());
+                output.setVariantsSkipped(true);
+                return;
+            }
         }
 
         switch (baseline.getBuildStatus()) {
