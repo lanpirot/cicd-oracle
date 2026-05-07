@@ -536,6 +536,21 @@ public class ResolutionVariantRunner {
         boolean hasBuildFileMarkers = BuildFailureClassifier.hasBuildFileConflictMarkers(repoPath);
         output.setBuildFileConflictMarkers(hasBuildFileMarkers);
 
+        // Hard ceiling: HB phases that exceed MAVEN_BUILD_TIMEOUT total wall time
+        // (SNAPSHOT pre-install + baseline build + overhead) are discarded. Without
+        // this, a multi-module project whose individual Maven invocations stay below
+        // the per-process cap can still produce a normalized baseline of several
+        // thousand seconds and a 10× variant budget that consumes 10+ hours per merge.
+        // Applied only in human_baseline mode; variant modes legitimately run for the
+        // full variant budget (which can far exceed MAVEN_BUILD_TIMEOUT).
+        if ("human_baseline".equals(output.getMode())
+                && processed.getAnalysisResult().executionTimeSeconds() > AppConfig.MAVEN_BUILD_TIMEOUT) {
+            output.setBaselineBroken(true);
+            output.setBaselineFailureType(MergeFailureType.TIMEOUT.name());
+            output.setVariantsSkipped(true);
+            return;
+        }
+
         switch (baseline.getBuildStatus()) {
             case TIMEOUT -> {
                 output.setBaselineBroken(true);
