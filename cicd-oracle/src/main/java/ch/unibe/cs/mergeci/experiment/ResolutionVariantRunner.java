@@ -536,17 +536,19 @@ public class ResolutionVariantRunner {
         boolean hasBuildFileMarkers = BuildFailureClassifier.hasBuildFileConflictMarkers(repoPath);
         output.setBuildFileConflictMarkers(hasBuildFileMarkers);
 
-        // Hard ceiling: HB *build* wall time > MAVEN_BUILD_TIMEOUT → discard. Excludes
+        // Hard ceiling: HB *build* wall time ≥ MAVEN_BUILD_TIMEOUT → discard. Excludes
         // SNAPSHOT pre-install (a fixed setup cost the variant budget never replays).
-        // Catches projects whose actual baseline build runs long enough to inflate the
-        // normalized basis into a multi-thousand-second budget. Applied only in
+        // Uses >= because MavenProcessExecutor kills the HB Maven process at exactly
+        // MAVEN_BUILD_TIMEOUT seconds; a build that hit the cap "did not return within
+        // the budget" — even when the maven-hook still classifies the truncated build
+        // as SUCCESS because some modules compiled before the kill. Applied only in
         // human_baseline mode; variant modes legitimately run to the variant budget.
         if ("human_baseline".equals(output.getMode())) {
             ch.unibe.cs.mergeci.runner.ExperimentTiming timing =
                     processed.getAnalysisResult().runExecutionTime();
             long hbBuildSeconds = (timing != null && timing.getHumanBaselineExecutionTime() != null)
                     ? timing.getHumanBaselineExecutionTime().getSeconds() : 0L;
-            if (hbBuildSeconds > AppConfig.MAVEN_BUILD_TIMEOUT) {
+            if (hbBuildSeconds >= AppConfig.MAVEN_BUILD_TIMEOUT) {
                 output.setBaselineBroken(true);
                 output.setBaselineFailureType(MergeFailureType.TIMEOUT.name());
                 output.setVariantsSkipped(true);
