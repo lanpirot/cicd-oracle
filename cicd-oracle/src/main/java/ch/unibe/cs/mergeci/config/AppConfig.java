@@ -270,7 +270,8 @@ private static final boolean FRESH_RUN = false;
      * Builds exceeding this limit are killed; the wall-clock duration up to the kill
      * is still used as the budget basis for variant modes.
      */
-    public static final int MAVEN_BUILD_TIMEOUT = 600;
+    public static final int MAVEN_BUILD_TIMEOUT =
+            Integer.parseInt(System.getProperty("mavenBuildTimeout", "600"));
 
     // ========== RQ1: PATTERN HEURISTICS / ML-AR ==========
     /** Root data directory for RQ1 artefacts (Java_chunks.csv, fold files, checkpoints …). */
@@ -591,10 +592,17 @@ private static final boolean FRESH_RUN = false;
 
     private static final int TIMEOUT_MULTIPLIER = 10;
     private static final long MIN_VARIANT_BUDGET = 300;
+    /** Hard ceiling on the variant budget regardless of normalization, in seconds.
+     *  Default unbounded; RQ3 sets {@code -DmaxVariantBudget=36000} (10 h) so that
+     *  pathologically-failing baselines (few modules pass → huge normalization factor)
+     *  cannot inflate the budget beyond a cost we are willing to pay per merge. */
+    private static final long MAX_VARIANT_BUDGET =
+            Long.parseLong(System.getProperty("maxVariantBudget", String.valueOf(Long.MAX_VALUE)));
 
-    /** Compute variant budget: max(300s, normalizedBaseline × 10). */
+    /** Compute variant budget: clamp(normalizedBaseline × 10, 300s, MAX_VARIANT_BUDGET). */
     public static long variantBudget(long normalizedBaselineSeconds) {
-        return Math.max(MIN_VARIANT_BUDGET, normalizedBaselineSeconds * TIMEOUT_MULTIPLIER);
+        long base = Math.max(MIN_VARIANT_BUDGET, normalizedBaselineSeconds * TIMEOUT_MULTIPLIER);
+        return Math.min(MAX_VARIANT_BUDGET, base);
     }
 
     /**

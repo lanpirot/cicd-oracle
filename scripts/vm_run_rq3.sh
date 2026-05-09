@@ -177,6 +177,8 @@ run_remote "$(cat <<EOF
      java -DoverlayTmpDir=/dev/shm \
           -DexperimentTag=$TAG \
           -Drq3BestMode=$BEST_MODE \
+          -DmavenBuildTimeout=3600 \
+          -DmaxVariantBudget=36000 \
           $FRESH_FLAG \
           -cp 'target/*:target/lib/*' \
           ch.unibe.cs.mergeci.experiment.RQ3PipelineRunner \

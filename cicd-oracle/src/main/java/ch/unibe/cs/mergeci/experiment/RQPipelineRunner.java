@@ -81,7 +81,7 @@ public abstract class RQPipelineRunner {
         System.out.printf( "║  Generator           : %s%n",
                 generatorFactory() != null ? generatorFactory().getClass().getSimpleName() : "default (heuristic)");
         System.out.printf( "║  Baseline timeout    : %d s%n", AppConfig.MAVEN_BUILD_TIMEOUT);
-        System.out.printf( "║  Variant budget      : max(300s, baseline×10)%n");
+        System.out.printf( "║  Variant budget      : %s%n", variantBudgetSplashLine());
         System.out.printf( "║  Max threads         : %d (cores − 2; re-computed per merge from measured peak RAM)%n",
                 Math.max(1, Runtime.getRuntime().availableProcessors() - 2));
         System.out.printf( "║  Maven daemon        : %s%n", AppConfig.USE_MAVEN_DAEMON);
@@ -178,6 +178,13 @@ public abstract class RQPipelineRunner {
 
     private static String shortCommit(String full) {
         return full == null || full.length() < 8 ? String.valueOf(full) : full.substring(0, 8) + "...";
+    }
+
+    private static String variantBudgetSplashLine() {
+        long capProbe = AppConfig.variantBudget(Long.MAX_VALUE / 20);
+        return capProbe == Long.MAX_VALUE / 20 * 10
+                ? "max(300s, baseline×10)"
+                : String.format("max(300s, baseline×10), capped at %d s", capProbe);
     }
 
     /**
