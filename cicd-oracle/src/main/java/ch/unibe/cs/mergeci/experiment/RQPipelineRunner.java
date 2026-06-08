@@ -164,6 +164,18 @@ public abstract class RQPipelineRunner {
                 runModes(projectName, singleton, repoPath, mergeLog);
             } catch (Exception e) {
                 System.err.println("Analysis failed for " + projectName + ": " + e.getMessage());
+                // Record the failure so the resume fast-path skips this merge on the
+                // next run instead of re-cloning and re-building it every restart
+                // (e.g. a baseline that times out then throws during result parsing).
+                // Logged as a human_baseline SKIP with a non-"already processed"
+                // reason so loadAttemptedMergesIfNeeded() picks it up as a permanent
+                // skip. Commas/newlines are stripped because the CSV resume reader
+                // splits naively on ','.
+                String reason = "analysis error: "
+                        + String.valueOf(e.getMessage()).replace(',', ';').replace('\n', ' ');
+                for (DatasetReader.MergeInfo m : singleton) {
+                    mergeLog.logSkipped(projectName, m.getMergeCommit(), "human_baseline", reason);
+                }
             } finally {
                 RepositoryCache.clear();
                 WindowCache.reconfigure(new WindowCacheConfig());
