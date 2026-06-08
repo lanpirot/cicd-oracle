@@ -231,22 +231,25 @@ class TestPlotResultsMockup(unittest.TestCase):
 
     # ── Improvement markers ───────────────────────────────────────────────────
 
-    def test_human_baseline_marker_at_effective_relative_time(self):
-        # The mock baseline (17 s) is below the 30 s effective-baseline floor,
-        # so the marker lands at hb_secs / 30, not at 1.0.
+    def test_human_baseline_marker_collapses_to_one_one_below_floor(self):
+        # The human baseline is the normalisation reference, so it is a single
+        # implicit marker at exactly (1.0, 1.0) — even when the baseline (17 s
+        # here) is below the 30 s effective-baseline floor. It must NOT be
+        # scattered to hb_secs / 30 < 1.0 (the bug this guards against).
+        self.assertLess(HUMAN_BASELINE_SECS, pr.MIN_EFFECTIVE_BASELINE_SECS,
+                        "test precondition: hb_secs must be below the floor")
         data = pr.load_all_data(self.tmp_path)
-        module_markers, _ = pr.assemble_plot_data(data, pr.module_stats)
+        module_markers, module_steps = pr.assemble_plot_data(data, pr.module_stats)
         hb_markers = module_markers.get("human_baseline", [])
         self.assertEqual(len(hb_markers), 1,
-                         "human_baseline should have exactly one marker per merge")
+                         "human_baseline must collapse to a single reference marker")
         rel_t, rate = hb_markers[0]
-        expected_rel_t = HUMAN_BASELINE_SECS / max(HUMAN_BASELINE_SECS,
-                                                   pr.MIN_EFFECTIVE_BASELINE_SECS)
-        self.assertAlmostEqual(rel_t, expected_rel_t, places=3,
-                               msg="human_baseline marker must sit at "
-                                   "hb_secs / max(hb_secs, MIN_EFFECTIVE_BASELINE_SECS)")
-        self.assertAlmostEqual(rate, 1.0, places=3,
+        self.assertAlmostEqual(rel_t, 1.0, places=6,
+                               msg="human_baseline marker must sit at relative time 1.0")
+        self.assertAlmostEqual(rate, 1.0, places=6,
                                msg="human_baseline marker must be at relative score 1.0")
+        self.assertEqual(module_steps.get("human_baseline", []), [],
+                         "human_baseline must not contribute per-merge step lines")
 
     def test_human_baseline_marker_at_relative_time_one_above_floor(self):
         # When the baseline exceeds MIN_EFFECTIVE_BASELINE_SECS the floor is

@@ -365,6 +365,8 @@ def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
             continue  # can't normalise against zero (smoothing handles it)
 
         for mode in MODES:
+            if mode == "human_baseline":
+                continue  # baseline is the normaliser — added once after the loop
             merge = all_data[mode].get(commit)
             if not merge:
                 continue
@@ -372,18 +374,17 @@ def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
             if not variants:
                 continue
 
-            if mode == "human_baseline":
-                # Lands at (hb_secs / effective_hb, 1.0) — equals 1.0 except
-                # for floor-budget projects where eff_hb > hb_secs.
-                hb_x = hb_secs / effective_baseline_secs(hb_secs)
-                mode_steps[mode].append([(0.0, 0.0), (hb_x, 0.0), (hb_x, 1.0)])
-                mode_markers[mode].append((hb_x, 1.0))
-            else:
-                markers = improvement_markers(variants, metric_fn, hb_secs, hb_num,
-                                              smooth=smooth)
-                if markers:
-                    mode_markers[mode].extend(markers)
-                    mode_steps[mode].append([(0.0, 0.0)] + markers)
+            markers = improvement_markers(variants, metric_fn, hb_secs, hb_num,
+                                          smooth=smooth)
+            if markers:
+                mode_markers[mode].extend(markers)
+                mode_steps[mode].append([(0.0, 0.0)] + markers)
+
+    # The human baseline is the normalisation reference, so it sits at exactly
+    # (1.0, 1.0) by definition — a single implicit marker, not one scattered
+    # per-merge point (whose x drifts below 1.0 for sub-30s baselines).
+    if all_data.get("human_baseline"):
+        mode_markers["human_baseline"] = [(1.0, 1.0)]
 
     return mode_markers, mode_steps
 
@@ -406,6 +407,44 @@ def combined_quality(variant: dict, hb_modules: int, hb_tests: int) -> float:
     m_pass, _ = module_stats(variant)
     t_pass, _ = test_stats(variant)
     return ((m_pass + 1) / (hb_modules + 1)) * ((t_pass + 1) / (hb_tests + 1))
+
+
+def _per_merge_quality(all_data: dict, mode: str) -> dict:
+    """Per-merge build quality comparing the human baseline to the *best*
+    variant of ``mode`` (best = highest combined quality). Returns aligned
+    lists: human/best module counts, human/best test counts, and the best
+    variant's combined quality (1.0 = matches the human baseline)."""
+    hb_data = all_data.get("human_baseline", {})
+    mode_data = all_data.get(mode, {})
+    out = {"hb_modules": [], "hb_tests": [],
+           "best_modules": [], "best_tests": [], "best_combined": []}
+    for commit, hb_merge in hb_data.items():
+        merge = mode_data.get(commit)
+        if merge is None:
+            continue
+        hb_v = next((v for v in hb_merge.get("variants", [])
+                     if v.get("variantIndex") == 0), None)
+        if hb_v is None:
+            continue
+        hb_m, _ = module_stats(hb_v)
+        hb_t, _ = test_stats(hb_v)
+        best, best_q = None, -1.0
+        for v in merge.get("variants", []):
+            if v.get("variantIndex", 0) == 0 or v.get("timedOut"):
+                continue
+            q = combined_quality(v, hb_m, hb_t)
+            if q > best_q:
+                best, best_q = v, q
+        if best is None:
+            continue
+        bm, _ = module_stats(best)
+        bt, _ = test_stats(best)
+        out["hb_modules"].append(hb_m)
+        out["hb_tests"].append(hb_t)
+        out["best_modules"].append(bm)
+        out["best_tests"].append(bt)
+        out["best_combined"].append(best_q)
+    return out
 
 
 def combined_improvement_markers(variants: list, hb_secs: float,
@@ -455,6 +494,8 @@ def assemble_combined_plot_data(all_data: dict):
             continue
 
         for mode in MODES:
+            if mode == "human_baseline":
+                continue  # baseline is the normaliser — added once after the loop
             merge = all_data[mode].get(commit)
             if not merge:
                 continue
@@ -462,15 +503,14 @@ def assemble_combined_plot_data(all_data: dict):
             if not variants:
                 continue
 
-            if mode == "human_baseline":
-                hb_x = hb_secs / effective_baseline_secs(hb_secs)
-                mode_steps[mode].append([(0.0, 0.0), (hb_x, 0.0), (hb_x, 1.0)])
-                mode_markers[mode].append((hb_x, 1.0))
-            else:
-                markers = combined_improvement_markers(variants, hb_secs, hb_modules, hb_tests)
-                if markers:
-                    mode_markers[mode].extend(markers)
-                    mode_steps[mode].append([(0.0, 0.0)] + markers)
+            markers = combined_improvement_markers(variants, hb_secs, hb_modules, hb_tests)
+            if markers:
+                mode_markers[mode].extend(markers)
+                mode_steps[mode].append([(0.0, 0.0)] + markers)
+
+    # Human baseline is the normalisation reference: a single (1.0, 1.0) marker.
+    if all_data.get("human_baseline"):
+        mode_markers["human_baseline"] = [(1.0, 1.0)]
 
     return mode_markers, mode_steps
 
@@ -709,6 +749,31 @@ def _lowess(xs: list[float], ys: list[float], frac: float = 0.3) -> list[float]:
 VARIANT_MODES = [m for m in MODES if m != "human_baseline"]
 
 
+def _present_variant_modes(all_data: dict) -> list[str]:
+    """Variant modes that actually have data. RQ3 runs a single best mode, so
+    paired cross-mode charts must restrict to the present modes — otherwise the
+    paired intersection across absent modes is empty and the boxplot positions
+    desync. Genuinely multi-mode charts (cache speedup, 2x2 factorial) should
+    additionally be skipped when fewer than two modes are present."""
+    return [m for m in VARIANT_MODES if all_data.get(m)]
+
+
+def _note_requires_modes(ax, all_data: dict, *, need: set | None = None) -> bool:
+    """For charts that compare execution modes: render an explanatory note and
+    return False when the required modes are absent (e.g. a single-mode RQ3
+    run). ``need`` is a specific set of required modes; the default requires at
+    least two present variant modes."""
+    present = set(_present_variant_modes(all_data))
+    ok = need.issubset(present) if need else len(present) >= 2
+    if not ok:
+        ax.text(0.5, 0.5,
+                "Requires multiple execution modes\n(not applicable to a single-mode run)",
+                transform=ax.transAxes, ha="center", va="center")
+        ax.set_xticks([])
+        ax.set_yticks([])
+    return ok
+
+
 def _cliffs_delta(x: list[float], y: list[float]) -> float:
     """Cliff's delta effect size: proportion of (xi > yj) minus (xi < yj)."""
     if not x or not y:
@@ -940,8 +1005,9 @@ def _draw_variants_count_boxplot(ax, all_data: dict, metric, *,
                                  valid_commits: list[str] | None = None):
     """Shared boxplot body for charts 05 / 05c / 05d. ``metric`` is the per-merge
     counting function (variants total / built $\geq$1 module / ran $\geq$1 test)."""
-    groups = _collect_paired_metric(all_data, VARIANT_MODES, metric, valid_commits)
-    if not groups:
+    groups = _collect_paired_metric(all_data, _present_variant_modes(all_data),
+                                    metric, valid_commits)
+    if not any(groups.values()):
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
         return
 
@@ -972,10 +1038,11 @@ def _draw_variants_count_boxplot(ax, all_data: dict, metric, *,
 
 def draw_variants_completed(ax, all_data: dict, valid_commits: list[str] | None = None):
     """Box plot (log scale): number of completed variants per mode."""
+    multi = len(_present_variant_modes(all_data)) >= 2
     _draw_variants_count_boxplot(
         ax, all_data, _count_completed_variants,
         ylabel="Completed variants per merge (log scale)",
-        title="Variant Throughput by Execution Mode",
+        title="Variant Throughput by Execution Mode" if multi else "Variant Throughput",
         valid_commits=valid_commits,
     )
 
@@ -1030,6 +1097,12 @@ def draw_time_to_best_normalized(ax, all_data: dict, valid_commits: list[str] | 
     (default 10.0) so "not found" sits in the same visual space as the data,
     above a gray dashed reference line. A second-row x-tick label shows the
     "not found" count per mode."""
+    # Normalising by the fastest mode is meaningless with a single mode (every
+    # value collapses to 1.0), so skip for single-mode runs.
+    if not _note_requires_modes(ax, all_data):
+        ax.set_title("Per-merge Time-to-Best Across Modes")
+        return
+
     if valid_commits is None:
         valid_commits = sorted(
             set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
@@ -1241,13 +1314,14 @@ def draw_variants_per_second(ax, all_data: dict, valid_commits: list[str] | None
     Uses the widest possible n (commits present in all 4 variant modes) — does NOT
     require a measurable baseline budget or scoreable variants the way the
     count-based throughput chart does."""
-    if valid_commits is None:
+    present_modes = _present_variant_modes(all_data)
+    if valid_commits is None and present_modes:
         valid_commits = sorted(
-            set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
+            set.intersection(*(set(all_data.get(m, {}).keys()) for m in present_modes))
         )
-    groups = _collect_paired_metric(all_data, VARIANT_MODES, _variants_per_second,
+    groups = _collect_paired_metric(all_data, present_modes, _variants_per_second,
                                     valid_commits)
-    if not groups:
+    if not any(groups.values()):
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
         return
 
@@ -1266,7 +1340,8 @@ def draw_variants_per_second(ax, all_data: dict, valid_commits: list[str] | None
     ax.set_xticklabels([f"{MODE_LABELS[m]} ({MODE_SHORT[m]})\nn={len(groups[m])}"
                         for m in plot_modes])
     ax.set_ylabel("Variants per second of variant-phase wall-clock (log scale)")
-    ax.set_title("Variant Throughput Rate by Execution Mode")
+    ax.set_title("Variant Throughput Rate by Execution Mode"
+                 if len(_present_variant_modes(all_data)) >= 2 else "Variant Throughput Rate")
     ax.grid(True, axis="y", alpha=0.3, which="both")
 
     friedman_p = _friedman_test(groups, plot_modes)
@@ -1495,6 +1570,14 @@ def draw_cache_warmup_speedup_quartiles(fig, all_data: dict,
     """Two panels (one per mode pair). Each panel shows ``n_buckets`` box plots
     side by side — one box per quartile of variants per merge sorted by build
     time (fastest → slowest)."""
+    if len(_present_variant_modes(all_data)) < 2:
+        ax = fig.add_subplot(111)
+        ax.text(0.5, 0.5, "Requires multiple execution modes\n(not applicable to a single-mode run)",
+                transform=ax.transAxes, ha="center", va="center")
+        ax.set_xticks([]); ax.set_yticks([])
+        ax.set_title("Cache Warmup Speedup")
+        return
+
     PAIRS = [
         ("cache_sequential", "no_optimization", "Sequential: S+ / S"),
         ("cache_parallel",   "parallel",        "Parallel: P+ / P"),
@@ -1649,6 +1732,10 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
 
     Y-axis: rank 1 (best) at top, 4 (worst) at bottom.
     """
+    if not _note_requires_modes(ax, all_data):
+        ax.set_title("Mode Rank Evolution Over Time")
+        return
+
     from scipy.stats import rankdata as _rankdata
 
     if valid_commits is None:
@@ -2019,6 +2106,14 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
     Shows medians with bootstrap 95% CIs and rank-based ANCOVA p-values
     (cache + threads + cache:threads).
     """
+    # The 2x2 factorial requires all four variant modes; a single-mode RQ3 run
+    # cannot populate the design.
+    if not _note_requires_modes(ax, all_data,
+                                need={"no_optimization", "parallel",
+                                      "cache_sequential", "cache_parallel"}):
+        ax.set_title(f"Technique Decomposition: {metric_name}")
+        return
+
     groups = _collect_paired_metric(all_data, VARIANT_MODES, metric_fn, valid_commits)
     if not groups:
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
@@ -2107,6 +2202,15 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
     Each merge contributes one line (thin, semi-transparent); a thick median
     line per mode summarises the trend.
     """
+    # The per-thread view only makes sense with a parallel mode (dividing a
+    # sequential time by threads=1 just duplicates the normal chart).
+    if per_thread and not (set(_present_variant_modes(all_data)) & {"parallel", "cache_parallel"}):
+        ax.text(0.5, 0.5, "Per-thread view requires a parallel mode\n(not applicable to a single-mode run)",
+                transform=ax.transAxes, ha="center", va="center")
+        ax.set_xticks([]); ax.set_yticks([])
+        ax.set_title("Marginal Cost of Additional Variants (Per Thread)")
+        return
+
     import numpy as np
 
     max_x = 0       # track longest median curve for x-axis limit
@@ -2170,18 +2274,27 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
     if per_thread:
         ax.set_ylabel("Build time per thread (relative to baseline)")
         ax.set_title("Marginal Cost of Additional Variants (Per Thread)")
+        y_top = 0.25  # fixed crop for the per-thread (parallel) view
     else:
         ax.set_ylabel("Build time (relative to baseline, 1.0 = baseline duration)")
         ax.set_title("Marginal Cost of Additional Variants")
-    ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
-               label="baseline build time")
+        # Fit the data with 15% headroom rather than pinning to a fixed ceiling:
+        # variants are typically far cheaper than the baseline, so a fixed 1.5
+        # top would squeeze the whole curve into a sliver at the bottom.
+        y_top = max(max_y * 1.15, 0.05)
     ax.set_xlim(left=0, right=max_x + 1 if max_x > 0 else None)
-    # Dynamic y-axis: accommodate the tallest median curve with 15% headroom
-    if per_thread:
-        y_top = 0.25  # fixed crop for per-thread view
-    else:
-        y_top = max(max_y * 1.15, 1.5)  # keep baseline line comfortably visible
     ax.set_ylim(bottom=0, top=y_top)
+    # Baseline reference at y=1: draw the line only when it falls inside the
+    # data range; otherwise annotate, since an off-range line just wastes space.
+    if y_top >= 1.0:
+        ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6,
+                   label="baseline build time")
+    elif max_y > 0:
+        factor = 1.0 / max_y
+        ax.annotate((rf"baseline (1.0) $\approx$ {factor:.0f}$\times$ the costliest variant"
+                     if USE_LATEX else f"baseline (1.0) ~ {factor:.0f}x the costliest variant"),
+                    xy=(0.98, 0.92), xycoords="axes fraction", ha="right",
+                    fontsize=8, color="grey")
     ax.legend(loc="upper right", fontsize=8)
     ax.grid(True, alpha=0.3)
 
@@ -2191,6 +2304,11 @@ def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None
     Like the marginal cost curve but for cache modes only, split by hadWarmCacheReady.
     Four series: S+ warm, S+ cold, P+ warm, P+ cold.
     """
+    if not _note_requires_modes(ax, all_data,
+                                need={"cache_sequential", "cache_parallel"}):
+        ax.set_title("Cache Effect on Variant Build Time")
+        return
+
     import numpy as np
 
     max_x = 0
@@ -2397,6 +2515,66 @@ def draw_best_variant_index_box(ax, all_data: dict):
     ax.set_ylabel("variantIndex of best variant (lower = found earlier in run order)")
     ax.set_title("Best-Variant Position in Run Order (per merge)")
     ax.grid(True, axis="y", alpha=0.3)
+
+
+def draw_quality_distributions(fig, all_data: dict):
+    """Three boxplot panels comparing the human baseline to the best variant of
+    each present mode: #modules built, #tests passed, and combined quality
+    (1.0 = matches the human). Means shown as white dots; y-axes are symlog so
+    the wide count ranges stay legible."""
+    import numpy as np
+    modes = _present_variant_modes(all_data)
+    axes = fig.subplots(1, 3)
+    if not modes:
+        for ax in axes:
+            ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
+
+    perq = {m: _per_merge_quality(all_data, m) for m in modes}
+
+    def _boxes(ax, series, ylabel, title, ref=None):
+        data   = [np.asarray(s, dtype=float) for s, _, _ in series if len(s)]
+        labels = [l for s, l, _ in series if len(s)]
+        colors = [c for s, _, c in series if len(s)]
+        if not data:
+            ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+            ax.set_title(title)
+            return
+        positions = list(range(len(data)))
+        bp = ax.boxplot(data, positions=positions, widths=0.6, patch_artist=True,
+                        showmeans=True,
+                        meanprops=dict(marker="o", markerfacecolor="white",
+                                       markeredgecolor="black", markersize=4),
+                        flierprops=dict(markersize=2, alpha=0.3))
+        for patch, c in zip(bp["boxes"], colors):
+            patch.set_facecolor(c)
+            patch.set_alpha(0.7)
+        ax.set_xticks(positions)
+        ax.set_xticklabels([f"{l}\nn={len(d)}" for l, d in zip(labels, data)])
+        ax.set_yscale("symlog", linthresh=1)
+        ax.set_ylim(bottom=0)  # counts/quality are non-negative — drop the unused negative half
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        ax.grid(True, axis="y", alpha=0.3, which="both")
+        if ref is not None:
+            ax.axhline(ref, color="grey", linestyle="--", linewidth=0.8, alpha=0.7)
+
+    hb_label = MODE_LABELS["human_baseline"]
+    hb_color = MODE_COLORS["human_baseline"]
+    base = modes[0]
+    _boxes(axes[0],
+           [(perq[base]["hb_modules"], hb_label, hb_color)]
+           + [(perq[m]["best_modules"], MODE_LABELS[m], MODE_COLORS[m]) for m in modes],
+           "Modules built (symlog)", "Modules Built: Human vs. Best Variant")
+    _boxes(axes[1],
+           [(perq[base]["hb_tests"], hb_label, hb_color)]
+           + [(perq[m]["best_tests"], MODE_LABELS[m], MODE_COLORS[m]) for m in modes],
+           "Tests passed (symlog)", "Tests Passed: Human vs. Best Variant")
+    _boxes(axes[2],
+           [(perq[m]["best_combined"], MODE_LABELS[m], MODE_COLORS[m]) for m in modes],
+           "combined quality (symlog, 1.0 = human)",
+           "Combined Quality: Best Variant", ref=1.0)
+    fig.tight_layout()
 
 
 def _save_fig(fig, results_dir: Path, name: str, combined_pdf=None):
@@ -2631,6 +2809,38 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
             draw_best_variant_index_box(ax, all_data)
             _save_fig(fig, results_dir, "11_best_variant_index", pdf)
 
+        # Chart 12: Build-quality distributions — human baseline vs best variant
+        # (modules, tests, combined quality).
+        print("Drawing build-quality distribution charts ...")
+        fig = plt.figure(figsize=(13, 4.5))
+        draw_quality_distributions(fig, all_data)
+        _save_fig(fig, results_dir, "12_quality_distributions", pdf)
+
+        # Charts 13a/13b: RQ3 Hamming-distance vs build-quality. Imported from
+        # the standalone analysis so the figures join the combined collection.
+        # Needs the ground-truth all_conflicts.csv (a sibling 'common/' dir);
+        # skipped with a note if it is unavailable.
+        if rq == "rq3":
+            conflicts_csv = variant_dir.parent.parent / "common" / "all_conflicts.csv"
+            if conflicts_csv.exists():
+                try:
+                    import rq3_hamming_quality_correlation as hq
+                    print("Drawing Hamming-distance vs quality charts ...")
+                    all_pairs, per_merge_r, pooled_r, _ = hq.compute_pairs(
+                        variant_dir, conflicts_csv)
+                    if all_pairs:
+                        fig, ax = plt.subplots(figsize=(8, 5))
+                        hq.plot_scatter(ax, all_pairs, pooled_r)
+                        _save_fig(fig, results_dir, "13a_hamming_quality_scatter", pdf)
+                    if per_merge_r:
+                        fig, ax = plt.subplots(figsize=(8, 4))
+                        hq.plot_per_merge_r(ax, per_merge_r)
+                        _save_fig(fig, results_dir, "13b_hamming_per_merge_r", pdf)
+                except Exception as e:
+                    print(f"  (Hamming charts skipped: {e})")
+            else:
+                print(f"  (Hamming charts skipped: {conflicts_csv} not found)")
+
     # Write console summary to text file
     _write_console_summary(results_dir, all_data, stats, rq)
 
@@ -2722,6 +2932,40 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
         n_all = len(stats["all_merges"])
         n_impact = len(stats["impact_set"])
         lines.append(f"\nImpact merges: {n_impact}/{n_all} ({100*n_impact/n_all:.0f}%)")
+
+    # Build quality: human baseline vs best variant of each mode
+    lines.append(f"\nBuild quality (per merge: human baseline vs. best variant):")
+
+    def _mm(vals):
+        a = np.array(vals, dtype=float)
+        return f"mean={a.mean():6.2f}, median={np.median(a):6.2f}"
+
+    any_quality = False
+    for mode in VARIANT_MODES:
+        if not all_data.get(mode):
+            continue
+        q = _per_merge_quality(all_data, mode)
+        n = len(q["best_combined"])
+        if n == 0:
+            continue
+        any_quality = True
+        lines.append(f"  {MODE_LABELS.get(mode, mode)} (n={n} merges):")
+        lines.append(f"    #modules built  : human [{_mm(q['hb_modules'])}]  "
+                     f"best-variant [{_mm(q['best_modules'])}]")
+        lines.append(f"    #tests passed   : human [{_mm(q['hb_tests'])}]  "
+                     f"best-variant [{_mm(q['best_tests'])}]")
+        # Human combined quality is exactly 1.0 by construction (it is the
+        # normaliser); show it alongside the best variant for a like-for-like read.
+        lines.append(f"    combined quality: human [{_mm([1.0] * n)}]  "
+                     f"best-variant [{_mm(q['best_combined'])}]")
+        n_ge = sum(1 for x in q["best_combined"] if x >= 1.0)
+        n_gt = sum(1 for x in q["best_combined"] if x > 1.0)
+        lines.append(f"    best variant matched or beat human: "
+                     f"{n_ge}/{n} ({100*n_ge/n:.0f}%)")
+        lines.append(f"    best variant beat human:            "
+                     f"{n_gt}/{n} ({100*n_gt/n:.0f}%)")
+    if not any_quality:
+        lines.append("  (no scoreable merges)")
 
     # Paired statistical tests (throughput)
     groups_throughput = _collect_paired_metric(all_data, VARIANT_MODES, _count_completed_variants)
