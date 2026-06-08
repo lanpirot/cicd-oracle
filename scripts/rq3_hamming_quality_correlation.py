@@ -394,6 +394,56 @@ def plot_per_merge_r(ax, per_merge_r: list[float]):
     ax.grid(True, alpha=0.3)
 
 
+# ── Analysis ──────────────────────────────────────────────────────────────────
+
+def compute_pairs(variant_dir: Path, conflicts_csv: Path):
+    """Compute Hamming-vs-quality data for the variant best-mode in
+    ``variant_dir`` against the human ground truth. Sets the module-level
+    VARIANT_MODE (used by plot titles) and returns
+    ``(all_pairs, per_merge_r, pooled_r, stats)``. Reused by main() and by
+    plot_results.py so the two Hamming charts can join the combined collection."""
+    global VARIANT_MODE
+    VARIANT_MODE = detect_variant_mode(variant_dir)
+
+    ground_truth = load_ground_truth(conflicts_csv)
+    merges    = load_merges(variant_dir, VARIANT_MODE)
+    baselines = load_merges(variant_dir, BASELINE_MODE)
+
+    all_pairs: list[tuple[int, float]] = []
+    per_merge_r: list[float] = []
+    stats = {"merges": len(merges), "ground_truth": len(ground_truth),
+             "no_gt": 0, "no_baseline": 0, "too_few": 0}
+
+    for commit, merge in merges.items():
+        gt = ground_truth.get(commit)
+        if gt is None:
+            stats["no_gt"] += 1
+            continue
+        baseline_merge = baselines.get(commit)
+        if baseline_merge is None:
+            stats["no_baseline"] += 1
+            continue
+        hb = baseline_stats(baseline_merge)
+        if hb is None:
+            stats["no_baseline"] += 1
+            continue
+        pairs = analyse_merge(merge, gt, hb[0], hb[1])
+        if len(pairs) < 3:
+            stats["too_few"] += 1
+            continue
+        all_pairs.extend(pairs)
+        result = spearman_r([p[0] for p in pairs], [p[1] for p in pairs])
+        if result is not None:
+            per_merge_r.append(result[0])
+
+    pooled_r = None
+    if all_pairs:
+        result = spearman_r([p[0] for p in all_pairs], [p[1] for p in all_pairs])
+        if result is not None:
+            pooled_r = result[0]
+    return all_pairs, per_merge_r, pooled_r, stats
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -401,63 +451,19 @@ def main():
     conflicts_csv = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_CONFLICTS_CSV
     output_pdf    = Path(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_OUTPUT_PDF
 
-    global VARIANT_MODE
-    VARIANT_MODE = detect_variant_mode(variant_dir)
+    print(f"Loading ground truth from {conflicts_csv} and variant data from {variant_dir} ...")
+    all_pairs, per_merge_r, pooled_r, stats = compute_pairs(variant_dir, conflicts_csv)
     print(f"Detected variant mode: {VARIANT_MODE}")
-
-    print(f"Loading ground truth from {conflicts_csv} ...")
-    ground_truth = load_ground_truth(conflicts_csv)
-    print(f"  {len(ground_truth):,} merges with ground-truth patterns.")
-
-    print(f"Loading variant data from {variant_dir} / {VARIANT_MODE} ...")
-    merges = load_merges(variant_dir, VARIANT_MODE)
-    print(f"  {len(merges):,} merges loaded.")
-
-    print(f"Loading baseline data from {variant_dir} / {BASELINE_MODE} ...")
-    baselines = load_merges(variant_dir, BASELINE_MODE)
-    print(f"  {len(baselines):,} baseline merges loaded.")
-
-    all_pairs: list[tuple[int, float]] = []
-    per_merge_r: list[float] = []
-    skipped_no_gt = 0
-    skipped_no_baseline = 0
-    skipped_too_few = 0
-
-    for commit, merge in merges.items():
-        gt = ground_truth.get(commit)
-        if gt is None:
-            skipped_no_gt += 1
-            continue
-        baseline_merge = baselines.get(commit)
-        if baseline_merge is None:
-            skipped_no_baseline += 1
-            continue
-        hb = baseline_stats(baseline_merge)
-        if hb is None:
-            skipped_no_baseline += 1
-            continue
-        pairs = analyse_merge(merge, gt, hb[0], hb[1])
-        if len(pairs) < 3:
-            skipped_too_few += 1
-            continue
-        all_pairs.extend(pairs)
-        result = spearman_r([p[0] for p in pairs], [p[1] for p in pairs])
-        if result is not None:
-            per_merge_r.append(result[0])
-
-    print(f"  Skipped (no ground truth): {skipped_no_gt}")
-    print(f"  Skipped (no/unscoreable human baseline): {skipped_no_baseline}")
-    print(f"  Skipped (< 3 scoreable variants): {skipped_too_few}")
+    print(f"  {stats['ground_truth']:,} merges with ground-truth patterns; "
+          f"{stats['merges']:,} variant merges loaded.")
+    print(f"  Skipped (no ground truth): {stats['no_gt']}")
+    print(f"  Skipped (no/unscoreable human baseline): {stats['no_baseline']}")
+    print(f"  Skipped (< 3 scoreable variants): {stats['too_few']}")
     print(f"  Total (merge, variant) pairs analysed: {len(all_pairs):,}")
 
-    # Pooled correlation
-    pooled_r = None
-    if all_pairs:
-        result = spearman_r([p[0] for p in all_pairs], [p[1] for p in all_pairs])
-        if result is not None:
-            pooled_r, pooled_p = result
-            print(f"\nPooled Spearman r = {pooled_r:.4f}  (p = {pooled_p:.2e})")
-            print("  Negative r = anti-correlation: lower Hamming → higher quality (supports RQ1 criterion).")
+    if pooled_r is not None:
+        print(f"\nPooled Spearman r = {pooled_r:.4f}")
+        print("  Negative r = anti-correlation: lower Hamming → higher quality (supports RQ1 criterion).")
 
     if per_merge_r:
         n = len(per_merge_r)
