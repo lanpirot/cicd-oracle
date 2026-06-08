@@ -169,6 +169,15 @@ ssh -p 2033 seg@calculon.inf.unibe.ch '
 
   # 4. Sweep the now-empty overlay temp dirs.
   rm -rf /dev/shm/projects /tmp/bruteforce_tmp/m2_overlays
+
+  # 5. Sweep build-temp junk out of /tmp. Java/Maven/mvnd/surefire/git use the
+  #    default java.io.tmpdir=/tmp; a long killed run can leave *millions* of
+  #    files there. /tmp lives on the root fs and is emptied at boot by the
+  #    `D /tmp` tmpfiles rule — so a full /tmp turns the next reboot into a
+  #    30+ min systemd-tmpfiles-setup hang (see "Before rebooting" below).
+  find /tmp -maxdepth 1 -mindepth 1 \( -name "*.tmp" -o -name "mvnd*" -o -name "maven*" \
+       -o -name "surefire*" -o -name "byte-buddy*" -o -name "hsperfdata_*" \
+       -o -name "*.jar" -o -name "git*" \) -exec rm -rf {} + 2>/dev/null
 '
 
 # Verify clean (reconnect if step 2 dropped the previous shell):
@@ -191,3 +200,26 @@ Notes:
 - `OverlayMount.cleanupStaleMounts(...)` runs at the start of every pipeline
   invocation and will sweep leftover **directories**, but it cannot unmount
   active overlays — do that manually before relaunching.
+
+### Before rebooting the VM: empty /tmp first
+
+`/tmp` is on the root fs and carries a `D /tmp` tmpfiles rule, so
+`systemd-tmpfiles-setup.service` **empties /tmp at every boot**. After a heavy
+or killed RQ run, `/tmp` holds millions of build-temp files (default
+`java.io.tmpdir=/tmp`), and deleting them all turns boot into a 30+ min hang —
+`systemd-tmpfiles-setup` runs with `TimeoutStartSec=infinity`, so nothing kills
+it and `sshd` never comes up until it finishes. **Always clear /tmp before any
+reboot/shutdown:**
+
+```bash
+ssh -p 2033 seg@calculon.inf.unibe.ch 'rm -rf /tmp/* 2>/dev/null; true'
+```
+
+If the box is *already* stuck mid-boot on this, there is no break-in (no getty
+before `sysinit.target`, and GRUB can't be interrupted on this host) — just
+**wait it out**; the deletion finishes and the box comes up. Do **not**
+power-cycle: each reboot restarts the deletion from zero.
+
+The persistent journal is capped at 500 MB
+(`/etc/systemd/journald.conf.d/cap.conf`, `SystemMaxUse=500M`) so the
+`Z /var/log/journal` boot rule can never become the next slow-boot culprit.
