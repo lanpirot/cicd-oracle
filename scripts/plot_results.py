@@ -2954,12 +2954,19 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
                      f"best-variant [{_mm(q['best_modules'])}]")
         lines.append(f"    #tests passed   : human [{_mm(q['hb_tests'])}]  "
                      f"best-variant [{_mm(q['best_tests'])}]")
-        # Human combined quality is exactly 1.0 by construction (it is the
-        # normaliser); show it alongside the best variant for a like-for-like read.
-        lines.append(f"    combined quality: human [{_mm([1.0] * n)}]  "
-                     f"best-variant [{_mm(q['best_combined'])}]")
-        n_ge = sum(1 for x in q["best_combined"] if x >= 1.0)
-        n_gt = sum(1 for x in q["best_combined"] if x > 1.0)
+        # Combined quality is a multiplicative ratio, so the geometric mean is
+        # the right central tendency: the arithmetic mean is dominated by a few
+        # broken-baseline merges (human built ~nothing) where the ratio explodes
+        # into the thousands. Human is 1.0 by construction.
+        bc = np.array(q["best_combined"], dtype=float)
+        gmean = float(np.exp(np.mean(np.log(bc))))
+        n_outlier = int((bc > 100).sum())
+        lines.append(f"    combined quality: human [geomean=  1.00, median=  1.00]  "
+                     f"best-variant [geomean={gmean:6.2f}, median={np.median(bc):6.2f}]")
+        lines.append(f"      (ratio metric: arithmetic mean={bc.mean():.1f} is inflated by "
+                     f"{n_outlier} broken-baseline merge(s), max={bc.max():.0f})")
+        n_ge = int((bc >= 1.0).sum())
+        n_gt = int((bc > 1.0).sum())
         lines.append(f"    best variant matched or beat human: "
                      f"{n_ge}/{n} ({100*n_ge/n:.0f}%)")
         lines.append(f"    best variant beat human:            "
