@@ -28,4 +28,20 @@ public class TestResultTest extends BaseTest {
         assertEquals(3.456f, testResult.getElapsedTime(), 0.001f, "Elapsed time should be 3.456");
         assertEquals(6, testResult.getPassedNum(), "Passed tests should be 6 (10 - 2 - 1 - 1)");
     }
+
+    @Test
+    void parsesCommaDecimalElapsedTime() throws IOException {
+        // A de_CH/de_DE-locale Maven prints "Time elapsed: 1,769" (comma decimal),
+        // which previously crashed Float.parseFloat with "For input string: 1,769".
+        File f = AppConfig.TEST_TMP_DIR.resolve("comma-locale-test-result.txt").toFile();
+        f.getParentFile().mkdirs();
+        java.nio.file.Files.writeString(f.toPath(),
+                "Tests run: 1769, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1,769 s");
+
+        TestResult r = TestResult.createTestResultFromFile(f);
+
+        assertNotNull(r, "comma-decimal elapsed time must parse, not throw");
+        assertEquals(1769, r.getRunNum());
+        assertEquals(1.769f, r.getElapsedTime(), 0.001f, "'1,769' must parse as 1.769");
+    }
 }

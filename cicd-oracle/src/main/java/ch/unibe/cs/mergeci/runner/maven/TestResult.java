@@ -31,7 +31,10 @@ public class TestResult {
         TestResult testResult = null;
 
         String string = Files.readString(testResultFile.toPath());
-        Pattern p = Pattern.compile("Tests run: (\\d+), Failures: (\\d+), Errors: (\\d+), Skipped: (\\d+), Time elapsed: (\\d+(.\\d+)?).*");
+        // Time elapsed may use a comma decimal separator under a non-English
+        // locale ("Time elapsed: 1,769"); accept either separator and normalise
+        // to a dot before parsing.
+        Pattern p = Pattern.compile("Tests run: (\\d+), Failures: (\\d+), Errors: (\\d+), Skipped: (\\d+), Time elapsed: (\\d+(?:[.,]\\d+)?).*");
         Matcher m = p.matcher(string);
 
         if (m.find()) {
@@ -39,7 +42,7 @@ public class TestResult {
             int failuresNum = Integer.parseInt(m.group(2));
             int errorsNum = Integer.parseInt(m.group(3));
             int skippedNum = Integer.parseInt(m.group(4));
-            float timeElapsed = Float.parseFloat(m.group(5));
+            float timeElapsed = Float.parseFloat(m.group(5).replace(',', '.'));
 
             testResult = new TestResult(runNum, failuresNum, errorsNum, skippedNum, timeElapsed);
         }else {

@@ -82,10 +82,20 @@ public class MavenProcessExecutor {
             pb.environment().put("PATH", javaHome + "/bin:" + pb.environment().getOrDefault("PATH", ""));
         }
 
+        // Force a fixed locale so Maven and its surefire forks emit canonical,
+        // dot-decimal numbers and English log messages. On a de_CH/de_DE VM the
+        // default locale otherwise prints e.g. "Time elapsed: 1,769", and the
+        // comma-decimal breaks Float.parseFloat in the result parsers. LC_ALL
+        // propagates to the forked test JVMs (which is where the formatting
+        // happens); -Duser.* covers the Maven JVM's own output.
+        pb.environment().put("LC_ALL", "C.UTF-8");
+        pb.environment().put("LANG", "C.UTF-8");
+
         // Ensure spawned Maven processes have enough heap for large projects.
         // Prepend our setting so any user-defined MAVEN_OPTS still takes effect afterwards.
         String existingOpts = pb.environment().getOrDefault("MAVEN_OPTS", "");
-        pb.environment().put("MAVEN_OPTS", AppConfig.MAVEN_SUBPROCESS_HEAP + " " + existingOpts);
+        pb.environment().put("MAVEN_OPTS",
+                AppConfig.MAVEN_SUBPROCESS_HEAP + " -Duser.language=en -Duser.country=US " + existingOpts);
 
         if (outputFile != null) {
             pb.redirectOutput(outputFile.toFile());
