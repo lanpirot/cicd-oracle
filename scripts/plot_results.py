@@ -2965,12 +2965,13 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
                      f"best-variant [geomean={gmean:6.2f}, median={np.median(bc):6.2f}]")
         lines.append(f"      (ratio metric: arithmetic mean={bc.mean():.1f} is inflated by "
                      f"{n_outlier} broken-baseline merge(s), max={bc.max():.0f})")
-        n_ge = int((bc >= 1.0).sum())
-        n_gt = int((bc > 1.0).sum())
-        lines.append(f"    best variant matched or beat human: "
-                     f"{n_ge}/{n} ({100*n_ge/n:.0f}%)")
-        lines.append(f"    best variant beat human:            "
-                     f"{n_gt}/{n} ({100*n_gt/n:.0f}%)")
+        n_better = int((bc > 1.0).sum())
+        n_match  = int((bc == 1.0).sum())
+        n_worse  = int((bc < 1.0).sum())
+        lines.append(f"    best variant vs human build quality: "
+                     f"matched {n_match}/{n} ({100*n_match/n:.0f}%), "
+                     f"better {n_better}/{n} ({100*n_better/n:.0f}%), "
+                     f"worse {n_worse}/{n} ({100*n_worse/n:.0f}%)")
     if not any_quality:
         lines.append("  (no scoreable merges)")
 
