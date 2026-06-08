@@ -12,8 +12,8 @@ Quality metric mirrors plot_results.py chart 02c: the Laplace-smoothed product
 
 Inputs:
   - variant_experiments_dir/  (per-project JSON files, one subdir per mode;
-                               must contain `human_baseline/` and the variant
-                               mode (`cache_parallel/` by default))
+                               must contain `human_baseline/` and exactly one
+                               variant best-mode subdir, which is auto-detected)
   - all_conflicts.csv          (ground-truth per-chunk human patterns)
 
 Output:
@@ -60,9 +60,11 @@ DEFAULT_CONFLICTS_CSV = Path("/home/lanpirot/data/bruteforcemerge/common/all_con
 DEFAULT_OUTPUT_PDF    = Path("rq3_hamming_quality.pdf")
 
 # Only analyse the best mode (human_baseline provides the quality denominator,
-# the variant mode provides the Hamming/quality pairs).
-VARIANT_MODE  = "cache_parallel"
+# the variant mode provides the Hamming/quality pairs). The RQ3 best mode is
+# configurable per run (-Drq3BestMode), so VARIANT_MODE is discovered from the
+# data directory at runtime rather than hard-coded.
 BASELINE_MODE = "human_baseline"
+VARIANT_MODE  = ""  # set by detect_variant_mode() in main()
 
 USE_LATEX = True
 plt.rcParams.update({
@@ -238,6 +240,24 @@ def combined_quality(variant: dict, hb_modules: int, hb_tests: int) -> float | N
 
 # ── Data loading ──────────────────────────────────────────────────────────────
 
+def detect_variant_mode(variant_dir: Path) -> str:
+    """Discover the single variant mode subdir RQ3 wrote alongside
+    `human_baseline/`. The best mode varies per run (-Drq3BestMode), so it must
+    be read from the directory rather than assumed (e.g. `no_optimization` for
+    the S run, `cache_parallel` for P+)."""
+    candidates = sorted(
+        d.name for d in variant_dir.iterdir()
+        if d.is_dir() and d.name != BASELINE_MODE and any(d.glob("*.json"))
+    )
+    if not candidates:
+        sys.exit(f"Error: no variant mode subdir (other than {BASELINE_MODE}) "
+                 f"with JSON found in {variant_dir}")
+    if len(candidates) > 1:
+        print(f"Warning: multiple variant modes {candidates}; using "
+              f"'{candidates[0]}'.", file=sys.stderr)
+    return candidates[0]
+
+
 def load_merges(variant_dir: Path, mode: str) -> dict[str, dict]:
     """Returns {mergeCommit -> merge_dict} for the given mode.
 
@@ -380,6 +400,10 @@ def main():
     variant_dir   = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_VARIANT_DIR
     conflicts_csv = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_CONFLICTS_CSV
     output_pdf    = Path(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_OUTPUT_PDF
+
+    global VARIANT_MODE
+    VARIANT_MODE = detect_variant_mode(variant_dir)
+    print(f"Detected variant mode: {VARIANT_MODE}")
 
     print(f"Loading ground truth from {conflicts_csv} ...")
     ground_truth = load_ground_truth(conflicts_csv)
