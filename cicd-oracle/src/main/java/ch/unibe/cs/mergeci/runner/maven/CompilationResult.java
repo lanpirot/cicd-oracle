@@ -52,6 +52,15 @@ public class CompilationResult {
     private final static String TOTAL_TIME_REGEX = "\\[INFO\\] Total time:\\s+([\\d.:]+) (min|s|ms)";
     private final static String REACTOR_BLOCK = "\\[INFO\\]\\s+Reactor Summary(?:.*?)?:\\s*((.*\\R)*?)\\[INFO\\]\\s+-+";
 
+    /**
+     * A build killed by the wall-clock timeout can leave a multi-hundred-MB log.
+     * The signal the parser needs (Building lines, Reactor Summary, BUILD status)
+     * lives at the head and tail, so when a log exceeds this many chars we keep
+     * only the first and last half and elide the middle — bounding the work every
+     * regex below has to do (a giant timeout log once spun the parser for ~3 h).
+     */
+    private final static int LOG_SCAN_CAP = 16 * 1024 * 1024;
+
 
 
     /** Test factory — avoids writing log files to disk. */
@@ -100,6 +109,7 @@ public class CompilationResult {
         moduleResults = new ArrayList<>();
 
         String string = new String(Files.readAllBytes(testResultFile));
+        string = capHugeLog(string);
         string = string.replaceAll("\u001B\\[[;\\d]*m", ""); //clean ANSI color codes from Maven output
         // Unwrap mvnd dispatch format: when the daemon connection is stale, output
         // arrives as "Dispatch message: ProjectLogMessage{..., message='[INFO] ...'}"
@@ -185,6 +195,16 @@ public class CompilationResult {
     }
 
 
+    /** See {@link #LOG_SCAN_CAP}: keep head+tail of pathologically large logs. */
+    private static String capHugeLog(String log) {
+        if (log.length() <= LOG_SCAN_CAP) return log;
+        int half = LOG_SCAN_CAP / 2;
+        int elided = log.length() - 2 * half;
+        return log.substring(0, half)
+                + "\n[INFO] ... (" + elided + " chars of build log elided) ...\n"
+                + log.substring(log.length() - half);
+    }
+
     @JsonIgnore
     public int getNumberOfModules() {
         return moduleResults == null ? 0 : moduleResults.size();
@@ -218,27 +238,34 @@ public class CompilationResult {
      * infer per-module success/failure.
      */
     private void inferModulesFromBuildLines(String log) {
-        // "[INFO] Building core 1.0-SNAPSHOT  [2/3]" → name="core", total=3
+        // Single linear pass over the log. We track the module currently being built
+        // (from "[INFO] Building <name> <version> [n/m]" lines) and flag it FAILURE when
+        // a compilation/test/build-failure marker appears while it is the current module.
+        //
+        // This deliberately does NOT build a "(?s)Building <name>.*?(?:…|.*…)" pattern per
+        // module and run it over the whole log: that alternation backtracks catastrophically
+        // on the multi-hundred-MB logs left by builds that hit the wall-clock timeout — it
+        // once spun the RQ3 pipeline's main thread for ~3 h on a single timed-out build.
+        // Per-line matching against anchored patterns is linear and immune to that.
         Pattern building = Pattern.compile(
                 "\\[INFO\\] Building (.+?)\\s+\\S+\\s+\\[(\\d+)/(\\d+)\\]");
-        Matcher bm = building.matcher(log);
-        java.util.LinkedHashMap<String, Status> seen = new java.util.LinkedHashMap<>();
-        int totalFromLog = 0;
-        while (bm.find()) {
-            String name = bm.group(1).trim();
-            totalFromLog = Math.max(totalFromLog, Integer.parseInt(bm.group(3)));
-            seen.putIfAbsent(name, Status.SUCCESS); // assume success unless we find a failure
-        }
+        Pattern testFailures = Pattern.compile("Failures: [1-9]");
 
-        // Check for compilation errors or test failures per module
-        // "[ERROR] COMPILATION ERROR" or "[ERROR] Tests run: N, Failures: M" with M>0
-        for (String name : seen.keySet()) {
-            // Look for failure indicators after this module's "Building" line
-            String failPattern = "(?s)Building " + Pattern.quote(name) + ".*?" +
-                    "(?:\\[ERROR\\] COMPILATION ERROR|\\[ERROR\\].*Failures: [1-9]|" +
-                    "\\[ERROR\\].*BUILD FAILURE)";
-            if (Pattern.compile(failPattern).matcher(log).find()) {
-                seen.put(name, Status.FAILURE);
+        java.util.LinkedHashMap<String, Status> seen = new java.util.LinkedHashMap<>();
+        String current = null;
+        for (String line : log.split("\\R", -1)) {
+            Matcher bm = building.matcher(line);
+            if (bm.find()) {
+                current = bm.group(1).trim();
+                seen.putIfAbsent(current, Status.SUCCESS); // assume success unless proven failed
+                continue;
+            }
+            if (current == null) continue;
+            boolean failed = line.contains("[ERROR] COMPILATION ERROR")
+                    || line.contains("BUILD FAILURE")
+                    || (line.contains("[ERROR]") && testFailures.matcher(line).find());
+            if (failed) {
+                seen.put(current, Status.FAILURE);
             }
         }
 

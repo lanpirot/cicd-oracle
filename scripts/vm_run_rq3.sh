@@ -21,7 +21,8 @@
 #   ./scripts/vm_run_rq3.sh                                # all defaults
 #   ./scripts/vm_run_rq3.sh --tag rq3_VM_S_2026-05-06
 #   ./scripts/vm_run_rq3.sh --best-mode no_optimization
-#   ./scripts/vm_run_rq3.sh --no-fresh                     # skip freshRun
+#   ./scripts/vm_run_rq3.sh --sample-target 1000           # stop after N successes
+#   ./scripts/vm_run_rq3.sh --no-fresh                     # skip freshRun (resume)
 #   ./scripts/vm_run_rq3.sh --commit-msg "rq3: ..."
 #   ./scripts/vm_run_rq3.sh --dry-run                      # print, don't execute
 #
@@ -37,6 +38,7 @@ VM_PORT="2033"
 TMUX_SESSION="rq3"
 BEST_MODE="no_optimization"          # S — promoted by RQ3 head-to-head analysis
 TAG="rq3_VM_$(date +%Y-%m-%d)"
+SAMPLE_TARGET="1000"                  # RQ3-at-scale target; code default is only 500
 FRESH=true
 DRY_RUN=false
 COMMIT_MSG=""
@@ -44,8 +46,9 @@ COMMIT_MSG=""
 # ── Parse args ──────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --tag)        TAG="$2";         shift 2 ;;
-        --best-mode)  BEST_MODE="$2";   shift 2 ;;
+        --tag)           TAG="$2";           shift 2 ;;
+        --best-mode)     BEST_MODE="$2";     shift 2 ;;
+        --sample-target) SAMPLE_TARGET="$2"; shift 2 ;;
         --no-fresh)   FRESH=false;      shift ;;
         --dry-run)    DRY_RUN=true;     shift ;;
         --commit-msg) COMMIT_MSG="$2";  shift 2 ;;
@@ -165,6 +168,7 @@ echo
 echo "=== Step 5/5: launch RQ3PipelineRunner in tmux ==="
 echo "  best-mode = $BEST_MODE"
 echo "  tag       = $TAG"
+echo "  target    = $SAMPLE_TARGET successful merges"
 echo "  fresh     = $FRESH"
 echo "  log       = ~/$TAG.log"
 
@@ -177,6 +181,7 @@ run_remote "$(cat <<EOF
      java -DoverlayTmpDir=/dev/shm \
           -DexperimentTag=$TAG \
           -Drq3BestMode=$BEST_MODE \
+          -Drq3SampleTarget=$SAMPLE_TARGET \
           -DmavenBuildTimeout=3600 \
           -DmaxVariantBudget=36000 \
           $FRESH_FLAG \
