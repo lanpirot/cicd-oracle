@@ -18,7 +18,7 @@ Inputs:
 
 Output:
   - Console: pooled Spearman r, p-value; per-merge distribution summary
-  - rq3_hamming_quality.pdf    (scatter + violin plots)
+  - rq3_hamming_quality.pdf    (stacked quality-category shares + per-merge r histogram)
 
 Usage:
   python rq3_hamming_quality_correlation.py [variant_experiments_dir] [all_conflicts_csv] [output_pdf]
@@ -345,46 +345,92 @@ def spearman_r(xs: list[float], ys: list[float]) -> tuple[float, float] | None:
 
 # ── Plotting ──────────────────────────────────────────────────────────────────
 
-def plot_scatter(ax, all_pairs: list[tuple[int, float]], r_pooled: float | None):
-    """Scatter plot: Hamming distance (x) vs. combined quality (y), all variants pooled.
+# Quality categories for the Hamming-vs-quality stacked shares, listed
+# bottom-up (best category at the bottom of the stack).  The combined-quality
+# distribution is strongly bimodal — ~45% of variants land near 0 and ~36% at
+# exactly 1.0 — so percentile bands or medians just flip between the two modes;
+# the *share* of variants per category changes smoothly with distance instead.
+QUALITY_CATEGORIES = [          # (lower bound, label, RdYlGn colour)
+    (0.999, "comparable or better ($q \\geq 1$)",   "#1a9850"),
+    (0.5,   "most builds ($0.5 \\leq q < 1$)",      "#a6d96a"),
+    (0.1,   "partial builds ($0.1 \\leq q < 0.5$)", "#fdae61"),
+    (0.0,   "(almost) nothing builds ($q < 0.1$)",  "#d73027"),
+]
 
-    Overlap count is encoded twice: alpha and radius both grow linearly from
-    (0.25, 2pt) at count=1 to (0.50, 8pt) at the max-overlap bin, so dense
-    stacks read as larger, more solid markers.
+# Consecutive Hamming distances are merged (left to right) until each x-bin
+# holds at least this many (merge, variant) pairs.  A binomial share over
+# >= 1000 samples has a standard error below ~1.6%, so the share curves are
+# stable per bin; the sparse far tail merges into the last bin.
+MIN_PAIRS_PER_BIN = 1000
+
+# The far distance tail (top few % of pairs) stems from a handful of large
+# merges whose chunk-rich variants dominate any pooled bin they fall into,
+# producing between-merge artifacts (e.g. a lone "builds fine at h=19" bump).
+# Cut the chart at this pair-percentile of the distance distribution.
+TAIL_CUT_PERCENTILE = 95
+
+
+def plot_quality_shares(ax, all_pairs: list[tuple[int, float]], r_pooled: float | None):
+    """Stacked share chart: Hamming distance (x, binned) vs. quality-category
+    share (y).
+
+    All variants are pooled and grouped into Hamming-distance bins of at least
+    MIN_PAIRS_PER_BIN pairs; each bin is split into the QUALITY_CATEGORIES and
+    the category shares are stacked (best at the bottom), plotted at the bin's
+    pair-weighted mean distance.
     """
-    from collections import Counter
-    counts = Counter(all_pairs)
-    items = list(counts.items())
-    xs = [k[0] for k, _ in items]
-    ys = [k[1] for k, _ in items]
-    cs = [c for _, c in items]
-    max_c = max(cs) if cs else 1
+    import numpy as np
 
-    a_min, a_max = 0.25, 0.50
-    r_min, r_max = 2.0,  8.0
-    if max_c > 1:
-        def lerp(c, lo, hi): return lo + (c - 1) / (max_c - 1) * (hi - lo)
-        alphas = [lerp(c, a_min, a_max) for c in cs]
-        radii  = [lerp(c, r_min, r_max) for c in cs]
-    else:
-        alphas = [a_min for _ in cs]
-        radii  = [r_min for _ in cs]
-    sizes = [math.pi * r * r for r in radii]
+    cutoff = int(np.percentile([h for h, _ in all_pairs], TAIL_CUT_PERCENTILE))
+    by_h: dict[int, list[float]] = defaultdict(list)
+    for h, q in all_pairs:
+        if h <= cutoff:
+            by_h[h].append(q)
 
-    base = (0x1f / 255, 0x78 / 255, 0xb4 / 255)  # #1f78b4
-    rgba = [(*base, a) for a in alphas]
+    bins: list[tuple[list[int], list[float]]] = []   # (hamming value ×count, qualities)
+    cur_h: list[int] = []
+    cur_q: list[float] = []
+    for h in sorted(by_h):
+        cur_h.extend([h] * len(by_h[h]))
+        cur_q.extend(by_h[h])
+        if len(cur_q) >= MIN_PAIRS_PER_BIN:
+            bins.append((cur_h, cur_q))
+            cur_h, cur_q = [], []
+    if cur_q:
+        if bins:
+            bins[-1] = (bins[-1][0] + cur_h, bins[-1][1] + cur_q)
+        else:
+            bins.append((cur_h, cur_q))
 
-    ax.scatter(xs, ys, s=sizes, c=rgba, edgecolors="none")
-    ax.set_xlabel("Hamming distance to human resolution")
-    ax.set_ylabel(r"Combined quality (relative to human baseline $= 1.0$)"
-                  if USE_LATEX else "Combined quality (relative to human baseline = 1.0)")
-    ax.axhline(1.0, color="gray", linewidth=0.5, linestyle="--")
+    centers = np.array([np.mean(hs) for hs, _ in bins])
+    qs_per_bin = [np.array(qb) for _, qb in bins]
+    shares = []
+    for lo, _, _ in QUALITY_CATEGORIES:
+        upper = shares[-1][0] if shares else math.inf
+        shares.append((lo, [((qb >= lo) & (qb < upper)).mean() for qb in qs_per_bin]))
+
+    ax.stackplot(centers, [s for _, s in shares],
+                 labels=[lbl if USE_LATEX else lbl.replace("$", "").replace("\\geq", ">=").replace("\\leq", "<=")
+                         for _, lbl, _ in QUALITY_CATEGORIES],
+                 colors=[c for _, lbl, c in QUALITY_CATEGORIES],
+                 alpha=0.85, linewidth=0)
+
+    ax.set_xlim(centers[0], centers[-1])
+    ax.set_ylim(0, 1)
+    ax.set_xlabel("Hamming distance to human resolution"
+                  f" (bins of $\\geq$ {MIN_PAIRS_PER_BIN} variants; "
+                  f"top {100 - TAIL_CUT_PERCENTILE}\\% tail $h > {cutoff}$ omitted)" if USE_LATEX
+                  else "Hamming distance to human resolution"
+                  f" (bins of >= {MIN_PAIRS_PER_BIN} variants; "
+                  f"top {100 - TAIL_CUT_PERCENTILE}% tail h > {cutoff} omitted)")
+    ax.set_ylabel("Share of variants")
     title = f"Hamming Distance vs. Build Quality ({VARIANT_MODE} variants, pooled)"
     if r_pooled is not None:
         title += f"\nSpearman $r = {r_pooled:.3f}$" if USE_LATEX else f"\nSpearman r = {r_pooled:.3f}"
-    title += f"\nmarker size/opacity $\\propto$ overlap count (max $= {max_c}$)" \
-              if USE_LATEX else f"\nmarker size/opacity proportional to overlap count (max = {max_c})"
     ax.set_title(title)
+    # Reverse the legend so its order matches the visual stack (red on top).
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles[::-1], labels[::-1], loc="upper right", framealpha=0.95)
     ax.grid(True, alpha=0.3)
 
 
@@ -486,7 +532,7 @@ def main():
     print(f"\nWriting plots to {output_pdf} ...")
     with PdfPages(output_pdf) as pdf:
         fig, ax = plt.subplots(figsize=(8, 5))
-        plot_scatter(ax, all_pairs, pooled_r)
+        plot_quality_shares(ax, all_pairs, pooled_r)
         pdf.savefig(fig, bbox_inches="tight")
         plt.close(fig)
 

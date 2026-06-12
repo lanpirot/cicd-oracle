@@ -3028,8 +3028,8 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
                         variant_dir, conflicts_csv)
                     if all_pairs:
                         fig, ax = plt.subplots(figsize=(8, 5))
-                        hq.plot_scatter(ax, all_pairs, pooled_r)
-                        _save_fig(fig, results_dir, "13a_hamming_quality_scatter", pdf)
+                        hq.plot_quality_shares(ax, all_pairs, pooled_r)
+                        _save_fig(fig, results_dir, "13a_hamming_quality_shares", pdf)
                     if per_merge_r:
                         fig, ax = plt.subplots(figsize=(8, 4))
                         hq.plot_per_merge_r(ax, per_merge_r)
