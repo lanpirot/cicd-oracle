@@ -35,6 +35,7 @@ import sys
 import csv
 import json
 import math
+import warnings
 from pathlib import Path
 from collections import defaultdict
 
@@ -45,7 +46,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 # Optional: scipy for Spearman correlation
 try:
-    from scipy.stats import spearmanr
+    from scipy.stats import spearmanr, ConstantInputWarning
     HAS_SCIPY = True
 except ImportError:
     HAS_SCIPY = False
@@ -337,7 +338,10 @@ def spearman_r(xs: list[float], ys: list[float]) -> tuple[float, float] | None:
     one of the inputs is constant (Spearman is undefined)."""
     if not HAS_SCIPY or len(xs) < 3:
         return None
-    r, p = spearmanr(xs, ys)
+    with warnings.catch_warnings():
+        # Constant input yields NaN, which the caller-facing None below covers.
+        warnings.simplefilter("ignore", ConstantInputWarning)
+        r, p = spearmanr(xs, ys)
     if math.isnan(r) or math.isnan(p):
         return None
     return float(r), float(p)
