@@ -70,6 +70,11 @@ public class ConflictFileSaver {
                 context.getConflictPatterns());
         if (best == null) return;
 
+        // MANUAL marks whole-file resolutions (external competitor candidates) whose content
+        // cannot be reconstructed from pattern names. Skip the triplet entirely — also keeps
+        // the external-candidates mode from overwriting the triplet saved by the RQ3 run.
+        if (best.containsManualPattern()) return;
+
         String dirName = projectName + "_"
                 + info.getMergeCommit().substring(0, AppConfig.HASH_PREFIX_LENGTH);
         Path caseDir = outputDir.resolve(dirName);
@@ -178,6 +183,14 @@ public class ConflictFileSaver {
             if (idx >= allConflictPatterns.size()) return List.of();
             Map<String, List<String>> fileMap = allConflictPatterns.get(idx);
             return fileMap != null ? fileMap.getOrDefault(filePath, List.of()) : List.of();
+        }
+
+        boolean containsManualPattern() {
+            if (variantIndex < 1 || allConflictPatterns == null
+                    || variantIndex - 1 >= allConflictPatterns.size()) return false;
+            Map<String, List<String>> fileMap = allConflictPatterns.get(variantIndex - 1);
+            if (fileMap == null) return false;
+            return fileMap.values().stream().anyMatch(l -> l.contains("MANUAL"));
         }
     }
 

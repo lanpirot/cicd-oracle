@@ -82,6 +82,21 @@ public class MergeOutputJSON {
     private long variantsExecutionTimeSeconds;
     private List<Variant> variants;
 
+    // ── External-candidates mode only (competitor scoring) — absent in all other modes ──
+
+    /** Wall-clock seconds the competitor tool needed to compute its candidates
+     *  (measured on the inference machine, from meta.json). */
+    @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+    private Double candidateComputeSeconds;
+
+    /** Competitor tool version (from meta.json). */
+    @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+    private String toolVersion;
+
+    /** Competitor tool configuration/flags (from meta.json). */
+    @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+    private String toolConfig;
+
     /**
      * Returns the baseline (index 0) TestTotal by looking at the variants list.
      * Falls back to null if not available.
@@ -134,6 +149,31 @@ public class MergeOutputJSON {
         private CompilationResult compilationResult;
         private TestTotal testResults;
         private Map<String, List<String>> conflictPatterns;
+
+        // ── External-candidates mode only (per-candidate meta.json fields) ──
+
+        /** Candidate k-rank within the tool's output (cand_k directory index). */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Integer candidateK;
+        /** Tool sub-mode that produced this candidate (e.g. jDime structured/semistructured). */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private String candidateMode;
+        /** True when the tool itself resolved every conflict chunk (no fallback). */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Boolean candidateStrict;
+        /** True when unresolved chunks were filled with the ours side. */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Boolean candidateBestEffort;
+        /** Conflict chunks resolved by the tool itself (CLI-git chunk count). */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Integer candidateChunksResolved;
+        /** Total conflict chunks as seen by CLI git. */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Integer candidateChunksTotal;
+        /** True when the tool crashed while producing this candidate — for best-effort
+         *  candidates the scored content is then (partly or fully) the ours-side fallback. */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Boolean candidateToolFailed;
     }
 
 }

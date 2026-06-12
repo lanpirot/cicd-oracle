@@ -2,6 +2,7 @@ package ch.unibe.cs.mergeci.runner;
 
 import ch.unibe.cs.mergeci.model.ConflictBlock;
 import ch.unibe.cs.mergeci.model.ConflictFile;
+import ch.unibe.cs.mergeci.model.FixedTextBlock;
 import ch.unibe.cs.mergeci.model.IMergeBlock;
 import ch.unibe.cs.mergeci.model.VariantProject;
 import ch.unibe.cs.mergeci.model.patterns.PatternFactory;
@@ -88,6 +89,9 @@ public class VariantBuildContext {
      * Also appends the variant's conflict patterns to {@link #conflictPatterns}.
      */
     public Optional<VariantProject> nextVariant() {
+        if (generator instanceof ExternalCandidateGenerator external) {
+            return nextExternalVariant(external);
+        }
         Optional<List<String>> assignmentOpt = (generator != null)
                 ? generator.nextVariant()
                 : nextFromMlPredictions();
@@ -101,6 +105,43 @@ public class VariantBuildContext {
         VariantProject project = buildProjectFromAssignment(assignment);
         conflictPatterns.add(project.extractPatterns());
         return Optional.of(project);
+    }
+
+    /**
+     * Build the next variant from a pre-computed competitor candidate (whole resolved
+     * files instead of per-chunk pattern assignments). Each candidate file becomes a
+     * {@link ConflictFile} holding a single {@link FixedTextBlock} — the same mechanism
+     * the IntelliJ plugin uses for manual resolutions — so the downstream build/test
+     * machinery is byte-for-byte identical to pattern-generated variants.
+     */
+    private Optional<VariantProject> nextExternalVariant(ExternalCandidateGenerator external) {
+        Optional<ExternalCandidateGenerator.CandidateFiles> candidateOpt =
+                external.nextCandidateFiles(conflictFileMap.keySet());
+        if (candidateOpt.isEmpty()) return Optional.empty();
+
+        List<ConflictFile> resolvedClasses = new ArrayList<>();
+        for (Map.Entry<String, String> file : candidateOpt.get().files().entrySet()) {
+            ConflictFile original = conflictFileMap.get(file.getKey());
+            int replacedChunks = original == null ? 0 : countConflictBlocks(original);
+            ConflictFile resolved = new ConflictFile();
+            resolved.setClassPath(java.nio.file.Path.of(file.getKey()));
+            resolved.setMergeBlocks(List.of(new FixedTextBlock(file.getValue(), replacedChunks)));
+            resolvedClasses.add(resolved);
+        }
+
+        VariantProject project = new VariantProject();
+        project.setProjectPath(repositoryPath);
+        project.setClasses(resolvedClasses);
+        conflictPatterns.add(project.extractPatterns());
+        return Optional.of(project);
+    }
+
+    private static int countConflictBlocks(ConflictFile cf) {
+        int count = 0;
+        for (IMergeBlock block : cf.getMergeBlocks()) {
+            if (block instanceof ConflictBlock) count++;
+        }
+        return count;
     }
 
     private Optional<List<String>> nextFromMlPredictions() {

@@ -196,6 +196,30 @@ public class ResolutionVariantRunner {
                                                 IVariantEvaluator evaluator,
                                                 boolean stopOnPerfect,
                                                 AttemptedMergeLog mergeLog) throws Exception {
+        makeAnalysisByMergeList(mergeInfos, projectName, repoPath, modeDir, humanBaselineDir,
+                isParallel, isCache, skipVariants, tmpDir, modeName, generatorFactory, evaluator,
+                stopOnPerfect, mergeLog, true);
+    }
+
+    /**
+     * Fullest overload.
+     *
+     * @param mutateBaselinesOnSkip when {@code true} (all regular RQ modes), a merge skipped
+     *                              during variant processing (chunk mismatch, missing git object)
+     *                              is written back into its human_baseline JSON as permanently
+     *                              skipped. The external-candidates mode passes {@code false}:
+     *                              its skips are tool-scoped and must never alter the shared
+     *                              RQ3 baseline data.
+     */
+    public static void makeAnalysisByMergeList(List<DatasetReader.MergeInfo> mergeInfos, String projectName,
+                                                Path repoPath, Path modeDir, Path humanBaselineDir,
+                                                boolean isParallel, boolean isCache, boolean skipVariants,
+                                                Path tmpDir, String modeName,
+                                                IVariantGeneratorFactory generatorFactory,
+                                                IVariantEvaluator evaluator,
+                                                boolean stopOnPerfect,
+                                                AttemptedMergeLog mergeLog,
+                                                boolean mutateBaselinesOnSkip) throws Exception {
         modeDir.toFile().mkdirs();
 
         StoredBaselines stored = skipVariants
@@ -229,7 +253,7 @@ public class ResolutionVariantRunner {
 
         MergeRunStats stats = processMerges(mergeInfos, processor, collector, modeName, skipVariants,
                 skippedBaselines, failureLog, modeDir, humanBaselineDir, projectName, groundTruthPatterns,
-                mergeLog, stored.multiModule());
+                mergeLog, stored.multiModule(), mutateBaselinesOnSkip);
 
         if (failureLog != null) failureLog.close();
 
@@ -429,7 +453,8 @@ public class ResolutionVariantRunner {
                                                String projectName,
                                                Map<String, Map<String, List<String>>> groundTruthPatterns,
                                                AttemptedMergeLog mergeLog,
-                                               Map<String, Boolean> storedMultiModule) throws Exception {
+                                               Map<String, Boolean> storedMultiModule,
+                                               boolean mutateBaselinesOnSkip) throws Exception {
         int resultCount = 0;
         int skippedCount = 0;
         long totalTime = 0;
@@ -470,7 +495,7 @@ public class ResolutionVariantRunner {
                 System.out.println(processed.getSkipReason());
                 if (mergeLog != null) mergeLog.logSkipped(projectName, info.getMergeCommit(), modeName, processed.getSkipReason());
                 skippedCount++;
-                if (!skipVariants) {
+                if (!skipVariants && mutateBaselinesOnSkip) {
                     markBaselineSkipped(humanBaselineDir, info.getMergeCommit(),
                             classifySkipReason(processed.getSkipReason()));
                 }
