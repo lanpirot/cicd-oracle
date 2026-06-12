@@ -19,6 +19,8 @@ Inputs:
 Output:
   - Console: pooled Spearman r, p-value; per-merge distribution summary
   - rq3_hamming_quality.pdf    (stacked quality-category shares + per-merge r histogram)
+  - LaTeX variables rqThreeHammingPerMerge{Count,NegativePct,MedianR} (upserted
+    into the shared latex_variables.csv)
 
 Usage:
   python rq3_hamming_quality_correlation.py [variant_experiments_dir] [all_conflicts_csv] [output_pdf]
@@ -38,6 +40,8 @@ import math
 import warnings
 from pathlib import Path
 from collections import defaultdict
+
+import latex_variables
 
 import matplotlib
 matplotlib.use("Agg")
@@ -525,9 +529,18 @@ def main():
     if per_merge_r:
         n = len(per_merge_r)
         neg = sum(1 for r in per_merge_r if r < 0)
+        median_r = sorted(per_merge_r)[n // 2]
         print(f"\nPer-merge Spearman r: n={n}, "
               f"negative={neg} ({100*neg/n:.1f}%), "
-              f"median={sorted(per_merge_r)[n//2]:.3f}")
+              f"median={median_r:.3f}")
+        latex_variables.put_all({
+            "rqThreeHammingPerMergeCount":
+                (n, "Merges with a defined per-merge Spearman r (build quality varies across variants)"),
+            "rqThreeHammingPerMergeNegativePct":
+                (round(100 * neg / n), "% of those merges with negative Hamming-quality correlation"),
+            "rqThreeHammingPerMergeMedianR":
+                (f"{median_r:.2f}", "Median per-merge Spearman r (Hamming distance vs. build quality)"),
+        })
 
     if not all_pairs:
         print("No data to plot.")
