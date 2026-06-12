@@ -40,6 +40,15 @@ private static final boolean FRESH_RUN = false;
     }
 
     /**
+     * If true: skip the experiment phase entirely and only run the analysis
+     * (statistics, LaTeX variable export) over the JSON already on disk.
+     * Override via system property "analyzeOnly".
+     */
+    public static boolean isAnalyzeOnly() {
+        return Boolean.parseBoolean(System.getProperty("analyzeOnly", "false"));
+    }
+
+    /**
      * Per-daemon mvnd reactor thread count ({@code -T} flag), set before each phase.
      * Zero leaves {@code -T} off so mvnd uses its default ({@code cores/2 + 1}).
      * Applied symmetrically to the human-baseline build and parallel variant modes

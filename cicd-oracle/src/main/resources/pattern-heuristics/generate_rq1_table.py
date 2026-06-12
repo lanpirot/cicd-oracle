@@ -20,6 +20,8 @@ csv.field_size_limit(1_000_000)
 
 MODES         = ['GLOBAL', 'GLOBAL_UNIFORM', 'HEURISTIC', 'ML_RF', 'ML_AUTOREGRESSIVE']
 DISPLAY_NAMES = [r'\textsc{Global}', r'\textsc{Uniform}', r'\textsc{Prior\#}', r'\textsc{Mestre}', r'\textsc{ML-Ar}']
+LATEX_SHORT   = {'GLOBAL': 'Global', 'GLOBAL_UNIFORM': 'Uniform', 'HEURISTIC': 'Prior',
+                 'ML_RF': 'Mestre', 'ML_AUTOREGRESSIVE': 'MlAr'}
 BUCKET_ORDER  = [str(i) for i in range(1, 10)] + ['10--19', '20--49', '50+']
 ML_MODE       = 'ML_AUTOREGRESSIVE'
 RF_MODE       = 'ML_RF'
@@ -253,6 +255,19 @@ def build_oneshot_tex(oneshot, variant_cap, oneshot_ceiling=None):
     return '\n'.join(lines)
 
 
+def export_latex_variables(lvars):
+    """Upsert RQ1 variables into the shared LaTeX variables CSV (see scripts/latex_variables.py)."""
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), *['..'] * 5))
+    sys.path.insert(0, os.path.join(repo_root, 'scripts'))
+    try:
+        import latex_variables
+    except ImportError as e:
+        print(f'Warning: latex_variables.py not importable ({e}) — LaTeX variables not exported.')
+        return
+    latex_variables.put_all(lvars)
+    print(f'LaTeX variables exported ({len(lvars)} entries)')
+
+
 def main():
     csv_path    = sys.argv[1]
     variant_cap = sys.argv[2] if len(sys.argv) > 2 else '?'
@@ -376,6 +391,24 @@ def main():
             median_pct_sw=median_pct_sw, median_rk_sw=median_rk_sw,
         )
 
+    # ── collect LaTeX variables (count-weighted aggregates + ceiling) ───────
+    lvars = {}
+    lvars['rqOneMergeCount'] = (str(len(merge_data)), 'RQ1 merges evaluated per generator')
+    if str(variant_cap).isdigit():
+        lvars['rqOneVariantCap'] = (str(variant_cap), 'RQ1 variant cap per merge')
+    for m in MODES:
+        short = LATEX_SHORT.get(m, m)
+        a = agg[m]
+        if a['mean_pct'] == a['mean_pct']:
+            lvars[f'rqOne{short}HitRate'] = (
+                f"{a['mean_pct']:.1f}", f'{short} mean hit rate % (count-weighted)')
+        if a['mean_rk'] == a['mean_rk']:
+            lvars[f'rqOne{short}MeanAttempts'] = (
+                str(math.ceil(a['mean_rk'])), f'{short} mean attempts to hit (count-weighted)')
+    if agg_ceiling['mean'] == agg_ceiling['mean']:
+        lvars['rqOneReachableHitRate'] = (
+            f"{agg_ceiling['mean']:.1f}", 'Reachable ceiling hit rate % (count-weighted)')
+
     # ── temporal sanity check: per-fold hit rate for ML-AR ──────────────────
     if ML_MODE in MODES:
         fold_hits   = defaultdict(int)
@@ -451,6 +484,18 @@ def main():
         with open(out, 'w') as f:
             f.write(tex + '\n')
         print(f'Written: {out}')
+
+        for m in MODES:
+            short = LATEX_SHORT.get(m, m)
+            pooled = oneshot[m]['pooled']
+            if pooled == pooled:
+                lvars[f'rqOne{short}OneShotPooled'] = (
+                    f'{pooled:.1f}', f'{short} one-shot pooled chunk accuracy %')
+        if oneshot_ceiling['pooled'] == oneshot_ceiling['pooled']:
+            lvars['rqOneReachableOneShotPooled'] = (
+                f"{oneshot_ceiling['pooled']:.1f}", 'Reachable ceiling one-shot pooled chunk accuracy %')
+
+    export_latex_variables(lvars)
 
 
 if __name__ == '__main__':

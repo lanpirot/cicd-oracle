@@ -92,6 +92,12 @@ public abstract class RQPipelineRunner {
     }
 
     public void run() throws Exception {
+        if (AppConfig.isAnalyzeOnly()) {
+            System.out.println("analyzeOnly=true — skipping experiments, re-analyzing " + experimentDir());
+            analyzeResults();
+            return;
+        }
+
         printSplash();
 
         List<DatasetReader.MergeInfo> allMerges = sampleMerges();

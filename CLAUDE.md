@@ -71,6 +71,33 @@ Run script tests with plain `pytest` (no Maven involved):
 cd scripts && python -m pytest test_plot_results.py -v
 ```
 
+## LaTeX Variables (paper statistics)
+
+All paper-ready numbers live in one shared CSV: `~/data/bruteforcemerge/common/latex_variables.csv` (`name,value,description`, loaded by LaTeX `datatool`). Every exporter **upserts** — via `scripts/latex_variables.py` (Python) or `LatexVariableWriter` (Java) — so rerunning one exporter never clobbers variables owned by another. All exporters read persisted outputs (CSV/JSON on disk); no experiment needs to be re-run to add a variable.
+
+To add a new variable, pick the exporter that already computes the relevant statistic, add the variable there, and rerun it:
+
+**RQ1 (`rqOne*`)** — add to the `lvars` dict in `main()` of `cicd-oracle/src/main/resources/pattern-heuristics/generate_rq1_table.py`, then:
+```bash
+python3 cicd-oracle/src/main/resources/pattern-heuristics/generate_rq1_table.py \
+    ~/data/bruteforcemerge/rq1/results/cv_results.csv 1000
+```
+The `1000` is the variant cap of the final RQ1 run (it appears in table captions and `rqOneVariantCap`). An optional third argument overrides `all_conflicts.csv` (default: `../../common/all_conflicts.csv` relative to the results dir).
+
+**RQ2/RQ3 mode-level stats (`rqTwo*`/`rqThree*` merge, variant, budget-exhaustion, impact counts)** — add in `_export_latex_variables()` in `scripts/plot_results.py`, then:
+```bash
+python scripts/plot_results.py ~/data/bruteforcemerge/rq2
+python scripts/plot_results.py ~/data/bruteforcemerge/rq3
+```
+The `rqTwo`/`rqThree` prefix is auto-detected from the directory name; force it with `--rq2`/`--rq3`.
+
+**RQ3 quality metrics (`rqThreeBetter*`, `rqThreeComparableCount`, …)** — add in `StatisticsReporter.exportRQ3LatexVariables()` (per-mode variables like `seqMergeCount` belong in `exportLatexVariables()`), rebuild, then run the analysis phase only:
+```bash
+cd cicd-oracle && mvn clean package -DskipTests
+java -DanalyzeOnly=true -cp "target/*:target/lib/*" ch.unibe.cs.mergeci.experiment.RQ3PipelineRunner
+```
+`analyzeOnly=true` skips all experiments and re-analyzes the JSON already on disk. This run also invokes `plot_results.py` internally, so it refreshes the RQ3 mode-level variables at the same time. (Remember: never rebuild the jar while a pipeline JVM is running.)
+
 ## Code Hygiene
 
 **Remove dead code — do not build parallel ornaments.** When a method, class, or variable is unused, deprecated, or superseded, delete it. Do not rename it to `_unused`, add a `@Deprecated` annotation, or keep it "just in case". The same applies to Python scripts: if a script's logic has been absorbed elsewhere, delete the script. Tests that cover deleted functionality should be deleted or rewritten to cover the replacement.
