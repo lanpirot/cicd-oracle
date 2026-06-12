@@ -259,7 +259,12 @@ def module_stats(variant: dict) -> tuple[int, int]:
     # New flat format: totalModules / successfulModules
     total_m = cr.get("totalModules")
     if total_m is not None:
-        return cr.get("successfulModules", 0), max(1, total_m)
+        passed = cr.get("successfulModules", 0)
+        # Single-module flat-format builds report totalModules=0 with
+        # buildStatus=SUCCESS — count them as 1/1 (mirrors variant_score).
+        if cr.get("buildStatus") == "SUCCESS":
+            passed = max(1, passed)
+        return passed, max(1, total_m)
     # Legacy format: moduleResults array
     module_results = cr.get("moduleResults", [])
     if module_results:
@@ -298,11 +303,15 @@ def get_finish_time(variant: dict, fallback_seconds: float = 0.0) -> float:
 # ── Per-merge improvement markers ─────────────────────────────────────────────
 
 def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
-                        hb_num: float, smooth: bool = False) -> list[tuple[float, float]]:
+                        hb_num: float, smooth: bool = False,
+                        absolute_time: bool = False) -> list[tuple[float, float]]:
     """
     For a list of variant dicts, returns (relativeTime, relativeScore) markers
     where relativeTime  = totalTimeSinceMergeStartSeconds / budgetBasisSeconds
           relativeScore = metric_fn(v)[0] / hb_num  (1.0 = human baseline quality)
+
+    With absolute_time=True the x coordinate is the raw clock time in seconds
+    (no normalisation by the baseline duration).
 
     If smooth=True, applies Laplace smoothing: rate = (num+1)/(hb_num+1).  This
     keeps the chart usable for merges whose human baseline scored 0 on this
@@ -326,13 +335,14 @@ def improvement_markers(variants: list, metric_fn, human_baseline_secs: float,
         rate = ((num + 1) / (hb_num + 1)) if smooth else (num / hb_num)
         if rate > best_rate:
             best_rate = rate
-            markers.append((finish / eff_hb, rate))
+            markers.append((finish if absolute_time else finish / eff_hb, rate))
     return markers
 
 
 # ── Plot data assembly ─────────────────────────────────────────────────────────
 
-def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
+def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False,
+                       absolute_time: bool = False):
     """
     Returns dict: mode -> list of (relativeTime, relativeScore) improvement markers,
     where relativeScore is normalised so that 1.0 = human baseline score for that merge.
@@ -341,6 +351,10 @@ def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
     If smooth=True, the metric uses Laplace smoothing — required when many
     merges have a baseline score of 0 on this metric (e.g. projects with no
     tests).  The baseline still lands at 1.0 by construction.
+
+    With absolute_time=True the x axis is raw clock seconds, and the human
+    baseline contributes one (baseline_secs, 1.0) marker per merge instead of
+    the single implicit (1.0, 1.0) point.
     """
     all_commits = set(all_data["human_baseline"].keys())
 
@@ -364,6 +378,9 @@ def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
         if not smooth and hb_num <= 0:
             continue  # can't normalise against zero (smoothing handles it)
 
+        if absolute_time:
+            mode_markers["human_baseline"].append((hb_secs, 1.0))
+
         for mode in MODES:
             if mode == "human_baseline":
                 continue  # baseline is the normaliser — added once after the loop
@@ -375,7 +392,7 @@ def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
                 continue
 
             markers = improvement_markers(variants, metric_fn, hb_secs, hb_num,
-                                          smooth=smooth)
+                                          smooth=smooth, absolute_time=absolute_time)
             if markers:
                 mode_markers[mode].extend(markers)
                 mode_steps[mode].append([(0.0, 0.0)] + markers)
@@ -383,7 +400,7 @@ def assemble_plot_data(all_data: dict, metric_fn, smooth: bool = False):
     # The human baseline is the normalisation reference, so it sits at exactly
     # (1.0, 1.0) by definition — a single implicit marker, not one scattered
     # per-merge point (whose x drifts below 1.0 for sub-30s baselines).
-    if all_data.get("human_baseline"):
+    if not absolute_time and all_data.get("human_baseline"):
         mode_markers["human_baseline"] = [(1.0, 1.0)]
 
     return mode_markers, mode_steps
@@ -448,8 +465,11 @@ def _per_merge_quality(all_data: dict, mode: str) -> dict:
 
 
 def combined_improvement_markers(variants: list, hb_secs: float,
-                                 hb_modules: int, hb_tests: int) -> list[tuple[float, float]]:
-    """(relativeTime, combinedQuality) Pareto frontier for one merge's variants."""
+                                 hb_modules: int, hb_tests: int,
+                                 absolute_time: bool = False) -> list[tuple[float, float]]:
+    """(relativeTime, combinedQuality) Pareto frontier for one merge's variants.
+
+    With absolute_time=True the x coordinate is raw clock seconds."""
     if hb_secs <= 0:
         return []
     eff_hb = effective_baseline_secs(hb_secs)
@@ -461,11 +481,11 @@ def combined_improvement_markers(variants: list, hb_secs: float,
     for finish, score in timed:
         if score > best:
             best = score
-            markers.append((finish / eff_hb, score))
+            markers.append((finish if absolute_time else finish / eff_hb, score))
     return markers
 
 
-def assemble_combined_plot_data(all_data: dict):
+def assemble_combined_plot_data(all_data: dict, absolute_time: bool = False):
     """Mirror of assemble_plot_data for the combined modules*tests quality.
 
     Filter mirrors chart 01: include any merge whose baseline compiled at least
@@ -493,6 +513,9 @@ def assemble_combined_plot_data(all_data: dict):
         if hb_modules <= 0:
             continue
 
+        if absolute_time:
+            mode_markers["human_baseline"].append((hb_secs, 1.0))
+
         for mode in MODES:
             if mode == "human_baseline":
                 continue  # baseline is the normaliser — added once after the loop
@@ -503,13 +526,14 @@ def assemble_combined_plot_data(all_data: dict):
             if not variants:
                 continue
 
-            markers = combined_improvement_markers(variants, hb_secs, hb_modules, hb_tests)
+            markers = combined_improvement_markers(variants, hb_secs, hb_modules,
+                                                   hb_tests, absolute_time=absolute_time)
             if markers:
                 mode_markers[mode].extend(markers)
                 mode_steps[mode].append([(0.0, 0.0)] + markers)
 
     # Human baseline is the normalisation reference: a single (1.0, 1.0) marker.
-    if all_data.get("human_baseline"):
+    if not absolute_time and all_data.get("human_baseline"):
         mode_markers["human_baseline"] = [(1.0, 1.0)]
 
     return mode_markers, mode_steps
@@ -517,37 +541,131 @@ def assemble_combined_plot_data(all_data: dict):
 
 # ── Plotting ───────────────────────────────────────────────────────────────────
 
-def draw_graph(ax, mode_markers, mode_steps, title, ylabel):
-    """Draw one graph (module or test) onto ax."""
+# Semantic stacked fan-chart bands: contiguous percentile slices (bottom-up),
+# shaded darkest at the median.  The slice edges follow the bimodal shape of
+# the quality distribution rather than symmetric coverage:
+#   P0-P15   absorbs the never-building blob (~13% of merges end at ~0)
+#   P35-P65  the median band -- the bulk sits at exactly 1.0
+#   P95-P98  the "better than human" fan (quality 1.1-2.5 at budget end)
+# The top 2% (P98+) is cut off entirely: a handful of broken-baseline merges
+# reach quality >> 10 and would compress everything else to a line.
+FAN_BANDS = [
+    (0.0,  15.0, 0.10),
+    (15.0, 35.0, 0.22),
+    (35.0, 65.0, 0.40),
+    (65.0, 85.0, 0.22),
+    (85.0, 95.0, 0.14),
+    (95.0, 98.0, 0.10),
+]
+
+
+def draw_graph(ax, mode_markers, mode_steps, title, ylabel, clock_time=False):
+    """Fan chart of best-so-far quality per mode.
+
+    Each merge contributes one monotone best-so-far step function: 0 until its
+    first scoreable variant lands, then holding its best value indefinitely.
+    At each grid time the cross-merge distribution is summarised as a median
+    line plus the FAN_BANDS percentile bands.
+
+    clock_time=False: x is relative time (1.0 = human baseline duration).
+    clock_time=True:  x is raw clock seconds on a log scale; the data must
+    have been assembled with absolute_time=True, so each human baseline is
+    its own (baseline_secs, 1.0) marker.
+    """
+    if clock_time:
+        positive_xs = [p[0]
+                       for steps_list in mode_steps.values()
+                       for steps in steps_list for p in steps if p[0] > 0]
+        positive_xs += [p[0] for p in mode_markers.get("human_baseline", [])
+                        if p[0] > 0]
+        if not positive_xs:
+            return
+        x_lo, x_hi = min(positive_xs) * 0.8, max(positive_xs) * 1.05
+        grid = np.geomspace(x_lo, x_hi, 401)
+    else:
+        grid = np.linspace(0.0, RELATIVE_TIME_CAP, 401)
     for mode in MODES:
+        steps_list = mode_steps.get(mode, [])
+        if not steps_list:
+            continue
         color = MODE_COLORS[mode]
-        marker = MODE_MARKERS[mode]
-        label = MODE_LABELS[mode]
 
-        # Draw thin step lines per merge (light, semi-transparent)
-        for steps in mode_steps.get(mode, []):
-            xs = [p[0] for p in steps]
-            ys = [p[1] for p in steps]
-            ax.step(xs, ys, where="post", color=color, alpha=0.15, linewidth=0.7)
+        values = np.empty((len(steps_list), len(grid)))
+        for i, steps in enumerate(steps_list):
+            xs = np.array([p[0] for p in steps])
+            ys = np.array([p[1] for p in steps])
+            # Step value at t = y of the last marker with x <= t (series start
+            # at (0,0), so the index is always valid for t >= 0).
+            values[i] = ys[np.searchsorted(xs, grid, side="right") - 1]
 
-        # Draw improvement markers
-        pts = mode_markers.get(mode, [])
-        if pts:
-            xs = [p[0] for p in pts]
-            ys = [p[1] for p in pts]
-            ax.scatter(xs, ys, c=color, marker=marker, s=25, zorder=5,
-                       label=label, alpha=0.75, edgecolors="none")
+        for lo, hi, alpha in FAN_BANDS:
+            ax.fill_between(grid,
+                            np.percentile(values, lo, axis=0),
+                            np.percentile(values, hi, axis=0),
+                            color=color, alpha=alpha, linewidth=0)
+        ax.plot(grid, np.percentile(values, 50, axis=0), color=color,
+                linewidth=1.4, zorder=4,
+                label=f"{MODE_LABELS[mode]} median ($n = {len(steps_list)}$)")
 
-    # Reference lines at the human baseline point
-    ax.axvline(x=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
+    # Human baseline normalisation reference.  Relative time: a single
+    # (1.0, 1.0) marker.  Clock time: the baselines spread out along x, so
+    # their duration distribution is drawn as a horizontal fan strip in a
+    # reserved band around y = 1 (0.95-1.05), using the same FAN_BANDS
+    # percentile slices as the variant fan, plus a median tick.
+    hb_pts = mode_markers.get("human_baseline", [])
+    if clock_time and hb_pts:
+        hb_blue = "#1f78b4"
+        durs = np.array([p[0] for p in hb_pts])
+        y_lo, y_hi = 0.95, 1.05
+        for lo, hi, alpha in FAN_BANDS:
+            ax.fill_betweenx([y_lo, y_hi],
+                             np.percentile(durs, lo), np.percentile(durs, hi),
+                             color=hb_blue, alpha=alpha, linewidth=0, zorder=3)
+        med = np.percentile(durs, 50)
+        ax.plot([med, med], [y_lo, y_hi], color=hb_blue, linewidth=1.4,
+                zorder=4,
+                label=f"{MODE_LABELS['human_baseline']} durations "
+                      f"(median, $n = {len(durs)}$; same bands)")
+    elif hb_pts:
+        ax.scatter([p[0] for p in hb_pts], [p[1] for p in hb_pts],
+                   c=MODE_COLORS["human_baseline"],
+                   marker=MODE_MARKERS["human_baseline"], s=40, zorder=5,
+                   label=MODE_LABELS["human_baseline"],
+                   edgecolors="black", linewidths=0.4)
+
+    # Reference lines at the human baseline point (vertical only meaningful
+    # in relative time, where all baselines coincide at x = 1.0)
+    if not clock_time:
+        ax.axvline(x=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
     ax.axhline(y=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
 
-    ax.set_xlabel("Relative time  (1.0 = human baseline duration)", fontsize=10)
+    if clock_time:
+        ax.set_xscale("log")
+        ax.set_xlim(grid[0], grid[-1])
+        ax.set_xlabel("Clock time (seconds, log scale)", fontsize=10)
+    else:
+        ax.set_xlim(0, RELATIVE_TIME_CAP + 0.2)
+        ax.set_xlabel("Relative time  (1.0 = human baseline duration)", fontsize=10)
     ax.set_ylabel(ylabel, fontsize=10)
     ax.set_title(title, fontsize=12)
-    ax.set_xlim(0, RELATIVE_TIME_CAP + 0.2)
-    ax.set_ylim(bottom=0)
-    ax.legend(loc="lower right", fontsize=8)
+
+    # Identical y layout across all fan charts: hard top cut at 2.0, fixed
+    # 0.25 tick steps, uniform two-decimal labels.
+    ax.set_ylim(0, 2.0)
+    ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.25))
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%.2f"))
+
+    pct = "\\%" if USE_LATEX else "%"
+    ax.annotate(f"top 2{pct} (above P98) cut off",
+                xy=(0.99, 0.97), xycoords="axes fraction",
+                ha="right", va="top", fontsize=7, color="dimgray")
+
+    handles, _ = ax.get_legend_handles_labels()
+    dash = "--" if USE_LATEX else "-"
+    for lo, hi, alpha in reversed(FAN_BANDS):  # top band first
+        handles.append(mpatches.Patch(
+            color="gray", alpha=alpha, label=f"P{lo:g}{dash}P{hi:g}"))
+    ax.legend(handles=handles, loc="upper left", fontsize=8)
     ax.grid(True, alpha=0.3)
 
 
@@ -628,8 +746,10 @@ def draw_search_space_coverage(ax, all_data: dict, num_patterns: int = 16):
             attempted = len(variants)
             if attempted <= 0:
                 continue
-            fraction = min(1.0, attempted / (num_patterns ** c))
-            fracs.append(math.log10(fraction))
+            # Compute log10(fraction) directly: attempted / p**c underflows to
+            # 0.0 for large c, and log10(0.0) would abort the whole plot run.
+            log_frac = min(0.0, math.log10(attempted) - c * math.log10(num_patterns))
+            fracs.append(log_frac)
         if fracs:
             mode_fractions[mode] = fracs
 
@@ -838,8 +958,11 @@ def _friedman_test(groups: dict[str, list[float]], mode_order: list[str]) -> flo
     arrays = [groups[m] for m in mode_order if m in groups]
     if len(arrays) < 3 or any(len(a) < 3 for a in arrays):
         return None
-    n = min(len(a) for a in arrays)
-    arrays = [a[:n] for a in arrays]
+    # Friedman is a repeated-measures test: index i must be the same merge in
+    # every group. Unequal lengths mean the groups are not merge-aligned, and
+    # truncating would silently pair wrong merges — bail out instead.
+    if len({len(a) for a in arrays}) != 1:
+        return None
     try:
         _, p = friedmanchisquare(*arrays)
         return float(p)
@@ -915,16 +1038,22 @@ def _common_valid_commits(all_data: dict, modes: list[str]) -> list[str]:
 def _collect_paired_metric(all_data: dict, modes: list[str],
                            merge_metric_fn,
                            valid_commits: list[str] | None = None,
-                           ) -> dict[str, list[float]]:
+                           return_commits: bool = False,
+                           ):
     """
     For each merge in valid_commits (or all common commits if None),
     compute a metric and return aligned lists (same merge order in each mode).
     merge_metric_fn(merge_dict) -> float or None (None = skip this merge).
+
+    With return_commits=True, returns (groups, kept_commits) where kept_commits
+    lists the commits actually retained, in list order — use it to collect
+    covariates index-aligned with the metric lists.
     """
     if valid_commits is None:
         valid_commits = _common_valid_commits(all_data, modes)
 
     groups: dict[str, list[float]] = {m: [] for m in modes}
+    kept_commits: list[str] = []
 
     for commit in valid_commits:
         values = {}
@@ -941,10 +1070,11 @@ def _collect_paired_metric(all_data: dict, modes: list[str],
             values[mode] = val
         if skip:
             continue
+        kept_commits.append(commit)
         for mode in modes:
             groups[mode].append(values[mode])
 
-    return groups
+    return (groups, kept_commits) if return_commits else groups
 
 
 # ── RQ2 Chart: Variants completed per mode ────────────────────────────────────
@@ -1003,7 +1133,7 @@ def _count_variants_ran_test(merge: dict) -> float | None:
 def _draw_variants_count_boxplot(ax, all_data: dict, metric, *,
                                  ylabel: str, title: str,
                                  valid_commits: list[str] | None = None):
-    """Shared boxplot body for charts 05 / 05c / 05d. ``metric`` is the per-merge
+    r"""Shared boxplot body for charts 05 / 05c / 05d. ``metric`` is the per-merge
     counting function (variants total / built $\geq$1 module / ran $\geq$1 test)."""
     groups = _collect_paired_metric(all_data, _present_variant_modes(all_data),
                                     metric, valid_commits)
@@ -1051,8 +1181,8 @@ def draw_variants_built_module(ax, all_data: dict, valid_commits: list[str] | No
     """05c: Variants that compiled at least one module."""
     _draw_variants_count_boxplot(
         ax, all_data, _count_variants_built_module,
-        ylabel="Variants that built $\geq$1 module per merge (log scale)",
-        title="Variant Throughput ($\geq$1 module built)",
+        ylabel=r"Variants that built $\geq$1 module per merge (log scale)",
+        title=r"Variant Throughput ($\geq$1 module built)",
         valid_commits=valid_commits,
     )
 
@@ -1061,8 +1191,8 @@ def draw_variants_ran_test(ax, all_data: dict, valid_commits: list[str] | None =
     """05d: Variants that executed at least one test."""
     _draw_variants_count_boxplot(
         ax, all_data, _count_variants_ran_test,
-        ylabel="Variants that ran $\geq$1 test per merge (log scale)",
-        title="Variant Throughput ($\geq$1 test executed)",
+        ylabel=r"Variants that ran $\geq$1 test per merge (log scale)",
+        title=r"Variant Throughput ($\geq$1 test executed)",
         valid_commits=valid_commits,
     )
 
@@ -1103,23 +1233,25 @@ def draw_time_to_best_normalized(ax, all_data: dict, valid_commits: list[str] | 
         ax.set_title("Per-merge Time-to-Best Across Modes")
         return
 
+    present_modes = _present_variant_modes(all_data)
     if valid_commits is None:
         valid_commits = sorted(
-            set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
+            set.intersection(*(set(all_data[m].keys()) for m in present_modes))
         )
 
-    groups = {m: [] for m in VARIANT_MODES}
-    sentinel_groups = {m: [] for m in VARIANT_MODES}
-    missing = {m: 0 for m in VARIANT_MODES}
-    seen_commits = {m: 0 for m in VARIANT_MODES}
+    groups = {m: [] for m in present_modes}
+    sentinel_groups = {m: [] for m in present_modes}
+    missing = {m: 0 for m in present_modes}
+    # Merge-aligned subset for the paired tests: only commits where every
+    # present mode produced a time-to-best (index i = same merge everywhere).
+    aligned = {m: [] for m in present_modes}
 
     for commit in valid_commits:
         per_mode = {}
-        for m in VARIANT_MODES:
-            data = all_data.get(m, {}).get(commit)
+        for m in present_modes:
+            data = all_data[m].get(commit)
             if data is None:
                 continue
-            seen_commits[m] += 1
             per_mode[m] = _time_to_best_seconds(data)
 
         valid_times = [t for t in per_mode.values() if t is not None]
@@ -1127,16 +1259,20 @@ def draw_time_to_best_normalized(ax, all_data: dict, valid_commits: list[str] | 
             continue  # No mode found a best — entire merge is unrankable; skip.
         best_t = min(valid_times)
 
-        for m in VARIANT_MODES:
+        for m in present_modes:
             t = per_mode.get(m)
-            if t is None:
+            if m in per_mode and t is None:
                 # Mode failed to find any scoreable variant for this merge.
                 sentinel_groups[m].append(sentinel)
                 missing[m] += 1
-            else:
+            elif t is not None:
                 groups[m].append(t / best_t)
 
-    plot_modes = [m for m in VARIANT_MODES if (groups.get(m) or sentinel_groups.get(m))]
+        if all(per_mode.get(m) is not None for m in present_modes):
+            for m in present_modes:
+                aligned[m].append(per_mode[m] / best_t)
+
+    plot_modes = [m for m in present_modes if (groups.get(m) or sentinel_groups.get(m))]
     if not plot_modes:
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
         return
@@ -1184,11 +1320,12 @@ def draw_time_to_best_normalized(ax, all_data: dict, valid_commits: list[str] | 
     ax.set_title("Per-merge Time-to-Best Across Modes")
     ax.grid(True, axis="y", alpha=0.3, which="both")
 
-    # Stats only on the valid-ratio subset (sentinel is a censoring marker, not data).
-    valid_groups = {m: groups[m] for m in plot_modes if groups[m]}
-    if len(valid_groups) >= 2:
-        friedman_p = _friedman_test(valid_groups, list(valid_groups.keys()))
-        pairwise = _pairwise_wilcoxon(valid_groups, list(valid_groups.keys()))
+    # Stats only on the merge-aligned subset (sentinel is a censoring marker,
+    # not data, and the per-mode `groups` lists are not index-aligned).
+    aligned_groups = {m: v for m, v in aligned.items() if v}
+    if len(aligned_groups) >= 2:
+        friedman_p = _friedman_test(aligned_groups, list(aligned_groups.keys()))
+        pairwise = _pairwise_wilcoxon(aligned_groups, list(aligned_groups.keys()))
         summary = _significance_summary(friedman_p, pairwise)
         if summary:
             _annotate_significance(ax, summary)
@@ -1203,22 +1340,28 @@ def draw_time_to_best_in_baseline_units(ax, all_data: dict,
     scoreable variant for that merge plot at ``sentinel`` (default 11.0, i.e. one
     tick past the typical 10× variant-budget ceiling) above a gray dashed line
     marked "not found"."""
+    present_modes = _present_variant_modes(all_data)
+    if not present_modes:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
     if valid_commits is None:
         valid_commits = sorted(
-            set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES))
+            set.intersection(*(set(all_data[m].keys()) for m in present_modes))
         )
 
-    groups = {m: [] for m in VARIANT_MODES}
-    sentinel_groups = {m: [] for m in VARIANT_MODES}
-    missing = {m: 0 for m in VARIANT_MODES}
+    groups = {m: [] for m in present_modes}
+    sentinel_groups = {m: [] for m in present_modes}
+    missing = {m: 0 for m in present_modes}
+    # Merge-aligned subset for the paired tests (see draw_time_to_best_normalized).
+    aligned = {m: [] for m in present_modes}
 
     for commit in valid_commits:
         # budgetBasisSeconds is the human-baseline build duration (module-normalised
         # for broken merges). Read it from any mode's JSON — it's an input to the
         # variant phase and identical across modes for the same commit.
         budget = None
-        for m in VARIANT_MODES:
-            data = all_data.get(m, {}).get(commit)
+        for m in present_modes:
+            data = all_data[m].get(commit)
             if data is None:
                 continue
             b = data.get("budgetBasisSeconds", 0)
@@ -1228,18 +1371,24 @@ def draw_time_to_best_in_baseline_units(ax, all_data: dict,
         if budget is None:
             continue  # No valid baseline duration — can't normalise this merge.
 
-        for m in VARIANT_MODES:
-            data = all_data.get(m, {}).get(commit)
+        per_mode = {}
+        for m in present_modes:
+            data = all_data[m].get(commit)
             if data is None:
                 continue
             t = _time_to_best_seconds(data)
+            per_mode[m] = t
             if t is None:
                 sentinel_groups[m].append(sentinel)
                 missing[m] += 1
             else:
                 groups[m].append(t / budget)
 
-    plot_modes = [m for m in VARIANT_MODES if (groups.get(m) or sentinel_groups.get(m))]
+        if all(per_mode.get(m) is not None for m in present_modes):
+            for m in present_modes:
+                aligned[m].append(per_mode[m] / budget)
+
+    plot_modes = [m for m in present_modes if (groups.get(m) or sentinel_groups.get(m))]
     if not plot_modes:
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
         return
@@ -1285,10 +1434,12 @@ def draw_time_to_best_in_baseline_units(ax, all_data: dict,
     ax.set_title("Per-merge Time-to-Best in Human-Baseline Units")
     ax.grid(True, axis="y", alpha=0.3, which="both")
 
-    valid_groups = {m: groups[m] for m in plot_modes if groups[m]}
-    if len(valid_groups) >= 2:
-        friedman_p = _friedman_test(valid_groups, list(valid_groups.keys()))
-        pairwise = _pairwise_wilcoxon(valid_groups, list(valid_groups.keys()))
+    # Stats only on the merge-aligned subset (per-mode `groups` lists are not
+    # index-aligned once any mode is missing a merge).
+    aligned_groups = {m: v for m, v in aligned.items() if v}
+    if len(aligned_groups) >= 2:
+        friedman_p = _friedman_test(aligned_groups, list(aligned_groups.keys()))
+        pairwise = _pairwise_wilcoxon(aligned_groups, list(aligned_groups.keys()))
         summary = _significance_summary(friedman_p, pairwise)
         if summary:
             _annotate_significance(ax, summary)
@@ -1735,16 +1886,23 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
     if not _note_requires_modes(ax, all_data):
         ax.set_title("Mode Rank Evolution Over Time")
         return
+    if not HAS_SCIPY:
+        ax.text(0.5, 0.5, "Requires scipy (rankdata) — chart skipped",
+                transform=ax.transAxes, ha="center", va="center")
+        ax.set_xticks([]); ax.set_yticks([])
+        ax.set_title("Mode Rank Evolution Over Time")
+        return
 
     from scipy.stats import rankdata as _rankdata
 
+    modes = _present_variant_modes(all_data)
     if valid_commits is None:
-        valid_commits = _common_valid_commits(all_data, VARIANT_MODES)
+        valid_commits = _common_valid_commits(all_data, modes)
 
     # Pair commits with their budgets
     valid_with_budget = []
     for commit in valid_commits:
-        merge = all_data[VARIANT_MODES[0]][commit]
+        merge = all_data[modes[0]][commit]
         budget = merge.get("budgetBasisSeconds", 0)
         if budget > 0:
             valid_with_budget.append((commit, budget))
@@ -1756,7 +1914,7 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
     # Determine max relative time from the data
     max_rel = 0
     for commit, budget in valid_with_budget:
-        for mode in VARIANT_MODES:
+        for mode in modes:
             merge = all_data[mode].get(commit, {})
             for v in merge.get("variants", []):
                 t = v.get("totalTimeSinceMergeStartSeconds")
@@ -1771,16 +1929,16 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
 
     # At each time point, rank the modes per merge, then take median rank
     import numpy as np
-    mode_median_ranks = {m: [] for m in VARIANT_MODES}
+    mode_median_ranks = {m: [] for m in modes}
 
     for rel_t in time_points:
         # Collect per-merge ranks
-        all_ranks = {m: [] for m in VARIANT_MODES}
+        all_ranks = {m: [] for m in modes}
 
         for commit, budget in valid_with_budget:
             scores = {}
             any_score = False
-            for mode in VARIANT_MODES:
+            for mode in modes:
                 merge = all_data[mode].get(commit, {})
                 s = _best_score_at_time(merge, rel_t, budget)
                 scores[mode] = s
@@ -1793,7 +1951,7 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
             # Convert scores to rankable values (None = worst)
             # variant_score returns (modules, tests) tuples; combine lexicographically
             score_vals = []
-            for mode in VARIANT_MODES:
+            for mode in modes:
                 s = scores[mode]
                 if s is None:
                     score_vals.append(-1)  # worst possible
@@ -1803,17 +1961,17 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
             # Rank: highest score = rank 1 (negate for rankdata which ranks ascending)
             neg_vals = [-v for v in score_vals]
             ranks = _rankdata(neg_vals, method="average")
-            for mode, rank in zip(VARIANT_MODES, ranks):
+            for mode, rank in zip(modes, ranks):
                 all_ranks[mode].append(rank)
 
-        for mode in VARIANT_MODES:
+        for mode in modes:
             if all_ranks[mode]:
                 mode_median_ranks[mode].append(np.median(all_ranks[mode]))
             else:
                 mode_median_ranks[mode].append(np.nan)
 
     # Plot
-    for mode in VARIANT_MODES:
+    for mode in modes:
         ranks = mode_median_ranks[mode]
         ax.plot(time_points, ranks,
                 color=MODE_COLORS[mode], marker=MODE_MARKERS[mode],
@@ -1823,10 +1981,10 @@ def draw_rank_evolution(ax, all_data: dict, valid_commits: list[str] | None = No
     ax.set_xlabel("Relative time (1.0 = human baseline build duration)")
     ax.set_ylabel("Median rank across merges")
     ax.set_title("Mode Rank Evolution Over Time")
-    ax.set_ylim(0.5, len(VARIANT_MODES) + 0.5)
+    ax.set_ylim(0.5, len(modes) + 0.5)
     ax.invert_yaxis()  # rank 1 at top
-    ax.set_yticks(range(1, len(VARIANT_MODES) + 1))
-    ax.set_yticklabels([f"Rank {i}" for i in range(1, len(VARIANT_MODES) + 1)])
+    ax.set_yticks(range(1, len(modes) + 1))
+    ax.set_yticklabels([f"Rank {i}" for i in range(1, len(modes) + 1)])
     ax.axvline(x=1.0, color="grey", linestyle="--", linewidth=0.8, alpha=0.6)
     ax.legend(loc="lower right", fontsize=8)
     ax.grid(True, alpha=0.3)
@@ -1861,12 +2019,16 @@ def draw_variant_accumulation(ax, all_data: dict, *, aggregate: str = "median",
     """
     import numpy as np
 
+    modes = _present_variant_modes(all_data)
+    if not modes:
+        ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
+        return
     if valid_commits is None:
-        valid_commits = _common_valid_commits(all_data, VARIANT_MODES)
+        valid_commits = _common_valid_commits(all_data, modes)
 
     valid_with_budget = []
     for commit in valid_commits:
-        merge = all_data[VARIANT_MODES[0]][commit]
+        merge = all_data[modes[0]][commit]
         budget = merge.get("budgetBasisSeconds", 0)
         if budget > 0:
             valid_with_budget.append((commit, budget))
@@ -1877,7 +2039,7 @@ def draw_variant_accumulation(ax, all_data: dict, *, aggregate: str = "median",
 
     max_rel = 0.0
     for commit, budget in valid_with_budget:
-        for mode in VARIANT_MODES:
+        for mode in modes:
             merge = all_data[mode].get(commit, {})
             for v in merge.get("variants", []):
                 if v.get("timedOut", False):
@@ -1895,23 +2057,23 @@ def draw_variant_accumulation(ax, all_data: dict, *, aggregate: str = "median",
         return
 
     agg_fn = np.median if aggregate == "median" else np.mean
-    mode_values = {m: [] for m in VARIANT_MODES}
+    mode_values = {m: [] for m in modes}
 
     for rel_t in time_points:
-        per_mode_counts = {m: [] for m in VARIANT_MODES}
+        per_mode_counts = {m: [] for m in modes}
         for commit, budget in valid_with_budget:
-            for mode in VARIANT_MODES:
+            for mode in modes:
                 merge = all_data[mode].get(commit, {})
                 per_mode_counts[mode].append(
                     _variants_completed_at_time(merge, rel_t, budget)
                 )
-        for mode in VARIANT_MODES:
+        for mode in modes:
             if per_mode_counts[mode]:
                 mode_values[mode].append(agg_fn(per_mode_counts[mode]))
             else:
                 mode_values[mode].append(np.nan)
 
-    for mode in VARIANT_MODES:
+    for mode in modes:
         ax.plot(time_points, mode_values[mode],
                 color=MODE_COLORS[mode], linewidth=1.8,
                 label=MODE_LABELS[mode], alpha=0.9, zorder=3)
@@ -2114,7 +2276,8 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
         ax.set_title(f"Technique Decomposition: {metric_name}")
         return
 
-    groups = _collect_paired_metric(all_data, VARIANT_MODES, metric_fn, valid_commits)
+    groups, kept_commits = _collect_paired_metric(all_data, VARIANT_MODES, metric_fn,
+                                                  valid_commits, return_commits=True)
     if not groups:
         ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center")
         return
@@ -2162,10 +2325,11 @@ def draw_interaction_plot(ax, all_data: dict, metric_fn, metric_name: str, ylabe
     ax.set_xlim(-0.4, 1.4)
     ax.grid(True, axis="y", alpha=0.3)
 
-    # Per-merge ANCOVA: cache + threads + modules + cache:threads + cache:modules
-    common = sorted(set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES)))
-    tc = _collect_thread_counts(all_data, VARIANT_MODES, common)
-    mc = _collect_module_counts(all_data, VARIANT_MODES, common)
+    # Per-merge ANCOVA: cache + threads + modules + cache:threads + cache:modules.
+    # Covariates must be collected over exactly the commits the metric kept,
+    # otherwise index i pairs a y-value with another merge's threads/modules.
+    tc = _collect_thread_counts(all_data, VARIANT_MODES, kept_commits)
+    mc = _collect_module_counts(all_data, VARIANT_MODES, kept_commits)
     ancova = _ancova_cache_threads(groups, tc, mc)
     ann_lines = []
     if ancova:
@@ -2238,6 +2402,8 @@ def draw_variant_cost_curve(ax, all_data: dict, valid_commits: list[str] | None 
             for v in merge.get("variants", []):
                 if v.get("variantIndex", 0) == 0:
                     continue
+                if v.get("timedOut", False):
+                    continue  # killed builds report the timeout cap, not a cost
                 own = v.get("ownExecutionSeconds")
                 if own is None:
                     continue
@@ -2344,6 +2510,8 @@ def draw_cache_variant_times(ax, all_data: dict, valid_commits: list[str] | None
                 idx = v.get("variantIndex", 0)
                 if idx == 0:
                     continue
+                if v.get("timedOut", False):
+                    continue  # killed builds report the timeout cap, not a cost
                 if v.get("hadWarmCacheReady", v.get("didUseCache", False)) != warm_ready:
                     continue
                 own = v.get("ownExecutionSeconds")
@@ -2413,8 +2581,10 @@ def _load_first_batch_overhead(variant_dir: Path):
                 idx = v.get("variantIndex", 0)
                 if idx < 1 or idx > threads:
                     continue
-                total = v.get("totalTimeSinceMergeStartSeconds", 0)
-                own = v.get("ownExecutionSeconds", 0)
+                if v.get("timedOut", False):
+                    continue  # killed builds distort the wait/total split
+                total = v.get("totalTimeSinceMergeStartSeconds") or 0
+                own = v.get("ownExecutionSeconds") or 0
                 if total <= 0:
                     continue
                 wait = total - own
@@ -2670,6 +2840,34 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
                        ylabel=r"Combined quality (relative to human baseline $= 1.0$)")
             _save_fig(fig, results_dir, "02c_combined_quality", pdf)
 
+            # Clock-time variants of charts 1, 2 and 2c: x is raw seconds on
+            # a log scale, each human baseline at its own (duration, 1.0).
+            print("Assembling clock-time variants ...")
+            ck_module = assemble_plot_data(all_data, module_stats,
+                                           absolute_time=True)
+            ck_test = assemble_plot_data(all_data, test_stats, smooth=True,
+                                         absolute_time=True)
+            ck_combined = assemble_combined_plot_data(all_data,
+                                                      absolute_time=True)
+            for (markers, steps), title, ylabel, name in [
+                (ck_module,
+                 r"Module Build Success Rate vs.\ Clock Time",
+                 r"Modules built (relative to human baseline $= 1.0$)",
+                 "01_module_success_rate_clock"),
+                (ck_test,
+                 r"Test Success Rate vs.\ Clock Time",
+                 r"Tests passed (Laplace-smoothed, relative to human baseline $= 1.0$)",
+                 "02_test_success_rate_clock"),
+                (ck_combined,
+                 r"Combined Quality (Modules $\times$ Tests) vs.\ Clock Time",
+                 r"Combined quality (relative to human baseline $= 1.0$)",
+                 "02c_combined_quality_clock"),
+            ]:
+                fig, ax = plt.subplots(figsize=(10, 6))
+                draw_graph(ax, markers, steps, title=title, ylabel=ylabel,
+                           clock_time=True)
+                _save_fig(fig, results_dir, name, pdf)
+
             # Chart 3: Java conflict file ratio vs. impact rate
             if stats["all_merges"]:
                 fig, ax = plt.subplots(figsize=(8, 5))
@@ -2696,13 +2894,13 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         _save_fig(fig, results_dir, "05b_variants_per_second", pdf)
 
         # Chart 5c: Variants that built at least one module
-        print("Drawing variant throughput chart ($\geq$1 module built) ...")
+        print("Drawing variant throughput chart (>=1 module built) ...")
         fig, ax = plt.subplots(figsize=(9, 6))
         draw_variants_built_module(ax, all_data)
         _save_fig(fig, results_dir, "05c_variants_built_module", pdf)
 
         # Chart 5d: Variants that ran at least one test
-        print("Drawing variant throughput chart ($\geq$1 test executed) ...")
+        print("Drawing variant throughput chart (>=1 test executed) ...")
         fig, ax = plt.subplots(figsize=(9, 6))
         draw_variants_ran_test(ax, all_data)
         _save_fig(fig, results_dir, "05d_variants_ran_test", pdf)
@@ -2821,7 +3019,7 @@ def make_plots(variant_dir: Path, output_pdf: Path, rq: str = "auto"):
         # Needs the ground-truth all_conflicts.csv (a sibling 'common/' dir);
         # skipped with a note if it is unavailable.
         if rq == "rq3":
-            conflicts_csv = variant_dir.parent.parent / "common" / "all_conflicts.csv"
+            conflicts_csv = variant_dir.parent / "common" / "all_conflicts.csv"
             if conflicts_csv.exists():
                 try:
                     import rq3_hamming_quality_correlation as hq
@@ -2976,7 +3174,8 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
         lines.append("  (no scoreable merges)")
 
     # Paired statistical tests (throughput)
-    groups_throughput = _collect_paired_metric(all_data, VARIANT_MODES, _count_completed_variants)
+    groups_throughput, kept_commits = _collect_paired_metric(
+        all_data, VARIANT_MODES, _count_completed_variants, return_commits=True)
     if groups_throughput:
         lines.append(f"\n--- Variant Throughput (Friedman + pairwise Wilcoxon) ---")
         fp = _friedman_test(groups_throughput, VARIANT_MODES)
@@ -2987,10 +3186,10 @@ def _write_console_summary(results_dir: Path, all_data: dict, stats: dict,
             lines.append(f"  {MODE_LABELS[a]} vs {MODE_LABELS[b]}: "
                          f"p={p:.6f}{sig}, Cliff's d={d:+.3f} ({lbl})")
 
-    # Rank ANCOVA (per-merge: throughput ~ cache + threads + modules + interactions)
-    common = sorted(set.intersection(*(set(all_data.get(m, {}).keys()) for m in VARIANT_MODES)))
-    tc = _collect_thread_counts(all_data, VARIANT_MODES, common)
-    mc = _collect_module_counts(all_data, VARIANT_MODES, common)
+    # Rank ANCOVA (per-merge: throughput ~ cache + threads + modules + interactions).
+    # Covariates use the same kept commits as the metric so indices stay aligned.
+    tc = _collect_thread_counts(all_data, VARIANT_MODES, kept_commits)
+    mc = _collect_module_counts(all_data, VARIANT_MODES, kept_commits)
     ancova = _ancova_cache_threads(groups_throughput, tc, mc)
     if ancova:
         med_t = ancova.pop("_median_threads", "?")
@@ -3021,13 +3220,19 @@ def _export_latex_variables(all_data: dict, stats: dict, rq: str):
 
     lvars = {}
 
-    # Per-mode merge and variant counts
+    # Per-mode merge and variant counts. Modes absent from this run are skipped:
+    # the CSV is shared across runs, and upserting 0 would clobber values a
+    # previous (e.g. other-mode) run exported.
     for mode in MODES:
+        if not all_data.get(mode):
+            continue
         short = MODE_SHORT.get(mode, mode)
-        n = len(all_data.get(mode, {}))
+        n = len(all_data[mode])
         lvars[f"{prefix}{short}MergeCount"] = (str(n), f"Merges in {MODE_LABELS.get(mode, mode)}")
 
     for mode in VARIANT_MODES:
+        if not all_data.get(mode):
+            continue
         short = MODE_SHORT.get(mode, mode)
         total = sum(len(m.get("variants", [])) for m in all_data.get(mode, {}).values())
         lvars[f"{prefix}{short}VariantCount"] = (str(total), f"Total variants in {MODE_LABELS.get(mode, mode)}")
@@ -3046,6 +3251,71 @@ def _export_latex_variables(all_data: dict, stats: dict, rq: str):
         lvars[f"{prefix}ImpactCount"] = (str(n_impact), "Impact merges")
         lvars[f"{prefix}TotalMerges"] = (str(n_all), "Total merges across modes")
         lvars[f"{prefix}ImpactPct"] = (str(round(100 * n_impact / n_all)), "Impact rate (%)")
+
+    if rq == "rq3":
+        # Human baselines that themselves fail to build (cannot be normalised
+        # against, hence excluded from the relative-quality charts).
+        hb_data = all_data.get("human_baseline", {})
+        n_hb = len(hb_data)
+        fail_commits = []
+        for commit, merge in hb_data.items():
+            v0 = next((v for v in merge.get("variants", [])
+                       if v.get("variantIndex") == 0), None)
+            if v0 is None or module_stats(v0)[0] <= 0:
+                fail_commits.append(commit)
+        n_fail = len(fail_commits)
+        if n_hb:
+            lvars[f"{prefix}BaselineFailCount"] = (
+                str(n_fail), "Human baselines that build 0 modules")
+            lvars[f"{prefix}BaselineFailPct"] = (
+                str(round(100 * n_fail / n_hb)),
+                "Human baselines that build 0 modules (%)")
+
+        # Rescued baseline-fails: merges whose human resolution builds nothing
+        # but where some variant builds all of its modules.
+        rescue_mode = next((m for m in VARIANT_MODES if all_data.get(m)), None)
+        if n_fail and rescue_mode:
+            n_rescued = 0
+            for commit in fail_commits:
+                merge = all_data[rescue_mode].get(commit)
+                if merge is None:
+                    continue
+                if any((lambda mt: mt[1] > 0 and mt[0] == mt[1])(module_stats(v))
+                       for v in merge.get("variants", [])
+                       if v.get("variantIndex", 0) != 0 and not v.get("timedOut")):
+                    n_rescued += 1
+            lvars[f"{prefix}BaselineFailRescuedCount"] = (
+                str(n_rescued),
+                "Baseline-fail merges where a variant builds all modules")
+            lvars[f"{prefix}BaselineFailRescuedPct"] = (
+                str(round(100 * n_rescued / n_fail)),
+                "Baseline-fail merges rescued by a fully building variant (%)")
+
+        # Headline time story: median human-baseline duration vs. the median
+        # clock time at which the best-so-far combined quality reaches the
+        # human level (>= 1.0).  The latter equals the time where the median
+        # curve of the clock-time fan chart crosses 1.0 (merges that never
+        # reach 1.0 count as infinity).
+        ck_markers, ck_steps = assemble_combined_plot_data(all_data,
+                                                           absolute_time=True)
+        durs = [p[0] for p in ck_markers.get("human_baseline", [])]
+        ck_mode = next((m for m in VARIANT_MODES if ck_steps.get(m)), None)
+        if durs and ck_mode:
+            med_hb = float(np.median(durs))
+            times_to_one = [
+                next((x for x, y in steps if y >= 1.0 - 1e-9), math.inf)
+                for steps in ck_steps[ck_mode]
+            ]
+            med_t1 = float(np.median(times_to_one))
+            lvars[f"{prefix}MedianBaselineSecs"] = (
+                str(round(med_hb)), "Median human-baseline build+test duration (s)")
+            if math.isfinite(med_t1):
+                lvars[f"{prefix}MedianTimeToHumanQualitySecs"] = (
+                    str(round(med_t1)),
+                    "Median clock time until a variant matches human combined quality (s)")
+                lvars[f"{prefix}TimeToHumanQualityBaselineRatio"] = (
+                    f"{med_t1 / med_hb:.1f}",
+                    "Ratio: median time-to-human-quality / median baseline duration")
 
     latex_variables.put_all(lvars)
     print(f"  LaTeX variables exported ({len(lvars)} entries)")
