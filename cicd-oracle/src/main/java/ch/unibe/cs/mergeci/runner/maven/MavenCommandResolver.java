@@ -192,6 +192,13 @@ public class MavenCommandResolver {
         //  force-killing them would leave zombie mounts.)
         waitOrKill("mvnd.id=", Duration.ofSeconds(15));
 
+        // A daemon SIGKILLed mid-build leaves its in-flight surefire booter fork
+        // alive: the fork re-parents to PID 1 and runs its test suite forever in a
+        // since-deleted working dir, and its cmdline carries no mvnd.id= marker, so
+        // the sweep above misses it. We're at a mode boundary here — no legitimate
+        // build is running — so any surviving booter is an orphan; reap it.
+        waitOrKill("surefirebooter", Duration.ofSeconds(5));
+
         // Delete stale registry.bin — scan the daemon storage dir for all versions
         Path registryBase = Path.of(System.getProperty("user.home"), ".m2", "mvnd", "registry");
         if (Files.isDirectory(registryBase)) {
