@@ -82,7 +82,9 @@ plt.rcParams.update({
 def _normalize_path(p: str) -> str:
     """Normalize a repo-relative path for matching: strip leading './', collapse
     separators, use forward slashes."""
-    return str(Path(p)).lstrip("./")
+    # NOT lstrip("./") — that strips *characters* and would mangle dotfile
+    # paths like ".github/x" into "github/x".
+    return str(Path(p)).removeprefix("./").lstrip("/")
 
 
 def load_ground_truth(all_conflicts_csv: Path) -> dict[str, dict[str, list[str]]]:
@@ -202,7 +204,12 @@ def _modules_passed(variant: dict) -> int:
         return 0
     total_m = cr.get("totalModules")
     if total_m is not None:
-        return cr.get("successfulModules", 0)
+        m = cr.get("successfulModules", 0)
+        # Single-module flat-format builds report totalModules=0 with
+        # buildStatus=SUCCESS — count them as 1 (mirrors plot_results.module_stats).
+        if cr.get("buildStatus") == "SUCCESS":
+            m = max(1, m)
+        return m
     module_results = cr.get("moduleResults", [])
     if module_results:
         return sum(1 for m in module_results if m.get("status") == "SUCCESS")
