@@ -313,9 +313,18 @@ public class ExternalCandidatesRunner {
             if (cand.chunksTotal() != null) variant.put("candidateChunksTotal", cand.chunksTotal());
             if (cand.toolFailed() != null) variant.put("candidateToolFailed", cand.toolFailed());
 
-            // Dedup provenance
-            variant.put("dedupOfMode", hit.path("mode").asText());
-            variant.put("dedupOfVariantIndex", hit.path("variantIndex").asInt());
+            // Dedup provenance: this candidate was NOT built — its score is reused
+            // from a byte-identical entry already in the per-merge index. The hit's
+            // source (RQ3 no_optimization variant, human_baseline, or an earlier tool)
+            // is recorded as mode + variantIndex plus a self-documenting source string
+            // "<mode>/<mergeCommit>.json#variant<idx>" (the index is per-merge, so the
+            // source merge is always this mergeCommit).
+            String dedupMode = hit.path("mode").asText();
+            int dedupIdx = hit.path("variantIndex").asInt();
+            variant.put("dedupOfMode", dedupMode);
+            variant.put("dedupOfVariantIndex", dedupIdx);
+            variant.put("dedupOfSource",
+                    dedupMode + "/" + mergeCommit + ".json#variant" + dedupIdx);
 
             variantsArray.add(variant);
         }

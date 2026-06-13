@@ -184,6 +184,10 @@ public class MergeOutputJSON {
         /** variantIndex of the original scored variant whose result was copied. */
         @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
         private Integer dedupOfVariantIndex;
+
+        /** Self-documenting source of the reused result: "&lt;mode&gt;/&lt;mergeCommit&gt;.json#variant&lt;idx&gt;". */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private String dedupOfSource;
     }
 
 }

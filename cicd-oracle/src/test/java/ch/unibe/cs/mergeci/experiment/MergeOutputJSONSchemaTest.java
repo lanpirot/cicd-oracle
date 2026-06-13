@@ -78,14 +78,17 @@ class MergeOutputJSONSchemaTest {
         variant.setCandidateK(0);
         variant.setDedupOfMode("jdime");
         variant.setDedupOfVariantIndex(3);
+        variant.setDedupOfSource("jdime/abc123.json#variant3");
         output.setVariants(List.of(variant));
 
         String json = mapper.writeValueAsString(output);
         assertTrue(json.contains("\"dedupOfMode\":\"jdime\""));
         assertTrue(json.contains("\"dedupOfVariantIndex\":3"));
+        assertTrue(json.contains("\"dedupOfSource\":\"jdime/abc123.json#variant3\""));
 
         MergeOutputJSON back = mapper.readValue(json, MergeOutputJSON.class);
         assertEquals("jdime", back.getVariants().get(0).getDedupOfMode());
         assertEquals(3, back.getVariants().get(0).getDedupOfVariantIndex());
+        assertEquals("jdime/abc123.json#variant3", back.getVariants().get(0).getDedupOfSource());
     }
 }
