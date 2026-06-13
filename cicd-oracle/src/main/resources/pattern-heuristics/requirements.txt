@@ -1,0 +1,18 @@
+# RQ1 / ML-AR venv pins (lives at the git-repo root: cicd-oracle/.venv/).
+# Modern, mutually-consistent scientific stack — verified working 2026-06-13
+# (RQ1 temporal-integrity step + torch checkpoint load + sklearn RF fit all pass).
+#
+# DO NOT downgrade sklearn here to load competitor (MESTRE) models — those keep
+# their OWN isolated venvs (see competition/MESTRE/requirements-frozen.txt).
+# Mixing the two stacks in one venv is what caused the 2026-06-13 wack-a-mole.
+#
+# torch is the CUDA 12.1 build; install it from the PyTorch index, e.g.:
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+#   pip install -r requirements.txt
+torch==2.5.1+cu121
+numpy==2.4.3
+pandas==3.0.1
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+matplotlib==3.10.8

@@ -1,0 +1,11 @@
+# Dependencies for the standalone analysis/plotting scripts in this directory
+# (plot_results.py, rq3_hamming_quality_correlation.py, latex_variables.py, …).
+#
+# These run in the SAME venv as RQ1/ML-AR (cicd-oracle/.venv); this file just
+# documents the script-side deps explicitly. Versions verified working
+# 2026-06-13 (test_plot_results.py + test_rq3_hamming_quality_correlation.py:
+# 29 passed). Do not pin a separate venv off these — see cicd-oracle/CLAUDE.md.
+numpy==2.4.3
+scipy==1.17.1
+matplotlib==3.10.8
+pytest==9.0.3

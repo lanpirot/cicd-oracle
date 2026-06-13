@@ -13,13 +13,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Python Environment
 
-A `.venv/` virtual environment at the workspace root (`merge++/.venv/`) contains GPU-enabled PyTorch (required for ML-AR model training). Always use it instead of system `python3` for any ML work — system Python is CPU-only and 10–50× slower.
+The **RQ1 / ML-AR venv** lives at the git-repo root: `cicd-oracle/.venv/` (absolute: `merge++/cicd-oracle/.venv/`). It holds a modern, mutually-consistent scientific stack (Python 3.11, GPU-enabled PyTorch, numpy 2 / pandas 3 / scikit-learn 1.8) and is used for RQ1, RQ2/RQ3 ML-AR inference (`predict_mlar.py`), and the `scripts/` analysis/plotting. Always use it instead of system `python3` for ML work — system Python is CPU-only and 10–50× slower.
 
 ```bash
-source .venv/bin/activate
+source cicd-oracle/.venv/bin/activate
 ```
 
-The `run_rq1.sh` pipeline script auto-detects and activates the venv. The Java pipeline (`AppConfig.PYTHON_EXECUTABLE`) walks up the directory tree from cwd to locate `.venv/bin/python3` automatically. On a VM provisioned with `scripts/setup_vm.sh`, a CPU-only PyTorch venv is created at the same location.
+The `run_rq1.sh` pipeline script auto-detects this venv (it probes `$MAVEN_MODULE/../.venv`); the Java pipeline (`AppConfig.PYTHON_EXECUTABLE`) walks up from cwd to locate `.venv/bin/python3`. On a VM provisioned with `scripts/setup_vm.sh`, a CPU-only PyTorch venv is created at the same location.
+
+**Competitor (RQ3) tools keep their own isolated venvs — do not merge them into the RQ1 venv.** Their pinned dependencies conflict irreconcilably with the modern RQ1 stack:
+- `competition/MESTRE/` — its own venv; the trained RF model (`ours_model/mestre_rf.joblib`) was pickled with **scikit-learn < 1.3** and will not unpickle under the RQ1 venv's sklearn 1.8 (tree-node dtype mismatch). Pinned to scikit-learn 1.2.1 (the exact training version) / numpy 1.26 / pandas 2.0; see `competition/MESTRE/requirements-frozen.txt`.
+- `competition/MergeGen/venv_mergegen/` — old torch / Python 3.8 stack.
 
 ## cicd-oracle (Java pipeline)
 
