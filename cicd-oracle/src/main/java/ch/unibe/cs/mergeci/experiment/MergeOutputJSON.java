@@ -174,6 +174,16 @@ public class MergeOutputJSON {
          *  candidates the scored content is then (partly or fully) the ours-side fallback. */
         @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
         private Boolean candidateToolFailed;
+
+        // ── Dedup provenance (set when result was copied from the dedup index) ──
+
+        /** Mode of the original scored variant whose result was copied (e.g. "jdime"). */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private String dedupOfMode;
+
+        /** variantIndex of the original scored variant whose result was copied. */
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        private Integer dedupOfVariantIndex;
     }
 
 }

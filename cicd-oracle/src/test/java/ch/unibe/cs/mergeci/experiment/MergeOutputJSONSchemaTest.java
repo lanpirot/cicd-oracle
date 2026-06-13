@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,6 +30,7 @@ class MergeOutputJSONSchemaTest {
         assertFalse(json.contains("candidate"));
         assertFalse(json.contains("toolVersion"));
         assertFalse(json.contains("toolConfig"));
+        assertFalse(json.contains("dedup"));
     }
 
     @Test
@@ -52,5 +54,38 @@ class MergeOutputJSONSchemaTest {
         assertTrue(back.getVariants().get(0).getCandidateStrict());
         assertFalse(back.getVariants().get(0).getCandidateBestEffort());
         assertTrue(back.getCandidateComputeSeconds() == 0.729);
+    }
+
+    @Test
+    void dedupFieldsAbsentForNonDedupVariants() throws Exception {
+        MergeOutputJSON output = new MergeOutputJSON();
+        output.setMode("jdime");
+        MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
+        variant.setVariantIndex(1);
+        variant.setCandidateK(0);
+        output.setVariants(List.of(variant));
+
+        String json = mapper.writeValueAsString(output);
+        assertFalse(json.contains("dedup"));
+    }
+
+    @Test
+    void dedupFieldsPresentWhenSet() throws Exception {
+        MergeOutputJSON output = new MergeOutputJSON();
+        output.setMode("spork");
+        MergeOutputJSON.Variant variant = new MergeOutputJSON.Variant();
+        variant.setVariantIndex(1);
+        variant.setCandidateK(0);
+        variant.setDedupOfMode("jdime");
+        variant.setDedupOfVariantIndex(3);
+        output.setVariants(List.of(variant));
+
+        String json = mapper.writeValueAsString(output);
+        assertTrue(json.contains("\"dedupOfMode\":\"jdime\""));
+        assertTrue(json.contains("\"dedupOfVariantIndex\":3"));
+
+        MergeOutputJSON back = mapper.readValue(json, MergeOutputJSON.class);
+        assertEquals("jdime", back.getVariants().get(0).getDedupOfMode());
+        assertEquals(3, back.getVariants().get(0).getDedupOfVariantIndex());
     }
 }
