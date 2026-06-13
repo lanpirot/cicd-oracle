@@ -334,20 +334,26 @@ public abstract class RQPipelineRunner {
         }
     }
 
-    /** Lazy cache of merge commits already run in a prior pass — any terminal outcome
-     *  at the human_baseline phase (PROCESSED success or a real SKIP: infra failure,
-     *  broken baseline, analysis error). The baseline is the gating first mode, so a
-     *  baseline-phase row means the whole merge was attempted; re-running it only
-     *  wastes a clone + build. Populated once on the first project that needs the
-     *  resume fast-path. */
-    private java.util.Set<String> previouslyRunMerges;
+    /** Lazy cache of merge commits with a terminal human_baseline SKIP in a prior pass
+     *  (infra failure, broken baseline, analysis error — not the in-run "already
+     *  processed" dedup marker). Re-running these is guaranteed waste. Populated once
+     *  on the first project that needs the resume fast-path. */
+    private java.util.Set<String> skippedMerges;
+    /** Lazy cache of merge commits with a human_baseline PROCESSED row. A PROCESSED row
+     *  alone does NOT prove the variant modes ran — the JVM may have died between the
+     *  baseline write and the variant phase — so it only short-circuits the orphan case
+     *  where {@link #removeOrphanedBaselines} deliberately deleted the baseline JSON
+     *  (no variant mode produced a result); otherwise the per-mode JSON existence check
+     *  decides. */
+    private java.util.Set<String> processedMerges;
     /** Lazy cache of project names that PROJECT_FAILURE'd (typically clone timeout) — re-attempting
      *  is guaranteed to fail again until we stop using GitHub. */
     private java.util.Set<String> projectFailures;
 
     private void loadAttemptedMergesIfNeeded() {
-        if (previouslyRunMerges != null) return;
-        previouslyRunMerges = new java.util.HashSet<>();
+        if (skippedMerges != null) return;
+        skippedMerges = new java.util.HashSet<>();
+        processedMerges = new java.util.HashSet<>();
         projectFailures = new java.util.HashSet<>();
         Path csv = experimentDir().resolve("attempted_merges.csv");
         if (!csv.toFile().exists()) return;
@@ -359,13 +365,12 @@ public abstract class RQPipelineRunner {
                 String project = cols[1], mergeCommit = cols[2], mode = cols[3], verdict = cols[4], reason = cols[5];
                 if ("PROJECT_FAILURE".equals(verdict) && !project.isEmpty()) {
                     projectFailures.add(project);
-                } else if ("human_baseline".equals(mode) && !mergeCommit.isEmpty()
-                        && ("PROCESSED".equals(verdict) || "SKIPPED".equals(verdict))
-                        && !reason.contains("already processed")) {
-                    // A real baseline-phase row → the merge was run before (success or
-                    // failure). Skip it completely on resume. The "already processed"
-                    // skip is just the in-run dedup marker, not a fresh attempt.
-                    previouslyRunMerges.add(mergeCommit);
+                } else if ("human_baseline".equals(mode) && !mergeCommit.isEmpty()) {
+                    if ("SKIPPED".equals(verdict) && !reason.contains("already processed")) {
+                        skippedMerges.add(mergeCommit);
+                    } else if ("PROCESSED".equals(verdict)) {
+                        processedMerges.add(mergeCommit);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -373,17 +378,27 @@ public abstract class RQPipelineRunner {
         }
     }
 
-    /** Returns true iff every merge was already run in a prior pass (success or failure,
-     *  per {@code attempted_merges.csv}), or the whole project was a clone-timeout /
-     *  PROJECT_FAILURE. Falls back to a JSON-in-every-mode check for data that predates
-     *  the attempt log (or a truncated log). */
-    private boolean allMergesAlreadyAccountedFor(String projectName,
-                                                  List<DatasetReader.MergeInfo> merges) {
+    /** Returns true iff every merge was already run to a terminal state in a prior pass:
+     *  a real baseline SKIP, a PROCESSED baseline whose JSON was deliberately
+     *  orphan-removed, a JSON in every mode, or a whole-project clone-timeout /
+     *  PROJECT_FAILURE. A PROCESSED baseline row with its JSON still present is NOT
+     *  terminal by itself — a crash between the baseline and the variant modes leaves
+     *  exactly that state, and the merge must be re-offered so the missing modes run
+     *  (the baseline mode itself resumes from its JSON). */
+    boolean allMergesAlreadyAccountedFor(String projectName,
+                                         List<DatasetReader.MergeInfo> merges) {
         loadAttemptedMergesIfNeeded();
         if (projectFailures.contains(projectName)) return true;
         for (DatasetReader.MergeInfo info : merges) {
-            if (previouslyRunMerges.contains(info.getMergeCommit())) continue;
-            String filename = info.getMergeCommit() + AppConfig.JSON;
+            String mergeCommit = info.getMergeCommit();
+            if (skippedMerges.contains(mergeCommit)) continue;
+            String filename = mergeCommit + AppConfig.JSON;
+            if (processedMerges.contains(mergeCommit)
+                    && !experimentDir().resolve("human_baseline").resolve(filename).toFile().exists()) {
+                // Orphan-removed: baseline ran but every variant mode declined the
+                // merge, so removeOrphanedBaselines deleted the JSON. Deliberate.
+                continue;
+            }
             for (Utility.Experiments ex : modesToRun()) {
                 if (!experimentDir().resolve(ex.getName()).resolve(filename).toFile().exists()) {
                     return false;

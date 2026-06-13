@@ -110,10 +110,111 @@ class RQPipelineRunnerTest extends BaseTest {
         assertEquals(3, runner.callCountBaselineJsons());
     }
 
+    // ---- resume fast-path (allMergesAlreadyAccountedFor) ----
+
+    private static final List<Utility.Experiments> BASELINE_PLUS_SEQ = List.of(
+            Utility.Experiments.human_baseline,
+            Utility.Experiments.no_cache_no_parallel
+    );
+
+    private static final String CSV_HEADER =
+            "timestamp,project,mergeCommit,mode,verdict,reason,numChunks,baselineBroken,numVariants,bestModules,bestPassedTests,executionSeconds\n";
+
+    /**
+     * Regression test: a merge whose human_baseline PROCESSED row exists in
+     * attempted_merges.csv but whose variant-mode JSON is missing (JVM died
+     * between baseline write and variant phase) must be re-offered, not skipped.
+     */
+    @Test
+    void interruptedMergeIsNotAccountedFor() throws Exception {
+        Path expDir = newExpDir("resume_interrupted");
+        String commit = "aaaa0000aaaa0000aaaa0000aaaa0000aaaa0000";
+        writeAttemptLog(expDir, row("p", commit, "human_baseline", "PROCESSED", ""));
+        writeMinimalJson(expDir.resolve("human_baseline"), commit);
+        // no no_optimization JSON
+
+        TestPipelineRunner runner = new TestPipelineRunner(expDir, BASELINE_PLUS_SEQ, List.of());
+        assertFalse(runner.allMergesAlreadyAccountedFor("p", buildMergeInfos(new String[]{commit})));
+    }
+
+    @Test
+    void completeMergeIsAccountedFor() throws Exception {
+        Path expDir = newExpDir("resume_complete");
+        String commit = "bbbb1111bbbb1111bbbb1111bbbb1111bbbb1111";
+        writeAttemptLog(expDir, row("p", commit, "human_baseline", "PROCESSED", ""));
+        writeMinimalJson(expDir.resolve("human_baseline"), commit);
+        writeMinimalJson(expDir.resolve(Utility.Experiments.no_cache_no_parallel.getName()), commit);
+
+        TestPipelineRunner runner = new TestPipelineRunner(expDir, BASELINE_PLUS_SEQ, List.of());
+        assertTrue(runner.allMergesAlreadyAccountedFor("p", buildMergeInfos(new String[]{commit})));
+    }
+
+    /** Baseline PROCESSED but its JSON was orphan-removed (every variant mode declined
+     *  the merge) — a deliberate terminal state, must stay skipped. */
+    @Test
+    void orphanRemovedMergeIsAccountedFor() throws Exception {
+        Path expDir = newExpDir("resume_orphan");
+        String commit = "cccc2222cccc2222cccc2222cccc2222cccc2222";
+        writeAttemptLog(expDir, row("p", commit, "human_baseline", "PROCESSED", ""));
+        Files.createDirectories(expDir.resolve("human_baseline")); // JSON deleted
+
+        TestPipelineRunner runner = new TestPipelineRunner(expDir, BASELINE_PLUS_SEQ, List.of());
+        assertTrue(runner.allMergesAlreadyAccountedFor("p", buildMergeInfos(new String[]{commit})));
+    }
+
+    @Test
+    void terminallySkippedMergeIsAccountedFor() throws Exception {
+        Path expDir = newExpDir("resume_skipped");
+        String commit = "dddd3333dddd3333dddd3333dddd3333dddd3333";
+        writeAttemptLog(expDir, row("p", commit, "human_baseline", "SKIPPED", "infrastructure failure"));
+
+        TestPipelineRunner runner = new TestPipelineRunner(expDir, BASELINE_PLUS_SEQ, List.of());
+        assertTrue(runner.allMergesAlreadyAccountedFor("p", buildMergeInfos(new String[]{commit})));
+    }
+
+    /** The in-run "already processed" dedup marker is not a terminal outcome. */
+    @Test
+    void alreadyProcessedSkipMarkerDoesNotAccountFor() throws Exception {
+        Path expDir = newExpDir("resume_dedup_marker");
+        String commit = "eeee4444eeee4444eeee4444eeee4444eeee4444";
+        writeAttemptLog(expDir, row("p", commit, "human_baseline", "SKIPPED", "already processed"));
+        writeMinimalJson(expDir.resolve("human_baseline"), commit);
+        // no no_optimization JSON
+
+        TestPipelineRunner runner = new TestPipelineRunner(expDir, BASELINE_PLUS_SEQ, List.of());
+        assertFalse(runner.allMergesAlreadyAccountedFor("p", buildMergeInfos(new String[]{commit})));
+    }
+
+    @Test
+    void projectFailureAccountsForAllItsMerges() throws Exception {
+        Path expDir = newExpDir("resume_project_failure");
+        String commit = "ffff5555ffff5555ffff5555ffff5555ffff5555";
+        writeAttemptLog(expDir, row("badProj", "", "", "PROJECT_FAILURE", "clone failed: timeout"));
+
+        TestPipelineRunner runner = new TestPipelineRunner(expDir, BASELINE_PLUS_SEQ, List.of());
+        assertTrue(runner.allMergesAlreadyAccountedFor("badProj", buildMergeInfos(new String[]{commit})));
+    }
+
+    private Path newExpDir(String name) throws IOException {
+        Path expDir = AppConfig.TEST_EXPERIMENTS_TEMP_DIR.resolve(name);
+        Files.createDirectories(expDir);
+        return expDir;
+    }
+
+    private static String row(String project, String commit, String mode, String verdict, String reason) {
+        return String.join(",", "2026-06-13T00:00:00", project, commit, mode, verdict, reason,
+                "0", "false", "0", "0", "0", "0") + "\n";
+    }
+
+    private void writeAttemptLog(Path expDir, String... rows) throws IOException {
+        Files.writeString(expDir.resolve("attempted_merges.csv"), CSV_HEADER + String.join("", rows));
+    }
+
     // ---- helpers ----
 
     private void writeMinimalJson(Path dir, String commit) throws IOException {
         // Minimal valid JSON — only needs to be a file ending in .json
+        Files.createDirectories(dir);
         Files.writeString(dir.resolve(commit + AppConfig.JSON),
                 "{\"processed\":true,\"mergeCommit\":\"" + commit + "\"}");
     }
